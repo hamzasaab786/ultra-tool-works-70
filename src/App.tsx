@@ -10,7 +10,12 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import Disclaimer from "./pages/Disclaimer";
 import NotFound from "./pages/NotFound";
+
+// Tool pages
 import QRCodeGenerator from "./pages/tools/QRCodeGenerator";
+import ImageCompressor from "./pages/tools/ImageCompressor";
+import MergePDF from "./pages/tools/MergePDF";
+import PercentageCalculator from "./pages/tools/PercentageCalculator";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +34,9 @@ const App = () => (
           
           {/* Tool Routes */}
           <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
+          <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+          <Route path="/tools/merge-pdf" element={<MergePDF />} />
+          <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

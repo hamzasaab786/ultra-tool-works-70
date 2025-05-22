@@ -14,6 +14,13 @@ import {
 } from "lucide-react";
 
 const Index = () => {
+  // Scroll to tools section function
+  const scrollToTools = () => {
+    document.getElementById('popular-tools')?.scrollIntoView({ 
+      behavior: 'smooth'
+    });
+  };
+
   // Tool categories
   const toolCategories = [
     {
@@ -142,16 +149,20 @@ const Index = () => {
               Quick and easy tools for your everyday digital tasks.
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <Button size="lg" className="text-md bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600">
-                <Link to="#popular-tools">Explore Tools</Link>
+              <Button 
+                size="lg" 
+                className="text-md bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600"
+                onClick={scrollToTools}
+              >
+                Explore Tools
               </Button>
             </div>
           </div>
         </div>
         <div className="flex justify-center">
-          <a href="#popular-tools" className="animate-bounce p-2">
+          <button onClick={scrollToTools} className="animate-bounce p-2">
             <ArrowDown className="h-6 w-6" />
-          </a>
+          </button>
         </div>
       </section>
 
