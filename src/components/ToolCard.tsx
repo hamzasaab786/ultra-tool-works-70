@@ -11,15 +11,17 @@ interface ToolCardProps {
   icon: React.ReactNode;
   path: string;
   className?: string;
+  style?: React.CSSProperties; // Add style prop
 }
 
-const ToolCard = ({ title, description, icon, path, className }: ToolCardProps) => {
+const ToolCard = ({ title, description, icon, path, className, style }: ToolCardProps) => {
   return (
     <Card 
       className={cn(
         "group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20", 
         className
       )}
+      style={style} // Apply style prop
     >
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between mb-2">
