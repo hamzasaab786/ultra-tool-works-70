@@ -4,6 +4,13 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Ruler, ArrowUpDown } from "lucide-react";
 
 const UnitConverter = () => {
@@ -40,10 +47,13 @@ const UnitConverter = () => {
   };
 
   // Helper function to safely get unit name
-  const getUnitName = (category: typeof selectedCategory, unitKey: string): string => {
+  const getUnitName = (category: 'length' | 'weight' | 'temperature', unitKey: string): string => {
     const categoryUnits = units[category];
-    const unit = categoryUnits[unitKey as keyof typeof categoryUnits];
-    return unit?.name || 'Unknown';
+    const unitKeys = Object.keys(categoryUnits);
+    if (unitKeys.includes(unitKey)) {
+      return categoryUnits[unitKey as keyof typeof categoryUnits].name;
+    }
+    return 'Unknown';
   };
 
   React.useEffect(() => {
@@ -133,30 +143,30 @@ const UnitConverter = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="from-unit" className="mb-2 block">From</Label>
-            <select
-              id="from-unit"
-              value={fromUnit}
-              onChange={(e) => setFromUnit(e.target.value)}
-              className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md"
-            >
-              {Object.entries(units[selectedCategory]).map(([key, unit]) => (
-                <option key={key} value={key}>{unit.name}</option>
-              ))}
-            </select>
+            <Select value={fromUnit} onValueChange={setFromUnit}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select unit" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(units[selectedCategory]).map(([key, unit]) => (
+                  <SelectItem key={key} value={key}>{unit.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
             <Label htmlFor="to-unit" className="mb-2 block">To</Label>
-            <select
-              id="to-unit"
-              value={toUnit}
-              onChange={(e) => setToUnit(e.target.value)}
-              className="w-full h-10 px-3 py-2 border border-input bg-background rounded-md"
-            >
-              {Object.entries(units[selectedCategory]).map(([key, unit]) => (
-                <option key={key} value={key}>{unit.name}</option>
-              ))}
-            </select>
+            <Select value={toUnit} onValueChange={setToUnit}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select unit" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(units[selectedCategory]).map(([key, unit]) => (
+                  <SelectItem key={key} value={key}>{unit.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
