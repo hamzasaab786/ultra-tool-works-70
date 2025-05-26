@@ -49,11 +49,9 @@ const UnitConverter = () => {
   // Helper function to safely get unit name
   const getUnitName = (category: 'length' | 'weight' | 'temperature', unitKey: string): string => {
     const categoryUnits = units[category];
-    const unitKeys = Object.keys(categoryUnits);
-    if (unitKeys.includes(unitKey)) {
-      return categoryUnits[unitKey as keyof typeof categoryUnits].name;
-    }
-    return 'Unknown';
+    // Use type assertion with proper checking
+    const unitData = (categoryUnits as any)[unitKey];
+    return unitData?.name || 'Unknown';
   };
 
   React.useEffect(() => {
