@@ -39,6 +39,13 @@ const UnitConverter = () => {
     }
   };
 
+  // Helper function to safely get unit name
+  const getUnitName = (category: typeof selectedCategory, unitKey: string): string => {
+    const categoryUnits = units[category];
+    const unit = categoryUnits[unitKey as keyof typeof categoryUnits];
+    return unit?.name || 'Unknown';
+  };
+
   React.useEffect(() => {
     const categoryUnits = Object.keys(units[selectedCategory]);
     setFromUnit(categoryUnits[0] || '');
@@ -182,9 +189,9 @@ const UnitConverter = () => {
         {result && (
           <div className="p-4 bg-primary/5 rounded-md">
             <p className="text-center">
-              <span className="font-semibold">{inputValue} {units[selectedCategory][fromUnit as keyof typeof units[typeof selectedCategory]]?.name}</span>
+              <span className="font-semibold">{inputValue} {getUnitName(selectedCategory, fromUnit)}</span>
               {' = '}
-              <span className="font-semibold">{result} {units[selectedCategory][toUnit as keyof typeof units[typeof selectedCategory]]?.name}</span>
+              <span className="font-semibold">{result} {getUnitName(selectedCategory, toUnit)}</span>
             </p>
           </div>
         )}

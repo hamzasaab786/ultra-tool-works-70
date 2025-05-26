@@ -4,6 +4,7 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Upload, Download, X, FileIcon } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import jsPDF from 'jspdf';
 
 interface ImageFile {
   file: File;
@@ -88,24 +89,66 @@ const JpgToPdf = () => {
 
     setIsConverting(true);
     
-    // Simulate PDF creation process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Create a simple PDF-like content (for demo purposes)
-    const pdfContent = `data:application/pdf;base64,JVBERi0xLjMKJcTl8uXrp/Og0MTGCjQgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL091dGxpbmVzIDIgMCBSCi9QYWdlcyAzIDAgUgo+PgplbmRvYmoKCjIgMCBvYmoKPDwKL1R5cGUgL091dGxpbmVzCi9Db3VudCAwCj4+CmVuZG9iagoKMyAwIG9iago8PAovVHlwZSAvUGFnZXMKL0NvdW50IDEKL0tpZHMgWzQgMCBSXQo+PgplbmRvYmoKCjQgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAzIDAgUgovUmVzb3VyY2VzIDw8Ci9Gb250IDw8Ci9GMSAxMCAwIFIKPj4KPj4KL01lZGlhQm94IFswIDAgNjEyIDc5Ml0KL0NvbnRlbnRzIDUgMCBSCj4+CmVuZG9iagoKNSAwIG9iago8PAovTGVuZ3RoIDQ0Cj4+CnN0cmVhbQpCVApxCjI4LjM0IDc0NC4wNSBUZAowIGcKL0YxIDEyIFRmCihIZWxsbyBXb3JsZCkgVGoKRVQKUQoKZW5kc3RyZWFtCmVuZG9iagoKMTAgMCBvYmoKPDwKL1R5cGUgL0ZvbnQKL1N1YnR5cGUgL1R5cGUxCi9CYXNlRm9udCAvSGVsdmV0aWNhCj4+CmVuZG9iagoKeHJlZgowIDExCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDc0IDAwMDAwIG4gCjAwMDAwMDAxMjAgMDAwMDAgbiAKMDAwMDAwMDE3NyAwMDAwMCBuIAowMDAwMDAwMzY0IDAwMDAwIG4gCjAwMDAwMDA0NTggMDAwMDAgbiAKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDU0OCAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDExCi9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgo2NDcKJSVFT0Y=`;
-    
-    const link = document.createElement('a');
-    link.href = pdfContent;
-    link.download = 'converted-images.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    setIsConverting(false);
-    toast({
-      title: "Success",
-      description: "Images converted to PDF successfully!",
-    });
+    try {
+      const pdf = new jsPDF();
+      let isFirstPage = true;
+
+      for (const image of images) {
+        if (!isFirstPage) {
+          pdf.addPage();
+        }
+        isFirstPage = false;
+
+        // Create an image element to get dimensions
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = image.preview;
+        });
+
+        // Calculate dimensions to fit the page
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const margin = 20;
+        const maxWidth = pdfWidth - (margin * 2);
+        const maxHeight = pdfHeight - (margin * 2);
+
+        let { width, height } = img;
+        
+        // Scale down if image is larger than page
+        if (width > maxWidth || height > maxHeight) {
+          const widthRatio = maxWidth / width;
+          const heightRatio = maxHeight / height;
+          const ratio = Math.min(widthRatio, heightRatio);
+          width *= ratio;
+          height *= ratio;
+        }
+
+        // Center the image on the page
+        const x = (pdfWidth - width) / 2;
+        const y = (pdfHeight - height) / 2;
+
+        pdf.addImage(image.preview, 'JPEG', x, y, width, height);
+      }
+
+      // Save the PDF
+      pdf.save('converted-images.pdf');
+      
+      toast({
+        title: "Success",
+        description: "Images converted to PDF successfully!",
+      });
+    } catch (error) {
+      console.error('PDF conversion error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to convert images to PDF. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConverting(false);
+    }
   }, [images]);
 
   const resetImages = useCallback(() => {
