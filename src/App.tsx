@@ -17,6 +17,26 @@ import ImageCompressor from "./pages/tools/ImageCompressor";
 import MergePDF from "./pages/tools/MergePDF";
 import PercentageCalculator from "./pages/tools/PercentageCalculator";
 
+// New Image Tools
+import ImageEnhancer from "./pages/tools/ImageEnhancer";
+import ImageResizer from "./pages/tools/ImageResizer";
+import JpgToPdf from "./pages/tools/JpgToPdf";
+
+// New PDF Tools
+import SplitPdf from "./pages/tools/SplitPdf";
+import CompressPdf from "./pages/tools/CompressPdf";
+
+// New Calculator/Converter Tools
+import UnitConverter from "./pages/tools/UnitConverter";
+import CurrencyConverter from "./pages/tools/CurrencyConverter";
+
+// New Text Tools
+import WordCounter from "./pages/tools/WordCounter";
+import CaseConverter from "./pages/tools/CaseConverter";
+
+// New Utility Tools
+import PasswordGenerator from "./pages/tools/PasswordGenerator";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,11 +52,29 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           
-          {/* Tool Routes */}
-          <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
+          {/* Image Tool Routes */}
           <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+          <Route path="/tools/image-enhancer" element={<ImageEnhancer />} />
+          <Route path="/tools/image-resizer" element={<ImageResizer />} />
+          <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
+          
+          {/* PDF Tool Routes */}
           <Route path="/tools/merge-pdf" element={<MergePDF />} />
+          <Route path="/tools/split-pdf" element={<SplitPdf />} />
+          <Route path="/tools/compress-pdf" element={<CompressPdf />} />
+          
+          {/* Calculator/Converter Tool Routes */}
           <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
+          <Route path="/tools/unit-converter" element={<UnitConverter />} />
+          <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
+          
+          {/* Text Tool Routes */}
+          <Route path="/tools/word-counter" element={<WordCounter />} />
+          <Route path="/tools/case-converter" element={<CaseConverter />} />
+          
+          {/* Utility Tool Routes */}
+          <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
+          <Route path="/tools/password-generator" element={<PasswordGenerator />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
