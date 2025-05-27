@@ -76,15 +76,9 @@ const Base64Tool = () => {
   return (
     <ToolPageTemplate
       title="Base64 Encoder & Decoder"
-      description="Convert text to Base64 and decode Base64 to text instantly - Free online Base64 encoder and decoder tool for text conversion, data encoding, and web development."
+      description="Convert text to Base64 and decode Base64 to text instantly"
     >
       <div className="space-y-6">
-        <div className="p-4 bg-primary/5 rounded-md">
-          <p className="text-sm text-muted-foreground">
-            🔐 Encode plain text to Base64 or decode Base64 back to readable text. Essential tool for web developers, data processing, and secure text transmission.
-          </p>
-        </div>
-
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="encode">Encode to Base64</TabsTrigger>

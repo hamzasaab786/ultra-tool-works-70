@@ -4,27 +4,27 @@ import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import ToolCard from "@/components/ToolCard";
 import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
-// Import tool icons (using Lucide React icons)
+// Import tool icons
 import { 
   ImageIcon, FileIcon, Calculator, Type, QrCode, 
   Fingerprint, FilePlus, Scissors, FileDown, 
-  Percent, Ruler, Coins, AlignLeft, CaseSensitive
+  Percent, Ruler, Coins, AlignLeft, CaseSensitive,
+  Camera, Timer, Palette, DollarSign, Link2, Eraser
 } from "lucide-react";
 
 const Index = () => {
-  // Scroll to tools section function
   const scrollToTools = () => {
     document.getElementById('popular-tools')?.scrollIntoView({ 
       behavior: 'smooth'
     });
   };
 
-  // Tool categories
   const toolCategories = [
     {
-      title: "Image Tools",
+      title: "🖼️ Image Tools",
       tools: [
         { 
           title: "Image Compressor", 
@@ -49,11 +49,29 @@ const Index = () => {
           description: "Convert images to PDF documents",
           icon: <FileIcon />,
           path: "/tools/jpg-to-pdf"
+        },
+        { 
+          title: "Image to URL", 
+          description: "Convert images to shareable URLs",
+          icon: <Link2 />,
+          path: "/tools/image-to-url"
+        },
+        { 
+          title: "Background Remover", 
+          description: "Remove backgrounds from images with AI",
+          icon: <Eraser />,
+          path: "/tools/background-remover"
+        },
+        { 
+          title: "Passport Photo Maker", 
+          description: "Create professional passport photos",
+          icon: <Camera />,
+          path: "/tools/passport-photo-maker"
         }
       ]
     },
     {
-      title: "PDF Tools",
+      title: "📄 PDF Tools",
       tools: [
         { 
           title: "Merge PDF", 
@@ -76,7 +94,7 @@ const Index = () => {
       ]
     },
     {
-      title: "Calculators & Converters",
+      title: "🧮 Calculators & Converters",
       tools: [
         { 
           title: "Percentage Calculator", 
@@ -99,7 +117,7 @@ const Index = () => {
       ]
     },
     {
-      title: "Text Tools",
+      title: "📝 Text Tools",
       tools: [
         { 
           title: "Word & Character Counter", 
@@ -112,11 +130,17 @@ const Index = () => {
           description: "Convert text case (uppercase, lowercase, etc.)",
           icon: <CaseSensitive />,
           path: "/tools/case-converter"
+        },
+        { 
+          title: "Base64 Encoder/Decoder", 
+          description: "Encode and decode Base64 strings",
+          icon: <Type />,
+          path: "/tools/base64-tool"
         }
       ]
     },
     {
-      title: "Other Utilities",
+      title: "🛠️ Utility Tools",
       tools: [
         { 
           title: "QR Code Generator", 
@@ -129,84 +153,184 @@ const Index = () => {
           description: "Generate strong, secure passwords",
           icon: <Fingerprint />,
           path: "/tools/password-generator"
+        },
+        { 
+          title: "Timer & Stopwatch", 
+          description: "Professional timer and stopwatch with lap tracking",
+          icon: <Timer />,
+          path: "/tools/timer-stopwatch"
+        },
+        { 
+          title: "Color Picker", 
+          description: "Pick colors and get HEX, RGB, HSL values",
+          icon: <Palette />,
+          path: "/tools/color-picker"
+        },
+        { 
+          title: "Budget Tracker", 
+          description: "Track your monthly income and expenses",
+          icon: <DollarSign />,
+          path: "/tools/budget-tracker"
         }
       ]
     }
   ];
 
+  const faqs = [
+    {
+      question: "Are all tools completely free to use?",
+      answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
+    },
+    {
+      question: "Do I need to create an account to use the tools?",
+      answer: "No account required! You can use all our tools instantly without signing up, providing personal information, or creating passwords."
+    },
+    {
+      question: "Is my data safe and private?",
+      answer: "Absolutely. Most tools process your files locally in your browser, meaning your data never leaves your device. For tools that require server processing, we don't store any of your files or personal information."
+    },
+    {
+      question: "What file formats do you support?",
+      answer: "We support all major file formats including JPG, PNG, GIF, WebP for images; PDF for documents; and various text formats. Each tool clearly indicates which formats are supported."
+    },
+    {
+      question: "Are there any file size limitations?",
+      answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
+    },
+    {
+      question: "Can I use these tools on mobile devices?",
+      answer: "Yes! Our website is fully responsive and works perfectly on smartphones, tablets, and desktop computers. All tools are optimized for touch interfaces."
+    },
+    {
+      question: "How often do you add new tools?",
+      answer: "We regularly add new tools based on user feedback and emerging needs. Follow us or bookmark our site to stay updated with the latest additions."
+    },
+    {
+      question: "Can I suggest a new tool?",
+      answer: "We'd love to hear your suggestions! While we don't have a formal contact form yet, we're always looking for ways to improve and add valuable tools for our users."
+    }
+  ];
+
   return (
     <Layout>
-      {/* Hero Section */}
+      {/* Hero Section with 3D Effects */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-900 dark:to-gray-800 -z-10"></div>
-        <div className="container mx-auto px-4 py-24 md:py-32">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
-              Free Online Tools for Everyone
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        
+        {/* 3D Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-32 h-32 bg-purple-500/20 rounded-full blur-xl animate-pulse delay-1000"></div>
+          <div className="absolute bottom-20 left-1/3 w-24 h-24 bg-pink-500/20 rounded-full blur-xl animate-pulse delay-2000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 mb-8 animate-fade-in">
+              <Sparkles className="w-4 h-4 text-yellow-400 mr-2" />
+              <span className="text-white text-sm">✨ All Tools Are 100% Free Forever</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight animate-fade-in">
+              ToolifyConvert
             </h1>
-            <p className="text-lg md:text-xl mb-8 text-gray-700 dark:text-gray-300">
-              Convert, compress, resize, calculate, and more - all for free, with no sign-up required.
-              Quick and easy tools for your everyday digital tasks.
+            
+            <p className="text-xl md:text-2xl mb-8 text-gray-200 animate-fade-in delay-500">
+              The Ultimate Collection of Free Online Tools
             </p>
-            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            
+            <p className="text-lg md:text-xl mb-12 text-gray-300 max-w-3xl mx-auto animate-fade-in delay-700">
+              Convert, compress, resize, calculate, and more - all powered by cutting-edge technology. 
+              No sign-up required, lightning-fast processing, and completely secure.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 animate-fade-in delay-1000">
               <Button 
                 size="lg" 
-                className="text-md bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600"
+                className="text-lg px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300"
                 onClick={scrollToTools}
               >
-                Explore Tools
+                <Zap className="mr-2 h-5 w-5" />
+                Explore All Tools
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="text-lg px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Learn More
               </Button>
             </div>
           </div>
         </div>
-        <div className="flex justify-center">
-          <button onClick={scrollToTools} className="animate-bounce p-2">
-            <ArrowDown className="h-6 w-6" />
+        
+        <div className="flex justify-center pb-8">
+          <button 
+            onClick={scrollToTools} 
+            className="animate-bounce p-3 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors"
+          >
+            <ArrowDown className="h-6 w-6 text-white" />
           </button>
         </div>
       </section>
 
       {/* Popular Tools Section */}
-      <section id="popular-tools" className="py-16 bg-background">
+      <section id="popular-tools" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Popular Tools
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              🔥 Most Popular Tools
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              These are our most loved and frequently used tools by millions of users worldwide
+            </p>
+          </div>
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[
               toolCategories[0].tools[0], // Image Compressor
               toolCategories[1].tools[0], // Merge PDF
               toolCategories[2].tools[0], // Percentage Calculator
               toolCategories[4].tools[0], // QR Code Generator
+              toolCategories[0].tools[5], // Background Remover
+              toolCategories[4].tools[2], // Timer & Stopwatch
+              toolCategories[3].tools[2], // Base64 Tool
+              toolCategories[4].tools[3], // Color Picker
             ].map((tool, index) => (
-              <ToolCard
-                key={index}
-                title={tool.title}
-                description={tool.description}
-                icon={tool.icon}
-                path={tool.path}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              />
+              <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+                <ToolCard
+                  title={tool.title}
+                  description={tool.description}
+                  icon={tool.icon}
+                  path={tool.path}
+                  className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl bg-white/80 backdrop-blur-sm border border-white/50"
+                />
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* All Tools Section */}
+      {/* All Tools Sections */}
       {toolCategories.map((category, catIndex) => (
-        <section key={catIndex} className="py-12 bg-background">
+        <section key={catIndex} className={`py-16 ${catIndex % 2 === 0 ? 'bg-white' : 'bg-gradient-to-br from-gray-50 to-indigo-50'}`}>
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">{category.title}</h2>
+            <h2 className="text-3xl font-bold mb-12 text-center bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              {category.title}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {category.tools.map((tool, toolIndex) => (
-                <ToolCard
-                  key={toolIndex}
-                  title={tool.title}
-                  description={tool.description}
-                  icon={tool.icon}
-                  path={tool.path}
-                />
+                <div key={toolIndex} className="animate-fade-in" style={{ animationDelay: `${toolIndex * 50}ms` }}>
+                  <ToolCard
+                    title={tool.title}
+                    description={tool.description}
+                    icon={tool.icon}
+                    path={tool.path}
+                    className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -214,40 +338,108 @@ const Index = () => {
       ))}
 
       {/* Features Section */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-900 dark:to-gray-800">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Why Choose QuickConvert?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-background p-6 rounded-lg shadow-md">
-              <div className="text-primary mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-12 w-12">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+      <section id="features" className="py-20 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+        
+        {/* Background Animation */}
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-10 right-10 w-60 h-60 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">
+              Why Choose ToolifyConvert?
+            </h2>
+            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+              We've built the most comprehensive suite of online tools with cutting-edge technology and user experience in mind
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300 animate-fade-in">
+              <div className="text-green-400 mb-6">
+                <Zap className="h-12 w-12" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Completely Free</h3>
-              <p className="text-muted-foreground">All our tools are 100% free to use with no hidden costs or limitations.</p>
+              <h3 className="text-xl font-bold mb-4">Lightning Fast</h3>
+              <p className="text-gray-200">Advanced algorithms ensure blazing-fast processing, even for large files. No more waiting around!</p>
             </div>
-            <div className="bg-background p-6 rounded-lg shadow-md">
-              <div className="text-primary mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-12 w-12">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+            
+            <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300 animate-fade-in delay-200">
+              <div className="text-blue-400 mb-6">
+                <Shield className="h-12 w-12" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Fast & Efficient</h3>
-              <p className="text-muted-foreground">Our tools are designed to be quick and efficient, saving you time on your tasks.</p>
+              <h3 className="text-xl font-bold mb-4">100% Secure</h3>
+              <p className="text-gray-200">Your files are processed securely and never stored on our servers. Complete privacy guaranteed.</p>
             </div>
-            <div className="bg-background p-6 rounded-lg shadow-md">
-              <div className="text-primary mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-12 w-12">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+            
+            <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300 animate-fade-in delay-400">
+              <div className="text-purple-400 mb-6">
+                <Sparkles className="h-12 w-12" />
               </div>
-              <h3 className="text-xl font-bold mb-2">No Sign-Up Required</h3>
-              <p className="text-muted-foreground">Use all our tools without creating an account or providing any personal information.</p>
+              <h3 className="text-xl font-bold mb-4">Always Free</h3>
+              <p className="text-gray-200">Every single tool is completely free with no limitations, ads, or hidden costs. Forever.</p>
+            </div>
+            
+            <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-sm border border-white/20 transform hover:scale-105 transition-all duration-300 animate-fade-in delay-600">
+              <div className="text-pink-400 mb-6">
+                <Clock className="h-12 w-12" />
+              </div>
+              <h3 className="text-xl font-bold mb-4">No Sign-Up</h3>
+              <p className="text-gray-200">Start using any tool instantly. No accounts, no forms, no personal information required.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              ❓ Frequently Asked Questions
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Got questions? We've got answers! Here are the most common questions about our tools and services.
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <Accordion type="single" collapsible className="space-y-4">
+              {faqs.map((faq, index) => (
+                <AccordionItem 
+                  key={index} 
+                  value={`item-${index}`} 
+                  className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200 px-6"
+                >
+                  <AccordionTrigger className="text-left font-semibold text-gray-800 hover:text-blue-600 transition-colors">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-gray-600 leading-relaxed">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
+          <p className="text-xl mb-8 text-blue-100">
+            Join millions of users who trust ToolifyConvert for their daily digital tasks
+          </p>
+          <Button 
+            size="lg" 
+            className="text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 shadow-xl transform hover:scale-105 transition-all duration-300"
+            onClick={scrollToTools}
+          >
+            Start Using Tools Now →
+          </Button>
         </div>
       </section>
     </Layout>

@@ -1,270 +1,230 @@
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Square, RotateCcw, Clock, Timer } from "lucide-react";
+import { Play, Pause, Square, RotateCcw, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const TimerStopwatch = () => {
+  // Stopwatch state
+  const [stopwatchTime, setStopwatchTime] = useState(0);
+  const [stopwatchRunning, setStopwatchRunning] = useState(false);
+  const [laps, setLaps] = useState<number[]>([]);
+  
   // Timer state
   const [timerMinutes, setTimerMinutes] = useState(5);
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [timerTime, setTimerTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   
-  // Stopwatch state
-  const [stopwatchTime, setStopwatchTime] = useState(0);
-  const [stopwatchRunning, setStopwatchRunning] = useState(false);
-  const [laps, setLaps] = useState<number[]>([]);
-  
-  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const stopwatchIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Timer functions
-  const startTimer = useCallback(() => {
-    if (timerTime === 0) {
-      const totalSeconds = timerMinutes * 60 + timerSeconds;
-      setTimerTime(totalSeconds);
-    }
-    setTimerRunning(true);
-  }, [timerMinutes, timerSeconds, timerTime]);
-
-  const pauseTimer = useCallback(() => {
-    setTimerRunning(false);
-  }, []);
-
-  const resetTimer = useCallback(() => {
-    setTimerRunning(false);
-    setTimerTime(0);
-  }, []);
-
-  const stopTimer = useCallback(() => {
-    setTimerRunning(false);
-    setTimerTime(0);
-  }, []);
+  const stopwatchInterval = useRef<NodeJS.Timeout | null>(null);
+  const timerInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Stopwatch functions
   const startStopwatch = useCallback(() => {
     setStopwatchRunning(true);
+    stopwatchInterval.current = setInterval(() => {
+      setStopwatchTime(prev => prev + 10);
+    }, 10);
   }, []);
 
   const pauseStopwatch = useCallback(() => {
     setStopwatchRunning(false);
+    if (stopwatchInterval.current) {
+      clearInterval(stopwatchInterval.current);
+    }
   }, []);
 
   const resetStopwatch = useCallback(() => {
     setStopwatchRunning(false);
     setStopwatchTime(0);
     setLaps([]);
+    if (stopwatchInterval.current) {
+      clearInterval(stopwatchInterval.current);
+    }
   }, []);
 
   const addLap = useCallback(() => {
-    setLaps(prev => [...prev, stopwatchTime]);
-  }, [stopwatchTime]);
-
-  // Timer effect
-  useEffect(() => {
-    if (timerRunning && timerTime > 0) {
-      timerIntervalRef.current = setInterval(() => {
-        setTimerTime(prev => {
-          if (prev <= 1) {
-            setTimerRunning(false);
-            toast({
-              title: "Time's Up!",
-              description: "Your timer has finished",
-            });
-            // Play notification sound (if available)
-            if ('Notification' in window) {
-              new Notification('Timer Finished!', {
-                body: 'Your countdown timer has reached zero.',
-                icon: '/favicon.ico'
-              });
-            }
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    } else {
-      if (timerIntervalRef.current) {
-        clearInterval(timerIntervalRef.current);
-      }
-    }
-
-    return () => {
-      if (timerIntervalRef.current) {
-        clearInterval(timerIntervalRef.current);
-      }
-    };
-  }, [timerRunning, timerTime]);
-
-  // Stopwatch effect
-  useEffect(() => {
     if (stopwatchRunning) {
-      stopwatchIntervalRef.current = setInterval(() => {
-        setStopwatchTime(prev => prev + 1);
-      }, 10);
-    } else {
-      if (stopwatchIntervalRef.current) {
-        clearInterval(stopwatchIntervalRef.current);
-      }
+      setLaps(prev => [...prev, stopwatchTime]);
     }
+  }, [stopwatchTime, stopwatchRunning]);
 
+  // Timer functions
+  const startTimer = useCallback(() => {
+    const totalTime = timerMinutes * 60 + timerSeconds;
+    if (totalTime <= 0) {
+      toast({
+        title: "Error",
+        description: "Please set a valid time",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setTimerTime(totalTime * 1000);
+    setTimerRunning(true);
+    
+    timerInterval.current = setInterval(() => {
+      setTimerTime(prev => {
+        if (prev <= 1000) {
+          setTimerRunning(false);
+          toast({
+            title: "Time's Up!",
+            description: "Your timer has finished",
+          });
+          return 0;
+        }
+        return prev - 1000;
+      });
+    }, 1000);
+  }, [timerMinutes, timerSeconds]);
+
+  const pauseTimer = useCallback(() => {
+    setTimerRunning(false);
+    if (timerInterval.current) {
+      clearInterval(timerInterval.current);
+    }
+  }, []);
+
+  const resetTimer = useCallback(() => {
+    setTimerRunning(false);
+    setTimerTime(0);
+    if (timerInterval.current) {
+      clearInterval(timerInterval.current);
+    }
+  }, []);
+
+  // Cleanup intervals on unmount
+  useEffect(() => {
     return () => {
-      if (stopwatchIntervalRef.current) {
-        clearInterval(stopwatchIntervalRef.current);
-      }
+      if (stopwatchInterval.current) clearInterval(stopwatchInterval.current);
+      if (timerInterval.current) clearInterval(timerInterval.current);
     };
-  }, [stopwatchRunning]);
+  }, []);
 
-  const formatTime = (time: number, includeMs = false) => {
-    const hours = Math.floor(time / 3600);
-    const minutes = Math.floor((time % 3600) / 60);
-    const seconds = Math.floor(time % 60);
-    const milliseconds = Math.floor((time % 1) * 100);
-
-    if (includeMs) {
-      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
-    }
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    const milliseconds = Math.floor((time % 1000) / 10);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
   };
 
-  const formatStopwatchTime = (centiseconds: number) => {
-    const totalSeconds = Math.floor(centiseconds / 100);
-    const cs = centiseconds % 100;
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${cs.toString().padStart(2, '0')}`;
+  const formatTimerTime = (time: number) => {
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
     <ToolPageTemplate
       title="Timer & Stopwatch"
-      description="Professional timer and stopwatch tool with lap tracking - Perfect for workouts, cooking, productivity sessions, and time management. Free online timer with audio alerts."
+      description="Professional timer and stopwatch with lap tracking and precise timing"
     >
       <div className="space-y-6">
-        <div className="p-4 bg-primary/5 rounded-md">
-          <p className="text-sm text-muted-foreground">
-            ⏱️ Professional timer and stopwatch with precision timing, lap tracking, and audio notifications. Perfect for workouts, cooking, and productivity sessions.
-          </p>
-        </div>
-
-        <Tabs defaultValue="timer" className="space-y-6">
+        <Tabs defaultValue="stopwatch" className="space-y-4">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="timer">
-              <Timer className="mr-2 h-4 w-4" /> Timer
-            </TabsTrigger>
-            <TabsTrigger value="stopwatch">
-              <Clock className="mr-2 h-4 w-4" /> Stopwatch
-            </TabsTrigger>
+            <TabsTrigger value="stopwatch">Stopwatch</TabsTrigger>
+            <TabsTrigger value="timer">Timer</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="timer" className="space-y-6">
-            <div className="text-center space-y-6">
-              <div className="text-6xl font-mono font-bold text-primary">
-                {formatTime(timerTime)}
-              </div>
-              
-              <div className="flex justify-center space-x-4">
-                <div className="space-y-2">
-                  <Label>Minutes</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="59"
-                    value={timerMinutes}
-                    onChange={(e) => setTimerMinutes(parseInt(e.target.value) || 0)}
-                    disabled={timerRunning}
-                    className="w-20 text-center"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Seconds</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="59"
-                    value={timerSeconds}
-                    onChange={(e) => setTimerSeconds(parseInt(e.target.value) || 0)}
-                    disabled={timerRunning}
-                    className="w-20 text-center"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-center space-x-2">
-                {!timerRunning ? (
-                  <Button onClick={startTimer} disabled={timerMinutes === 0 && timerSeconds === 0}>
-                    <Play className="mr-2 h-4 w-4" /> Start
-                  </Button>
-                ) : (
-                  <Button onClick={pauseTimer}>
-                    <Pause className="mr-2 h-4 w-4" /> Pause
-                  </Button>
-                )}
-                <Button onClick={resetTimer} variant="outline">
-                  <RotateCcw className="mr-2 h-4 w-4" /> Reset
-                </Button>
-                <Button onClick={stopTimer} variant="destructive">
-                  <Square className="mr-2 h-4 w-4" /> Stop
-                </Button>
-              </div>
-
-              {timerTime > 0 && (
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-1000"
-                    style={{ 
-                      width: `${((timerMinutes * 60 + timerSeconds - timerTime) / (timerMinutes * 60 + timerSeconds)) * 100}%` 
-                    }}
-                  ></div>
-                </div>
-              )}
-            </div>
-          </TabsContent>
 
           <TabsContent value="stopwatch" className="space-y-6">
             <div className="text-center space-y-6">
-              <div className="text-6xl font-mono font-bold text-primary">
-                {formatStopwatchTime(stopwatchTime)}
+              <div className="text-6xl font-mono font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {formatTime(stopwatchTime)}
               </div>
-
-              <div className="flex justify-center space-x-2">
+              
+              <div className="flex justify-center space-x-4">
                 {!stopwatchRunning ? (
-                  <Button onClick={startStopwatch}>
-                    <Play className="mr-2 h-4 w-4" /> Start
+                  <Button onClick={startStopwatch} size="lg" className="px-8">
+                    <Play className="mr-2 h-5 w-5" /> Start
                   </Button>
                 ) : (
-                  <Button onClick={pauseStopwatch}>
-                    <Pause className="mr-2 h-4 w-4" /> Pause
+                  <Button onClick={pauseStopwatch} size="lg" variant="secondary" className="px-8">
+                    <Pause className="mr-2 h-5 w-5" /> Pause
                   </Button>
                 )}
-                <Button onClick={addLap} disabled={!stopwatchRunning} variant="outline">
-                  Lap
+                
+                <Button onClick={resetStopwatch} size="lg" variant="outline" className="px-8">
+                  <RotateCcw className="mr-2 h-5 w-5" /> Reset
                 </Button>
-                <Button onClick={resetStopwatch} variant="destructive">
-                  <RotateCcw className="mr-2 h-4 w-4" /> Reset
+                
+                <Button 
+                  onClick={addLap} 
+                  size="lg" 
+                  variant="outline" 
+                  disabled={!stopwatchRunning}
+                  className="px-8"
+                >
+                  Lap
                 </Button>
               </div>
 
               {laps.length > 0 && (
                 <div className="max-w-md mx-auto">
-                  <h3 className="font-semibold mb-4">Lap Times</h3>
-                  <div className="bg-gray-50 rounded-lg p-4 max-h-60 overflow-y-auto">
+                  <h3 className="text-lg font-semibold mb-4">Lap Times</h3>
+                  <div className="max-h-40 overflow-y-auto space-y-2">
                     {laps.map((lap, index) => (
-                      <div key={index} className="flex justify-between py-1 border-b border-gray-200 last:border-b-0">
+                      <div key={index} className="flex justify-between p-2 bg-gray-50 rounded">
                         <span>Lap {index + 1}</span>
-                        <span className="font-mono">{formatStopwatchTime(lap)}</span>
+                        <span className="font-mono">{formatTime(lap)}</span>
                       </div>
                     ))}
                   </div>
                 </div>
               )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="timer" className="space-y-6">
+            <div className="text-center space-y-6">
+              <div className="text-6xl font-mono font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                {timerRunning ? formatTimerTime(timerTime) : `${timerMinutes.toString().padStart(2, '0')}:${timerSeconds.toString().padStart(2, '0')}`}
+              </div>
+              
+              {!timerRunning && timerTime === 0 && (
+                <div className="max-w-xs mx-auto grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Minutes</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="59"
+                      value={timerMinutes}
+                      onChange={(e) => setTimerMinutes(parseInt(e.target.value) || 0)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Seconds</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="59"
+                      value={timerSeconds}
+                      onChange={(e) => setTimerSeconds(parseInt(e.target.value) || 0)}
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex justify-center space-x-4">
+                {!timerRunning ? (
+                  <Button onClick={startTimer} size="lg" className="px-8">
+                    <Clock className="mr-2 h-5 w-5" /> Start Timer
+                  </Button>
+                ) : (
+                  <Button onClick={pauseTimer} size="lg" variant="secondary" className="px-8">
+                    <Pause className="mr-2 h-5 w-5" /> Pause
+                  </Button>
+                )}
+                
+                <Button onClick={resetTimer} size="lg" variant="outline" className="px-8">
+                  <Square className="mr-2 h-5 w-5" /> Stop
+                </Button>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

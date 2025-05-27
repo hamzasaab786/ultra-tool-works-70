@@ -4,7 +4,7 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, Check, Palette } from "lucide-react";
+import { Copy, Check } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const ColorPicker = () => {
@@ -53,27 +53,6 @@ const ColorPicker = () => {
     };
   };
 
-  const hexToCmyk = (hex: string) => {
-    const rgb = hexToRgb(hex);
-    if (!rgb) return null;
-    
-    const r = rgb.r / 255;
-    const g = rgb.g / 255;
-    const b = rgb.b / 255;
-    
-    const k = 1 - Math.max(r, g, b);
-    const c = k === 1 ? 0 : (1 - r - k) / (1 - k);
-    const m = k === 1 ? 0 : (1 - g - k) / (1 - k);
-    const y = k === 1 ? 0 : (1 - b - k) / (1 - k);
-    
-    return {
-      c: Math.round(c * 100),
-      m: Math.round(m * 100),
-      y: Math.round(y * 100),
-      k: Math.round(k * 100)
-    };
-  };
-
   const copyToClipboard = useCallback(async (text: string, type: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -94,13 +73,11 @@ const ColorPicker = () => {
 
   const rgb = hexToRgb(selectedColor);
   const hsl = hexToHsl(selectedColor);
-  const cmyk = hexToCmyk(selectedColor);
 
   const colorFormats = [
     { label: "HEX", value: selectedColor.toUpperCase(), type: "HEX" },
     { label: "RGB", value: rgb ? `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` : "", type: "RGB" },
-    { label: "HSL", value: hsl ? `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)` : "", type: "HSL" },
-    { label: "CMYK", value: cmyk ? `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)` : "", type: "CMYK" }
+    { label: "HSL", value: hsl ? `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)` : "", type: "HSL" }
   ];
 
   const presetColors = [
@@ -113,17 +90,10 @@ const ColorPicker = () => {
   return (
     <ToolPageTemplate
       title="Color Picker Tool"
-      description="Professional color picker with HEX, RGB, HSL, and CMYK values - Pick colors visually and get instant color codes for web design, graphic design, and digital art projects."
+      description="Professional color picker with HEX, RGB, and HSL values"
     >
       <div className="space-y-6">
-        <div className="p-4 bg-primary/5 rounded-md">
-          <p className="text-sm text-muted-foreground">
-            🎨 Pick any color and instantly get HEX, RGB, HSL, and CMYK values. Perfect for web designers, graphic designers, and digital artists.
-          </p>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Color Picker Section */}
           <div className="space-y-6">
             <div className="text-center space-y-4">
               <div 
@@ -160,7 +130,6 @@ const ColorPicker = () => {
             </div>
           </div>
 
-          {/* Color Values Section */}
           <div className="space-y-4">
             <Label className="text-base font-semibold">Color Values</Label>
             {colorFormats.map((format) => (
@@ -199,26 +168,6 @@ const ColorPicker = () => {
                   <div>
                     <Label className="text-sm">Blue</Label>
                     <Input value={rgb.b} readOnly className="bg-gray-50" />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="pt-4 border-t">
-              <Label className="text-base font-semibold mb-3 block">Individual HSL Values</Label>
-              {hsl && (
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label className="text-sm">Hue</Label>
-                    <Input value={`${hsl.h}°`} readOnly className="bg-gray-50" />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Saturation</Label>
-                    <Input value={`${hsl.s}%`} readOnly className="bg-gray-50" />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Lightness</Label>
-                    <Input value={`${hsl.l}%`} readOnly className="bg-gray-50" />
                   </div>
                 </div>
               )}

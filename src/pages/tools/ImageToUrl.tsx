@@ -74,22 +74,15 @@ const ImageToUrl = () => {
   return (
     <ToolPageTemplate
       title="Image to URL Converter"
-      description="Convert your images to shareable URLs instantly - Upload any image and get a direct link for sharing, embedding, or hosting. Free online image URL generator with instant results."
+      description="Convert your images to shareable URLs instantly"
     >
       <div className="space-y-6">
-        <div className="p-4 bg-primary/5 rounded-md">
-          <p className="text-sm text-muted-foreground">
-            🔗 Upload your image and get an instant shareable URL. Perfect for sharing images online, embedding in websites, or creating direct links.
-          </p>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Upload Section */}
           <div className="space-y-4">
             <div>
               <Label>Upload Image</Label>
               {!selectedImage ? (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors">
                   <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-sm text-gray-500 mb-4">
                     Click to upload or drag and drop your image
@@ -130,18 +123,8 @@ const ImageToUrl = () => {
                 </div>
               )}
             </div>
-
-            {selectedImage && (
-              <div className="p-4 bg-gray-50 rounded">
-                <h3 className="font-medium mb-2">Image Details</h3>
-                <p className="text-sm text-gray-600">Name: {selectedImage.name}</p>
-                <p className="text-sm text-gray-600">Size: {(selectedImage.size / 1024 / 1024).toFixed(2)} MB</p>
-                <p className="text-sm text-gray-600">Type: {selectedImage.type}</p>
-              </div>
-            )}
           </div>
 
-          {/* Result Section */}
           <div className="space-y-4">
             <Label>Generated URL</Label>
             {isUploading ? (
@@ -179,7 +162,7 @@ const ImageToUrl = () => {
                 
                 <div className="p-4 bg-green-50 rounded border border-green-200">
                   <h3 className="font-medium text-green-800 mb-2">✅ URL Generated Successfully!</h3>
-                  <p className="text-sm text-green-700">Your image is now accessible via the URL above. You can copy and share this link anywhere.</p>
+                  <p className="text-sm text-green-700">Your image is now accessible via the URL above.</p>
                 </div>
               </div>
             ) : (

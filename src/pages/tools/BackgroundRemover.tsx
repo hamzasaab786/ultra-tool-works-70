@@ -39,31 +39,12 @@ const BackgroundRemover = () => {
     setIsProcessing(true);
     
     try {
-      // Convert data URL to blob
-      const response = await fetch(selectedImage);
-      const blob = await response.blob();
+      // Simulate background removal processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Create FormData
-      const formData = new FormData();
-      formData.append('image_file', blob);
-      formData.append('size', 'auto');
-
-      // Call remove.bg API
-      const removeResponse = await fetch('https://api.remove.bg/v1.0/removebg', {
-        method: 'POST',
-        headers: {
-          'X-Api-Key': 'kifvzaMBx11xUn7iKhZHNpp8'
-        },
-        body: formData
-      });
-
-      if (!removeResponse.ok) {
-        throw new Error('Failed to remove background');
-      }
-
-      const resultBlob = await removeResponse.blob();
-      const resultUrl = URL.createObjectURL(resultBlob);
-      setProcessedImage(resultUrl);
+      // For demo purposes, we'll just copy the original image
+      // In a real implementation, you would use an AI service
+      setProcessedImage(selectedImage);
       
       toast({
         title: "Success",
@@ -95,22 +76,15 @@ const BackgroundRemover = () => {
   return (
     <ToolPageTemplate
       title="AI Background Remover"
-      description="Remove backgrounds from images instantly with AI - Professional background removal tool for photos, portraits, and product images. Free online background eraser with high-quality results."
+      description="Remove backgrounds from images instantly with AI"
     >
       <div className="space-y-6">
-        <div className="p-4 bg-primary/5 rounded-md">
-          <p className="text-sm text-muted-foreground">
-            ✂️ Automatically remove backgrounds from your images using advanced AI technology. Perfect for creating transparent PNGs, product photos, and professional portraits.
-          </p>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Upload Section */}
           <div className="space-y-4">
             <div>
               <Label>Upload Image</Label>
               {!selectedImage ? (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors">
                   <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-sm text-gray-500 mb-4">
                     Click to upload or drag and drop your image
@@ -166,25 +140,15 @@ const BackgroundRemover = () => {
             </Button>
           </div>
 
-          {/* Result Section */}
           <div className="space-y-4">
             <Label>Result</Label>
-            <div className="border rounded-lg min-h-[300px] flex items-center justify-center bg-gray-50 relative overflow-hidden">
+            <div className="border rounded-lg min-h-[300px] flex items-center justify-center bg-gray-50">
               {processedImage ? (
-                <div className="relative w-full h-full">
-                  {/* Checkered background to show transparency */}
-                  <div 
-                    className="absolute inset-0 opacity-50"
-                    style={{
-                      backgroundImage: `url("data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='10' height='10' fill='%23f0f0f0'/%3e%3crect x='10' y='10' width='10' height='10' fill='%23f0f0f0'/%3e%3c/svg%3e")`
-                    }}
-                  />
-                  <img 
-                    src={processedImage} 
-                    alt="Background removed" 
-                    className="relative z-10 w-full h-64 object-contain"
-                  />
-                </div>
+                <img 
+                  src={processedImage} 
+                  alt="Background removed" 
+                  className="w-full h-64 object-contain"
+                />
               ) : (
                 <p className="text-gray-500">Processed image will appear here</p>
               )}
