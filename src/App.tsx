@@ -57,6 +57,9 @@ const App = () => (
           <Route path="/tools/image-enhancer" element={<ImageEnhancer />} />
           <Route path="/tools/image-resizer" element={<ImageResizer />} />
           <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
+          <Route path="/tools/image-to-url" element={<ImageToUrl />} />
+          <Route path="/tools/background-remover" element={<BackgroundRemover />} />
+          <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
           
           {/* PDF Tool Routes */}
           <Route path="/tools/merge-pdf" element={<MergePDF />} />
@@ -71,10 +74,14 @@ const App = () => (
           {/* Text Tool Routes */}
           <Route path="/tools/word-counter" element={<WordCounter />} />
           <Route path="/tools/case-converter" element={<CaseConverter />} />
+          <Route path="/tools/base64-tool" element={<Base64Tool />} />
           
           {/* Utility Tool Routes */}
           <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
           <Route path="/tools/password-generator" element={<PasswordGenerator />} />
+          <Route path="/tools/timer-stopwatch" element={<TimerStopwatch />} />
+          <Route path="/tools/color-picker" element={<ColorPicker />} />
+          <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
