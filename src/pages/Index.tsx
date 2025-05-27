@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -8,211 +7,160 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
 // Import tool icons
-import { 
-  ImageIcon, FileIcon, Calculator, Type, QrCode, 
-  Fingerprint, FilePlus, Scissors, FileDown, 
-  Percent, Ruler, Coins, AlignLeft, CaseSensitive,
-  Camera, Timer, Palette, DollarSign, Link2, Eraser
-} from "lucide-react";
-
+import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser } from "lucide-react";
 const Index = () => {
   const scrollToTools = () => {
-    document.getElementById('popular-tools')?.scrollIntoView({ 
+    document.getElementById('popular-tools')?.scrollIntoView({
       behavior: 'smooth'
     });
   };
-
-  const toolCategories = [
-    {
-      title: "🖼️ Image Tools",
-      tools: [
-        { 
-          title: "Image Compressor", 
-          description: "Reduce image file size with minimal quality loss",
-          icon: <ImageIcon />,
-          path: "/tools/image-compressor"
-        },
-        { 
-          title: "Image Resizer", 
-          description: "Change dimensions of your images easily",
-          icon: <ImageIcon />,
-          path: "/tools/image-resizer"
-        },
-        { 
-          title: "Image Enhancer", 
-          description: "Adjust brightness, contrast and more",
-          icon: <ImageIcon />,
-          path: "/tools/image-enhancer"
-        },
-        { 
-          title: "JPG to PDF", 
-          description: "Convert images to PDF documents",
-          icon: <FileIcon />,
-          path: "/tools/jpg-to-pdf"
-        },
-        { 
-          title: "Image to URL", 
-          description: "Convert images to shareable URLs",
-          icon: <Link2 />,
-          path: "/tools/image-to-url"
-        },
-        { 
-          title: "Background Remover", 
-          description: "Remove backgrounds from images with AI",
-          icon: <Eraser />,
-          path: "/tools/background-remover"
-        },
-        { 
-          title: "Passport Photo Maker", 
-          description: "Create professional passport photos",
-          icon: <Camera />,
-          path: "/tools/passport-photo-maker"
-        }
-      ]
-    },
-    {
-      title: "📄 PDF Tools",
-      tools: [
-        { 
-          title: "Merge PDF", 
-          description: "Combine multiple PDF files into one",
-          icon: <FilePlus />,
-          path: "/tools/merge-pdf"
-        },
-        { 
-          title: "Split PDF", 
-          description: "Extract specific pages from PDF documents",
-          icon: <Scissors />,
-          path: "/tools/split-pdf"
-        },
-        { 
-          title: "Compress PDF", 
-          description: "Reduce PDF file size",
-          icon: <FileDown />,
-          path: "/tools/compress-pdf"
-        }
-      ]
-    },
-    {
-      title: "🧮 Calculators & Converters",
-      tools: [
-        { 
-          title: "Percentage Calculator", 
-          description: "Calculate percentages easily",
-          icon: <Percent />,
-          path: "/tools/percentage-calculator"
-        },
-        { 
-          title: "Unit Converter", 
-          description: "Convert between different units of measurement",
-          icon: <Ruler />,
-          path: "/tools/unit-converter"
-        },
-        { 
-          title: "Currency Converter", 
-          description: "Convert between major world currencies",
-          icon: <Coins />,
-          path: "/tools/currency-converter"
-        }
-      ]
-    },
-    {
-      title: "📝 Text Tools",
-      tools: [
-        { 
-          title: "Word & Character Counter", 
-          description: "Count words, characters, and lines in your text",
-          icon: <AlignLeft />,
-          path: "/tools/word-counter"
-        },
-        { 
-          title: "Case Converter", 
-          description: "Convert text case (uppercase, lowercase, etc.)",
-          icon: <CaseSensitive />,
-          path: "/tools/case-converter"
-        },
-        { 
-          title: "Base64 Encoder/Decoder", 
-          description: "Encode and decode Base64 strings",
-          icon: <Type />,
-          path: "/tools/base64-tool"
-        }
-      ]
-    },
-    {
-      title: "🛠️ Utility Tools",
-      tools: [
-        { 
-          title: "QR Code Generator", 
-          description: "Create QR codes for various purposes",
-          icon: <QrCode />,
-          path: "/tools/qr-code-generator"
-        },
-        { 
-          title: "Password Generator", 
-          description: "Generate strong, secure passwords",
-          icon: <Fingerprint />,
-          path: "/tools/password-generator"
-        },
-        { 
-          title: "Timer & Stopwatch", 
-          description: "Professional timer and stopwatch with lap tracking",
-          icon: <Timer />,
-          path: "/tools/timer-stopwatch"
-        },
-        { 
-          title: "Color Picker", 
-          description: "Pick colors and get HEX, RGB, HSL values",
-          icon: <Palette />,
-          path: "/tools/color-picker"
-        },
-        { 
-          title: "Budget Tracker", 
-          description: "Track your monthly income and expenses",
-          icon: <DollarSign />,
-          path: "/tools/budget-tracker"
-        }
-      ]
-    }
-  ];
-
-  const faqs = [
-    {
-      question: "Are all tools completely free to use?",
-      answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
-    },
-    {
-      question: "Do I need to create an account to use the tools?",
-      answer: "No account required! You can use all our tools instantly without signing up, providing personal information, or creating passwords."
-    },
-    {
-      question: "Is my data safe and private?",
-      answer: "Absolutely. Most tools process your files locally in your browser, meaning your data never leaves your device. For tools that require server processing, we don't store any of your files or personal information."
-    },
-    {
-      question: "What file formats do you support?",
-      answer: "We support all major file formats including JPG, PNG, GIF, WebP for images; PDF for documents; and various text formats. Each tool clearly indicates which formats are supported."
-    },
-    {
-      question: "Are there any file size limitations?",
-      answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
-    },
-    {
-      question: "Can I use these tools on mobile devices?",
-      answer: "Yes! Our website is fully responsive and works perfectly on smartphones, tablets, and desktop computers. All tools are optimized for touch interfaces."
-    },
-    {
-      question: "How often do you add new tools?",
-      answer: "We regularly add new tools based on user feedback and emerging needs. Follow us or bookmark our site to stay updated with the latest additions."
-    },
-    {
-      question: "Can I suggest a new tool?",
-      answer: "We'd love to hear your suggestions! While we don't have a formal contact form yet, we're always looking for ways to improve and add valuable tools for our users."
-    }
-  ];
-
-  return (
-    <Layout>
+  const toolCategories = [{
+    title: "🖼️ Image Tools",
+    tools: [{
+      title: "Image Compressor",
+      description: "Reduce image file size with minimal quality loss",
+      icon: <ImageIcon />,
+      path: "/tools/image-compressor"
+    }, {
+      title: "Image Resizer",
+      description: "Change dimensions of your images easily",
+      icon: <ImageIcon />,
+      path: "/tools/image-resizer"
+    }, {
+      title: "Image Enhancer",
+      description: "Adjust brightness, contrast and more",
+      icon: <ImageIcon />,
+      path: "/tools/image-enhancer"
+    }, {
+      title: "JPG to PDF",
+      description: "Convert images to PDF documents",
+      icon: <FileIcon />,
+      path: "/tools/jpg-to-pdf"
+    }, {
+      title: "Image to URL",
+      description: "Convert images to shareable URLs",
+      icon: <Link2 />,
+      path: "/tools/image-to-url"
+    }, {
+      title: "Background Remover",
+      description: "Remove backgrounds from images with AI",
+      icon: <Eraser />,
+      path: "/tools/background-remover"
+    }, {
+      title: "Passport Photo Maker",
+      description: "Create professional passport photos",
+      icon: <Camera />,
+      path: "/tools/passport-photo-maker"
+    }]
+  }, {
+    title: "📄 PDF Tools",
+    tools: [{
+      title: "Merge PDF",
+      description: "Combine multiple PDF files into one",
+      icon: <FilePlus />,
+      path: "/tools/merge-pdf"
+    }, {
+      title: "Split PDF",
+      description: "Extract specific pages from PDF documents",
+      icon: <Scissors />,
+      path: "/tools/split-pdf"
+    }, {
+      title: "Compress PDF",
+      description: "Reduce PDF file size",
+      icon: <FileDown />,
+      path: "/tools/compress-pdf"
+    }]
+  }, {
+    title: "🧮 Calculators & Converters",
+    tools: [{
+      title: "Percentage Calculator",
+      description: "Calculate percentages easily",
+      icon: <Percent />,
+      path: "/tools/percentage-calculator"
+    }, {
+      title: "Unit Converter",
+      description: "Convert between different units of measurement",
+      icon: <Ruler />,
+      path: "/tools/unit-converter"
+    }, {
+      title: "Currency Converter",
+      description: "Convert between major world currencies",
+      icon: <Coins />,
+      path: "/tools/currency-converter"
+    }]
+  }, {
+    title: "📝 Text Tools",
+    tools: [{
+      title: "Word & Character Counter",
+      description: "Count words, characters, and lines in your text",
+      icon: <AlignLeft />,
+      path: "/tools/word-counter"
+    }, {
+      title: "Case Converter",
+      description: "Convert text case (uppercase, lowercase, etc.)",
+      icon: <CaseSensitive />,
+      path: "/tools/case-converter"
+    }, {
+      title: "Base64 Encoder/Decoder",
+      description: "Encode and decode Base64 strings",
+      icon: <Type />,
+      path: "/tools/base64-tool"
+    }]
+  }, {
+    title: "🛠️ Utility Tools",
+    tools: [{
+      title: "QR Code Generator",
+      description: "Create QR codes for various purposes",
+      icon: <QrCode />,
+      path: "/tools/qr-code-generator"
+    }, {
+      title: "Password Generator",
+      description: "Generate strong, secure passwords",
+      icon: <Fingerprint />,
+      path: "/tools/password-generator"
+    }, {
+      title: "Timer & Stopwatch",
+      description: "Professional timer and stopwatch with lap tracking",
+      icon: <Timer />,
+      path: "/tools/timer-stopwatch"
+    }, {
+      title: "Color Picker",
+      description: "Pick colors and get HEX, RGB, HSL values",
+      icon: <Palette />,
+      path: "/tools/color-picker"
+    }, {
+      title: "Budget Tracker",
+      description: "Track your monthly income and expenses",
+      icon: <DollarSign />,
+      path: "/tools/budget-tracker"
+    }]
+  }];
+  const faqs = [{
+    question: "Are all tools completely free to use?",
+    answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
+  }, {
+    question: "Do I need to create an account to use the tools?",
+    answer: "No account required! You can use all our tools instantly without signing up, providing personal information, or creating passwords."
+  }, {
+    question: "Is my data safe and private?",
+    answer: "Absolutely. Most tools process your files locally in your browser, meaning your data never leaves your device. For tools that require server processing, we don't store any of your files or personal information."
+  }, {
+    question: "What file formats do you support?",
+    answer: "We support all major file formats including JPG, PNG, GIF, WebP for images; PDF for documents; and various text formats. Each tool clearly indicates which formats are supported."
+  }, {
+    question: "Are there any file size limitations?",
+    answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
+  }, {
+    question: "Can I use these tools on mobile devices?",
+    answer: "Yes! Our website is fully responsive and works perfectly on smartphones, tablets, and desktop computers. All tools are optimized for touch interfaces."
+  }, {
+    question: "How often do you add new tools?",
+    answer: "We regularly add new tools based on user feedback and emerging needs. Follow us or bookmark our site to stay updated with the latest additions."
+  }, {
+    question: "Can I suggest a new tool?",
+    answer: "We'd love to hear your suggestions! While we don't have a formal contact form yet, we're always looking for ways to improve and add valuable tools for our users."
+  }];
+  return <Layout>
       {/* Hero Section with 3D Effects */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900"></div>
@@ -246,20 +194,13 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 animate-fade-in delay-1000">
-              <Button 
-                size="lg" 
-                className="text-lg px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300"
-                onClick={scrollToTools}
-              >
+              <Button size="lg" className="text-lg px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300" onClick={scrollToTools}>
                 <Zap className="mr-2 h-5 w-5" />
                 Explore All Tools
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="text-lg px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
-                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              >
+              <Button size="lg" variant="outline" onClick={() => document.getElementById('features')?.scrollIntoView({
+              behavior: 'smooth'
+            })} className="text-lg px-8 py-4 border-2 border-white/30 text-white backdrop-blur-sm bg-indigo-500 hover:bg-indigo-400">
                 Learn More
               </Button>
             </div>
@@ -267,10 +208,7 @@ const Index = () => {
         </div>
         
         <div className="flex justify-center pb-8">
-          <button 
-            onClick={scrollToTools} 
-            className="animate-bounce p-3 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors"
-          >
+          <button onClick={scrollToTools} className="animate-bounce p-3 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors">
             <ArrowDown className="h-6 w-6 text-white" />
           </button>
         </div>
@@ -289,53 +227,45 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[
-              toolCategories[0].tools[0], // Image Compressor
-              toolCategories[1].tools[0], // Merge PDF
-              toolCategories[2].tools[0], // Percentage Calculator
-              toolCategories[4].tools[0], // QR Code Generator
-              toolCategories[0].tools[5], // Background Remover
-              toolCategories[4].tools[2], // Timer & Stopwatch
-              toolCategories[3].tools[2], // Base64 Tool
-              toolCategories[4].tools[3], // Color Picker
-            ].map((tool, index) => (
-              <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <ToolCard
-                  title={tool.title}
-                  description={tool.description}
-                  icon={tool.icon}
-                  path={tool.path}
-                  className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl bg-white/80 backdrop-blur-sm border border-white/50"
-                />
-              </div>
-            ))}
+            {[toolCategories[0].tools[0],
+          // Image Compressor
+          toolCategories[1].tools[0],
+          // Merge PDF
+          toolCategories[2].tools[0],
+          // Percentage Calculator
+          toolCategories[4].tools[0],
+          // QR Code Generator
+          toolCategories[0].tools[5],
+          // Background Remover
+          toolCategories[4].tools[2],
+          // Timer & Stopwatch
+          toolCategories[3].tools[2],
+          // Base64 Tool
+          toolCategories[4].tools[3] // Color Picker
+          ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
+            animationDelay: `${index * 100}ms`
+          }}>
+                <ToolCard title={tool.title} description={tool.description} icon={tool.icon} path={tool.path} className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl bg-white/80 backdrop-blur-sm border border-white/50" />
+              </div>)}
           </div>
         </div>
       </section>
 
       {/* All Tools Sections */}
-      {toolCategories.map((category, catIndex) => (
-        <section key={catIndex} className={`py-16 ${catIndex % 2 === 0 ? 'bg-white' : 'bg-gradient-to-br from-gray-50 to-indigo-50'}`}>
+      {toolCategories.map((category, catIndex) => <section key={catIndex} className={`py-16 ${catIndex % 2 === 0 ? 'bg-white' : 'bg-gradient-to-br from-gray-50 to-indigo-50'}`}>
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold mb-12 text-center bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
               {category.title}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {category.tools.map((tool, toolIndex) => (
-                <div key={toolIndex} className="animate-fade-in" style={{ animationDelay: `${toolIndex * 50}ms` }}>
-                  <ToolCard
-                    title={tool.title}
-                    description={tool.description}
-                    icon={tool.icon}
-                    path={tool.path}
-                    className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-                  />
-                </div>
-              ))}
+              {category.tools.map((tool, toolIndex) => <div key={toolIndex} className="animate-fade-in" style={{
+            animationDelay: `${toolIndex * 50}ms`
+          }}>
+                  <ToolCard title={tool.title} description={tool.description} icon={tool.icon} path={tool.path} className="transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl" />
+                </div>)}
             </div>
           </div>
-        </section>
-      ))}
+        </section>)}
 
       {/* Features Section */}
       <section id="features" className="py-20 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white relative overflow-hidden">
@@ -407,20 +337,14 @@ const Index = () => {
           
           <div className="max-w-4xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
-              {faqs.map((faq, index) => (
-                <AccordionItem 
-                  key={index} 
-                  value={`item-${index}`} 
-                  className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200 px-6"
-                >
+              {faqs.map((faq, index) => <AccordionItem key={index} value={`item-${index}`} className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200 px-6">
                   <AccordionTrigger className="text-left font-semibold text-gray-800 hover:text-blue-600 transition-colors">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 leading-relaxed">
                     {faq.answer}
                   </AccordionContent>
-                </AccordionItem>
-              ))}
+                </AccordionItem>)}
             </Accordion>
           </div>
         </div>
@@ -433,17 +357,11 @@ const Index = () => {
           <p className="text-xl mb-8 text-blue-100">
             Join millions of users who trust ToolifyConvert for their daily digital tasks
           </p>
-          <Button 
-            size="lg" 
-            className="text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 shadow-xl transform hover:scale-105 transition-all duration-300"
-            onClick={scrollToTools}
-          >
+          <Button size="lg" className="text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 shadow-xl transform hover:scale-105 transition-all duration-300" onClick={scrollToTools}>
             Start Using Tools Now →
           </Button>
         </div>
       </section>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Index;
