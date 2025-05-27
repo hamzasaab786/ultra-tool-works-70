@@ -1,10 +1,9 @@
-
 import React, { useState, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { QrCode, Link as LinkIcon, Mail, Phone, MessageSquare, Wifi, ImageIcon, Download, Upload } from "lucide-react";
+import { QrCode, Link as LinkIcon, Mail, Phone, MessageSquare, Wifi, ImageIcon, Download, Upload, Palette } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 
@@ -14,10 +13,13 @@ const QRCodeGenerator = () => {
   const [activeTab, setActiveTab] = useState("url");
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const [qrColor, setQrColor] = useState("#000000");
+  const [bgColor, setBgColor] = useState("#ffffff");
+  const [qrSize, setQrSize] = useState(300);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const generateQR = () => {
+  const generateQR = async () => {
     if (!text.trim()) {
       toast({
         title: "Error",
@@ -29,18 +31,50 @@ const QRCodeGenerator = () => {
     
     setLoading(true);
     
-    // Encode the text for URL use
-    const encodedText = encodeURIComponent(text);
-    
-    // Use Google's Chart API to generate QR code
-    const qrApiUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodedText}&chs=300x300&choe=UTF-8`;
-    setQrCodeUrl(qrApiUrl);
-    setLoading(false);
-    
-    if (qrApiUrl) {
+    try {
+      // Format text based on type
+      const formattedText = formatTextForQR();
+      const encodedText = encodeURIComponent(formattedText);
+      
+      // Create QR code with custom colors
+      const colorParam = qrColor.replace('#', '');
+      const bgColorParam = bgColor.replace('#', '');
+      
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
+      
+      // Test if the URL works
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      img.onload = () => {
+        setQrCodeUrl(qrApiUrl);
+        setLoading(false);
+        toast({
+          title: "Success",
+          description: "QR code generated successfully!",
+        });
+      };
+      
+      img.onerror = () => {
+        // Fallback to Google Charts API
+        const fallbackUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodedText}&chs=${qrSize}x${qrSize}&choe=UTF-8`;
+        setQrCodeUrl(fallbackUrl);
+        setLoading(false);
+        toast({
+          title: "Success",
+          description: "QR code generated successfully!",
+        });
+      };
+      
+      img.src = qrApiUrl;
+      
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      setLoading(false);
       toast({
-        title: "Success",
-        description: "QR code generated successfully!",
+        title: "Error",
+        description: "Failed to generate QR code. Please try again.",
+        variant: "destructive"
       });
     }
   };
@@ -57,13 +91,11 @@ const QRCodeGenerator = () => {
 
     setLoading(true);
     
-    // Use the image data URL directly as QR content
-    const encodedImageData = encodeURIComponent(selectedImage);
+    // For image QR, we'll encode a reference to the image
+    const imageText = `Image uploaded - ${new Date().toISOString()}`;
+    const encodedText = encodeURIComponent(imageText);
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodedText}&format=png`;
     
-    // For demo purposes, we'll create a QR that contains the image data
-    // In a real implementation, you'd upload the image and get a URL
-    const imageUrl = selectedImage.substring(0, 100) + "..."; // Truncate for demo
-    const qrApiUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent("Image data: " + imageUrl)}&chs=300x300&choe=UTF-8`;
     setQrCodeUrl(qrApiUrl);
     setLoading(false);
     
@@ -102,7 +134,7 @@ const QRCodeGenerator = () => {
     reader.readAsDataURL(file);
   };
   
-  const downloadQRCode = () => {
+  const downloadQRCode = async () => {
     if (!qrCodeUrl) {
       toast({
         title: "Error", 
@@ -112,18 +144,32 @@ const QRCodeGenerator = () => {
       return;
     }
     
-    // Create a temporary link element
-    const link = document.createElement("a");
-    link.href = qrCodeUrl;
-    link.download = "qrcode.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    toast({
-      title: "Success",
-      description: "QR code downloaded successfully!",
-    });
+    try {
+      const response = await fetch(qrCodeUrl, { mode: 'cors' });
+      const blob = await response.blob();
+      
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = `qrcode-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Success",
+        description: "QR code downloaded successfully!",
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      // Fallback: open in new tab
+      window.open(qrCodeUrl, '_blank');
+      toast({
+        title: "Download Started",
+        description: "QR code opened in new tab for download",
+      });
+    }
   };
   
   const handleTabChange = (value: string) => {
@@ -172,7 +218,7 @@ const QRCodeGenerator = () => {
   return (
     <ToolPageTemplate
       title="Advanced QR Code Generator"
-      description="Professional QR code generator with image support - Create QR codes for URLs, text, contact info, WiFi, and images. Free online QR code maker with instant download and custom content support."
+      description="Professional QR code generator with customization options - Create QR codes for URLs, text, contact info, WiFi, and images with custom colors and sizes"
     >
       <div className="space-y-6">
         <div className="p-4 bg-primary/5 rounded-md">
@@ -203,6 +249,55 @@ const QRCodeGenerator = () => {
                   More
                 </TabsTrigger>
               </TabsList>
+
+              {/* Customization Options */}
+              <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <div>
+                  <Label>QR Color</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="color"
+                      value={qrColor}
+                      onChange={(e) => setQrColor(e.target.value)}
+                      className="w-12 h-8"
+                    />
+                    <Input
+                      value={qrColor}
+                      onChange={(e) => setQrColor(e.target.value)}
+                      placeholder="#000000"
+                      className="text-xs"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>Background</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="color"
+                      value={bgColor}
+                      onChange={(e) => setBgColor(e.target.value)}
+                      className="w-12 h-8"
+                    />
+                    <Input
+                      value={bgColor}
+                      onChange={(e) => setBgColor(e.target.value)}
+                      placeholder="#ffffff"
+                      className="text-xs"
+                    />
+                  </div>
+                </div>
+                <div className="col-span-2">
+                  <Label>Size: {qrSize}px</Label>
+                  <Input
+                    type="range"
+                    min="200"
+                    max="500"
+                    value={qrSize}
+                    onChange={(e) => setQrSize(parseInt(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+              </div>
               
               <TabsContent value="url">
                 <Label htmlFor="url-input">Enter Website URL</Label>
@@ -362,10 +457,15 @@ const QRCodeGenerator = () => {
           <div className="bg-card p-6 rounded-lg border shadow-sm flex flex-col items-center justify-center">
             <div 
               ref={canvasRef} 
-              className="flex items-center justify-center min-h-[250px] w-full bg-gray-50 rounded-md mb-4"
+              className="flex items-center justify-center min-h-[300px] w-full bg-gray-50 rounded-md mb-4"
             >
               {qrCodeUrl ? (
-                <img src={qrCodeUrl} alt="QR Code" className="w-auto h-auto max-w-full max-h-full" />
+                <img 
+                  src={qrCodeUrl} 
+                  alt="QR Code" 
+                  className="w-auto h-auto max-w-full max-h-full"
+                  style={{ maxWidth: `${qrSize}px`, maxHeight: `${qrSize}px` }}
+                />
               ) : (
                 <div className="text-gray-400 flex flex-col items-center">
                   <QrCode size={80} />

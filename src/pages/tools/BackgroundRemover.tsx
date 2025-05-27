@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ImageIcon, Upload, Download, Scissors } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { removeBackground, loadImage } from "@/utils/backgroundRemoval";
 
 const BackgroundRemover = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -33,28 +34,35 @@ const BackgroundRemover = () => {
     reader.readAsDataURL(file);
   }, []);
 
-  const removeBackground = useCallback(async () => {
+  const removeBackgroundAI = useCallback(async () => {
     if (!selectedImage) return;
 
     setIsProcessing(true);
     
     try {
-      // Simulate background removal processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Convert data URL to blob
+      const response = await fetch(selectedImage);
+      const blob = await response.blob();
       
-      // For demo purposes, we'll just copy the original image
-      // In a real implementation, you would use an AI service
-      setProcessedImage(selectedImage);
+      // Load image element
+      const imageElement = await loadImage(blob);
+      
+      // Remove background using AI
+      const resultBlob = await removeBackground(imageElement);
+      
+      // Convert blob to data URL for display
+      const resultUrl = URL.createObjectURL(resultBlob);
+      setProcessedImage(resultUrl);
       
       toast({
         title: "Success",
-        description: "Background removed successfully!",
+        description: "Background removed successfully using AI!",
       });
     } catch (error) {
       console.error('Error removing background:', error);
       toast({
         title: "Error",
-        description: "Failed to remove background. Please try again.",
+        description: "Failed to remove background. Please try again with a different image.",
         variant: "destructive"
       });
     } finally {
@@ -71,12 +79,17 @@ const BackgroundRemover = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    toast({
+      title: "Downloaded",
+      description: "Image downloaded successfully!",
+    });
   }, [processedImage]);
 
   return (
     <ToolPageTemplate
       title="AI Background Remover"
-      description="Remove backgrounds from images instantly with AI"
+      description="Remove backgrounds from images instantly with advanced AI technology"
     >
       <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -123,18 +136,18 @@ const BackgroundRemover = () => {
             </div>
 
             <Button 
-              onClick={removeBackground} 
+              onClick={removeBackgroundAI} 
               disabled={!selectedImage || isProcessing}
               className="w-full"
             >
               {isProcessing ? (
                 <>
                   <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                  Processing...
+                  Processing with AI...
                 </>
               ) : (
                 <>
-                  <Scissors className="mr-2 h-4 w-4" /> Remove Background
+                  <Scissors className="mr-2 h-4 w-4" /> Remove Background with AI
                 </>
               )}
             </Button>

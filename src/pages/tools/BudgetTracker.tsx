@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, DollarSign } from "lucide-react";
+import { Plus, Trash2, DollarSign, Edit2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Expense {
@@ -19,14 +18,9 @@ interface Expense {
 
 const BudgetTracker = () => {
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [newExpense, setNewExpense] = useState({
-    category: "",
-    amount: "",
-    description: ""
-  });
-
-  const categories = [
+  const [categories, setCategories] = useState<string[]>([
     "Food & Dining",
     "Transportation",
     "Shopping",
@@ -35,8 +29,56 @@ const BudgetTracker = () => {
     "Healthcare",
     "Education",
     "Travel",
+    "Groceries",
+    "Insurance",
     "Other"
-  ];
+  ]);
+  const [newCategory, setNewCategory] = useState<string>('');
+  const [newExpense, setNewExpense] = useState({
+    category: "",
+    amount: "",
+    description: ""
+  });
+
+  const currencies = {
+    USD: { symbol: '$', name: 'US Dollar' },
+    EUR: { symbol: '€', name: 'Euro' },
+    GBP: { symbol: '£', name: 'British Pound' },
+    JPY: { symbol: '¥', name: 'Japanese Yen' },
+    AUD: { symbol: 'A$', name: 'Australian Dollar' },
+    CAD: { symbol: 'C$', name: 'Canadian Dollar' },
+    CHF: { symbol: 'Fr', name: 'Swiss Franc' },
+    CNY: { symbol: '¥', name: 'Chinese Yuan' },
+    INR: { symbol: '₹', name: 'Indian Rupee' },
+    BRL: { symbol: 'R$', name: 'Brazilian Real' },
+    RUB: { symbol: '₽', name: 'Russian Ruble' },
+    KRW: { symbol: '₩', name: 'South Korean Won' },
+    MXN: { symbol: '$', name: 'Mexican Peso' },
+    SGD: { symbol: 'S$', name: 'Singapore Dollar' },
+    HKD: { symbol: 'HK$', name: 'Hong Kong Dollar' },
+    NOK: { symbol: 'kr', name: 'Norwegian Krone' },
+    SEK: { symbol: 'kr', name: 'Swedish Krona' },
+    DKK: { symbol: 'kr', name: 'Danish Krone' },
+    PLN: { symbol: 'zł', name: 'Polish Zloty' },
+    CZK: { symbol: 'Kč', name: 'Czech Koruna' },
+    HUF: { symbol: 'Ft', name: 'Hungarian Forint' },
+    ILS: { symbol: '₪', name: 'Israeli Shekel' },
+    AED: { symbol: 'د.إ', name: 'UAE Dirham' },
+    SAR: { symbol: '﷼', name: 'Saudi Riyal' },
+    EGP: { symbol: '£', name: 'Egyptian Pound' },
+    ZAR: { symbol: 'R', name: 'South African Rand' },
+    NGN: { symbol: '₦', name: 'Nigerian Naira' },
+    KES: { symbol: 'KSh', name: 'Kenyan Shilling' },
+    TRY: { symbol: '₺', name: 'Turkish Lira' },
+    PKR: { symbol: '₨', name: 'Pakistani Rupee' },
+    BDT: { symbol: '৳', name: 'Bangladeshi Taka' },
+    LKR: { symbol: '₨', name: 'Sri Lankan Rupee' },
+    THB: { symbol: '฿', name: 'Thai Baht' },
+    VND: { symbol: '₫', name: 'Vietnamese Dong' },
+    IDR: { symbol: 'Rp', name: 'Indonesian Rupiah' },
+    MYR: { symbol: 'RM', name: 'Malaysian Ringgit' },
+    PHP: { symbol: '₱', name: 'Philippine Peso' }
+  };
 
   useEffect(() => {
     const savedIncome = localStorage.getItem('budgetTracker_income');
@@ -57,6 +99,50 @@ const BudgetTracker = () => {
   useEffect(() => {
     localStorage.setItem('budgetTracker_expenses', JSON.stringify(expenses));
   }, [expenses]);
+
+  const addCategory = useCallback(() => {
+    if (!newCategory.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a category name",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (categories.includes(newCategory.trim())) {
+      toast({
+        title: "Error",
+        description: "This category already exists",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setCategories(prev => [...prev, newCategory.trim()]);
+    setNewCategory('');
+    toast({
+      title: "Success",
+      description: "Category added successfully!",
+    });
+  }, [newCategory, categories]);
+
+  const removeCategory = useCallback((categoryToRemove: string) => {
+    if (categories.length <= 1) {
+      toast({
+        title: "Error",
+        description: "You must have at least one category",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setCategories(prev => prev.filter(cat => cat !== categoryToRemove));
+    toast({
+      title: "Removed",
+      description: "Category removed successfully",
+    });
+  }, [categories]);
 
   const addExpense = useCallback(() => {
     if (!newExpense.category || !newExpense.amount || parseFloat(newExpense.amount) <= 0) {
@@ -96,11 +182,12 @@ const BudgetTracker = () => {
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const remainingBudget = monthlyIncome - totalExpenses;
   const budgetPercentage = monthlyIncome > 0 ? (totalExpenses / monthlyIncome) * 100 : 0;
+  const currencySymbol = currencies[selectedCurrency as keyof typeof currencies]?.symbol || '$';
 
   return (
     <ToolPageTemplate
       title="Monthly Budget Tracker"
-      description="Track your monthly income and expenses with detailed analytics"
+      description="Track your monthly income and expenses with detailed analytics and custom categories"
     >
       <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -112,8 +199,23 @@ const BudgetTracker = () => {
                   Monthly Income
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Currency</Label>
+                  <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(currencies).map(([code, currency]) => (
+                        <SelectItem key={code} value={code}>
+                          {currency.symbol} {code} - {currency.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <Label>Enter your monthly income</Label>
                   <Input
                     type="number"
@@ -121,6 +223,39 @@ const BudgetTracker = () => {
                     value={monthlyIncome || ""}
                     onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Manage Categories</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="New category name"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                  />
+                  <Button onClick={addCategory}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {categories.map(category => (
+                    <div key={category} className="flex items-center justify-between p-2 border rounded">
+                      <span className="text-sm">{category}</span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => removeCategory(category)}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -148,7 +283,7 @@ const BudgetTracker = () => {
                 </div>
 
                 <div>
-                  <Label>Amount</Label>
+                  <Label>Amount ({currencySymbol})</Label>
                   <Input
                     type="number"
                     step="0.01"

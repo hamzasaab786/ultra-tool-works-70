@@ -23,6 +23,7 @@ import JpgToPdf from "./pages/tools/JpgToPdf";
 import ImageToUrl from "./pages/tools/ImageToUrl";
 import BackgroundRemover from "./pages/tools/BackgroundRemover";
 import PassportPhotoMaker from "./pages/tools/PassportPhotoMaker";
+import SvgToJpg from "./pages/tools/SvgToJpg";
 
 // New PDF Tools
 import SplitPdf from "./pages/tools/SplitPdf";
@@ -66,6 +67,7 @@ const App = () => (
           <Route path="/tools/image-to-url" element={<ImageToUrl />} />
           <Route path="/tools/background-remover" element={<BackgroundRemover />} />
           <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
+          <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
           
           {/* PDF Tool Routes */}
           <Route path="/tools/merge-pdf" element={<MergePDF />} />

@@ -2,7 +2,6 @@
 import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageIcon, Upload, Download, Camera } from "lucide-react";
@@ -12,15 +11,16 @@ const PassportPhotoMaker = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [photoSize, setPhotoSize] = useState("passport");
-  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const photoSizes = {
-    passport: { width: 35, height: 45, name: "Passport (35x45mm)" },
-    visa: { width: 51, height: 51, name: "Visa (51x51mm)" },
-    id: { width: 25, height: 32, name: "ID Card (25x32mm)" },
-    license: { width: 24, height: 32, name: "License (24x32mm)" }
+    passport: { width: 35, height: 45, name: "Passport (35x45mm)", pixels: { width: 413, height: 531 } },
+    visa: { width: 51, height: 51, name: "Visa (51x51mm)", pixels: { width: 600, height: 600 } },
+    id: { width: 25, height: 32, name: "ID Card (25x32mm)", pixels: { width: 295, height: 378 } },
+    license: { width: 24, height: 32, name: "License (24x32mm)", pixels: { width: 283, height: 378 } },
+    us_passport: { width: 50.8, height: 50.8, name: "US Passport (2x2 inches)", pixels: { width: 600, height: 600 } },
+    india_passport: { width: 35, height: 45, name: "India Passport (35x45mm)", pixels: { width: 413, height: 531 } }
   };
 
   const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,32 +58,46 @@ const PassportPhotoMaker = () => {
       
       img.onload = () => {
         const size = photoSizes[photoSize as keyof typeof photoSizes];
-        const aspectRatio = size.width / size.height;
         
-        canvas.width = 300;
-        canvas.height = 300 / aspectRatio;
+        // Set canvas to exact pixel dimensions for high quality
+        canvas.width = size.pixels.width;
+        canvas.height = size.pixels.height;
         
         if (ctx) {
-          ctx.fillStyle = backgroundColor;
+          // Set white background
+          ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           
+          // Calculate image positioning for better face centering
+          const aspectRatio = size.pixels.width / size.pixels.height;
           const imgAspectRatio = img.width / img.height;
+          
           let drawWidth, drawHeight, drawX, drawY;
           
+          // Smart cropping for passport photos - focus on center-top area where face usually is
           if (imgAspectRatio > aspectRatio) {
+            // Image is wider - crop sides, focus on center
             drawHeight = canvas.height;
             drawWidth = drawHeight * imgAspectRatio;
             drawX = (canvas.width - drawWidth) / 2;
             drawY = 0;
           } else {
+            // Image is taller - crop top/bottom, focus slightly on upper portion
             drawWidth = canvas.width;
             drawHeight = drawWidth / imgAspectRatio;
             drawX = 0;
-            drawY = (canvas.height - drawHeight) / 2;
+            // Position slightly higher to focus on face area
+            drawY = (canvas.height - drawHeight) * 0.3; // 30% from top instead of center
           }
           
+          // Apply some image enhancement
+          ctx.filter = 'contrast(1.1) brightness(1.05) saturate(1.1)';
           ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-          setProcessedImage(canvas.toDataURL());
+          
+          // Reset filter
+          ctx.filter = 'none';
+          
+          setProcessedImage(canvas.toDataURL('image/jpeg', 0.95)); // High quality JPEG
         }
       };
       
@@ -91,7 +105,7 @@ const PassportPhotoMaker = () => {
       
       toast({
         title: "Success",
-        description: "Passport photo created successfully!",
+        description: "Professional passport photo created successfully!",
       });
     } catch (error) {
       toast({
@@ -102,25 +116,42 @@ const PassportPhotoMaker = () => {
     } finally {
       setIsProcessing(false);
     }
-  }, [selectedImage, photoSize, backgroundColor]);
+  }, [selectedImage, photoSize]);
 
   const downloadPhoto = useCallback(() => {
     if (!processedImage) return;
     
     const link = document.createElement('a');
     link.href = processedImage;
-    link.download = `passport-photo-${photoSize}.png`;
+    const size = photoSizes[photoSize as keyof typeof photoSizes];
+    link.download = `passport-photo-${size.width}x${size.height}mm.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    toast({
+      title: "Downloaded",
+      description: "Professional passport photo downloaded successfully!",
+    });
   }, [processedImage, photoSize]);
 
   return (
     <ToolPageTemplate
-      title="Passport Photo Maker"
-      description="Create professional passport photos with custom sizes and backgrounds"
+      title="Professional Passport Photo Maker"
+      description="Create high-quality passport photos with precise dimensions and professional standards"
     >
       <div className="space-y-6">
+        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h3 className="font-semibold text-blue-800 mb-2">Photo Guidelines:</h3>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• Use a clear, recent photo with good lighting</li>
+            <li>• Face should be clearly visible and centered</li>
+            <li>• Neutral expression with both eyes open</li>
+            <li>• Plain background recommended</li>
+            <li>• No hats, sunglasses, or heavy shadows</li>
+          </ul>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div>
@@ -129,7 +160,7 @@ const PassportPhotoMaker = () => {
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors">
                   <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-sm text-gray-500 mb-4">
-                    Upload a clear photo of yourself
+                    Upload a clear, high-quality photo of yourself
                   </p>
                   <input
                     ref={fileInputRef}
@@ -164,37 +195,20 @@ const PassportPhotoMaker = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Photo Size</Label>
-                <Select value={photoSize} onValueChange={setPhotoSize}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(photoSizes).map(([key, size]) => (
-                      <SelectItem key={key} value={key}>{size.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label>Background Color</Label>
-                <div className="flex space-x-2">
-                  <Input
-                    type="color"
-                    value={backgroundColor}
-                    onChange={(e) => setBackgroundColor(e.target.value)}
-                    className="w-16 h-10"
-                  />
-                  <Input
-                    value={backgroundColor}
-                    onChange={(e) => setBackgroundColor(e.target.value)}
-                    placeholder="#ffffff"
-                  />
-                </div>
-              </div>
+            <div>
+              <Label>Photo Size & Standard</Label>
+              <Select value={photoSize} onValueChange={setPhotoSize}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(photoSizes).map(([key, size]) => (
+                    <SelectItem key={key} value={key}>
+                      {size.name} - {size.pixels.width}x{size.pixels.height}px
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <Button 
@@ -209,29 +223,41 @@ const PassportPhotoMaker = () => {
                 </>
               ) : (
                 <>
-                  <Camera className="mr-2 h-4 w-4" /> Create Passport Photo
+                  <Camera className="mr-2 h-4 w-4" /> Create Professional Photo
                 </>
               )}
             </Button>
           </div>
 
           <div className="space-y-4">
-            <Label>Result</Label>
-            <div className="border rounded-lg min-h-[300px] flex items-center justify-center bg-gray-50">
+            <Label>Professional Result</Label>
+            <div className="border rounded-lg min-h-[400px] flex items-center justify-center bg-gray-50">
               {processedImage ? (
-                <img 
-                  src={processedImage} 
-                  alt="Passport photo" 
-                  className="max-w-full max-h-full object-contain"
-                />
+                <div className="p-4">
+                  <img 
+                    src={processedImage} 
+                    alt="Professional passport photo" 
+                    className="max-w-full max-h-full object-contain border shadow-lg"
+                    style={{ 
+                      maxHeight: '350px',
+                      backgroundColor: 'white'
+                    }}
+                  />
+                  <p className="text-xs text-gray-500 mt-2 text-center">
+                    {photoSizes[photoSize as keyof typeof photoSizes].name}
+                  </p>
+                </div>
               ) : (
-                <p className="text-gray-500">Processed photo will appear here</p>
+                <div className="text-center">
+                  <Camera className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">Professional passport photo will appear here</p>
+                </div>
               )}
             </div>
             
             {processedImage && (
               <Button onClick={downloadPhoto} className="w-full">
-                <Download className="mr-2 h-4 w-4" /> Download Photo
+                <Download className="mr-2 h-4 w-4" /> Download Professional Photo
               </Button>
             )}
           </div>
