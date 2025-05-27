@@ -15,7 +15,7 @@ const Layout = ({ children }: LayoutProps) => {
           <div className="mr-4 flex items-center">
             <a href="/" className="flex items-center">
               <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
-                QuickConvert
+                ToolifyConvert
               </span>
             </a>
           </div>

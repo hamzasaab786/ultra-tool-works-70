@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">QuickConvert</h3>
+            <h3 className="font-bold text-lg mb-4">ToolifyConvert</h3>
             <p className="text-muted-foreground">
               Free online tools to make your digital tasks easier.
               No sign-up required. Always free.
@@ -47,7 +47,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-8 border-t pt-6 text-center text-muted-foreground">
-          <p>© {currentYear} QuickConvert. All rights reserved.</p>
+          <p>© {currentYear} ToolifyConvert. All rights reserved.</p>
         </div>
       </div>
     </footer>
