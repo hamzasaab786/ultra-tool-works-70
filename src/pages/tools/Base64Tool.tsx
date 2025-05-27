@@ -5,33 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Copy, Upload, Download, FileText, Image } from "lucide-react";
+import { Copy, Check, ArrowUpDown } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const Base64Tool = () => {
-  const [textInput, setTextInput] = useState("");
-  const [base64Input, setBase64Input] = useState("");
-  const [encodedResult, setEncodedResult] = useState("");
-  const [decodedResult, setDecodedResult] = useState("");
-  const [fileBase64, setFileBase64] = useState("");
-  const [fileName, setFileName] = useState("");
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState("encode");
 
-  const encodeText = useCallback(() => {
-    if (!textInput.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter some text to encode",
-        variant: "destructive"
-      });
-      return;
-    }
-
+  const encodeToBase64 = useCallback(() => {
     try {
-      const encoded = btoa(unescape(encodeURIComponent(textInput)));
-      setEncodedResult(encoded);
+      const encoded = btoa(unescape(encodeURIComponent(inputText)));
+      setOutputText(encoded);
       toast({
         title: "Success",
-        description: "Text encoded to Base64 successfully!",
+        description: "Text encoded to Base64",
       });
     } catch (error) {
       toast({
@@ -40,313 +29,174 @@ const Base64Tool = () => {
         variant: "destructive"
       });
     }
-  }, [textInput]);
+  }, [inputText]);
 
-  const decodeBase64 = useCallback(() => {
-    if (!base64Input.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter Base64 text to decode",
-        variant: "destructive"
-      });
-      return;
-    }
-
+  const decodeFromBase64 = useCallback(() => {
     try {
-      const decoded = decodeURIComponent(escape(atob(base64Input)));
-      setDecodedResult(decoded);
+      const decoded = decodeURIComponent(escape(atob(inputText)));
+      setOutputText(decoded);
       toast({
         title: "Success",
-        description: "Base64 decoded successfully!",
+        description: "Base64 decoded to text",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Invalid Base64 input",
+        description: "Invalid Base64 string",
         variant: "destructive"
       });
     }
-  }, [base64Input]);
+  }, [inputText]);
 
-  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "Error",
-        description: "File size must be less than 5MB",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const result = event.target?.result as string;
-      const base64Data = result.split(',')[1]; // Remove data URL prefix
-      setFileBase64(result); // Keep full data URL for preview
-      setFileName(file.name);
-      
-      toast({
-        title: "Success",
-        description: "File converted to Base64!",
-      });
-    };
-    reader.readAsDataURL(file);
-  }, []);
-
-  const copyToClipboard = useCallback(async (text: string) => {
+  const copyToClipboard = useCallback(async () => {
+    if (!outputText) return;
+    
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(outputText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
       toast({
         title: "Copied!",
-        description: "Content copied to clipboard",
+        description: "Output copied to clipboard",
       });
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
-        description: "Failed to copy to clipboard",
+        description: "Failed to copy text",
         variant: "destructive"
       });
     }
-  }, []);
-
-  const downloadAsFile = useCallback((content: string, filename: string) => {
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }, []);
+  }, [outputText]);
 
   const clearAll = useCallback(() => {
-    setTextInput("");
-    setBase64Input("");
-    setEncodedResult("");
-    setDecodedResult("");
-    setFileBase64("");
-    setFileName("");
+    setInputText("");
+    setOutputText("");
   }, []);
 
   return (
     <ToolPageTemplate
       title="Base64 Encoder & Decoder"
-      description="Free online Base64 encoder and decoder tool - Convert text to Base64 and decode Base64 to text. Also convert files to Base64 encoding for web development, data transmission, and API integration."
+      description="Convert text to Base64 and decode Base64 to text instantly - Free online Base64 encoder and decoder tool for text conversion, data encoding, and web development."
     >
       <div className="space-y-6">
         <div className="p-4 bg-primary/5 rounded-md">
           <p className="text-sm text-muted-foreground">
-            🔐 Encode text and files to Base64 or decode Base64 back to original format. Essential tool for developers, data transmission, and web development projects.
+            🔐 Encode plain text to Base64 or decode Base64 back to readable text. Essential tool for web developers, data processing, and secure text transmission.
           </p>
         </div>
 
-        <Tabs defaultValue="text" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="text" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Text Encoder
-            </TabsTrigger>
-            <TabsTrigger value="decode" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Text Decoder
-            </TabsTrigger>
-            <TabsTrigger value="file" className="flex items-center gap-2">
-              <Upload className="h-4 w-4" />
-              File to Base64
-            </TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="encode">Encode to Base64</TabsTrigger>
+            <TabsTrigger value="decode">Decode from Base64</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="text" className="space-y-4">
-            <div>
-              <Label htmlFor="text-input">Text to Encode</Label>
-              <Textarea
-                id="text-input"
-                placeholder="Enter your text here to convert to Base64..."
-                value={textInput}
-                onChange={(e) => setTextInput(e.target.value)}
-                rows={6}
-                className="mt-2"
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <Button onClick={encodeText} disabled={!textInput.trim()}>
-                Encode to Base64
-              </Button>
-              <Button variant="outline" onClick={() => setTextInput("")}>
-                Clear
-              </Button>
-            </div>
-
-            {encodedResult && (
-              <div>
-                <Label>Base64 Result</Label>
-                <div className="relative mt-2">
+          <TabsContent value="encode" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="plaintext">Plain Text</Label>
                   <Textarea
-                    value={encodedResult}
-                    readOnly
-                    rows={6}
-                    className="bg-muted pr-24"
+                    id="plaintext"
+                    placeholder="Enter text to encode..."
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    className="min-h-[200px]"
                   />
-                  <div className="absolute top-2 right-2 space-y-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => copyToClipboard(encodedResult)}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => downloadAsFile(encodedResult, 'encoded.txt')}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Characters: {inputText.length}
+                  </p>
+                </div>
+                <Button onClick={encodeToBase64} disabled={!inputText} className="w-full">
+                  <ArrowUpDown className="mr-2 h-4 w-4" /> Encode to Base64
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="base64output">Base64 Output</Label>
+                  <Textarea
+                    id="base64output"
+                    value={outputText}
+                    readOnly
+                    className="min-h-[200px] bg-gray-50"
+                    placeholder="Encoded text will appear here..."
+                  />
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Characters: {outputText.length}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <Button 
+                    onClick={copyToClipboard} 
+                    disabled={!outputText}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+                    Copy
+                  </Button>
+                  <Button onClick={clearAll} variant="outline" className="flex-1">
+                    Clear All
+                  </Button>
                 </div>
               </div>
-            )}
+            </div>
           </TabsContent>
 
           <TabsContent value="decode" className="space-y-4">
-            <div>
-              <Label htmlFor="base64-input">Base64 to Decode</Label>
-              <Textarea
-                id="base64-input"
-                placeholder="Enter Base64 encoded text here to decode..."
-                value={base64Input}
-                onChange={(e) => setBase64Input(e.target.value)}
-                rows={6}
-                className="mt-2"
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <Button onClick={decodeBase64} disabled={!base64Input.trim()}>
-                Decode Base64
-              </Button>
-              <Button variant="outline" onClick={() => setBase64Input("")}>
-                Clear
-              </Button>
-            </div>
-
-            {decodedResult && (
-              <div>
-                <Label>Decoded Result</Label>
-                <div className="relative mt-2">
-                  <Textarea
-                    value={decodedResult}
-                    readOnly
-                    rows={6}
-                    className="bg-muted pr-24"
-                  />
-                  <div className="absolute top-2 right-2 space-y-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => copyToClipboard(decodedResult)}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => downloadAsFile(decodedResult, 'decoded.txt')}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="file" className="space-y-4">
-            <div>
-              <Label>Upload File</Label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mt-2">
-                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-sm text-gray-500 mb-4">
-                  Click to upload or drag and drop a file (Max 5MB)
-                </p>
-                <input
-                  type="file"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                  id="file-upload"
-                />
-                <label htmlFor="file-upload">
-                  <Button asChild>
-                    <span>Select File</span>
-                  </Button>
-                </label>
-              </div>
-            </div>
-
-            {fileBase64 && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
-                  <Label>File Information</Label>
-                  <div className="bg-muted p-4 rounded-lg mt-2">
-                    <p className="text-sm"><strong>Filename:</strong> {fileName}</p>
-                    <p className="text-sm"><strong>Base64 Size:</strong> {fileBase64.length} characters</p>
-                  </div>
+                  <Label htmlFor="base64input">Base64 Input</Label>
+                  <Textarea
+                    id="base64input"
+                    placeholder="Enter Base64 to decode..."
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    className="min-h-[200px]"
+                  />
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Characters: {inputText.length}
+                  </p>
                 </div>
+                <Button onClick={decodeFromBase64} disabled={!inputText} className="w-full">
+                  <ArrowUpDown className="mr-2 h-4 w-4" /> Decode from Base64
+                </Button>
+              </div>
 
-                {fileName.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/i) && (
-                  <div>
-                    <Label>Preview</Label>
-                    <img 
-                      src={fileBase64} 
-                      alt="Preview" 
-                      className="max-w-xs max-h-48 object-contain border rounded mt-2"
-                    />
-                  </div>
-                )}
-
+              <div className="space-y-4">
                 <div>
-                  <Label>Base64 Output</Label>
-                  <div className="relative mt-2">
-                    <Textarea
-                      value={fileBase64}
-                      readOnly
-                      rows={8}
-                      className="bg-muted pr-24 text-xs"
-                    />
-                    <div className="absolute top-2 right-2 space-y-1">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => copyToClipboard(fileBase64)}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => downloadAsFile(fileBase64, `${fileName}.base64.txt`)}
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+                  <Label htmlFor="plaintextoutput">Plain Text Output</Label>
+                  <Textarea
+                    id="plaintextoutput"
+                    value={outputText}
+                    readOnly
+                    className="min-h-[200px] bg-gray-50"
+                    placeholder="Decoded text will appear here..."
+                  />
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Characters: {outputText.length}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <Button 
+                    onClick={copyToClipboard} 
+                    disabled={!outputText}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+                    Copy
+                  </Button>
+                  <Button onClick={clearAll} variant="outline" className="flex-1">
+                    Clear All
+                  </Button>
                 </div>
               </div>
-            )}
+            </div>
           </TabsContent>
         </Tabs>
-
-        <div className="flex justify-center">
-          <Button variant="outline" onClick={clearAll}>
-            Clear All Data
-          </Button>
-        </div>
       </div>
     </ToolPageTemplate>
   );

@@ -21,6 +21,9 @@ import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import ImageEnhancer from "./pages/tools/ImageEnhancer";
 import ImageResizer from "./pages/tools/ImageResizer";
 import JpgToPdf from "./pages/tools/JpgToPdf";
+import ImageToUrl from "./pages/tools/ImageToUrl";
+import BackgroundRemover from "./pages/tools/BackgroundRemover";
+import PassportPhotoMaker from "./pages/tools/PassportPhotoMaker";
 
 // New PDF Tools
 import SplitPdf from "./pages/tools/SplitPdf";
@@ -33,9 +36,13 @@ import CurrencyConverter from "./pages/tools/CurrencyConverter";
 // New Text Tools
 import WordCounter from "./pages/tools/WordCounter";
 import CaseConverter from "./pages/tools/CaseConverter";
+import Base64Tool from "./pages/tools/Base64Tool";
 
 // New Utility Tools
 import PasswordGenerator from "./pages/tools/PasswordGenerator";
+import TimerStopwatch from "./pages/tools/TimerStopwatch";
+import ColorPicker from "./pages/tools/ColorPicker";
+import BudgetTracker from "./pages/tools/BudgetTracker";
 
 const queryClient = new QueryClient();
 
