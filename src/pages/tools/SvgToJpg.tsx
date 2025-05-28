@@ -2,6 +2,8 @@
 import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { FileImage, Upload, Download } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -38,6 +40,7 @@ const SvgToJpg = () => {
     setIsProcessing(true);
     
     try {
+      // Create a canvas element with fixed high quality settings
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
@@ -45,46 +48,52 @@ const SvgToJpg = () => {
         throw new Error('Could not get canvas context');
       }
 
-      // Fixed high-quality settings
+      // Set fixed canvas dimensions for optimal quality
       const width = 1920;
       const height = 1080;
       canvas.width = width;
       canvas.height = height;
 
-      // White background
+      // Fill with white background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Create an image from SVG
       const img = new Image();
       
+      // Create blob URL from SVG string
       const svgBlob = new Blob([selectedSvg], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(svgBlob);
 
       img.onload = () => {
-        // Calculate scaling to fit canvas while maintaining aspect ratio
+        // Calculate scaling to fit the canvas while maintaining aspect ratio
         const imgAspectRatio = img.naturalWidth / img.naturalHeight;
         const canvasAspectRatio = canvas.width / canvas.height;
         
         let drawWidth, drawHeight, drawX, drawY;
         
         if (imgAspectRatio > canvasAspectRatio) {
+          // Image is wider than canvas ratio
           drawWidth = canvas.width;
           drawHeight = drawWidth / imgAspectRatio;
           drawX = 0;
           drawY = (canvas.height - drawHeight) / 2;
         } else {
+          // Image is taller than canvas ratio
           drawHeight = canvas.height;
           drawWidth = drawHeight * imgAspectRatio;
           drawX = (canvas.width - drawWidth) / 2;
           drawY = 0;
         }
 
+        // Draw the SVG on canvas
         ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
         
-        // Convert to JPEG with fixed 90% quality
+        // Convert to JPEG with high quality (90%)
         const jpegDataUrl = canvas.toDataURL('image/jpeg', 0.9);
         setConvertedJpg(jpegDataUrl);
         
+        // Clean up
         URL.revokeObjectURL(url);
         setIsProcessing(false);
         
@@ -122,7 +131,7 @@ const SvgToJpg = () => {
     
     const link = document.createElement('a');
     link.href = convertedJpg;
-    link.download = `converted-svg-hq.jpg`;
+    link.download = `converted-svg-hd-quality.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -136,17 +145,17 @@ const SvgToJpg = () => {
   return (
     <ToolPageTemplate
       title="SVG to JPG Converter"
-      description="Convert SVG vector graphics to high-quality JPG images instantly"
+      description="Convert SVG vector graphics to high-quality JPG images with optimized settings"
     >
       <div className="space-y-8 perspective-1000">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-8 rounded-3xl border border-white/30 shadow-xl hover:shadow-2xl transition-all duration-500">
+          <div className="space-y-6 card-3d bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-white/20">
             <div className="animate-fade-in">
-              <h3 className="text-xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Upload SVG File</h3>
+              <Label className="text-lg font-semibold mb-4 block">Upload SVG File</Label>
               {!selectedSvg ? (
-                <div className="border-2 border-dashed border-blue-300/50 rounded-2xl p-12 text-center hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-300 glassmorphism">
-                  <FileImage className="h-20 w-20 text-blue-400 mx-auto mb-6 animate-bounce-gentle" />
-                  <p className="text-lg text-gray-600 mb-6 font-medium">
+                <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-primary transition-all duration-300 glassmorphism">
+                  <FileImage className="h-16 w-16 text-gray-400 mx-auto mb-6 animate-bounce-gentle" />
+                  <p className="text-lg text-gray-600 mb-6">
                     Drop your SVG file here or click to browse
                   </p>
                   <input
@@ -158,25 +167,25 @@ const SvgToJpg = () => {
                   />
                   <Button 
                     onClick={() => fileInputRef.current?.click()}
-                    className="btn-3d px-8 py-4 text-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                    className="btn-3d px-8 py-3 text-lg"
                   >
-                    <Upload className="mr-3 h-6 w-6" /> Select SVG File
+                    <Upload className="mr-3 h-5 w-5" /> Select SVG File
                   </Button>
                 </div>
               ) : (
-                <div className="relative border rounded-2xl p-6 glassmorphism animate-scale-in bg-white/70">
-                  <div className="bg-white/80 rounded-xl p-6 mb-6 shadow-inner">
+                <div className="relative border rounded-xl p-6 glassmorphism animate-scale-in">
+                  <div className="bg-white/50 rounded-lg p-6 mb-6">
                     <div 
-                      className="w-full h-48 flex items-center justify-center overflow-hidden rounded-xl border border-gray-200"
+                      className="w-full h-48 flex items-center justify-center overflow-hidden rounded-lg"
                       dangerouslySetInnerHTML={{ __html: selectedSvg }}
                     />
                   </div>
                   <Button 
                     variant="outline" 
-                    className="w-full btn-3d border-2 hover:bg-blue-50"
+                    className="w-full btn-3d"
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <Upload className="mr-2 h-5 w-5" /> Change SVG File
+                    <Upload className="mr-2 h-4 w-4" /> Change SVG File
                   </Button>
                   <input
                     ref={fileInputRef}
@@ -189,43 +198,67 @@ const SvgToJpg = () => {
               )}
             </div>
 
+            <div className="animate-fade-in delay-300">
+              <div className="glassmorphism p-6 rounded-xl">
+                <h3 className="text-lg font-semibold mb-3 text-gray-800">Conversion Settings</h3>
+                <div className="space-y-3 text-sm text-gray-600">
+                  <div className="flex justify-between">
+                    <span>Output Format:</span>
+                    <span className="font-medium">JPG</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Resolution:</span>
+                    <span className="font-medium">1920 × 1080 (HD)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Quality:</span>
+                    <span className="font-medium">90% (High)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Background:</span>
+                    <span className="font-medium">White</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <Button 
               onClick={convertToJpg} 
               disabled={!selectedSvg || isProcessing}
-              className="w-full btn-3d py-4 text-lg animate-fade-in delay-500 bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700"
+              className="w-full btn-3d py-4 text-lg animate-fade-in delay-500"
             >
               {isProcessing ? (
                 <>
-                  <div className="animate-spin h-6 w-6 border-3 border-white border-t-transparent rounded-full mr-3"></div>
+                  <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-3"></div>
                   Converting to High-Quality JPG...
                 </>
               ) : (
                 <>
-                  <FileImage className="mr-3 h-6 w-6" /> Convert to JPG
+                  <FileImage className="mr-3 h-5 w-5" /> Convert to JPG
                 </>
               )}
             </Button>
           </div>
 
-          <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-8 rounded-3xl border border-white/30 shadow-xl hover:shadow-2xl transition-all duration-500">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">JPG Result</h3>
-            <div className="border rounded-2xl min-h-[400px] flex items-center justify-center glassmorphism bg-white/50">
+          <div className="space-y-6 card-3d bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-white/20">
+            <Label className="text-lg font-semibold">JPG Result</Label>
+            <div className="border rounded-xl min-h-[400px] flex items-center justify-center glassmorphism">
               {convertedJpg ? (
                 <div className="p-6 text-center animate-scale-in">
                   <img 
                     src={convertedJpg} 
                     alt="Converted JPG" 
-                    className="max-w-full max-h-[350px] object-contain mx-auto rounded-xl shadow-2xl border border-gray-200"
+                    className="max-w-full max-h-[350px] object-contain mx-auto rounded-lg shadow-lg"
                   />
-                  <p className="text-sm text-gray-600 mt-6 font-semibold bg-green-50 px-4 py-2 rounded-full inline-block">
-                    ✅ High-Quality JPG • 1920 × 1080 • 90% Quality
+                  <p className="text-sm text-gray-600 mt-4 font-medium">
+                    High-Quality JPG • 1920 × 1080 • 90% Quality
                   </p>
                 </div>
               ) : (
                 <div className="text-center animate-fade-in">
-                  <FileImage className="h-24 w-24 text-gray-300 mx-auto mb-6 animate-float" />
-                  <p className="text-gray-500 text-xl font-medium">Your converted JPG will appear here</p>
-                  <p className="text-gray-400 text-sm mt-3">Optimized for quality and compatibility</p>
+                  <FileImage className="h-20 w-20 text-gray-400 mx-auto mb-6 animate-float" />
+                  <p className="text-gray-500 text-lg">Your converted JPG will appear here</p>
+                  <p className="text-gray-400 text-sm mt-2">Optimized for quality and compatibility</p>
                 </div>
               )}
             </div>
@@ -233,34 +266,11 @@ const SvgToJpg = () => {
             {convertedJpg && (
               <Button 
                 onClick={downloadJpg} 
-                className="w-full btn-3d py-4 text-lg animate-fade-in bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+                className="w-full btn-3d py-4 text-lg animate-fade-in"
               >
-                <Download className="mr-3 h-6 w-6" /> Download HD JPG
+                <Download className="mr-3 h-5 w-5" /> Download HD JPG
               </Button>
             )}
-          </div>
-        </div>
-
-        {/* Conversion Info */}
-        <div className="glassmorphism p-6 rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 border border-white/50 animate-fade-in delay-700">
-          <h4 className="text-lg font-bold mb-4 text-gray-800">🚀 Conversion Features</h4>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="font-medium">Fixed HD Resolution</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span className="font-medium">90% Quality</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-              <span className="font-medium">White Background</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-              <span className="font-medium">Instant Processing</span>
-            </div>
           </div>
         </div>
       </div>
