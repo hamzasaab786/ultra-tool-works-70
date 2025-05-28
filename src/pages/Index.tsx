@@ -186,7 +186,7 @@ const Index = () => {
               <span className="text-white text-lg font-medium">✨ All Tools Are 100% Free Forever</span>
             </div>
             
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight animate-fade-in-up text-3d transform-style-3d">
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight animate-fade-in-up text-3d transform-style-3d text-fuchsia-100">
               ToolifyConvert
             </h1>
             
