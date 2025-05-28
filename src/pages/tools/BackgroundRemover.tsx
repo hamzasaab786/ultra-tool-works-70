@@ -1,10 +1,9 @@
-
 import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ImageIcon, Upload, Download, Scissors } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { removeBackground, loadImage } from "@/utils/backgroundRemoval";
 
 const BackgroundRemover = () => {
@@ -12,6 +11,7 @@ const BackgroundRemover = () => {
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,7 +32,7 @@ const BackgroundRemover = () => {
       setProcessedImage(null);
     };
     reader.readAsDataURL(file);
-  }, []);
+  }, [toast]);
 
   const removeBackgroundHandler = useCallback(async () => {
     if (!selectedImage) return;
@@ -63,7 +63,7 @@ const BackgroundRemover = () => {
     } finally {
       setIsProcessing(false);
     }
-  }, [selectedImage]);
+  }, [selectedImage, toast]);
 
   const downloadImage = useCallback(() => {
     if (!processedImage) return;
@@ -79,7 +79,7 @@ const BackgroundRemover = () => {
       title: "Downloaded",
       description: "Image downloaded successfully!",
     });
-  }, [processedImage]);
+  }, [processedImage, toast]);
 
   return (
     <ToolPageTemplate
