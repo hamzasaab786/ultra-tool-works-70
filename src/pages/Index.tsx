@@ -206,7 +206,7 @@ const Index = () => {
               </Button>
               <Button size="lg" variant="outline" onClick={() => document.getElementById('features')?.scrollIntoView({
               behavior: 'smooth'
-            })} className="text-xl px-12 py-6 btn-3d border-2 border-white/30 text-white glassmorphism bg-slate-50">
+            })} className="text-xl px-12 py-6 btn-3d border-2 border-white/30 glassmorphism bg-slate-50 text-violet-700">
                 Learn More
               </Button>
             </div>
