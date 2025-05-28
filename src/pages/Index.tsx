@@ -371,7 +371,7 @@ const Index = () => {
           <p className="text-2xl mb-12 text-blue-100 max-w-4xl mx-auto leading-relaxed">
             Join millions of users who trust ToolifyConvert for their daily digital tasks including image processing, document management, and productivity tools
           </p>
-          <Button size="lg" className="text-2xl px-16 py-8 btn-3d bg-white text-blue-600 hover:bg-gray-100 shadow-2xl glassmorphism transform-style-3d" onClick={scrollToTools}>
+          <Button size="lg" onClick={scrollToTools} className="text-2xl px-16 py-8 btn-3d text-blue-600 shadow-2xl glassmorphism transform-style-3d bg-slate-50">
             Start Using Tools Now →
           </Button>
         </div>
