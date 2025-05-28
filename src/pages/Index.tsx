@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -10,14 +9,12 @@ import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
 // Import tool icons
 import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser } from "lucide-react";
-
 const Index = () => {
   const scrollToTools = () => {
     document.getElementById('popular-tools')?.scrollIntoView({
       behavior: 'smooth'
     });
   };
-
   const toolCategories = [{
     title: "🖼️ Image Tools",
     description: "Professional image processing tools for compression, resizing, format conversion, and enhancement. Perfect for photographers, designers, and content creators.",
@@ -149,34 +146,24 @@ const Index = () => {
       path: "/tools/budget-tracker"
     }]
   }];
-
-  const faqs = [
-    {
-      question: "Are all tools completely free to use?",
-      answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
-    }, {
-      question: "Do I need to create an account to use the tools?",
-      answer: "No account required! You can use all our tools instantly without signing up, providing personal information, or creating passwords."
-    }, {
-      question: "Is my data safe and private?",
-      answer: "Absolutely. Most tools process your files locally in your browser, meaning your data never leaves your device. For tools that require server processing, we don't store any of your files or personal information."
-    }, {
-      question: "What file formats do you support?",
-      answer: "We support all major file formats including JPG, PNG, GIF, WebP for images; PDF for documents; and various text formats. Each tool clearly indicates which formats are supported."
-    }, {
-      question: "Are there any file size limitations?",
-      answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
-    }
-  ];
-
-  return (
-    <Layout>
-      <SEO 
-        title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More"
-        description="Discover 20+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results."
-        keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools"
-        canonicalUrl="https://toolifyconvert.com"
-      />
+  const faqs = [{
+    question: "Are all tools completely free to use?",
+    answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
+  }, {
+    question: "Do I need to create an account to use the tools?",
+    answer: "No account required! You can use all our tools instantly without signing up, providing personal information, or creating passwords."
+  }, {
+    question: "Is my data safe and private?",
+    answer: "Absolutely. Most tools process your files locally in your browser, meaning your data never leaves your device. For tools that require server processing, we don't store any of your files or personal information."
+  }, {
+    question: "What file formats do you support?",
+    answer: "We support all major file formats including JPG, PNG, GIF, WebP for images; PDF for documents; and various text formats. Each tool clearly indicates which formats are supported."
+  }, {
+    question: "Are there any file size limitations?",
+    answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
+  }];
+  return <Layout>
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 20+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Hero Section with Enhanced 3D Effects */}
       <section className="relative overflow-hidden min-h-screen flex items-center parallax-bg">
@@ -219,7 +206,7 @@ const Index = () => {
               </Button>
               <Button size="lg" variant="outline" onClick={() => document.getElementById('features')?.scrollIntoView({
               behavior: 'smooth'
-            })} className="text-xl px-12 py-6 btn-3d border-2 border-white/30 text-white glassmorphism hover:bg-white/10">
+            })} className="text-xl px-12 py-6 btn-3d border-2 border-white/30 text-white glassmorphism bg-slate-50">
                 Learn More
               </Button>
             </div>
@@ -246,33 +233,32 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 perspective-1000">
-            {[
-              toolCategories[0].tools[0], // Image Compressor
-              toolCategories[1].tools[0], // Merge PDF
-              toolCategories[2].tools[0], // Percentage Calculator
-              toolCategories[4].tools[0], // QR Code Generator
-              toolCategories[0].tools[5], // Background Remover
-              toolCategories[4].tools[2], // Timer & Stopwatch
-              toolCategories[3].tools[2], // Base64 Tool
-              toolCategories[4].tools[3]  // Color Picker
-            ].map((tool, index) => (
-              <div key={index} className="scroll-reveal card-3d glassmorphism" style={{ animationDelay: `${index * 150}ms` }}>
-                <ToolCard 
-                  title={tool.title} 
-                  description={tool.description} 
-                  icon={tool.icon} 
-                  path={tool.path} 
-                  className="h-full bg-white/90 backdrop-blur-sm border border-white/30 transform-style-3d" 
-                />
-              </div>
-            ))}
+            {[toolCategories[0].tools[0],
+          // Image Compressor
+          toolCategories[1].tools[0],
+          // Merge PDF
+          toolCategories[2].tools[0],
+          // Percentage Calculator
+          toolCategories[4].tools[0],
+          // QR Code Generator
+          toolCategories[0].tools[5],
+          // Background Remover
+          toolCategories[4].tools[2],
+          // Timer & Stopwatch
+          toolCategories[3].tools[2],
+          // Base64 Tool
+          toolCategories[4].tools[3] // Color Picker
+          ].map((tool, index) => <div key={index} className="scroll-reveal card-3d glassmorphism" style={{
+            animationDelay: `${index * 150}ms`
+          }}>
+                <ToolCard title={tool.title} description={tool.description} icon={tool.icon} path={tool.path} className="h-full bg-white/90 backdrop-blur-sm border border-white/30 transform-style-3d" />
+              </div>)}
           </div>
         </div>
       </section>
 
       {/* All Tools Sections with Enhanced 3D */}
-      {toolCategories.map((category, catIndex) => (
-        <section key={catIndex} className={`py-24 section-3d scroll-reveal ${catIndex % 2 === 0 ? 'gradient-mesh' : 'bg-white/80 backdrop-blur-sm'}`}>
+      {toolCategories.map((category, catIndex) => <section key={catIndex} className={`py-24 section-3d scroll-reveal ${catIndex % 2 === 0 ? 'gradient-mesh' : 'bg-white/80 backdrop-blur-sm'}`}>
           <div className="container mx-auto px-4">
             <div className="text-center mb-16 scroll-reveal">
               <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent text-3d">
@@ -283,21 +269,14 @@ const Index = () => {
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 perspective-1000">
-              {category.tools.map((tool, toolIndex) => (
-                <div key={toolIndex} className="scroll-reveal card-3d glassmorphism" style={{ animationDelay: `${toolIndex * 100}ms` }}>
-                  <ToolCard 
-                    title={tool.title} 
-                    description={tool.description} 
-                    icon={tool.icon} 
-                    path={tool.path} 
-                    className="h-full bg-white/90 backdrop-blur-sm border border-white/30 transform-style-3d" 
-                  />
-                </div>
-              ))}
+              {category.tools.map((tool, toolIndex) => <div key={toolIndex} className="scroll-reveal card-3d glassmorphism" style={{
+            animationDelay: `${toolIndex * 100}ms`
+          }}>
+                  <ToolCard title={tool.title} description={tool.description} icon={tool.icon} path={tool.path} className="h-full bg-white/90 backdrop-blur-sm border border-white/30 transform-style-3d" />
+                </div>)}
             </div>
           </div>
-        </section>
-      ))}
+        </section>)}
 
       {/* Features Section with Enhanced 3D */}
       <section id="features" className="py-32 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white relative overflow-hidden section-3d scroll-reveal">
@@ -370,16 +349,16 @@ const Index = () => {
           
           <div className="max-w-5xl mx-auto perspective-1000">
             <Accordion type="single" collapsible className="space-y-6">
-              {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`} className="glassmorphism rounded-2xl border border-white/30 px-8 card-3d scroll-reveal transform-style-3d" style={{ animationDelay: `${index * 100}ms` }}>
+              {faqs.map((faq, index) => <AccordionItem key={index} value={`item-${index}`} className="glassmorphism rounded-2xl border border-white/30 px-8 card-3d scroll-reveal transform-style-3d" style={{
+              animationDelay: `${index * 100}ms`
+            }}>
                   <AccordionTrigger className="text-left font-semibold text-gray-800 hover:text-blue-600 transition-colors text-lg py-6">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 leading-relaxed text-lg pb-6">
                     {faq.answer}
                   </AccordionContent>
-                </AccordionItem>
-              ))}
+                </AccordionItem>)}
             </Accordion>
           </div>
         </div>
@@ -397,17 +376,11 @@ const Index = () => {
           <p className="text-2xl mb-12 text-blue-100 max-w-4xl mx-auto leading-relaxed">
             Join millions of users who trust ToolifyConvert for their daily digital tasks including image processing, document management, and productivity tools
           </p>
-          <Button 
-            size="lg" 
-            className="text-2xl px-16 py-8 btn-3d bg-white text-blue-600 hover:bg-gray-100 shadow-2xl glassmorphism transform-style-3d" 
-            onClick={scrollToTools}
-          >
+          <Button size="lg" className="text-2xl px-16 py-8 btn-3d bg-white text-blue-600 hover:bg-gray-100 shadow-2xl glassmorphism transform-style-3d" onClick={scrollToTools}>
             Start Using Tools Now →
           </Button>
         </div>
       </section>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Index;
