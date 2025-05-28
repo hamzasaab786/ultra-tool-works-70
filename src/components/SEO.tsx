@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 interface SEOProps {
@@ -23,6 +23,21 @@ const SEO: React.FC<SEOProps> = ({
   robots = "index, follow",
   structuredData
 }) => {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    // Ensure document is loaded before initializing helmet
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => setIsReady(true));
+    } else {
+      setIsReady(true);
+    }
+    
+    return () => {
+      document.removeEventListener('DOMContentLoaded', () => setIsReady(true));
+    };
+  }, []);
+
   const jsonLd = structuredData || {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -57,6 +72,11 @@ const SEO: React.FC<SEOProps> = ({
     "inLanguage": "en-US",
     "isAccessibleForFree": true
   };
+
+  // Don't render until DOM is ready
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <Helmet>
