@@ -11,7 +11,7 @@ import AboutUs from "./pages/AboutUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import Disclaimer from "./pages/Disclaimer";
-import NotFound from "./pages/NotFound";
+
 
 // Tool pages
 import QRCodeGenerator from "./pages/tools/QRCodeGenerator";
