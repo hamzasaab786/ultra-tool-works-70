@@ -186,13 +186,18 @@ const Index = () => {
               <span className="text-white text-lg font-medium">✨ All Tools Are 100% Free Forever</span>
             </div>
             
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight animate-fade-in-up text-3d transform-style-3d text-purple-200">
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight animate-fade-in-up text-3d transform-style-3d text-fuchsia-100">
               ToolifyConvert
             </h1>
             
-            <p className="text-2xl md:text-3xl mb-10 text-gray-200 animate-fade-in delay-500 transform-style-3d">The Ultimate Collection of 100% Free Online Tools</p>
+            <p className="text-2xl md:text-3xl mb-10 text-gray-200 animate-fade-in delay-500 transform-style-3d">
+              The Ultimate Collection of Free Online Tools
+            </p>
             
-            <p className="text-xl md:text-2xl mb-16 text-gray-300 max-w-4xl mx-auto animate-fade-in delay-700 transform-style-3d">Convert, compress, resize, calculate, and more. No sign-up required, lightning-fast processing, and completely free.</p>
+            <p className="text-xl md:text-2xl mb-16 text-gray-300 max-w-4xl mx-auto animate-fade-in delay-700 transform-style-3d">
+              Convert, compress, resize, calculate, and more - all powered by cutting-edge technology. 
+              No sign-up required, lightning-fast processing, and completely secure.
+            </p>
             
             <div className="flex flex-col sm:flex-row justify-center space-y-6 sm:space-y-0 sm:space-x-8 animate-fade-in delay-1000">
               <Button size="lg" className="text-xl px-12 py-6 btn-3d bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 glassmorphism" onClick={scrollToTools}>
@@ -371,7 +376,7 @@ const Index = () => {
           <p className="text-2xl mb-12 text-blue-100 max-w-4xl mx-auto leading-relaxed">
             Join millions of users who trust ToolifyConvert for their daily digital tasks including image processing, document management, and productivity tools
           </p>
-          <Button size="lg" onClick={scrollToTools} className="text-2xl px-16 py-8 btn-3d text-blue-600 shadow-2xl glassmorphism transform-style-3d bg-slate-50">
+          <Button size="lg" className="text-2xl px-16 py-8 btn-3d bg-white text-blue-600 hover:bg-gray-100 shadow-2xl glassmorphism transform-style-3d" onClick={scrollToTools}>
             Start Using Tools Now →
           </Button>
         </div>
