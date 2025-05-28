@@ -83,7 +83,6 @@ const CurrencyConverter = () => {
     YER: 250,
     BHD: 0.38,
     ETB: 44.25,
-    KES: 108,
     MGA: 3950,
     MUR: 42.50,
     MZN: 63.75,

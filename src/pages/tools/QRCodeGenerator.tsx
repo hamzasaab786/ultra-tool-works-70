@@ -16,7 +16,6 @@ const QRCodeGenerator = () => {
   const [qrColor, setQrColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
   const [qrSize, setQrSize] = useState(300);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const generateQR = async () => {
@@ -453,12 +452,9 @@ const QRCodeGenerator = () => {
             </Tabs>
           </div>
           
-          {/* QR Code Display Section */}
+          {/* QR Code Display Section - Fixed the ref type issue */}
           <div className="bg-card p-6 rounded-lg border shadow-sm flex flex-col items-center justify-center">
-            <div 
-              ref={canvasRef} 
-              className="flex items-center justify-center min-h-[300px] w-full bg-gray-50 rounded-md mb-4"
-            >
+            <div className="flex items-center justify-center min-h-[300px] w-full bg-gray-50 rounded-md mb-4">
               {qrCodeUrl ? (
                 <img 
                   src={qrCodeUrl} 
