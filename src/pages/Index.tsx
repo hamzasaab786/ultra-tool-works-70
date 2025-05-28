@@ -200,7 +200,7 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center space-y-6 sm:space-y-0 sm:space-x-8 animate-fade-in delay-1000">
-              <Button size="lg" onClick={scrollToTools} className="text-xl px-12 py-6 btn-3d bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 glassmorphism bg-slate-50 text-violet-600">
+              <Button size="lg" onClick={scrollToTools} className="text-xl px-12 py-6 btn-3d bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 glassmorphism bg-slate-50 text-slate-50">
                 <Zap className="mr-3 h-6 w-6" />
                 Explore All Tools
               </Button>
