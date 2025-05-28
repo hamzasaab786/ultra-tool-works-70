@@ -186,7 +186,7 @@ const Index = () => {
               <span className="text-white text-lg font-medium">✨ All Tools Are 100% Free Forever</span>
             </div>
             
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight animate-fade-in-up text-3d transform-style-3d">
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 leading-tight animate-fade-in-up text-3d transform-style-3d text-cyan-100">
               ToolifyConvert
             </h1>
             
@@ -200,7 +200,7 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center space-y-6 sm:space-y-0 sm:space-x-8 animate-fade-in delay-1000">
-              <Button size="lg" className="text-xl px-12 py-6 btn-3d bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 glassmorphism" onClick={scrollToTools}>
+              <Button size="lg" onClick={scrollToTools} className="text-xl px-12 py-6 btn-3d bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-2xl hover:shadow-purple-500/25 glassmorphism bg-slate-50 text-violet-600">
                 <Zap className="mr-3 h-6 w-6" />
                 Explore All Tools
               </Button>
