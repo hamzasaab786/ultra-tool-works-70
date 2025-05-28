@@ -33,6 +33,10 @@ const Navigation = () => {
                 <div className="font-medium leading-none">JPG to PDF</div>
                 <p className="text-sm text-muted-foreground">Convert images to PDF documents</p>
               </Link>
+              <Link to="/tools/svg-to-jpg" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">SVG to JPG</div>
+                <p className="text-sm text-muted-foreground">Convert SVG vector graphics to high-quality JPG images</p>
+              </Link>
               <Link to="/tools/image-to-url" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Image to URL</div>
                 <p className="text-sm text-muted-foreground">Convert images to shareable URLs</p>
