@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,7 @@ interface Expense {
 
 const BudgetTracker = () => {
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('PKR');
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<string[]>([
     "Food & Dining",
@@ -41,160 +40,62 @@ const BudgetTracker = () => {
     description: ""
   });
 
-  // Comprehensive currencies list (excluding Israel)
+  // Enhanced currencies list with focus on Pakistani and Gulf countries
   const currencies = {
-    USD: { symbol: '$', name: 'US Dollar' },
-    EUR: { symbol: '€', name: 'Euro' },
-    GBP: { symbol: '£', name: 'British Pound' },
-    JPY: { symbol: '¥', name: 'Japanese Yen' },
-    AUD: { symbol: 'A$', name: 'Australian Dollar' },
-    CAD: { symbol: 'C$', name: 'Canadian Dollar' },
-    CHF: { symbol: 'Fr', name: 'Swiss Franc' },
-    CNY: { symbol: '¥', name: 'Chinese Yuan' },
-    INR: { symbol: '₹', name: 'Indian Rupee' },
-    BRL: { symbol: 'R$', name: 'Brazilian Real' },
-    RUB: { symbol: '₽', name: 'Russian Ruble' },
-    KRW: { symbol: '₩', name: 'South Korean Won' },
-    MXN: { symbol: '$', name: 'Mexican Peso' },
-    SGD: { symbol: 'S$', name: 'Singapore Dollar' },
-    HKD: { symbol: 'HK$', name: 'Hong Kong Dollar' },
-    NOK: { symbol: 'kr', name: 'Norwegian Krone' },
-    SEK: { symbol: 'kr', name: 'Swedish Krona' },
-    DKK: { symbol: 'kr', name: 'Danish Krone' },
-    PLN: { symbol: 'zł', name: 'Polish Zloty' },
-    CZK: { symbol: 'Kč', name: 'Czech Koruna' },
-    HUF: { symbol: 'Ft', name: 'Hungarian Forint' },
+    // Pakistani Currency
+    PKR: { symbol: '₨', name: 'Pakistani Rupee' },
+    
+    // Gulf & UAE Currencies
     AED: { symbol: 'د.إ', name: 'UAE Dirham' },
     SAR: { symbol: '﷼', name: 'Saudi Riyal' },
-    EGP: { symbol: '£', name: 'Egyptian Pound' },
-    ZAR: { symbol: 'R', name: 'South African Rand' },
-    NGN: { symbol: '₦', name: 'Nigerian Naira' },
-    KES: { symbol: 'KSh', name: 'Kenyan Shilling' },
-    TRY: { symbol: '₺', name: 'Turkish Lira' },
-    PKR: { symbol: '₨', name: 'Pakistani Rupee' },
-    BDT: { symbol: '৳', name: 'Bangladeshi Taka' },
-    LKR: { symbol: '₨', name: 'Sri Lankan Rupee' },
-    THB: { symbol: '฿', name: 'Thai Baht' },
-    VND: { symbol: '₫', name: 'Vietnamese Dong' },
-    IDR: { symbol: 'Rp', name: 'Indonesian Rupiah' },
-    MYR: { symbol: 'RM', name: 'Malaysian Ringgit' },
-    PHP: { symbol: '₱', name: 'Philippine Peso' },
     QAR: { symbol: 'ر.ق', name: 'Qatari Riyal' },
     KWD: { symbol: 'د.ك', name: 'Kuwaiti Dinar' },
     BHD: { symbol: '.د.ب', name: 'Bahraini Dinar' },
     OMR: { symbol: 'ر.ع.', name: 'Omani Rial' },
+    
+    // Major International Currencies
+    USD: { symbol: '$', name: 'US Dollar' },
+    EUR: { symbol: '€', name: 'Euro' },
+    GBP: { symbol: '£', name: 'British Pound' },
+    INR: { symbol: '₹', name: 'Indian Rupee' },
+    CAD: { symbol: 'C$', name: 'Canadian Dollar' },
+    AUD: { symbol: 'A$', name: 'Australian Dollar' },
+    
+    // Other Middle Eastern & Asian Currencies
     JOD: { symbol: 'د.ا', name: 'Jordanian Dinar' },
     LBP: { symbol: 'ل.ل', name: 'Lebanese Pound' },
-    MAD: { symbol: 'د.م.', name: 'Moroccan Dirham' },
-    TND: { symbol: 'د.ت', name: 'Tunisian Dinar' },
-    DZD: { symbol: 'د.ج', name: 'Algerian Dinar' },
-    LYD: { symbol: 'ل.د', name: 'Libyan Dinar' },
-    ETB: { symbol: 'Br', name: 'Ethiopian Birr' },
-    GHS: { symbol: '₵', name: 'Ghanaian Cedi' },
-    UGX: { symbol: 'USh', name: 'Ugandan Shilling' },
-    TZS: { symbol: 'TSh', name: 'Tanzanian Shilling' },
-    RWF: { symbol: 'FRw', name: 'Rwandan Franc' },
-    AOA: { symbol: 'Kz', name: 'Angolan Kwanza' },
-    MZN: { symbol: 'MT', name: 'Mozambican Metical' },
-    BWP: { symbol: 'P', name: 'Botswana Pula' },
-    SZL: { symbol: 'L', name: 'Swazi Lilangeni' },
-    LSL: { symbol: 'L', name: 'Lesotho Loti' },
-    NAD: { symbol: '$', name: 'Namibian Dollar' },
-    ZMW: { symbol: 'ZK', name: 'Zambian Kwacha' },
-    MWK: { symbol: 'MK', name: 'Malawian Kwacha' },
-    AFN: { symbol: '؋', name: 'Afghan Afghani' },
-    ALL: { symbol: 'L', name: 'Albanian Lek' },
-    AMD: { symbol: '֏', name: 'Armenian Dram' },
-    ARS: { symbol: '$', name: 'Argentine Peso' },
-    AZN: { symbol: '₼', name: 'Azerbaijani Manat' },
-    BAM: { symbol: 'КМ', name: 'Bosnia Convertible Mark' },
-    BBD: { symbol: '$', name: 'Barbadian Dollar' },
-    BGN: { symbol: 'лв', name: 'Bulgarian Lev' },
-    BND: { symbol: '$', name: 'Brunei Dollar' },
-    BOB: { symbol: 'Bs', name: 'Bolivian Boliviano' },
-    BSD: { symbol: '$', name: 'Bahamian Dollar' },
-    BTN: { symbol: 'Nu.', name: 'Bhutanese Ngultrum' },
-    BYN: { symbol: 'Br', name: 'Belarusian Ruble' },
-    BZD: { symbol: 'BZ$', name: 'Belize Dollar' },
-    CLP: { symbol: '$', name: 'Chilean Peso' },
-    COP: { symbol: '$', name: 'Colombian Peso' },
-    CRC: { symbol: '₡', name: 'Costa Rican Colón' },
-    CUP: { symbol: '₱', name: 'Cuban Peso' },
-    CVE: { symbol: '$', name: 'Cape Verdean Escudo' },
-    DJF: { symbol: 'Fdj', name: 'Djiboutian Franc' },
-    DOP: { symbol: 'RD$', name: 'Dominican Peso' },
-    ERN: { symbol: 'Nfk', name: 'Eritrean Nakfa' },
-    FJD: { symbol: '$', name: 'Fijian Dollar' },
-    GEL: { symbol: '₾', name: 'Georgian Lari' },
-    GIP: { symbol: '£', name: 'Gibraltar Pound' },
-    GMD: { symbol: 'D', name: 'Gambian Dalasi' },
-    GNF: { symbol: 'FG', name: 'Guinean Franc' },
-    GTQ: { symbol: 'Q', name: 'Guatemalan Quetzal' },
-    GYD: { symbol: '$', name: 'Guyanese Dollar' },
-    HNL: { symbol: 'L', name: 'Honduran Lempira' },
-    HRK: { symbol: 'kn', name: 'Croatian Kuna' },
-    HTG: { symbol: 'G', name: 'Haitian Gourde' },
-    IQD: { symbol: 'ع.د', name: 'Iraqi Dinar' },
+    EGP: { symbol: '£', name: 'Egyptian Pound' },
+    TRY: { symbol: '₺', name: 'Turkish Lira' },
     IRR: { symbol: '﷼', name: 'Iranian Rial' },
-    ISK: { symbol: 'kr', name: 'Icelandic Króna' },
-    JMD: { symbol: 'J$', name: 'Jamaican Dollar' },
-    KGS: { symbol: 'лв', name: 'Kyrgyzstani Som' },
-    KHR: { symbol: '៛', name: 'Cambodian Riel' },
-    KMF: { symbol: 'CF', name: 'Comorian Franc' },
-    LAK: { symbol: '₭', name: 'Lao Kip' },
-    MDL: { symbol: 'L', name: 'Moldovan Leu' },
-    MGA: { symbol: 'Ar', name: 'Malagasy Ariary' },
-    MKD: { symbol: 'ден', name: 'Macedonian Denar' },
-    MMK: { symbol: 'K', name: 'Myanmar Kyat' },
-    MNT: { symbol: '₮', name: 'Mongolian Tugrik' },
-    MOP: { symbol: 'MOP$', name: 'Macanese Pataca' },
-    MRU: { symbol: 'UM', name: 'Mauritanian Ouguiya' },
-    MUR: { symbol: '₨', name: 'Mauritian Rupee' },
-    MVR: { symbol: '.ރ', name: 'Maldivian Rufiyaa' },
+    AFN: { symbol: '؋', name: 'Afghan Afghani' },
+    BDT: { symbol: '৳', name: 'Bangladeshi Taka' },
+    LKR: { symbol: '₨', name: 'Sri Lankan Rupee' },
     NPR: { symbol: '₨', name: 'Nepalese Rupee' },
-    NIO: { symbol: 'C$', name: 'Nicaraguan Córdoba' },
-    NZD: { symbol: '$', name: 'New Zealand Dollar' },
-    PEN: { symbol: 'S/', name: 'Peruvian Sol' },
-    PGK: { symbol: 'K', name: 'Papua New Guinean Kina' },
-    PYG: { symbol: 'Gs', name: 'Paraguayan Guaraní' },
-    RON: { symbol: 'lei', name: 'Romanian Leu' },
-    RSD: { symbol: 'Дин.', name: 'Serbian Dinar' },
-    SBD: { symbol: '$', name: 'Solomon Islands Dollar' },
-    SCR: { symbol: '₨', name: 'Seychellois Rupee' },
-    SDG: { symbol: 'ج.س.', name: 'Sudanese Pound' },
-    SHP: { symbol: '£', name: 'Saint Helena Pound' },
-    SLE: { symbol: 'Le', name: 'Sierra Leonean Leone' },
-    SOS: { symbol: 'S', name: 'Somali Shilling' },
-    SRD: { symbol: '$', name: 'Surinamese Dollar' },
-    STN: { symbol: 'Db', name: 'São Tomé and Príncipe Dobra' },
-    SYP: { symbol: '£', name: 'Syrian Pound' },
-    TOP: { symbol: 'T$', name: 'Tongan Paʻanga' },
-    TTD: { symbol: 'TT$', name: 'Trinidad and Tobago Dollar' },
-    TVD: { symbol: '$', name: 'Tuvaluan Dollar' },
-    TWD: { symbol: 'NT$', name: 'Taiwan Dollar' },
-    UAH: { symbol: '₴', name: 'Ukrainian Hryvnia' },
-    UYU: { symbol: '$U', name: 'Uruguayan Peso' },
-    UZS: { symbol: 'лв', name: 'Uzbekistani Som' },
-    VES: { symbol: 'Bs', name: 'Venezuelan Bolívar' },
-    VUV: { symbol: 'VT', name: 'Vanuatu Vatu' },
-    WST: { symbol: 'WS$', name: 'Samoan Tala' },
-    XAF: { symbol: 'FCFA', name: 'Central African CFA Franc' },
-    XCD: { symbol: '$', name: 'East Caribbean Dollar' },
-    XOF: { symbol: 'CFA', name: 'West African CFA Franc' },
-    XPF: { symbol: '₣', name: 'CFP Franc' },
-    YER: { symbol: '﷼', name: 'Yemeni Rial' },
-    ZWL: { symbol: 'Z$', name: 'Zimbabwean Dollar' }
+    MYR: { symbol: 'RM', name: 'Malaysian Ringgit' },
+    IDR: { symbol: 'Rp', name: 'Indonesian Rupiah' },
+    THB: { symbol: '฿', name: 'Thai Baht' },
+    VND: { symbol: '₫', name: 'Vietnamese Dong' },
+    PHP: { symbol: '₱', name: 'Philippine Peso' },
+    SGD: { symbol: 'S$', name: 'Singapore Dollar' },
+    HKD: { symbol: 'HK$', name: 'Hong Kong Dollar' },
+    CNY: { symbol: '¥', name: 'Chinese Yuan' },
+    JPY: { symbol: '¥', name: 'Japanese Yen' },
+    KRW: { symbol: '₩', name: 'South Korean Won' }
   };
 
   useEffect(() => {
     const savedIncome = localStorage.getItem('budgetTracker_income');
     const savedExpenses = localStorage.getItem('budgetTracker_expenses');
+    const savedCurrency = localStorage.getItem('budgetTracker_currency');
     
     if (savedIncome) {
       setMonthlyIncome(parseFloat(savedIncome));
     }
     if (savedExpenses) {
       setExpenses(JSON.parse(savedExpenses));
+    }
+    if (savedCurrency) {
+      setSelectedCurrency(savedCurrency);
     }
   }, []);
 
@@ -205,6 +106,10 @@ const BudgetTracker = () => {
   useEffect(() => {
     localStorage.setItem('budgetTracker_expenses', JSON.stringify(expenses));
   }, [expenses]);
+
+  useEffect(() => {
+    localStorage.setItem('budgetTracker_currency', selectedCurrency);
+  }, [selectedCurrency]);
 
   const addCategory = useCallback(() => {
     if (!newCategory.trim()) {
@@ -288,7 +193,7 @@ const BudgetTracker = () => {
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const remainingBudget = monthlyIncome - totalExpenses;
   const budgetPercentage = monthlyIncome > 0 ? (totalExpenses / monthlyIncome) * 100 : 0;
-  const currencySymbol = currencies[selectedCurrency as keyof typeof currencies]?.symbol || '$';
+  const currencySymbol = currencies[selectedCurrency as keyof typeof currencies]?.symbol || '₨';
 
   return (
     <ToolPageTemplate
@@ -422,18 +327,18 @@ const BudgetTracker = () => {
             <CardContent className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Monthly Income</span>
-                <span className="font-semibold text-green-600">${monthlyIncome.toFixed(2)}</span>
+                <span className="font-semibold text-green-600">{currencySymbol}{monthlyIncome.toFixed(2)}</span>
               </div>
               
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Total Expenses</span>
-                <span className="font-semibold text-red-600">${totalExpenses.toFixed(2)}</span>
+                <span className="font-semibold text-red-600">{currencySymbol}{totalExpenses.toFixed(2)}</span>
               </div>
               
               <div className="flex justify-between items-center border-t pt-2">
                 <span className="font-medium">Remaining Budget</span>
                 <span className={`font-bold ${remainingBudget >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  ${remainingBudget.toFixed(2)}
+                  {currencySymbol}{remainingBudget.toFixed(2)}
                 </span>
               </div>
 
@@ -469,7 +374,7 @@ const BudgetTracker = () => {
                         <div className="text-xs text-muted-foreground">{expense.date}</div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="font-semibold">${expense.amount.toFixed(2)}</span>
+                        <span className="font-semibold">{currencySymbol}{expense.amount.toFixed(2)}</span>
                         <Button
                           size="sm"
                           variant="outline"
