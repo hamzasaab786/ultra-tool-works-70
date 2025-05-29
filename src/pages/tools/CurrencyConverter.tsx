@@ -4,7 +4,7 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowUpDown, Coins, AlertTriangle } from "lucide-react";
+import { ArrowUpDown, Coins } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const CurrencyConverter = () => {
@@ -15,7 +15,7 @@ const CurrencyConverter = () => {
   const [exchangeRate, setExchangeRate] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Major currencies supported by the API
+  // Comprehensive currencies list (excluding Israel)
   const currencies = {
     USD: 'US Dollar',
     EUR: 'Euro',
@@ -41,11 +41,126 @@ const CurrencyConverter = () => {
     THB: 'Thai Baht',
     CZK: 'Czech Koruna',
     HUF: 'Hungarian Forint',
-    ILS: 'Israeli Shekel',
     DKK: 'Danish Krone',
     AED: 'UAE Dirham',
     SAR: 'Saudi Riyal',
-    EGP: 'Egyptian Pound'
+    EGP: 'Egyptian Pound',
+    NGN: 'Nigerian Naira',
+    KES: 'Kenyan Shilling',
+    PKR: 'Pakistani Rupee',
+    BDT: 'Bangladeshi Taka',
+    LKR: 'Sri Lankan Rupee',
+    VND: 'Vietnamese Dong',
+    IDR: 'Indonesian Rupiah',
+    MYR: 'Malaysian Ringgit',
+    PHP: 'Philippine Peso',
+    QAR: 'Qatari Riyal',
+    KWD: 'Kuwaiti Dinar',
+    BHD: 'Bahraini Dinar',
+    OMR: 'Omani Rial',
+    JOD: 'Jordanian Dinar',
+    LBP: 'Lebanese Pound',
+    MAD: 'Moroccan Dirham',
+    TND: 'Tunisian Dinar',
+    DZD: 'Algerian Dinar',
+    LYD: 'Libyan Dinar',
+    ETB: 'Ethiopian Birr',
+    GHS: 'Ghanaian Cedi',
+    UGX: 'Ugandan Shilling',
+    TZS: 'Tanzanian Shilling',
+    RWF: 'Rwandan Franc',
+    AOA: 'Angolan Kwanza',
+    MZN: 'Mozambican Metical',
+    BWP: 'Botswana Pula',
+    SZL: 'Swazi Lilangeni',
+    LSL: 'Lesotho Loti',
+    NAD: 'Namibian Dollar',
+    ZMW: 'Zambian Kwacha',
+    MWK: 'Malawian Kwacha',
+    USD: 'US Dollar',
+    EUR: 'Euro',
+    AFN: 'Afghan Afghani',
+    ALL: 'Albanian Lek',
+    AMD: 'Armenian Dram',
+    ARS: 'Argentine Peso',
+    AZN: 'Azerbaijani Manat',
+    BAM: 'Bosnia Convertible Mark',
+    BBD: 'Barbadian Dollar',
+    BGN: 'Bulgarian Lev',
+    BND: 'Brunei Dollar',
+    BOB: 'Bolivian Boliviano',
+    BSD: 'Bahamian Dollar',
+    BTN: 'Bhutanese Ngultrum',
+    BYN: 'Belarusian Ruble',
+    BZD: 'Belize Dollar',
+    CLP: 'Chilean Peso',
+    COP: 'Colombian Peso',
+    CRC: 'Costa Rican Colón',
+    CUP: 'Cuban Peso',
+    CVE: 'Cape Verdean Escudo',
+    DJF: 'Djiboutian Franc',
+    DOP: 'Dominican Peso',
+    ERN: 'Eritrean Nakfa',
+    FJD: 'Fijian Dollar',
+    GEL: 'Georgian Lari',
+    GIP: 'Gibraltar Pound',
+    GMD: 'Gambian Dalasi',
+    GNF: 'Guinean Franc',
+    GTQ: 'Guatemalan Quetzal',
+    GYD: 'Guyanese Dollar',
+    HNL: 'Honduran Lempira',
+    HRK: 'Croatian Kuna',
+    HTG: 'Haitian Gourde',
+    IQD: 'Iraqi Dinar',
+    IRR: 'Iranian Rial',
+    ISK: 'Icelandic Króna',
+    JMD: 'Jamaican Dollar',
+    KGS: 'Kyrgyzstani Som',
+    KHR: 'Cambodian Riel',
+    KMF: 'Comorian Franc',
+    LAK: 'Lao Kip',
+    MDL: 'Moldovan Leu',
+    MGA: 'Malagasy Ariary',
+    MKD: 'Macedonian Denar',
+    MMK: 'Myanmar Kyat',
+    MNT: 'Mongolian Tugrik',
+    MOP: 'Macanese Pataca',
+    MRU: 'Mauritanian Ouguiya',
+    MUR: 'Mauritian Rupee',
+    MVR: 'Maldivian Rufiyaa',
+    MZN: 'Mozambican Metical',
+    NPR: 'Nepalese Rupee',
+    NIO: 'Nicaraguan Córdoba',
+    PEN: 'Peruvian Sol',
+    PGK: 'Papua New Guinean Kina',
+    PYG: 'Paraguayan Guaraní',
+    RON: 'Romanian Leu',
+    RSD: 'Serbian Dinar',
+    SBD: 'Solomon Islands Dollar',
+    SCR: 'Seychellois Rupee',
+    SDG: 'Sudanese Pound',
+    SHP: 'Saint Helena Pound',
+    SLE: 'Sierra Leonean Leone',
+    SOS: 'Somali Shilling',
+    SRD: 'Surinamese Dollar',
+    STN: 'São Tomé and Príncipe Dobra',
+    SYP: 'Syrian Pound',
+    TOP: 'Tongan Paʻanga',
+    TTD: 'Trinidad and Tobago Dollar',
+    TVD: 'Tuvaluan Dollar',
+    TWD: 'Taiwan Dollar',
+    UAH: 'Ukrainian Hryvnia',
+    UYU: 'Uruguayan Peso',
+    UZS: 'Uzbekistani Som',
+    VES: 'Venezuelan Bolívar',
+    VUV: 'Vanuatu Vatu',
+    WST: 'Samoan Tala',
+    XAF: 'Central African CFA Franc',
+    XCD: 'East Caribbean Dollar',
+    XOF: 'West African CFA Franc',
+    XPF: 'CFP Franc',
+    YER: 'Yemeni Rial',
+    ZWL: 'Zimbabwean Dollar'
   };
 
   const fetchExchangeRate = useCallback(async () => {
@@ -71,24 +186,30 @@ const CurrencyConverter = () => {
       const data = await response.json();
       console.log('API Response:', data);
       
-      if (data && data.conversion_rate) {
-        setExchangeRate(data.conversion_rate);
-        
-        if (inputValue) {
-          const value = parseFloat(inputValue);
-          if (!isNaN(value)) {
-            const convertedValue = value * data.conversion_rate;
-            setResult(convertedValue.toFixed(4));
-          }
-        }
-        
-        toast({
-          title: "Success",
-          description: "Exchange rate updated successfully!",
-        });
+      // Handle the correct API response format
+      let rate = 0;
+      if (data && typeof data.rate === 'number') {
+        rate = data.rate;
+      } else if (data && data.conversion_rate) {
+        rate = data.conversion_rate;
       } else {
         throw new Error('Invalid response format');
       }
+      
+      setExchangeRate(rate);
+      
+      if (inputValue) {
+        const value = parseFloat(inputValue);
+        if (!isNaN(value)) {
+          const convertedValue = value * rate;
+          setResult(convertedValue.toFixed(4));
+        }
+      }
+      
+      toast({
+        title: "Success",
+        description: "Exchange rate updated successfully!",
+      });
     } catch (error) {
       console.error('Error fetching exchange rate:', error);
       toast({
