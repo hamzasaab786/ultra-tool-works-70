@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ const CurrencyConverter = () => {
   const [exchangeRate, setExchangeRate] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Comprehensive currencies list (excluding Israel)
+  // Comprehensive currencies list (excluding Israel and removing duplicates)
   const currencies = {
     USD: 'US Dollar',
     EUR: 'Euro',
@@ -77,8 +76,6 @@ const CurrencyConverter = () => {
     NAD: 'Namibian Dollar',
     ZMW: 'Zambian Kwacha',
     MWK: 'Malawian Kwacha',
-    USD: 'US Dollar',
-    EUR: 'Euro',
     AFN: 'Afghan Afghani',
     ALL: 'Albanian Lek',
     AMD: 'Armenian Dram',
@@ -128,7 +125,6 @@ const CurrencyConverter = () => {
     MRU: 'Mauritanian Ouguiya',
     MUR: 'Mauritian Rupee',
     MVR: 'Maldivian Rufiyaa',
-    MZN: 'Mozambican Metical',
     NPR: 'Nepalese Rupee',
     NIO: 'Nicaraguan Córdoba',
     PEN: 'Peruvian Sol',
