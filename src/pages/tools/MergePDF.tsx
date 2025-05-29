@@ -166,37 +166,67 @@ const MergePDF = () => {
     
     try {
       const mergedPdf = await PDFDocument.create();
+      let successfulMerges = 0;
+      let failedFiles: string[] = [];
       
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
         setProgress(20 + (i / selectedFiles.length) * 60);
         
         try {
+          console.log(`Processing file: ${file.name}`);
           const arrayBuffer = await file.file.arrayBuffer();
-          const pdf = await PDFDocument.load(arrayBuffer);
           
-          // Safely get page indices
-          const pageCount = pdf.getPageCount();
-          if (pageCount > 0) {
+          // Load and validate PDF with more robust error handling
+          let pdf;
+          try {
+            pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+          } catch (loadError) {
+            console.error(`Failed to load PDF ${file.name}:`, loadError);
+            failedFiles.push(file.name);
+            continue;
+          }
+          
+          // Get page count safely
+          let pageCount;
+          try {
+            pageCount = pdf.getPageCount();
+            if (pageCount === 0) {
+              console.warn(`Skipping ${file.name} - no pages found`);
+              failedFiles.push(file.name);
+              continue;
+            }
+          } catch (pageError) {
+            console.error(`Failed to get page count for ${file.name}:`, pageError);
+            failedFiles.push(file.name);
+            continue;
+          }
+          
+          // Copy pages safely
+          try {
             const pageIndices = Array.from({ length: pageCount }, (_, index) => index);
             const copiedPages = await mergedPdf.copyPages(pdf, pageIndices);
             
             copiedPages.forEach((page) => mergedPdf.addPage(page));
             console.log(`Successfully merged ${file.name} with ${pageCount} pages`);
-          } else {
-            console.warn(`Skipping ${file.name} - no pages found`);
+            successfulMerges++;
+          } catch (copyError) {
+            console.error(`Failed to copy pages from ${file.name}:`, copyError);
+            failedFiles.push(file.name);
+            continue;
           }
+          
         } catch (fileError) {
           console.error(`Error processing file ${file.name}:`, fileError);
-          toast({
-            title: "Warning",
-            description: `Skipped ${file.name} due to processing error.`,
-            variant: "destructive"
-          });
+          failedFiles.push(file.name);
         }
       }
       
       setProgress(90);
+      
+      if (successfulMerges === 0) {
+        throw new Error("No files could be merged successfully");
+      }
       
       const pdfBytes = await mergedPdf.save();
       setProgress(100);
@@ -212,10 +242,19 @@ const MergePDF = () => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      toast({
-        title: "Success",
-        description: "PDFs merged successfully!",
-      });
+      // Show appropriate success/warning message
+      if (failedFiles.length > 0) {
+        toast({
+          title: "Partial Success",
+          description: `${successfulMerges} file(s) merged successfully. ${failedFiles.length} file(s) failed: ${failedFiles.join(', ')}`,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: `All ${successfulMerges} PDF file(s) merged successfully!`,
+        });
+      }
     } catch (error) {
       console.error("Error merging PDFs:", error);
       toast({
