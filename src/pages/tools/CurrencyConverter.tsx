@@ -1,102 +1,21 @@
+
 import React, { useState, useCallback } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowUpDown, Coins } from "lucide-react";
+import { ArrowUpDown, Coins, AlertTriangle } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const CurrencyConverter = () => {
   const [fromCurrency, setFromCurrency] = useState<string>('USD');
   const [toCurrency, setToCurrency] = useState<string>('EUR');
   const [inputValue, setInputValue] = useState<string>('');
   const [result, setResult] = useState<string>('');
+  const [exchangeRate, setExchangeRate] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Expanded exchange rates with more countries
-  const exchangeRates: { [key: string]: number } = {
-    USD: 1,
-    EUR: 0.85,
-    GBP: 0.73,
-    JPY: 110,
-    AUD: 1.35,
-    CAD: 1.25,
-    CHF: 0.92,
-    CNY: 6.45,
-    SEK: 8.65,
-    NZD: 1.42,
-    MXN: 20.15,
-    SGD: 1.35,
-    HKD: 7.75,
-    NOK: 8.95,
-    INR: 74.25,
-    RUB: 75.50,
-    ZAR: 14.85,
-    BRL: 5.35,
-    KRW: 1180,
-    PLN: 3.85,
-    TRY: 8.45,
-    THB: 33.25,
-    CZK: 21.50,
-    HUF: 295,
-    ILS: 3.25,
-    DKK: 6.35,
-    AED: 3.67,
-    SAR: 3.75,
-    EGP: 15.70,
-    NGN: 411,
-    KES: 108,
-    GHS: 6.15,
-    MAD: 8.95,
-    TND: 2.75,
-    PKR: 155,
-    BDT: 85,
-    LKR: 198,
-    VND: 23150,
-    IDR: 14250,
-    MYR: 4.15,
-    PHP: 50.25,
-    UAH: 27.50,
-    RON: 4.25,
-    BGN: 1.66,
-    HRK: 6.42,
-    RSD: 100,
-    ISK: 125,
-    ALL: 103,
-    MKD: 52.5,
-    BAM: 1.66,
-    GEL: 3.15,
-    AMD: 520,
-    AZN: 1.70,
-    KZT: 425,
-    UZS: 10650,
-    TJS: 11.35,
-    KGS: 84.75,
-    TMT: 3.50,
-    AFN: 87.50,
-    IRR: 42000,
-    IQD: 1460,
-    JOD: 0.71,
-    KWD: 0.30,
-    LBP: 1510,
-    OMR: 0.38,
-    QAR: 3.64,
-    SYP: 2515,
-    YER: 250,
-    BHD: 0.38,
-    ETB: 44.25,
-    MGA: 3950,
-    MUR: 42.50,
-    MZN: 63.75,
-    RWF: 1025,
-    SCR: 13.45,
-    TZS: 2315,
-    UGX: 3725,
-    ZMW: 17.85,
-    BWP: 11.15,
-    SZL: 14.85,
-    LSL: 14.85,
-    NAD: 14.85
-  };
-
+  // Major currencies supported by the API
   const currencies = {
     USD: 'US Dollar',
     EUR: 'Euro',
@@ -126,81 +45,83 @@ const CurrencyConverter = () => {
     DKK: 'Danish Krone',
     AED: 'UAE Dirham',
     SAR: 'Saudi Riyal',
-    EGP: 'Egyptian Pound',
-    NGN: 'Nigerian Naira',
-    KES: 'Kenyan Shilling',
-    GHS: 'Ghanaian Cedi',
-    MAD: 'Moroccan Dirham',
-    TND: 'Tunisian Dinar',
-    PKR: 'Pakistani Rupee',
-    BDT: 'Bangladeshi Taka',
-    LKR: 'Sri Lankan Rupee',
-    VND: 'Vietnamese Dong',
-    IDR: 'Indonesian Rupiah',
-    MYR: 'Malaysian Ringgit',
-    PHP: 'Philippine Peso',
-    UAH: 'Ukrainian Hryvnia',
-    RON: 'Romanian Leu',
-    BGN: 'Bulgarian Lev',
-    HRK: 'Croatian Kuna',
-    RSD: 'Serbian Dinar',
-    ISK: 'Icelandic Króna',
-    ALL: 'Albanian Lek',
-    MKD: 'Macedonian Denar',
-    BAM: 'Bosnia and Herzegovina Convertible Mark',
-    GEL: 'Georgian Lari',
-    AMD: 'Armenian Dram',
-    AZN: 'Azerbaijani Manat',
-    KZT: 'Kazakhstani Tenge',
-    UZS: 'Uzbekistani Som',
-    TJS: 'Tajikistani Somoni',
-    KGS: 'Kyrgyzstani Som',
-    TMT: 'Turkmenistani Manat',
-    AFN: 'Afghan Afghani',
-    IRR: 'Iranian Rial',
-    IQD: 'Iraqi Dinar',
-    JOD: 'Jordanian Dinar',
-    KWD: 'Kuwaiti Dinar',
-    LBP: 'Lebanese Pound',
-    OMR: 'Omani Rial',
-    QAR: 'Qatari Riyal',
-    SYP: 'Syrian Pound',
-    YER: 'Yemeni Rial',
-    BHD: 'Bahraini Dinar',
-    ETB: 'Ethiopian Birr',
-    MGA: 'Malagasy Ariary',
-    MUR: 'Mauritian Rupee',
-    MZN: 'Mozambican Metical',
-    RWF: 'Rwandan Franc',
-    SCR: 'Seychellois Rupee',
-    TZS: 'Tanzanian Shilling',
-    UGX: 'Ugandan Shilling',
-    ZMW: 'Zambian Kwacha',
-    BWP: 'Botswana Pula',
-    SZL: 'Swazi Lilangeni',
-    LSL: 'Lesotho Loti',
-    NAD: 'Namibian Dollar'
+    EGP: 'Egyptian Pound'
   };
+
+  const fetchExchangeRate = useCallback(async () => {
+    if (!fromCurrency || !toCurrency) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `https://currency-converter241.p.rapidapi.com/conversion_rate?from=${fromCurrency}&to=${toCurrency}`,
+        {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-host': 'currency-converter241.p.rapidapi.com',
+            'x-rapidapi-key': 'e57b8a99f0msh88da9f978c852c2p1df7e3jsn8ebc5e0837d9'
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data && data.conversion_rate) {
+        setExchangeRate(data.conversion_rate);
+        
+        if (inputValue) {
+          const value = parseFloat(inputValue);
+          if (!isNaN(value)) {
+            const convertedValue = value * data.conversion_rate;
+            setResult(convertedValue.toFixed(4));
+          }
+        }
+        
+        toast({
+          title: "Success",
+          description: "Exchange rate updated successfully!",
+        });
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (error) {
+      console.error('Error fetching exchange rate:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch real-time exchange rate. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fromCurrency, toCurrency, inputValue]);
 
   const convert = useCallback(() => {
     const value = parseFloat(inputValue);
-    if (isNaN(value)) {
+    if (isNaN(value) || exchangeRate === 0) {
       setResult('');
       return;
     }
 
-    // Convert to USD first, then to target currency
-    const usdValue = value / exchangeRates[fromCurrency];
-    const convertedValue = usdValue * exchangeRates[toCurrency];
-    
-    setResult(convertedValue.toFixed(2));
-  }, [inputValue, fromCurrency, toCurrency]);
+    const convertedValue = value * exchangeRate;
+    setResult(convertedValue.toFixed(4));
+  }, [inputValue, exchangeRate]);
 
   React.useEffect(() => {
-    if (inputValue && fromCurrency && toCurrency) {
+    if (inputValue && exchangeRate > 0) {
       convert();
     }
-  }, [inputValue, fromCurrency, toCurrency, convert]);
+  }, [inputValue, exchangeRate, convert]);
+
+  React.useEffect(() => {
+    if (fromCurrency && toCurrency && fromCurrency !== toCurrency) {
+      fetchExchangeRate();
+    }
+  }, [fromCurrency, toCurrency, fetchExchangeRate]);
 
   const swapCurrencies = useCallback(() => {
     const temp = fromCurrency;
@@ -211,13 +132,13 @@ const CurrencyConverter = () => {
   return (
     <ToolPageTemplate
       title="Currency Converter"
-      description="Convert between major world currencies with comprehensive coverage of global markets"
+      description="Convert between major world currencies with real-time exchange rates"
     >
       <div className="space-y-6">
         <div className="p-4 bg-primary/5 rounded-md">
           <p className="text-sm text-muted-foreground">
             <Coins className="inline h-4 w-4 mr-1" />
-            Exchange rates are updated daily and may not reflect real-time values.
+            Real-time exchange rates powered by RapidAPI Currency Converter
           </p>
         </div>
 
@@ -252,7 +173,7 @@ const CurrencyConverter = () => {
         </div>
 
         <div className="flex items-center justify-center">
-          <Button variant="outline" size="sm" onClick={swapCurrencies}>
+          <Button variant="outline" size="sm" onClick={swapCurrencies} disabled={isLoading}>
             <ArrowUpDown className="h-4 w-4" />
           </Button>
         </div>
@@ -273,12 +194,29 @@ const CurrencyConverter = () => {
           <div>
             <Label className="mb-2 block">Converted Amount</Label>
             <div className="h-10 px-3 py-2 border border-input bg-muted rounded-md flex items-center">
-              {result || '0.00'}
+              {isLoading ? 'Loading...' : (result || '0.00')}
             </div>
           </div>
         </div>
 
-        {result && (
+        <Button 
+          onClick={fetchExchangeRate} 
+          disabled={isLoading || !fromCurrency || !toCurrency}
+          className="w-full"
+        >
+          {isLoading ? (
+            <>
+              <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+              Fetching Rate...
+            </>
+          ) : (
+            <>
+              <Coins className="mr-2 h-4 w-4" /> Get Latest Exchange Rate
+            </>
+          )}
+        </Button>
+
+        {result && exchangeRate > 0 && (
           <div className="p-4 bg-primary/5 rounded-md">
             <p className="text-center text-lg">
               <span className="font-semibold">{inputValue} {fromCurrency}</span>
@@ -286,29 +224,13 @@ const CurrencyConverter = () => {
               <span className="font-semibold text-primary">{result} {toCurrency}</span>
             </p>
             <p className="text-center text-sm text-muted-foreground mt-2">
-              Exchange rate: 1 {fromCurrency} = {((exchangeRates[toCurrency] / exchangeRates[fromCurrency]).toFixed(4))} {toCurrency}
+              Exchange rate: 1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
+            </p>
+            <p className="text-center text-xs text-muted-foreground mt-1">
+              Last updated: {new Date().toLocaleTimeString()}
             </p>
           </div>
         )}
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <div className="p-3 border rounded-md text-center">
-            <p className="text-sm text-muted-foreground">USD/EUR</p>
-            <p className="font-semibold">{(exchangeRates.EUR / exchangeRates.USD).toFixed(4)}</p>
-          </div>
-          <div className="p-3 border rounded-md text-center">
-            <p className="text-sm text-muted-foreground">USD/GBP</p>
-            <p className="font-semibold">{(exchangeRates.GBP / exchangeRates.USD).toFixed(4)}</p>
-          </div>
-          <div className="p-3 border rounded-md text-center">
-            <p className="text-sm text-muted-foreground">USD/JPY</p>
-            <p className="font-semibold">{(exchangeRates.JPY / exchangeRates.USD).toFixed(2)}</p>
-          </div>
-          <div className="p-3 border rounded-md text-center">
-            <p className="text-sm text-muted-foreground">USD/CAD</p>
-            <p className="font-semibold">{(exchangeRates.CAD / exchangeRates.USD).toFixed(4)}</p>
-          </div>
-        </div>
       </div>
     </ToolPageTemplate>
   );
