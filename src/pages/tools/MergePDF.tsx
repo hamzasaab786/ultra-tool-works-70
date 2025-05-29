@@ -54,7 +54,23 @@ const MergePDF = () => {
     }
   }, []);
   
-  const processFiles = (files: File[]) => {
+  const validatePDF = async (file: File): Promise<boolean> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(arrayBuffer);
+      
+      // Try to get page count to validate the PDF structure
+      const pageCount = pdf.getPageCount();
+      console.log(`PDF ${file.name} validated successfully with ${pageCount} pages`);
+      
+      return pageCount > 0;
+    } catch (error) {
+      console.error(`Error validating PDF ${file.name}:`, error);
+      return false;
+    }
+  };
+  
+  const processFiles = async (files: File[]) => {
     const pdfFiles = Array.from(files).filter(file => file.type === 'application/pdf');
     
     if (pdfFiles.length === 0) {
@@ -76,18 +92,41 @@ const MergePDF = () => {
       return;
     }
     
-    const newFiles = pdfFiles.map(file => ({
-      name: file.name,
-      size: file.size,
-      file: file
-    }));
+    // Validate each PDF file
+    const validFiles: File[] = [];
+    const invalidFiles: string[] = [];
     
-    setSelectedFiles(prev => [...prev, ...newFiles]);
+    for (const file of pdfFiles) {
+      const isValid = await validatePDF(file);
+      if (isValid) {
+        validFiles.push(file);
+      } else {
+        invalidFiles.push(file.name);
+      }
+    }
     
-    toast({
-      title: "Files added",
-      description: `${pdfFiles.length} PDF file(s) added successfully.`,
-    });
+    if (invalidFiles.length > 0) {
+      toast({
+        title: "Invalid PDF files detected",
+        description: `The following files could not be processed: ${invalidFiles.join(', ')}. Please ensure they are valid PDF files.`,
+        variant: "destructive"
+      });
+    }
+    
+    if (validFiles.length > 0) {
+      const newFiles = validFiles.map(file => ({
+        name: file.name,
+        size: file.size,
+        file: file
+      }));
+      
+      setSelectedFiles(prev => [...prev, ...newFiles]);
+      
+      toast({
+        title: "Files added",
+        description: `${validFiles.length} valid PDF file(s) added successfully.`,
+      });
+    }
   };
   
   const removeFile = (index: number) => {
@@ -132,11 +171,29 @@ const MergePDF = () => {
         const file = selectedFiles[i];
         setProgress(20 + (i / selectedFiles.length) * 60);
         
-        const arrayBuffer = await file.file.arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer);
-        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        
-        copiedPages.forEach((page) => mergedPdf.addPage(page));
+        try {
+          const arrayBuffer = await file.file.arrayBuffer();
+          const pdf = await PDFDocument.load(arrayBuffer);
+          
+          // Safely get page indices
+          const pageCount = pdf.getPageCount();
+          if (pageCount > 0) {
+            const pageIndices = Array.from({ length: pageCount }, (_, index) => index);
+            const copiedPages = await mergedPdf.copyPages(pdf, pageIndices);
+            
+            copiedPages.forEach((page) => mergedPdf.addPage(page));
+            console.log(`Successfully merged ${file.name} with ${pageCount} pages`);
+          } else {
+            console.warn(`Skipping ${file.name} - no pages found`);
+          }
+        } catch (fileError) {
+          console.error(`Error processing file ${file.name}:`, fileError);
+          toast({
+            title: "Warning",
+            description: `Skipped ${file.name} due to processing error.`,
+            variant: "destructive"
+          });
+        }
       }
       
       setProgress(90);
@@ -163,7 +220,7 @@ const MergePDF = () => {
       console.error("Error merging PDFs:", error);
       toast({
         title: "Error",
-        description: "Failed to merge PDF files. Please try again.",
+        description: "Failed to merge PDF files. Please ensure all files are valid PDFs and try again.",
         variant: "destructive"
       });
     } finally {
