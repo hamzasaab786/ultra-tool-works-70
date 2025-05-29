@@ -2,6 +2,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/Layout";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface ToolPageTemplateProps {
   title: string;
@@ -40,6 +41,11 @@ const ToolPageTemplate: React.FC<ToolPageTemplateProps> = ({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${title} | ToolifyConvert`} />
         <meta name="twitter:description" content={description} />
+        
+        {/* Local SEO */}
+        <meta name="geo.region" content="PK" />
+        <meta name="geo.country" content="Pakistan" />
+        <meta name="language" content="English" />
       </Helmet>
       
       <Layout>
@@ -58,6 +64,9 @@ const ToolPageTemplate: React.FC<ToolPageTemplateProps> = ({
               {children}
             </div>
           </div>
+          
+          {/* SEO Content Section */}
+          <ToolSEOContent toolName={title} />
           
           {/* Mobile-friendly spacing */}
           <div className="h-8 sm:h-4"></div>
