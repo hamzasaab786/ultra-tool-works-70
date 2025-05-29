@@ -9,204 +9,156 @@ import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
 // Import tool icons
 import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser } from "lucide-react";
-
 const Index = () => {
   const scrollToTools = () => {
     document.getElementById('popular-tools')?.scrollIntoView({
       behavior: 'smooth'
     });
   };
-
-  const toolCategories = [
-    {
-      title: "🖼️ Image Tools",
-      description: "Professional image processing tools for compression, resizing, format conversion, and enhancement. Perfect for photographers, designers, and content creators.",
-      tools: [
-        {
-          title: "Image Compressor",
-          description: "Reduce image file size with minimal quality loss using advanced compression algorithms",
-          icon: <ImageIcon />,
-          path: "/tools/image-compressor"
-        },
-        {
-          title: "Image Resizer",
-          description: "Change dimensions of your images easily with professional quality preservation",
-          icon: <ImageIcon />,
-          path: "/tools/image-resizer"
-        },
-        {
-          title: "Image Enhancer",
-          description: "Adjust brightness, contrast, saturation and more with professional image enhancement tools",
-          icon: <ImageIcon />,
-          path: "/tools/image-enhancer"
-        },
-        {
-          title: "JPG to PDF",
-          description: "Convert images to PDF documents with custom layouts and compression settings",
-          icon: <FileIcon />,
-          path: "/tools/jpg-to-pdf"
-        },
-        {
-          title: "SVG to JPG",
-          description: "Convert SVG vector graphics to high-quality JPG images with optimized settings",
-          icon: <ImageIcon />,
-          path: "/tools/svg-to-jpg"
-        },
-        {
-          title: "Background Remover",
-          description: "Remove backgrounds from images with AI-powered precision and professional results",
-          icon: <Eraser />,
-          path: "/tools/background-remover"
-        },
-        {
-          title: "Passport Photo Maker",
-          description: "Create professional passport photos with correct dimensions and quality standards",
-          icon: <Camera />,
-          path: "/tools/passport-photo-maker"
-        }
-      ]
-    },
-    {
-      title: "📄 PDF Tools",
-      description: "Complete PDF management suite for merging, splitting, and compressing PDF documents. Essential tools for document workflow automation.",
-      tools: [
-        {
-          title: "Merge PDF",
-          description: "Combine multiple PDF files into one document with custom page ordering",
-          icon: <FilePlus />,
-          path: "/tools/merge-pdf"
-        },
-        {
-          title: "Split PDF",
-          description: "Extract specific pages from PDF documents with precision control",
-          icon: <Scissors />,
-          path: "/tools/split-pdf"
-        },
-        {
-          title: "Compress PDF",
-          description: "Reduce PDF file size while maintaining document quality and readability",
-          icon: <FileDown />,
-          path: "/tools/compress-pdf"
-        }
-      ]
-    },
-    {
-      title: "🧮 Calculators & Converters",
-      description: "Mathematical calculators and unit converters for everyday calculations. From percentage calculations to currency conversion with real-time rates.",
-      tools: [
-        {
-          title: "Percentage Calculator",
-          description: "Calculate percentages, percentage increase, decrease, and percentage of numbers easily",
-          icon: <Percent />,
-          path: "/tools/percentage-calculator"
-        },
-        {
-          title: "Unit Converter",
-          description: "Convert between different units of measurement including length, weight, temperature, and volume",
-          icon: <Ruler />,
-          path: "/tools/unit-converter"
-        },
-        {
-          title: "Currency Converter",
-          description: "Convert between major world currencies with up-to-date exchange rates",
-          icon: <Coins />,
-          path: "/tools/currency-converter"
-        }
-      ]
-    },
-    {
-      title: "📝 Text Tools",
-      description: "Text processing and manipulation tools for writers, editors, and content creators. Count words, convert case, and encode/decode text.",
-      tools: [
-        {
-          title: "Word & Character Counter",
-          description: "Count words, characters, paragraphs, and reading time in your text content",
-          icon: <AlignLeft />,
-          path: "/tools/word-counter"
-        },
-        {
-          title: "Case Converter",
-          description: "Convert text case between uppercase, lowercase, title case, and sentence case",
-          icon: <CaseSensitive />,
-          path: "/tools/case-converter"
-        },
-        {
-          title: "Base64 Encoder/Decoder",
-          description: "Encode and decode Base64 strings for data transmission and storage",
-          icon: <Type />,
-          path: "/tools/base64-tool"
-        }
-      ]
-    },
-    {
-      title: "🛠️ Utility Tools",
-      description: "Essential utility tools for productivity and daily tasks. Generate QR codes, create secure passwords, track time, and manage finances.",
-      tools: [
-        {
-          title: "QR Code Generator",
-          description: "Create custom QR codes for URLs, text, contact info, and more with color customization",
-          icon: <QrCode />,
-          path: "/tools/qr-code-generator"
-        },
-        {
-          title: "Password Generator",
-          description: "Generate strong, secure passwords with customizable length and character sets",
-          icon: <Fingerprint />,
-          path: "/tools/password-generator"
-        },
-        {
-          title: "Timer & Stopwatch",
-          description: "Professional timer and stopwatch with lap tracking and notification features",
-          icon: <Timer />,
-          path: "/tools/timer-stopwatch"
-        },
-        {
-          title: "Color Picker",
-          description: "Pick colors and get HEX, RGB, HSL values with gradient and palette tools",
-          icon: <Palette />,
-          path: "/tools/color-picker"
-        },
-        {
-          title: "Budget Tracker",
-          description: "Track your monthly income and expenses with category management and currency support",
-          icon: <DollarSign />,
-          path: "/tools/budget-tracker"
-        }
-      ]
-    }
-  ];
-
-  const faqs = [
-    {
-      question: "Are all tools completely free to use?",
-      answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
-    },
-    {
-      question: "Do I need to create an account to use the tools?",
-      answer: "No account required! You can use all our tools instantly without signing up, providing personal information, or creating passwords."
-    },
-    {
-      question: "Is my data safe and private?",
-      answer: "Absolutely. Most tools process your files locally in your browser, meaning your data never leaves your device. For tools that require server processing, we don't store any of your files or personal information."
-    },
-    {
-      question: "What file formats do you support?",
-      answer: "We support all major file formats including JPG, PNG, GIF, WebP for images; PDF for documents; and various text formats. Each tool clearly indicates which formats are supported."
-    },
-    {
-      question: "Are there any file size limitations?",
-      answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
-    }
-  ];
-
-  return (
-    <Layout>
-      <SEO 
-        title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" 
-        description="Discover 20+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." 
-        keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" 
-        canonicalUrl="https://toolifyconvert.com" 
-      />
+  const toolCategories = [{
+    title: "🖼️ Image Tools",
+    description: "Professional image processing tools for compression, resizing, format conversion, and enhancement. Perfect for photographers, designers, and content creators.",
+    tools: [{
+      title: "Image Compressor",
+      description: "Reduce image file size with minimal quality loss using advanced compression algorithms",
+      icon: <ImageIcon />,
+      path: "/tools/image-compressor"
+    }, {
+      title: "Image Resizer",
+      description: "Change dimensions of your images easily with professional quality preservation",
+      icon: <ImageIcon />,
+      path: "/tools/image-resizer"
+    }, {
+      title: "Image Enhancer",
+      description: "Adjust brightness, contrast, saturation and more with professional image enhancement tools",
+      icon: <ImageIcon />,
+      path: "/tools/image-enhancer"
+    }, {
+      title: "JPG to PDF",
+      description: "Convert images to PDF documents with custom layouts and compression settings",
+      icon: <FileIcon />,
+      path: "/tools/jpg-to-pdf"
+    }, {
+      title: "SVG to JPG",
+      description: "Convert SVG vector graphics to high-quality JPG images with optimized settings",
+      icon: <ImageIcon />,
+      path: "/tools/svg-to-jpg"
+    }, {
+      title: "Background Remover",
+      description: "Remove backgrounds from images with AI-powered precision and professional results",
+      icon: <Eraser />,
+      path: "/tools/background-remover"
+    }, {
+      title: "Passport Photo Maker",
+      description: "Create professional passport photos with correct dimensions and quality standards",
+      icon: <Camera />,
+      path: "/tools/passport-photo-maker"
+    }]
+  }, {
+    title: "📄 PDF Tools",
+    description: "Complete PDF management suite for merging, splitting, and compressing PDF documents. Essential tools for document workflow automation.",
+    tools: [{
+      title: "Merge PDF",
+      description: "Combine multiple PDF files into one document with custom page ordering",
+      icon: <FilePlus />,
+      path: "/tools/merge-pdf"
+    }, {
+      title: "Split PDF",
+      description: "Extract specific pages from PDF documents with precision control",
+      icon: <Scissors />,
+      path: "/tools/split-pdf"
+    }, {
+      title: "Compress PDF",
+      description: "Reduce PDF file size while maintaining document quality and readability",
+      icon: <FileDown />,
+      path: "/tools/compress-pdf"
+    }]
+  }, {
+    title: "🧮 Calculators & Converters",
+    description: "Mathematical calculators and unit converters for everyday calculations. From percentage calculations to currency conversion with real-time rates.",
+    tools: [{
+      title: "Percentage Calculator",
+      description: "Calculate percentages, percentage increase, decrease, and percentage of numbers easily",
+      icon: <Percent />,
+      path: "/tools/percentage-calculator"
+    }, {
+      title: "Unit Converter",
+      description: "Convert between different units of measurement including length, weight, temperature, and volume",
+      icon: <Ruler />,
+      path: "/tools/unit-converter"
+    }, {
+      title: "Currency Converter",
+      description: "Convert between major world currencies with up-to-date exchange rates",
+      icon: <Coins />,
+      path: "/tools/currency-converter"
+    }]
+  }, {
+    title: "📝 Text Tools",
+    description: "Text processing and manipulation tools for writers, editors, and content creators. Count words, convert case, and encode/decode text.",
+    tools: [{
+      title: "Word & Character Counter",
+      description: "Count words, characters, paragraphs, and reading time in your text content",
+      icon: <AlignLeft />,
+      path: "/tools/word-counter"
+    }, {
+      title: "Case Converter",
+      description: "Convert text case between uppercase, lowercase, title case, and sentence case",
+      icon: <CaseSensitive />,
+      path: "/tools/case-converter"
+    }, {
+      title: "Base64 Encoder/Decoder",
+      description: "Encode and decode Base64 strings for data transmission and storage",
+      icon: <Type />,
+      path: "/tools/base64-tool"
+    }]
+  }, {
+    title: "🛠️ Utility Tools",
+    description: "Essential utility tools for productivity and daily tasks. Generate QR codes, create secure passwords, track time, and manage finances.",
+    tools: [{
+      title: "QR Code Generator",
+      description: "Create custom QR codes for URLs, text, contact info, and more with color customization",
+      icon: <QrCode />,
+      path: "/tools/qr-code-generator"
+    }, {
+      title: "Password Generator",
+      description: "Generate strong, secure passwords with customizable length and character sets",
+      icon: <Fingerprint />,
+      path: "/tools/password-generator"
+    }, {
+      title: "Timer & Stopwatch",
+      description: "Professional timer and stopwatch with lap tracking and notification features",
+      icon: <Timer />,
+      path: "/tools/timer-stopwatch"
+    }, {
+      title: "Color Picker",
+      description: "Pick colors and get HEX, RGB, HSL values with gradient and palette tools",
+      icon: <Palette />,
+      path: "/tools/color-picker"
+    }, {
+      title: "Budget Tracker",
+      description: "Track your monthly income and expenses with category management and currency support",
+      icon: <DollarSign />,
+      path: "/tools/budget-tracker"
+    }]
+  }];
+  const faqs = [{
+    question: "Are all tools completely free to use?",
+    answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
+  }, {
+    question: "Do I need to create an account to use the tools?",
+    answer: "No account required! You can use all our tools instantly without signing up, providing personal information, or creating passwords."
+  }, {
+    question: "Is my data safe and private?",
+    answer: "Absolutely. Most tools process your files locally in your browser, meaning your data never leaves your device. For tools that require server processing, we don't store any of your files or personal information."
+  }, {
+    question: "What file formats do you support?",
+    answer: "We support all major file formats including JPG, PNG, GIF, WebP for images; PDF for documents; and various text formats. Each tool clearly indicates which formats are supported."
+  }, {
+    question: "Are there any file size limitations?",
+    answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
+  }];
+  return <Layout>
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 20+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
@@ -221,9 +173,7 @@ const Index = () => {
               ToolifyConvert
             </h1>
             
-            <p className="text-xl md:text-2xl mb-8 text-gray-700 animate-slide-up delay-200">
-              The Ultimate Collection of Free Online Tools
-            </p>
+            <p className="text-xl md:text-2xl mb-8 text-gray-700 animate-slide-up delay-200">The Ultimate Collection of 100% Free Online Tools</p>
             
             <p className="text-lg mb-12 text-gray-600 max-w-3xl mx-auto leading-relaxed animate-slide-up delay-300">
               Convert, compress, resize, calculate, and more - all powered by cutting-edge technology. 
@@ -231,20 +181,13 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 animate-slide-up delay-400">
-              <Button 
-                size="lg" 
-                className="text-lg px-8 py-3 btn-modern bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
-                onClick={scrollToTools}
-              >
+              <Button size="lg" className="text-lg px-8 py-3 btn-modern bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white" onClick={scrollToTools}>
                 <Zap className="mr-2 h-5 w-5" />
                 Explore All Tools
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-lg px-8 py-3 btn-modern border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50"
-                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              >
+              <Button size="lg" variant="outline" className="text-lg px-8 py-3 btn-modern border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50" onClick={() => document.getElementById('features')?.scrollIntoView({
+              behavior: 'smooth'
+            })}>
                 Learn More
               </Button>
             </div>
@@ -252,10 +195,7 @@ const Index = () => {
         </div>
         
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <button 
-            onClick={scrollToTools} 
-            className="animate-bounce p-3 glassmorphism rounded-full border border-indigo-200/50 hover:bg-indigo-50/50 transition-all duration-300 btn-modern"
-          >
+          <button onClick={scrollToTools} className="animate-bounce p-3 glassmorphism rounded-full border border-indigo-200/50 hover:bg-indigo-50/50 transition-all duration-300 btn-modern">
             <ArrowDown className="h-6 w-6 text-indigo-600" />
           </button>
         </div>
@@ -274,31 +214,25 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[
-              toolCategories[0].tools[0], // Image Compressor
-              // Merge PDF
-              toolCategories[1].tools[0],
-              // Percentage Calculator
-              toolCategories[4].tools[0],
-              // QR Code Generator
-              toolCategories[0].tools[5],
-              // Background Remover
-              toolCategories[4].tools[2],
-              // Timer & Stopwatch
-              toolCategories[3].tools[2],
-              // Base64 Tool
-              toolCategories[4].tools[3] // Color Picker
-            ].map((tool, index) => (
-              <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-                <ToolCard 
-                  title={tool.title} 
-                  description={tool.description} 
-                  icon={tool.icon} 
-                  path={tool.path} 
-                  className="h-full"
-                />
-              </div>
-            ))}
+            {[toolCategories[0].tools[0],
+          // Image Compressor
+          // Merge PDF
+          toolCategories[1].tools[0],
+          // Percentage Calculator
+          toolCategories[4].tools[0],
+          // QR Code Generator
+          toolCategories[0].tools[5],
+          // Background Remover
+          toolCategories[4].tools[2],
+          // Timer & Stopwatch
+          toolCategories[3].tools[2],
+          // Base64 Tool
+          toolCategories[4].tools[3] // Color Picker
+          ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
+            animationDelay: `${index * 100}ms`
+          }}>
+                <ToolCard title={tool.title} description={tool.description} icon={tool.icon} path={tool.path} className="h-full" />
+              </div>)}
           </div>
         </div>
       </section>
@@ -365,20 +299,14 @@ const Index = () => {
           
           <div className="max-w-4xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
-              {faqs.map((faq, index) => (
-                <AccordionItem 
-                  key={index} 
-                  value={`item-${index}`} 
-                  className="glassmorphism rounded-xl border border-gray-200/50 px-6"
-                >
+              {faqs.map((faq, index) => <AccordionItem key={index} value={`item-${index}`} className="glassmorphism rounded-xl border border-gray-200/50 px-6">
                   <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-indigo-600 transition-colors py-4">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-600 leading-relaxed pb-4">
                     {faq.answer}
                   </AccordionContent>
-                </AccordionItem>
-              ))}
+                </AccordionItem>)}
             </Accordion>
           </div>
         </div>
@@ -391,17 +319,11 @@ const Index = () => {
           <p className="text-xl mb-8 text-indigo-100 max-w-3xl mx-auto leading-relaxed">
             Join millions of users who trust ToolifyConvert for their daily digital tasks
           </p>
-          <Button 
-            size="lg" 
-            className="text-lg px-8 py-3 btn-modern bg-white text-indigo-600 hover:bg-gray-100" 
-            onClick={scrollToTools}
-          >
+          <Button size="lg" className="text-lg px-8 py-3 btn-modern bg-white text-indigo-600 hover:bg-gray-100" onClick={scrollToTools}>
             Start Using Tools Now →
           </Button>
         </div>
       </section>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Index;
