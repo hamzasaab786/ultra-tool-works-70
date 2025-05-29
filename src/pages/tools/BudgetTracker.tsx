@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, DollarSign } from "lucide-react";
+import { Plus, Trash2, DollarSign, Edit } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Expense {
@@ -16,24 +17,32 @@ interface Expense {
   date: string;
 }
 
+interface CategoryBudget {
+  name: string;
+  budget: number;
+}
+
 const BudgetTracker = () => {
   const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
   const [selectedCurrency, setSelectedCurrency] = useState<string>('PKR');
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [categories, setCategories] = useState<string[]>([
-    "Food & Dining",
-    "Transportation",
-    "Shopping",
-    "Entertainment",
-    "Bills & Utilities",
-    "Healthcare",
-    "Education",
-    "Travel",
-    "Groceries",
-    "Insurance",
-    "Other"
+  const [categoryBudgets, setCategoryBudgets] = useState<CategoryBudget[]>([
+    { name: "Food & Dining", budget: 0 },
+    { name: "Transportation", budget: 0 },
+    { name: "Shopping", budget: 0 },
+    { name: "Entertainment", budget: 0 },
+    { name: "Bills & Utilities", budget: 0 },
+    { name: "Healthcare", budget: 0 },
+    { name: "Education", budget: 0 },
+    { name: "Travel", budget: 0 },
+    { name: "Groceries", budget: 0 },
+    { name: "Insurance", budget: 0 },
+    { name: "Other", budget: 0 }
   ]);
   const [newCategory, setNewCategory] = useState<string>('');
+  const [newCategoryBudget, setNewCategoryBudget] = useState<string>('');
+  const [editingCategory, setEditingCategory] = useState<string | null>(null);
+  const [editBudgetAmount, setEditBudgetAmount] = useState<string>('');
   const [newExpense, setNewExpense] = useState({
     category: "",
     amount: "",
@@ -87,6 +96,7 @@ const BudgetTracker = () => {
     const savedIncome = localStorage.getItem('budgetTracker_income');
     const savedExpenses = localStorage.getItem('budgetTracker_expenses');
     const savedCurrency = localStorage.getItem('budgetTracker_currency');
+    const savedCategoryBudgets = localStorage.getItem('budgetTracker_categoryBudgets');
     
     if (savedIncome) {
       setMonthlyIncome(parseFloat(savedIncome));
@@ -96,6 +106,9 @@ const BudgetTracker = () => {
     }
     if (savedCurrency) {
       setSelectedCurrency(savedCurrency);
+    }
+    if (savedCategoryBudgets) {
+      setCategoryBudgets(JSON.parse(savedCategoryBudgets));
     }
   }, []);
 
@@ -111,6 +124,10 @@ const BudgetTracker = () => {
     localStorage.setItem('budgetTracker_currency', selectedCurrency);
   }, [selectedCurrency]);
 
+  useEffect(() => {
+    localStorage.setItem('budgetTracker_categoryBudgets', JSON.stringify(categoryBudgets));
+  }, [categoryBudgets]);
+
   const addCategory = useCallback(() => {
     if (!newCategory.trim()) {
       toast({
@@ -121,7 +138,7 @@ const BudgetTracker = () => {
       return;
     }
 
-    if (categories.includes(newCategory.trim())) {
+    if (categoryBudgets.some(cat => cat.name === newCategory.trim())) {
       toast({
         title: "Error",
         description: "This category already exists",
@@ -130,16 +147,18 @@ const BudgetTracker = () => {
       return;
     }
 
-    setCategories(prev => [...prev, newCategory.trim()]);
+    const budgetAmount = parseFloat(newCategoryBudget) || 0;
+    setCategoryBudgets(prev => [...prev, { name: newCategory.trim(), budget: budgetAmount }]);
     setNewCategory('');
+    setNewCategoryBudget('');
     toast({
       title: "Success",
       description: "Category added successfully!",
     });
-  }, [newCategory, categories]);
+  }, [newCategory, newCategoryBudget, categoryBudgets]);
 
   const removeCategory = useCallback((categoryToRemove: string) => {
-    if (categories.length <= 1) {
+    if (categoryBudgets.length <= 1) {
       toast({
         title: "Error",
         description: "You must have at least one category",
@@ -148,12 +167,28 @@ const BudgetTracker = () => {
       return;
     }
 
-    setCategories(prev => prev.filter(cat => cat !== categoryToRemove));
+    setCategoryBudgets(prev => prev.filter(cat => cat.name !== categoryToRemove));
     toast({
       title: "Removed",
       description: "Category removed successfully",
     });
-  }, [categories]);
+  }, [categoryBudgets]);
+
+  const updateCategoryBudget = useCallback((categoryName: string, newBudget: number) => {
+    setCategoryBudgets(prev => 
+      prev.map(cat => 
+        cat.name === categoryName 
+          ? { ...cat, budget: newBudget }
+          : cat
+      )
+    );
+    setEditingCategory(null);
+    setEditBudgetAmount('');
+    toast({
+      title: "Updated",
+      description: "Category budget updated successfully",
+    });
+  }, []);
 
   const addExpense = useCallback(() => {
     if (!newExpense.category || !newExpense.amount || parseFloat(newExpense.amount) <= 0) {
@@ -189,6 +224,12 @@ const BudgetTracker = () => {
       description: "Expense removed successfully",
     });
   }, []);
+
+  const getCategorySpent = (categoryName: string) => {
+    return expenses
+      .filter(expense => expense.category === categoryName)
+      .reduce((sum, expense) => sum + expense.amount, 0);
+  };
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
   const remainingBudget = monthlyIncome - totalExpenses;
@@ -240,33 +281,101 @@ const BudgetTracker = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>Manage Categories</CardTitle>
+                <CardTitle>Manage Categories & Budgets</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex space-x-2">
+                <div className="grid grid-cols-2 gap-2">
                   <Input
-                    placeholder="New category name"
+                    placeholder="Category name"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                   />
-                  <Button onClick={addCategory}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                  <Input
+                    type="number"
+                    placeholder="Budget amount"
+                    value={newCategoryBudget}
+                    onChange={(e) => setNewCategoryBudget(e.target.value)}
+                  />
                 </div>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {categories.map(category => (
-                    <div key={category} className="flex items-center justify-between p-2 border rounded">
-                      <span className="text-sm">{category}</span>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => removeCategory(category)}
-                        className="h-6 w-6 p-0"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
+                <Button onClick={addCategory} className="w-full">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Category
+                </Button>
+                
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {categoryBudgets.map(category => {
+                    const spent = getCategorySpent(category.name);
+                    const percentage = category.budget > 0 ? (spent / category.budget) * 100 : 0;
+                    
+                    return (
+                      <div key={category.name} className="p-3 border rounded space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">{category.name}</span>
+                          <div className="flex items-center space-x-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setEditingCategory(category.name);
+                                setEditBudgetAmount(category.budget.toString());
+                              }}
+                              className="h-6 w-6 p-0"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => removeCategory(category.name)}
+                              className="h-6 w-6 p-0"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {editingCategory === category.name ? (
+                          <div className="flex space-x-2">
+                            <Input
+                              type="number"
+                              value={editBudgetAmount}
+                              onChange={(e) => setEditBudgetAmount(e.target.value)}
+                              className="h-8"
+                            />
+                            <Button
+                              size="sm"
+                              onClick={() => updateCategoryBudget(category.name, parseFloat(editBudgetAmount) || 0)}
+                              className="h-8"
+                            >
+                              Save
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                              <span>Budget: {currencySymbol}{category.budget.toFixed(2)}</span>
+                              <span>Spent: {currencySymbol}{spent.toFixed(2)}</span>
+                            </div>
+                            {category.budget > 0 && (
+                              <>
+                                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                                  <div 
+                                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                                      percentage > 100 ? 'bg-red-500' : percentage > 80 ? 'bg-yellow-500' : 'bg-green-500'
+                                    }`}
+                                    style={{ width: `${Math.min(percentage, 100)}%` }}
+                                  ></div>
+                                </div>
+                                <div className="text-xs text-center">
+                                  {percentage.toFixed(1)}% used
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -286,8 +395,8 @@ const BudgetTracker = () => {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map(category => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      {categoryBudgets.map(category => (
+                        <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
