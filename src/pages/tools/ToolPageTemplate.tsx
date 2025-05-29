@@ -22,7 +22,7 @@ const ToolPageTemplate: React.FC<ToolPageTemplateProps> = ({
         <title>{title} | ToolifyConvert</title>
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-        <meta name="theme-color" content="#3b82f6" />
+        <meta name="theme-color" content="#6366f1" />
         {keywords && <meta name="keywords" content={keywords} />}
         
         {/* Mobile-specific meta tags */}
@@ -45,15 +45,15 @@ const ToolPageTemplate: React.FC<ToolPageTemplateProps> = ({
       <Layout>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 max-w-6xl">
           <div className="mb-6 sm:mb-8 lg:mb-12 text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 bg-clip-text text-transparent">
               {title}
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
               {description}
             </p>
           </div>
           
-          <div className="bg-white dark:bg-gray-900/50 rounded-2xl sm:rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 backdrop-blur-sm">
+          <div className="bg-white/95 dark:bg-slate-900/95 rounded-2xl sm:rounded-3xl shadow-xl border border-indigo-100/50 dark:border-slate-700/50 p-4 sm:p-6 lg:p-8 backdrop-blur-sm">
             <div className="w-full overflow-hidden">
               {children}
             </div>
