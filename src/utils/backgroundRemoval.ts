@@ -1,3 +1,4 @@
+
 import { pipeline, env } from '@huggingface/transformers';
 
 // Configure transformers.js to use browser cache and WebGPU when available
@@ -37,28 +38,32 @@ export const removeBackground = async (imageElement: HTMLImageElement, onProgres
     onProgress?.(10);
     
     // Try WebGPU first, fallback to WASM
-    let device = 'webgpu';
+    let segmenter;
     try {
-      const segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+      console.log('Attempting to load model with WebGPU...');
+      segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
         device: 'webgpu',
       });
-      onProgress?.(30);
-      
-      return await processWithSegmenter(segmenter, imageElement, onProgress);
+      console.log('WebGPU model loaded successfully');
     } catch (webgpuError) {
-      console.log('WebGPU not available, falling back to WASM...');
-      device = 'wasm';
-      
-      const segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
-        device: 'wasm',
-      });
-      onProgress?.(30);
-      
-      return await processWithSegmenter(segmenter, imageElement, onProgress);
+      console.log('WebGPU not available, falling back to WASM...', webgpuError);
+      try {
+        segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+          device: 'wasm',
+        });
+        console.log('WASM model loaded successfully');
+      } catch (wasmError) {
+        console.error('Both WebGPU and WASM failed:', wasmError);
+        throw new Error('Failed to load AI model. Please try again or check your internet connection.');
+      }
     }
+    
+    onProgress?.(30);
+    
+    return await processWithSegmenter(segmenter, imageElement, onProgress);
   } catch (error) {
     console.error('Error removing background:', error);
-    throw new Error('Failed to remove background. Please try again.');
+    throw new Error(`Failed to remove background: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
@@ -139,7 +144,10 @@ export const loadImage = (file: Blob): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = reject;
+    img.onerror = (error) => {
+      console.error('Failed to load image:', error);
+      reject(new Error('Failed to load image. Please ensure the file is a valid image.'));
+    };
     img.src = URL.createObjectURL(file);
   });
 };

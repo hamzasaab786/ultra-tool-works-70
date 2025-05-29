@@ -47,11 +47,17 @@ import TimerStopwatch from "./pages/tools/TimerStopwatch";
 import ColorPicker from "./pages/tools/ColorPicker";
 import BudgetTracker from "./pages/tools/BudgetTracker";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
 
 const AppContent = () => {
   useEffect(() => {
-    // Ensure document is ready for helmet operations
     console.log("App initialized, document ready state:", document.readyState);
   }, []);
 
@@ -95,7 +101,7 @@ const AppContent = () => {
       <Route path="/tools/color-picker" element={<ColorPicker />} />
       <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
       
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      {/* Catch-all route for 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
