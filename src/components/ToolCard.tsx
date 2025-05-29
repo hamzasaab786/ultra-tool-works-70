@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,7 +30,7 @@ const ToolCard = ({
   };
 
   return (
-    <ThreeDEffects type="card" intensity="light">
+    <ThreeDEffects type="card" intensity="low">
       <Card 
         className={cn(
           "group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer h-full",
