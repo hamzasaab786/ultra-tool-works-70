@@ -2,6 +2,7 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import Layout from "@/components/Layout";
+import ThreeDEffects from "@/components/ThreeDEffects";
 
 interface ToolPageTemplateProps {
   title: string;
@@ -25,41 +26,41 @@ const ToolPageTemplate: React.FC<ToolPageTemplateProps> = ({
         <meta name="theme-color" content="#3b82f6" />
         {keywords && <meta name="keywords" content={keywords} />}
         
-        {/* Mobile-specific meta tags */}
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="format-detection" content="telephone=no" />
         
-        {/* Open Graph for social sharing */}
         <meta property="og:title" content={`${title} | ToolifyConvert`} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${title} | ToolifyConvert`} />
         <meta name="twitter:description" content={description} />
       </Helmet>
       
       <Layout>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 max-w-6xl">
-          <div className="mb-6 sm:mb-8 lg:mb-12 text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {title}
-            </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {description}
-            </p>
+        <div className="container mx-auto px-4 py-12 max-w-6xl relative z-10">
+          <div className="mb-12 text-center animate-fade-in">
+            <ThreeDEffects type="card" intensity="medium">
+              <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                {title}
+              </h1>
+              <p className="text-xl text-white/70 max-w-3xl mx-auto leading-relaxed">
+                {description}
+              </p>
+            </ThreeDEffects>
           </div>
           
-          <div className="bg-white dark:bg-gray-900/50 rounded-2xl sm:rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8 backdrop-blur-sm">
-            <div className="w-full overflow-hidden">
-              {children}
+          <ThreeDEffects type="card" intensity="low" className="animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 p-8 overflow-hidden">
+              <div className="w-full">
+                {children}
+              </div>
             </div>
-          </div>
+          </ThreeDEffects>
           
-          {/* Mobile-friendly footer spacing */}
           <div className="h-16 sm:h-8"></div>
         </div>
       </Layout>

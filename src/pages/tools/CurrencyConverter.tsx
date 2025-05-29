@@ -1,10 +1,12 @@
+
 import React, { useState, useCallback } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowUpDown, Coins } from "lucide-react";
+import { ArrowUpDown, Coins, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import ThreeDEffects from "@/components/ThreeDEffects";
 
 const CurrencyConverter = () => {
   const [fromCurrency, setFromCurrency] = useState<string>('USD');
@@ -252,59 +254,65 @@ const CurrencyConverter = () => {
       title="Currency Converter"
       description="Convert between major world currencies with real-time exchange rates"
     >
-      <div className="space-y-6">
-        <div className="p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
-          <p className="text-sm text-blue-700 dark:text-blue-300 flex items-center">
-            <Coins className="inline h-4 w-4 mr-2" />
+      <ThreeDEffects type="card" intensity="low" className="space-y-6">
+        {/* Info Card */}
+        <div className="p-6 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 backdrop-blur-lg rounded-xl border border-white/10 animate-fade-in">
+          <p className="text-white flex items-center">
+            <Coins className="inline h-5 w-5 mr-3 text-cyan-400" />
             Real-time exchange rates for accurate currency conversion
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="from-currency" className="text-sm font-medium">From Currency</Label>
+        {/* Currency Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in" style={{ animationDelay: '100ms' }}>
+          <ThreeDEffects type="card" intensity="low" className="space-y-3">
+            <Label htmlFor="from-currency" className="text-sm font-medium text-white">From Currency</Label>
             <select
               id="from-currency"
               value={fromCurrency}
               onChange={(e) => setFromCurrency(e.target.value)}
-              className="w-full h-11 px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+              className="w-full h-12 px-4 py-2 bg-white/10 backdrop-blur-lg border border-white/20 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
             >
               {Object.entries(currencies).map(([code, name]) => (
-                <option key={code} value={code}>{code} - {name}</option>
+                <option key={code} value={code} className="bg-slate-900 text-white">{code} - {name}</option>
               ))}
             </select>
-          </div>
+          </ThreeDEffects>
 
-          <div className="space-y-2">
-            <Label htmlFor="to-currency" className="text-sm font-medium">To Currency</Label>
+          <ThreeDEffects type="card" intensity="low" className="space-y-3">
+            <Label htmlFor="to-currency" className="text-sm font-medium text-white">To Currency</Label>
             <select
               id="to-currency"
               value={toCurrency}
               onChange={(e) => setToCurrency(e.target.value)}
-              className="w-full h-11 px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+              className="w-full h-12 px-4 py-2 bg-white/10 backdrop-blur-lg border border-white/20 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
             >
               {Object.entries(currencies).map(([code, name]) => (
-                <option key={code} value={code}>{code} - {name}</option>
+                <option key={code} value={code} className="bg-slate-900 text-white">{code} - {name}</option>
               ))}
             </select>
-          </div>
+          </ThreeDEffects>
         </div>
 
-        <div className="flex items-center justify-center py-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={swapCurrencies} 
-            disabled={isLoading}
-            className="rounded-full w-10 h-10 p-0"
-          >
-            <ArrowUpDown className="h-4 w-4" />
-          </Button>
+        {/* Swap Button */}
+        <div className="flex items-center justify-center py-4 animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <ThreeDEffects type="card" intensity="medium">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={swapCurrencies} 
+              disabled={isLoading}
+              className="rounded-full w-14 h-14 p-0 bg-gradient-to-r from-cyan-600/20 to-purple-600/20 backdrop-blur-lg border border-white/20 hover:bg-white/20 text-white hover:scale-110 transition-all duration-300"
+            >
+              <ArrowUpDown className="h-6 w-6" />
+            </Button>
+          </ThreeDEffects>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="input-amount" className="text-sm font-medium">Amount</Label>
+        {/* Amount Input and Result */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in" style={{ animationDelay: '300ms' }}>
+          <ThreeDEffects type="card" intensity="low" className="space-y-3">
+            <Label htmlFor="input-amount" className="text-sm font-medium text-white">Amount</Label>
             <Input
               id="input-amount"
               type="number"
@@ -312,60 +320,66 @@ const CurrencyConverter = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               step="0.01"
-              className="h-11"
+              className="h-12 bg-white/10 backdrop-blur-lg border border-white/20 text-white transition-all duration-300"
             />
-          </div>
+          </ThreeDEffects>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Converted Amount</Label>
-            <div className="h-11 px-3 py-2 border border-input bg-muted/50 rounded-md flex items-center text-lg font-medium">
+          <ThreeDEffects type="card" intensity="low" className="space-y-3">
+            <Label className="text-sm font-medium text-white">Converted Amount</Label>
+            <div className="h-12 px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-md flex items-center text-lg font-medium text-white">
               {isLoading ? (
                 <div className="flex items-center">
-                  <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full mr-2"></div>
-                  Loading...
+                  <div className="animate-spin h-5 w-5 border-2 border-cyan-500 border-t-transparent rounded-full mr-3"></div>
+                  <span className="text-white/70">Loading...</span>
                 </div>
               ) : (
                 result || '0.00'
               )}
             </div>
-          </div>
+          </ThreeDEffects>
         </div>
 
-        <Button 
-          onClick={fetchExchangeRate} 
-          disabled={isLoading || !fromCurrency || !toCurrency}
-          className="w-full h-12 text-base"
-        >
-          {isLoading ? (
-            <>
-              <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-              Fetching Rate...
-            </>
-          ) : (
-            <>
-              <Coins className="mr-2 h-5 w-5" /> Get Latest Exchange Rate
-            </>
-          )}
-        </Button>
+        {/* Convert Button */}
+        <ThreeDEffects type="card" intensity="medium" className="animate-fade-in" style={{ animationDelay: '400ms' }}>
+          <Button 
+            onClick={fetchExchangeRate} 
+            disabled={isLoading || !fromCurrency || !toCurrency}
+            className="w-full h-14 text-lg bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700 border border-white/10 shadow-lg shadow-purple-900/30 transition-all duration-500 hover:shadow-xl hover:shadow-purple-900/50"
+          >
+            {isLoading ? (
+              <>
+                <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-3"></div>
+                Fetching Rate...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="mr-2 h-5 w-5" /> Get Latest Exchange Rate
+              </>
+            )}
+          </Button>
+        </ThreeDEffects>
 
+        {/* Results Card */}
         {result && exchangeRate > 0 && (
-          <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg border border-green-200 dark:border-green-800">
-            <div className="text-center space-y-3">
-              <p className="text-xl font-semibold">
-                <span className="text-gray-700 dark:text-gray-300">{inputValue} {fromCurrency}</span>
-                <span className="mx-3 text-gray-500">=</span>
-                <span className="text-green-600 dark:text-green-400">{result} {toCurrency}</span>
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Exchange rate: 1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-500">
-                Last updated: {new Date().toLocaleTimeString()}
-              </p>
+          <ThreeDEffects type="float" intensity="low" className="animate-fade-in" style={{ animationDelay: '500ms' }}>
+            <div className="p-8 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 backdrop-blur-lg rounded-xl border border-white/10">
+              <div className="text-center space-y-4">
+                <p className="text-2xl font-semibold">
+                  <span className="text-white/80">{inputValue} {fromCurrency}</span>
+                  <span className="mx-3 text-white/50">=</span>
+                  <span className="text-cyan-400 font-bold">{result} {toCurrency}</span>
+                </p>
+                <p className="text-white/70">
+                  Exchange rate: 1 {fromCurrency} = {exchangeRate.toFixed(6)} {toCurrency}
+                </p>
+                <p className="text-xs text-white/50">
+                  Last updated: {new Date().toLocaleTimeString()}
+                </p>
+              </div>
             </div>
-          </div>
+          </ThreeDEffects>
         )}
-      </div>
+      </ThreeDEffects>
     </ToolPageTemplate>
   );
 };
