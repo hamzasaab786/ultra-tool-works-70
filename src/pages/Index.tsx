@@ -271,7 +271,7 @@ const Index = () => {
                 <Sparkles className="h-12 w-12" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900">Always Free</h3>
-              <p className="text-gray-600 leading-relaxed">Every single tool is completely free with no limitations, ads, or hidden costs. Forever.</p>
+              <p className="text-gray-600 leading-relaxed">Every single tool is completely free with no limitations, or hidden costs. Forever.</p>
             </div>
             
             <div className="glassmorphism p-6 rounded-2xl border border-white/50 card-modern text-center">
