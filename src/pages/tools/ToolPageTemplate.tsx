@@ -43,24 +43,24 @@ const ToolPageTemplate: React.FC<ToolPageTemplateProps> = ({
       </Helmet>
       
       <Layout>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 max-w-6xl">
-          <div className="mb-6 sm:mb-8 lg:mb-12 text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 bg-clip-text text-transparent">
+        <div className="container mx-auto px-4 py-8 lg:py-12 max-w-6xl">
+          <div className="mb-8 lg:mb-12 text-center">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 gradient-text">
               {title}
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               {description}
             </p>
           </div>
           
-          <div className="bg-white/95 dark:bg-slate-900/95 rounded-2xl sm:rounded-3xl shadow-xl border border-indigo-100/50 dark:border-slate-700/50 p-4 sm:p-6 lg:p-8 backdrop-blur-sm">
+          <div className="glassmorphism rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200/50 p-6 sm:p-8 lg:p-10">
             <div className="w-full overflow-hidden">
               {children}
             </div>
           </div>
           
-          {/* Mobile-friendly footer spacing */}
-          <div className="h-16 sm:h-8"></div>
+          {/* Mobile-friendly spacing */}
+          <div className="h-8 sm:h-4"></div>
         </div>
       </Layout>
     </>

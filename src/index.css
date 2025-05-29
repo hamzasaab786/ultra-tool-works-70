@@ -33,11 +33,6 @@
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
 
@@ -61,11 +56,6 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
   }
 }
 
@@ -80,7 +70,7 @@
     line-height: 1.6;
   }
 
-  /* Enhanced Mobile-first responsive design */
+  /* Optimized responsive design */
   html {
     font-size: 16px;
     scroll-behavior: smooth;
@@ -92,170 +82,72 @@
     }
   }
 
-  /* Ensure touch targets are large enough on mobile */
-  @media (max-width: 768px) {
-    button, 
-    [role="button"], 
-    input[type="submit"], 
-    input[type="button"] {
-      min-height: 44px;
-      min-width: 44px;
-    }
-  }
+  /* Enhanced typography */
+  h1 { @apply text-2xl md:text-3xl lg:text-4xl font-bold leading-tight; }
+  h2 { @apply text-xl md:text-2xl lg:text-3xl font-semibold leading-tight; }
+  h3 { @apply text-lg md:text-xl lg:text-2xl font-semibold leading-tight; }
+  h4 { @apply text-base md:text-lg font-medium leading-tight; }
 
-  /* Enhanced responsive text scaling */
-  h1 { @apply text-2xl md:text-3xl lg:text-4xl font-bold; }
-  h2 { @apply text-xl md:text-2xl lg:text-3xl font-semibold; }
-  h3 { @apply text-lg md:text-xl lg:text-2xl font-semibold; }
-  h4 { @apply text-base md:text-lg font-medium; }
-
-  /* Container responsive padding */
+  /* Container improvements */
   .container {
-    @apply px-4 sm:px-6 lg:px-8;
+    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
   }
 
-  /* Enhanced Grid responsive improvements */
-  .grid-responsive {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
-  }
-
-  /* Form input improvements */
-  input, textarea, select {
-    @apply text-base; /* Prevents zoom on iOS */
-  }
-
-  /* Enhanced focus states for accessibility */
-  button:focus,
-  input:focus,
-  textarea:focus,
-  select:focus {
-    @apply ring-2 ring-primary ring-offset-2 outline-none;
-  }
-
-  /* Enhanced smooth transitions */
-  * {
-    @apply transition-colors duration-300;
-  }
-
-  /* Enhanced Glassmorphism effect */
+  /* Modern glassmorphism effect */
   .glassmorphism {
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 16px;
-    border: 1px solid rgba(209, 213, 219, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
   }
 
-  .dark .glassmorphism {
-    background-color: rgba(16, 16, 16, 0.85);
-    border: 1px solid rgba(75, 85, 99, 0.2);
+  /* Clean button effects */
+  .btn-modern {
+    @apply relative transform transition-all duration-200 ease-out;
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.08);
   }
 
-  /* Enhanced 3D Button Effects */
-  .btn-3d {
-    @apply relative transform transition-all duration-300 ease-out;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-    transform-style: preserve-3d;
+  .btn-modern:hover {
+    @apply -translate-y-1;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.12);
   }
 
-  .btn-3d:hover {
-    @apply -translate-y-2;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
-    transform: translateY(-8px) rotateX(5deg);
-  }
-
-  .btn-3d:active {
+  .btn-modern:active {
     @apply translate-y-0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transform: translateY(0) rotateX(0deg);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
   }
 
-  /* Enhanced Card 3D Effects */
-  .card-3d {
-    @apply transform transition-all duration-500 ease-out;
-    transform-style: preserve-3d;
-    perspective: 1000px;
+  /* Modern card effects */
+  .card-modern {
+    @apply transform transition-all duration-300 ease-out;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
-  .card-3d:hover {
-    @apply -translate-y-3;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
-    transform: translateY(-12px) rotateX(5deg) rotateY(2deg);
+  .card-modern:hover {
+    @apply -translate-y-2;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
 
-  /* Scroll reveal animations */
-  .scroll-reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s ease-out;
+  /* Smooth animations with reduced motion support */
+  .smooth-animation {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .scroll-reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Staggered children animations */
-  .stagger-child {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.4s ease-out;
-  }
-
-  /* Enhanced perspective utilities */
-  .perspective-1000 {
-    perspective: 1000px;
-  }
-
-  .perspective-2000 {
-    perspective: 2000px;
-  }
-
-  .transform-style-preserve-3d {
-    transform-style: preserve-3d;
-  }
-
-  /* Custom gradient mesh background */
-  .gradient-mesh {
+  /* Professional gradient backgrounds */
+  .gradient-bg {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
   }
 
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 bg-clip-text text-transparent;
   }
 
-  /* Enhanced text 3D effect */
-  .text-3d {
-    text-shadow: 
-      0 1px 0 #ccc,
-      0 2px 0 #c9c9c9,
-      0 3px 0 #bbb,
-      0 4px 0 #b9b9b9,
-      0 5px 0 #aaa,
-      0 6px 1px rgba(0,0,0,.1),
-      0 0 5px rgba(0,0,0,.1),
-      0 1px 3px rgba(0,0,0,.3),
-      0 3px 5px rgba(0,0,0,.2),
-      0 5px 10px rgba(0,0,0,.25);
-  }
-
-  /* Enhanced Mobile navigation improvements */
-  @media (max-width: 768px) {
-    .mobile-nav {
-      @apply fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-lg dark:bg-gray-900/90 border-t border-gray-200/50 dark:border-gray-700/50 z-50;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-  }
-
-  /* Enhanced Custom scrollbar */
+  /* Optimized scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -270,49 +162,42 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-400/80 dark:bg-gray-500/80;
   }
-
-  /* Print styles */
-  @media print {
-    .no-print {
-      display: none !important;
-    }
-    
-    * {
-      color: black !important;
-      background: white !important;
-    }
-  }
 }
 
-/* Enhanced Animation utilities */
+/* Optimized animation utilities */
 @layer utilities {
-  .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out;
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
   }
 
-  .animate-slide-in-right {
-    animation: slideInRight 0.6s ease-out;
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
   }
 
-  .animate-slide-in-left {
-    animation: slideInLeft 0.6s ease-out;
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
   }
 
-  .animate-rotate-in {
-    animation: rotateIn 0.6s ease-out;
-  }
-
-  /* Enhanced Delay utilities */
-  .animate-delay-100 { animation-delay: 100ms; }
-  .animate-delay-200 { animation-delay: 200ms; }
-  .animate-delay-300 { animation-delay: 300ms; }
-  .animate-delay-400 { animation-delay: 400ms; }
-  .animate-delay-500 { animation-delay: 500ms; }
-  .animate-delay-700 { animation-delay: 700ms; }
-  .animate-delay-1000 { animation-delay: 1000ms; }
+  /* Delay utilities */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
 }
 
-@keyframes fadeInUp {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -323,93 +208,18 @@
   }
 }
 
-@keyframes slideInRight {
+@keyframes scaleIn {
   from {
     opacity: 0;
-    transform: translateX(50px);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: scale(1);
   }
 }
 
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes rotateIn {
-  from {
-    opacity: 0;
-    transform: rotate(-200deg);
-  }
-  to {
-    opacity: 1;
-    transform: rotate(0);
-  }
-}
-
-/* Enhanced responsive utilities for better mobile experience */
-@layer utilities {
-  .text-responsive {
-    @apply text-sm sm:text-base lg:text-lg;
-  }
-
-  .p-responsive {
-    @apply p-4 sm:p-6 lg:p-8;
-  }
-
-  .m-responsive {
-    @apply m-4 sm:m-6 lg:m-8;
-  }
-
-  .gap-responsive {
-    @apply gap-4 sm:gap-6 lg:gap-8;
-  }
-
-  /* Better touch targets */
-  .touch-target {
-    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
-  }
-
-  /* Enhanced card hover effects */
-  .card-hover {
-    @apply transition-all duration-500 hover:shadow-xl hover:-translate-y-2 hover:scale-105;
-  }
-
-  /* Enhanced glow effect */
-  .glow-effect {
-    filter: drop-shadow(0 0 10px currentColor);
-    transition: filter 0.3s ease;
-  }
-
-  .glow-effect:hover {
-    filter: drop-shadow(0 0 20px currentColor) brightness(1.1);
-  }
-}
-
-/* Enhanced dark mode improvements */
-@media (prefers-color-scheme: dark) {
-  .auto-dark {
-    @apply dark:bg-gray-900/95 dark:text-white backdrop-blur-sm;
-  }
-}
-
-/* Enhanced high contrast mode support */
-@media (prefers-contrast: high) {
-  .high-contrast {
-    @apply border-4 border-black contrast-125;
-  }
-}
-
-/* Enhanced reduced motion support */
+/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -419,9 +229,23 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .high-contrast {
+    @apply border-2 border-black contrast-125;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
   
-  .scroll-reveal {
-    opacity: 1 !important;
-    transform: none !important;
+  * {
+    color: black !important;
+    background: white !important;
   }
 }
