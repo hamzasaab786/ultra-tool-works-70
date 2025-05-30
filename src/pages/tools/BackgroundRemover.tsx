@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageIcon, Upload, Download, Zap, Settings, Layers, Smartphone, Monitor } from "lucide-react";
@@ -23,7 +22,6 @@ const BackgroundRemover = () => {
   const [gradientStart, setGradientStart] = useState("#ffffff");
   const [gradientEnd, setGradientEnd] = useState("#f0f0f0");
   const [isGradient, setIsGradient] = useState(false);
-  const [modelQuality, setModelQuality] = useState<'fast' | 'balanced' | 'accurate'>('balanced');
   const [batchMode, setBatchMode] = useState(false);
   const [batchResults, setBatchResults] = useState<{name: string, url: string}[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -77,7 +75,7 @@ const BackgroundRemover = () => {
         gradientStart,
         gradientEnd,
         isGradient,
-        modelQuality
+        'balanced'
       );
 
       toast({
@@ -95,7 +93,7 @@ const BackgroundRemover = () => {
       setIsProcessing(false);
       setProgress(0);
     }
-  }, [backgroundColor, gradientStart, gradientEnd, isGradient, modelQuality, toast]);
+  }, [backgroundColor, gradientStart, gradientEnd, isGradient, toast]);
 
   const removeBackgroundHandler = useCallback(async () => {
     if (!selectedImage) return;
@@ -116,7 +114,7 @@ const BackgroundRemover = () => {
         gradientStart,
         gradientEnd,
         isGradient,
-        modelQuality
+        'balanced'
       );
       
       const resultUrl = URL.createObjectURL(resultBlob);
@@ -137,7 +135,7 @@ const BackgroundRemover = () => {
       setIsProcessing(false);
       setProgress(0);
     }
-  }, [selectedImage, backgroundColor, gradientStart, gradientEnd, isGradient, modelQuality, toast]);
+  }, [selectedImage, backgroundColor, gradientStart, gradientEnd, isGradient, toast]);
 
   const downloadImage = useCallback((url: string, filename: string = 'background-removed.png') => {
     const link = document.createElement('a');
@@ -307,20 +305,6 @@ const BackgroundRemover = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">Quality</label>
-                    <Select value={modelQuality} onValueChange={(value: any) => setModelQuality(value)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="fast">Fast (2-3s)</SelectItem>
-                        <SelectItem value="balanced">Balanced (5-8s)</SelectItem>
-                        <SelectItem value="accurate">High Quality (10-15s)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
                   <BackgroundColorPicker
                     selectedColor={backgroundColor}
                     onColorChange={setBackgroundColor}
