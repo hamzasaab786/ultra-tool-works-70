@@ -3,12 +3,17 @@ import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ImageIcon, Upload, Download, Zap } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImageIcon, Upload, Download, Zap, Settings, Batch, Smartphone, Monitor } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { removeBackground, loadImage } from "@/utils/backgroundRemoval";
-import ImageComparisonSlider from "@/components/ImageComparisonSlider";
+import { removeBackground, loadImage, processBatch } from "@/utils/backgroundRemoval";
+import MobileOptimizedSlider from "@/components/MobileOptimizedSlider";
+import DragDropUpload from "@/components/DragDropUpload";
 import BackgroundColorPicker from "@/components/BackgroundColorPicker";
 import SEO from "@/components/SEO";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const BackgroundRemover = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -19,8 +24,12 @@ const BackgroundRemover = () => {
   const [gradientStart, setGradientStart] = useState("#ffffff");
   const [gradientEnd, setGradientEnd] = useState("#f0f0f0");
   const [isGradient, setIsGradient] = useState(false);
+  const [modelQuality, setModelQuality] = useState<'fast' | 'balanced' | 'accurate'>('balanced');
+  const [batchMode, setBatchMode] = useState(false);
+  const [batchResults, setBatchResults] = useState<{name: string, url: string}[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -39,9 +48,55 @@ const BackgroundRemover = () => {
     reader.onload = (event) => {
       setSelectedImage(event.target?.result as string);
       setProcessedImage(null);
+      setBatchResults([]);
     };
     reader.readAsDataURL(file);
   }, [toast]);
+
+  const handleBatchFiles = useCallback(async (files: FileList) => {
+    if (files.length === 0) {
+      setBatchResults([]);
+      return;
+    }
+
+    setIsProcessing(true);
+    setProgress(0);
+    setBatchResults([]);
+
+    try {
+      const results: {name: string, url: string}[] = [];
+      
+      await processBatch(
+        files,
+        (batchProgress) => setProgress(batchProgress),
+        (fileName, resultBlob) => {
+          const url = URL.createObjectURL(resultBlob);
+          results.push({ name: fileName, url });
+          setBatchResults([...results]);
+        },
+        backgroundColor,
+        gradientStart,
+        gradientEnd,
+        isGradient,
+        modelQuality
+      );
+
+      toast({
+        title: "Batch Processing Complete",
+        description: `Successfully processed ${results.length} image(s)`,
+      });
+    } catch (error) {
+      console.error('Batch processing error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to process some images. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+      setProgress(0);
+    }
+  }, [backgroundColor, gradientStart, gradientEnd, isGradient, modelQuality, toast]);
 
   const removeBackgroundHandler = useCallback(async () => {
     if (!selectedImage) return;
@@ -61,7 +116,8 @@ const BackgroundRemover = () => {
         backgroundColor,
         gradientStart,
         gradientEnd,
-        isGradient
+        isGradient,
+        modelQuality
       );
       
       const resultUrl = URL.createObjectURL(resultBlob);
@@ -69,7 +125,7 @@ const BackgroundRemover = () => {
       
       toast({
         title: "Success",
-        description: "Background removed successfully!",
+        description: "Background removed with professional quality!",
       });
     } catch (error) {
       console.error('Error removing background:', error);
@@ -82,14 +138,12 @@ const BackgroundRemover = () => {
       setIsProcessing(false);
       setProgress(0);
     }
-  }, [selectedImage, backgroundColor, gradientStart, gradientEnd, isGradient, toast]);
+  }, [selectedImage, backgroundColor, gradientStart, gradientEnd, isGradient, modelQuality, toast]);
 
-  const downloadImage = useCallback(() => {
-    if (!processedImage) return;
-    
+  const downloadImage = useCallback((url: string, filename: string = 'background-removed.png') => {
     const link = document.createElement('a');
-    link.href = processedImage;
-    link.download = 'background-removed.png';
+    link.href = url;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -98,7 +152,15 @@ const BackgroundRemover = () => {
       title: "Downloaded",
       description: "Image downloaded successfully!",
     });
-  }, [processedImage, toast]);
+  }, [toast]);
+
+  const downloadAllBatch = useCallback(() => {
+    batchResults.forEach((result, index) => {
+      setTimeout(() => {
+        downloadImage(result.url, `background-removed-${index + 1}.png`);
+      }, index * 100);
+    });
+  }, [batchResults, downloadImage]);
 
   const handleGradientChange = useCallback((start: string, end: string) => {
     setGradientStart(start);
@@ -108,201 +170,246 @@ const BackgroundRemover = () => {
   return (
     <>
       <SEO
-        title="AI Background Remover - Remove Image Backgrounds Online Free | ToolifyConvert"
-        description="Remove backgrounds from images instantly with AI technology. Free online background remover tool with advanced AI processing. No signup required."
-        keywords="background remover, AI background removal, remove image background, transparent background, image editing, photo editor, cutout tool"
+        title="AI Background Remover - Professional Quality | ToolifyConvert"
+        description="Remove backgrounds from images with professional AI technology. Fast, accurate, mobile-optimized. WebGPU accelerated processing."
+        keywords="background remover, AI background removal, professional photo editing, mobile background remover, batch processing, WebGPU"
         canonicalUrl="https://toolifyconvert.com/tools/background-remover"
       />
       
       <ToolPageTemplate
-        title="AI Background Remover"
-        description="Remove backgrounds from images instantly with advanced AI technology - no signup required"
+        title="Professional AI Background Remover"
+        description="Remove backgrounds with professional quality using advanced AI models and WebGPU acceleration"
       >
-        <div className="space-y-8 perspective-1000">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="space-y-6">
+          {/* Mode Selection */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <Tabs value={batchMode ? "batch" : "single"} onValueChange={(value) => setBatchMode(value === "batch")} className="w-full sm:w-auto">
+              <TabsList className="grid w-full grid-cols-2 sm:w-auto">
+                <TabsTrigger value="single" className="flex items-center gap-2">
+                  <ImageIcon className="h-4 w-4" />
+                  {isMobile ? "Single" : "Single Image"}
+                </TabsTrigger>
+                <TabsTrigger value="batch" className="flex items-center gap-2">
+                  <Batch className="h-4 w-4" />
+                  {isMobile ? "Batch" : "Batch Process"}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              {isMobile ? <Smartphone className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+              <span>{isMobile ? "Mobile Optimized" : "Desktop Enhanced"}</span>
+            </div>
+          </div>
+
+          <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-3'}`}>
             {/* Upload Section */}
-            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-6 rounded-3xl border border-white/30 shadow-xl">
-              <div className="animate-fade-in">
-                <h3 className="text-lg font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Upload Image</h3>
-                {!selectedImage ? (
-                  <div className="border-2 border-dashed border-blue-300/50 rounded-2xl p-8 text-center hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-300">
-                    <div className="animate-float">
-                      <ImageIcon className="h-16 w-16 text-blue-400 mx-auto mb-4" />
-                    </div>
-                    <p className="text-gray-600 mb-4 font-medium">
-                      Drop your image here
-                    </p>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
+            <div className={`space-y-4 ${isMobile ? '' : 'lg:col-span-2'}`}>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Upload className="h-5 w-5" />
+                    {batchMode ? "Upload Images" : "Upload Image"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {batchMode ? (
+                    <DragDropUpload
+                      onFilesSelected={handleBatchFiles}
+                      isProcessing={isProcessing}
+                      progress={progress}
+                      maxFiles={isMobile ? 5 : 10}
                     />
-                    <Button 
-                      onClick={() => fileInputRef.current?.click()}
-                      className="btn-3d px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600"
-                    >
-                      <Upload className="mr-2 h-5 w-5" /> Select Image
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="relative border rounded-2xl p-4 glassmorphism animate-scale-in bg-white/70">
-                    <img 
-                      src={selectedImage} 
-                      alt="Selected" 
-                      className="w-full h-48 object-cover rounded-xl shadow-lg border border-gray-200"
-                    />
-                    <Button 
-                      variant="outline" 
-                      className="absolute top-6 right-6 btn-3d bg-white/90"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      <Upload className="mr-2 h-4 w-4" /> Change
-                    </Button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                  </div>
-                )}
-              </div>
+                  ) : (
+                    <>
+                      {!selectedImage ? (
+                        <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 hover:bg-blue-50/30 transition-all duration-300">
+                          <ImageIcon className={`mx-auto mb-4 text-gray-400 ${isMobile ? 'h-12 w-12' : 'h-16 w-16'}`} />
+                          <p className={`text-gray-600 mb-4 ${isMobile ? 'text-sm' : 'font-medium'}`}>
+                            {isMobile ? "Tap to select image" : "Drop your image here or click to browse"}
+                          </p>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                          />
+                          <Button onClick={() => fileInputRef.current?.click()} className="w-full sm:w-auto">
+                            <Upload className="mr-2 h-4 w-4" /> Select Image
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          <img 
+                            src={selectedImage} 
+                            alt="Selected" 
+                            className={`w-full object-cover rounded-xl ${isMobile ? 'h-48' : 'h-64'}`}
+                          />
+                          <Button 
+                            variant="outline" 
+                            className="absolute top-2 right-2"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            <Upload className="mr-2 h-4 w-4" /> Change
+                          </Button>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                          />
+                        </div>
+                      )}
 
-              <Button 
-                onClick={removeBackgroundHandler} 
-                disabled={!selectedImage || isProcessing}
-                className="w-full btn-3d py-3 animate-fade-in delay-500 bg-gradient-to-r from-green-500 to-teal-600"
-              >
-                {isProcessing ? (
-                  <>
-                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Zap className="mr-2 h-5 w-5" /> Remove Background
-                  </>
-                )}
-              </Button>
+                      {!batchMode && (
+                        <Button 
+                          onClick={removeBackgroundHandler} 
+                          disabled={!selectedImage || isProcessing}
+                          className="w-full mt-4"
+                        >
+                          {isProcessing ? (
+                            <>
+                              <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <Zap className="mr-2 h-4 w-4" /> Remove Background
+                            </>
+                          )}
+                        </Button>
+                      )}
 
-              {isProcessing && (
-                <div className="space-y-3 animate-fade-in">
-                  <div className="flex justify-between text-sm font-medium">
-                    <span>Processing...</span>
-                    <span>{progress}%</span>
-                  </div>
-                  <Progress value={progress} className="h-2 rounded-full" />
-                  <p className="text-xs text-gray-600 text-center">
-                    {progress < 30 ? 'Loading model...' : 
-                     progress < 70 ? 'Analyzing image...' : 
-                     progress < 95 ? 'Removing background...' : 'Finalizing...'}
-                  </p>
-                </div>
-              )}
+                      {isProcessing && (
+                        <div className="space-y-2 mt-4">
+                          <div className="flex justify-between text-sm">
+                            <span>Processing...</span>
+                            <span className="font-medium">{Math.round(progress)}%</span>
+                          </div>
+                          <Progress value={progress} className="h-2" />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
             </div>
 
-            {/* Background Options */}
-            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-6 rounded-3xl border border-white/30 shadow-xl">
-              <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Background Options</h3>
-              <BackgroundColorPicker
-                selectedColor={backgroundColor}
-                onColorChange={setBackgroundColor}
-                gradientStart={gradientStart}
-                gradientEnd={gradientEnd}
-                onGradientChange={handleGradientChange}
-                isGradient={isGradient}
-                onGradientToggle={setIsGradient}
-              />
-            </div>
+            {/* Settings & Results */}
+            <div className="space-y-4">
+              {/* Settings Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Settings className="h-5 w-5" />
+                    Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Quality</label>
+                    <Select value={modelQuality} onValueChange={(value: any) => setModelQuality(value)}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fast">Fast (2-3s)</SelectItem>
+                        <SelectItem value="balanced">Balanced (5-8s)</SelectItem>
+                        <SelectItem value="accurate">High Quality (10-15s)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-            {/* Result Section */}
-            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-6 rounded-3xl border border-white/30 shadow-xl">
-              <h3 className="text-lg font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">Result</h3>
-              
-              {processedImage && selectedImage ? (
-                <div className="space-y-4 animate-scale-in">
-                  <ImageComparisonSlider
-                    beforeImage={selectedImage}
-                    afterImage={processedImage}
-                    className="h-64"
+                  <BackgroundColorPicker
+                    selectedColor={backgroundColor}
+                    onColorChange={setBackgroundColor}
+                    gradientStart={gradientStart}
+                    gradientEnd={gradientEnd}
+                    onGradientChange={handleGradientChange}
+                    isGradient={isGradient}
+                    onGradientToggle={setIsGradient}
                   />
-                  <Button 
-                    onClick={downloadImage} 
-                    className="w-full btn-3d py-3 bg-gradient-to-r from-blue-500 to-indigo-600"
-                  >
-                    <Download className="mr-2 h-5 w-5" /> Download PNG
-                  </Button>
-                </div>
-              ) : (
-                <div className="border rounded-2xl min-h-[300px] flex items-center justify-center glassmorphism bg-white/50">
-                  <div className="text-center animate-fade-in">
-                    <ImageIcon className="h-20 w-20 text-gray-300 mx-auto mb-4 animate-float" />
-                    <p className="text-gray-500 text-lg font-medium">Your processed image will appear here</p>
-                    <p className="text-gray-400 text-sm mt-2">With before/after comparison</p>
-                  </div>
-                </div>
+                </CardContent>
+              </Card>
+
+              {/* Results */}
+              {!batchMode && processedImage && selectedImage && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span className="text-lg">Result</span>
+                      <Button onClick={() => downloadImage(processedImage)} size="sm">
+                        <Download className="mr-2 h-4 w-4" /> Download
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <MobileOptimizedSlider
+                      beforeImage={selectedImage}
+                      afterImage={processedImage}
+                      className={isMobile ? "h-48" : "h-64"}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Batch Results */}
+              {batchMode && batchResults.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span className="text-lg">Results ({batchResults.length})</span>
+                      <Button onClick={downloadAllBatch} size="sm">
+                        <Download className="mr-2 h-4 w-4" /> Download All
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {batchResults.map((result, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                          <span className="text-sm truncate flex-1">{result.name}</span>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => downloadImage(result.url, result.name)}
+                          >
+                            <Download className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
 
-          {/* Enhanced Info Section */}
-          <div className="glassmorphism p-8 rounded-3xl bg-gradient-to-r from-blue-50 to-purple-50 border border-white/50 animate-fade-in delay-700">
-            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              🤖 Advanced AI Background Removal
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Zap className="h-6 w-6 text-white" />
+          {/* Info Section */}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-blue-600">AI</div>
+                  <div className="text-sm text-gray-600">Powered</div>
                 </div>
-                <h3 className="font-semibold mb-2">AI-Powered</h3>
-                <p className="text-sm text-gray-600">Advanced machine learning algorithms</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-white text-xl">🔒</span>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">WebGPU</div>
+                  <div className="text-sm text-gray-600">Accelerated</div>
                 </div>
-                <h3 className="font-semibold mb-2">100% Private</h3>
-                <p className="text-sm text-gray-600">Processing happens in your browser</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-white text-xl">⚡</span>
+                <div>
+                  <div className="text-2xl font-bold text-purple-600">Mobile</div>
+                  <div className="text-sm text-gray-600">Optimized</div>
                 </div>
-                <h3 className="font-semibold mb-2">WebGPU Accelerated</h3>
-                <p className="text-sm text-gray-600">Hardware acceleration when available</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-white text-xl">🎯</span>
+                <div>
+                  <div className="text-2xl font-bold text-orange-600">Batch</div>
+                  <div className="text-sm text-gray-600">Processing</div>
                 </div>
-                <h3 className="font-semibold mb-2">Precise Results</h3>
-                <p className="text-sm text-gray-600">High-quality edge detection</p>
               </div>
-            </div>
-
-            <div className="prose max-w-none">
-              <h3 className="text-lg font-semibold mb-4">Professional AI Background Removal</h3>
-              <p className="text-gray-700 mb-4">
-                Our advanced AI background remover uses state-of-the-art machine learning models to automatically detect and remove 
-                backgrounds from your images. The tool works entirely in your browser, ensuring complete privacy and security for 
-                your photos. Perfect for creating product photos, profile pictures, and professional presentations.
-              </p>
-              
-              <h3 className="text-lg font-semibold mb-4">Key Features:</h3>
-              <ul className="list-disc list-inside text-gray-700 space-y-2">
-                <li><strong>AI-Powered Precision:</strong> Advanced segmentation models for accurate results</li>
-                <li><strong>Instant Processing:</strong> Fast background removal in seconds</li>
-                <li><strong>Privacy First:</strong> All processing happens locally in your browser</li>
-                <li><strong>High Quality Output:</strong> Transparent PNG with smooth edges</li>
-                <li><strong>WebGPU Acceleration:</strong> Hardware acceleration for faster processing</li>
-                <li><strong>No Signup Required:</strong> Free to use without registration</li>
-              </ul>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </ToolPageTemplate>
     </>
