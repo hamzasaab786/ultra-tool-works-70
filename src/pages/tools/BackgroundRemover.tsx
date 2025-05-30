@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -74,8 +75,7 @@ const BackgroundRemover = () => {
         backgroundColor,
         gradientStart,
         gradientEnd,
-        isGradient,
-        'balanced'
+        isGradient
       );
 
       toast({
@@ -113,8 +113,7 @@ const BackgroundRemover = () => {
         backgroundColor,
         gradientStart,
         gradientEnd,
-        isGradient,
-        'balanced'
+        isGradient
       );
       
       const resultUrl = URL.createObjectURL(resultBlob);
@@ -122,7 +121,7 @@ const BackgroundRemover = () => {
       
       toast({
         title: "Success",
-        description: "Background removed with professional quality!",
+        description: "Background removed successfully!",
       });
     } catch (error) {
       console.error('Error removing background:', error);
@@ -167,15 +166,15 @@ const BackgroundRemover = () => {
   return (
     <>
       <SEO
-        title="AI Background Remover - Professional Quality | ToolifyConvert"
-        description="Remove backgrounds from images with professional AI technology. Fast, accurate, mobile-optimized. WebGPU accelerated processing."
-        keywords="background remover, AI background removal, professional photo editing, mobile background remover, batch processing, WebGPU"
+        title="Background Remover - Remove Image Backgrounds | ToolifyConvert"
+        description="Remove backgrounds from images quickly and easily. Fast, accurate, mobile-optimized background removal tool."
+        keywords="background remover, remove background, photo editing, mobile background remover, batch processing"
         canonicalUrl="https://toolifyconvert.com/tools/background-remover"
       />
       
       <ToolPageTemplate
-        title="Professional AI Background Remover"
-        description="Remove backgrounds with professional quality using advanced AI models and WebGPU acceleration"
+        title="Background Remover"
+        description="Remove backgrounds from images quickly and easily with professional results"
       >
         <div className="space-y-6">
           {/* Mode Selection */}
@@ -373,22 +372,14 @@ const BackgroundRemover = () => {
           {/* Info Section */}
           <Card>
             <CardContent className="pt-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-2 md:grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">AI</div>
-                  <div className="text-sm text-gray-600">Powered</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-green-600">WebGPU</div>
-                  <div className="text-sm text-gray-600">Accelerated</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-purple-600">Mobile</div>
-                  <div className="text-sm text-gray-600">Optimized</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-orange-600">Batch</div>
+                  <div className="text-2xl font-bold text-blue-600">Fast</div>
                   <div className="text-sm text-gray-600">Processing</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">High</div>
+                  <div className="text-sm text-gray-600">Quality</div>
                 </div>
               </div>
             </CardContent>
