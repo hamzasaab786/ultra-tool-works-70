@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ImageIcon, Upload, Download, Zap, Settings, Batch, Smartphone, Monitor } from "lucide-react";
+import { ImageIcon, Upload, Download, Zap, Settings, Layers, Smartphone, Monitor } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { removeBackground, loadImage, processBatch } from "@/utils/backgroundRemoval";
 import MobileOptimizedSlider from "@/components/MobileOptimizedSlider";
@@ -190,7 +189,7 @@ const BackgroundRemover = () => {
                   {isMobile ? "Single" : "Single Image"}
                 </TabsTrigger>
                 <TabsTrigger value="batch" className="flex items-center gap-2">
-                  <Batch className="h-4 w-4" />
+                  <Layers className="h-4 w-4" />
                   {isMobile ? "Batch" : "Batch Process"}
                 </TabsTrigger>
               </TabsList>

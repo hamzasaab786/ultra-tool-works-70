@@ -31,12 +31,10 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
     
     setSelectedFiles(limitedFiles);
     
-    // Create FileList-like object
-    const fileList = {
-      ...limitedFiles,
-      length: limitedFiles.length,
-      item: (index: number) => limitedFiles[index] || null
-    } as FileList;
+    // Create proper FileList from File array
+    const dt = new DataTransfer();
+    limitedFiles.forEach(file => dt.items.add(file));
+    const fileList = dt.files;
     
     onFilesSelected(fileList);
   }, [onFilesSelected, maxFiles]);
@@ -55,11 +53,14 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
     setSelectedFiles(newFiles);
     
     if (newFiles.length === 0) {
-      const emptyFileList = {
-        length: 0,
-        item: () => null
-      } as FileList;
+      const dt = new DataTransfer();
+      const emptyFileList = dt.files;
       onFilesSelected(emptyFileList);
+    } else {
+      const dt = new DataTransfer();
+      newFiles.forEach(file => dt.items.add(file));
+      const fileList = dt.files;
+      onFilesSelected(fileList);
     }
   };
 
