@@ -2,11 +2,12 @@
 import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ImageIcon, Upload, Download, Scissors, Zap } from "lucide-react";
+import { ImageIcon, Upload, Download, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { removeBackground, loadImage } from "@/utils/backgroundRemoval";
+import ImageComparisonSlider from "@/components/ImageComparisonSlider";
+import BackgroundColorPicker from "@/components/BackgroundColorPicker";
 import SEO from "@/components/SEO";
 
 const BackgroundRemover = () => {
@@ -14,6 +15,10 @@ const BackgroundRemover = () => {
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [backgroundColor, setBackgroundColor] = useState("transparent");
+  const [gradientStart, setGradientStart] = useState("#ffffff");
+  const [gradientEnd, setGradientEnd] = useState("#f0f0f0");
+  const [isGradient, setIsGradient] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -50,16 +55,21 @@ const BackgroundRemover = () => {
       
       const imageElement = await loadImage(blob);
       
-      const resultBlob = await removeBackground(imageElement, (progressValue) => {
-        setProgress(progressValue);
-      });
+      const resultBlob = await removeBackground(
+        imageElement, 
+        (progressValue) => setProgress(progressValue),
+        backgroundColor,
+        gradientStart,
+        gradientEnd,
+        isGradient
+      );
       
       const resultUrl = URL.createObjectURL(resultBlob);
       setProcessedImage(resultUrl);
       
       toast({
         title: "Success",
-        description: "Background removed successfully with AI!",
+        description: "Background removed successfully!",
       });
     } catch (error) {
       console.error('Error removing background:', error);
@@ -72,7 +82,7 @@ const BackgroundRemover = () => {
       setIsProcessing(false);
       setProgress(0);
     }
-  }, [selectedImage, toast]);
+  }, [selectedImage, backgroundColor, gradientStart, gradientEnd, isGradient, toast]);
 
   const downloadImage = useCallback(() => {
     if (!processedImage) return;
@@ -90,6 +100,11 @@ const BackgroundRemover = () => {
     });
   }, [processedImage, toast]);
 
+  const handleGradientChange = useCallback((start: string, end: string) => {
+    setGradientStart(start);
+    setGradientEnd(end);
+  }, []);
+
   return (
     <>
       <SEO
@@ -104,17 +119,18 @@ const BackgroundRemover = () => {
         description="Remove backgrounds from images instantly with advanced AI technology - no signup required"
       >
         <div className="space-y-8 perspective-1000">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-8 rounded-3xl border border-white/30 shadow-xl">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Upload Section */}
+            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-6 rounded-3xl border border-white/30 shadow-xl">
               <div className="animate-fade-in">
-                <h3 className="text-xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Upload Image</h3>
+                <h3 className="text-lg font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Upload Image</h3>
                 {!selectedImage ? (
-                  <div className="border-2 border-dashed border-blue-300/50 rounded-2xl p-12 text-center hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-300 glassmorphism">
+                  <div className="border-2 border-dashed border-blue-300/50 rounded-2xl p-8 text-center hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-300">
                     <div className="animate-float">
-                      <ImageIcon className="h-20 w-20 text-blue-400 mx-auto mb-6" />
+                      <ImageIcon className="h-16 w-16 text-blue-400 mx-auto mb-4" />
                     </div>
-                    <p className="text-lg text-gray-600 mb-6 font-medium">
-                      Drop your image here or click to browse
+                    <p className="text-gray-600 mb-4 font-medium">
+                      Drop your image here
                     </p>
                     <input
                       ref={fileInputRef}
@@ -125,24 +141,24 @@ const BackgroundRemover = () => {
                     />
                     <Button 
                       onClick={() => fileInputRef.current?.click()}
-                      className="btn-3d px-8 py-4 text-lg bg-gradient-to-r from-blue-500 to-purple-600"
+                      className="btn-3d px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600"
                     >
-                      <Upload className="mr-3 h-6 w-6" /> Select Image
+                      <Upload className="mr-2 h-5 w-5" /> Select Image
                     </Button>
                   </div>
                 ) : (
-                  <div className="relative border rounded-2xl p-6 glassmorphism animate-scale-in bg-white/70">
+                  <div className="relative border rounded-2xl p-4 glassmorphism animate-scale-in bg-white/70">
                     <img 
                       src={selectedImage} 
                       alt="Selected" 
-                      className="w-full h-64 object-cover rounded-xl shadow-lg border border-gray-200"
+                      className="w-full h-48 object-cover rounded-xl shadow-lg border border-gray-200"
                     />
                     <Button 
                       variant="outline" 
-                      className="absolute top-8 right-8 btn-3d bg-white/90"
+                      className="absolute top-6 right-6 btn-3d bg-white/90"
                       onClick={() => fileInputRef.current?.click()}
                     >
-                      <Upload className="mr-2 h-5 w-5" /> Change Image
+                      <Upload className="mr-2 h-4 w-4" /> Change
                     </Button>
                     <input
                       ref={fileInputRef}
@@ -158,16 +174,16 @@ const BackgroundRemover = () => {
               <Button 
                 onClick={removeBackgroundHandler} 
                 disabled={!selectedImage || isProcessing}
-                className="w-full btn-3d py-4 text-lg animate-fade-in delay-500 bg-gradient-to-r from-green-500 to-teal-600"
+                className="w-full btn-3d py-3 animate-fade-in delay-500 bg-gradient-to-r from-green-500 to-teal-600"
               >
                 {isProcessing ? (
                   <>
-                    <div className="animate-spin h-6 w-6 border-3 border-white border-t-transparent rounded-full mr-3"></div>
-                    Processing with AI...
+                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                    Processing...
                   </>
                 ) : (
                   <>
-                    <Zap className="mr-3 h-6 w-6" /> Remove Background with AI
+                    <Zap className="mr-2 h-5 w-5" /> Remove Background
                   </>
                 )}
               </Button>
@@ -175,12 +191,12 @@ const BackgroundRemover = () => {
               {isProcessing && (
                 <div className="space-y-3 animate-fade-in">
                   <div className="flex justify-between text-sm font-medium">
-                    <span>AI Processing...</span>
+                    <span>Processing...</span>
                     <span>{progress}%</span>
                   </div>
-                  <Progress value={progress} className="h-3 rounded-full" />
+                  <Progress value={progress} className="h-2 rounded-full" />
                   <p className="text-xs text-gray-600 text-center">
-                    {progress < 30 ? 'Loading AI model...' : 
+                    {progress < 30 ? 'Loading model...' : 
                      progress < 70 ? 'Analyzing image...' : 
                      progress < 95 ? 'Removing background...' : 'Finalizing...'}
                   </p>
@@ -188,37 +204,46 @@ const BackgroundRemover = () => {
               )}
             </div>
 
-            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-8 rounded-3xl border border-white/30 shadow-xl">
-              <h3 className="text-xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">AI Result</h3>
-              <div className="border rounded-2xl min-h-[400px] flex items-center justify-center glassmorphism bg-white/50">
-                {processedImage ? (
-                  <div className="p-6 text-center animate-scale-in">
-                    <img 
-                      src={processedImage} 
-                      alt="Background removed" 
-                      className="max-w-full max-h-[350px] object-contain mx-auto rounded-xl shadow-2xl"
-                      style={{ backgroundColor: 'transparent' }}
-                    />
-                    <p className="text-sm text-gray-600 mt-6 font-semibold bg-green-50 px-4 py-2 rounded-full inline-block">
-                      ✅ Background Removed • AI Processed • Transparent PNG
-                    </p>
-                  </div>
-                ) : (
-                  <div className="text-center animate-fade-in">
-                    <ImageIcon className="h-24 w-24 text-gray-300 mx-auto mb-6 animate-float" />
-                    <p className="text-gray-500 text-xl font-medium">Your AI-processed image will appear here</p>
-                    <p className="text-gray-400 text-sm mt-3">Advanced AI background removal</p>
-                  </div>
-                )}
-              </div>
+            {/* Background Options */}
+            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-6 rounded-3xl border border-white/30 shadow-xl">
+              <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Background Options</h3>
+              <BackgroundColorPicker
+                selectedColor={backgroundColor}
+                onColorChange={setBackgroundColor}
+                gradientStart={gradientStart}
+                gradientEnd={gradientEnd}
+                onGradientChange={handleGradientChange}
+                isGradient={isGradient}
+                onGradientToggle={setIsGradient}
+              />
+            </div>
+
+            {/* Result Section */}
+            <div className="space-y-6 card-3d bg-white/90 backdrop-blur-sm p-6 rounded-3xl border border-white/30 shadow-xl">
+              <h3 className="text-lg font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">Result</h3>
               
-              {processedImage && (
-                <Button 
-                  onClick={downloadImage} 
-                  className="w-full btn-3d py-4 text-lg animate-fade-in bg-gradient-to-r from-blue-500 to-indigo-600"
-                >
-                  <Download className="mr-3 h-6 w-6" /> Download Transparent PNG
-                </Button>
+              {processedImage && selectedImage ? (
+                <div className="space-y-4 animate-scale-in">
+                  <ImageComparisonSlider
+                    beforeImage={selectedImage}
+                    afterImage={processedImage}
+                    className="h-64"
+                  />
+                  <Button 
+                    onClick={downloadImage} 
+                    className="w-full btn-3d py-3 bg-gradient-to-r from-blue-500 to-indigo-600"
+                  >
+                    <Download className="mr-2 h-5 w-5" /> Download PNG
+                  </Button>
+                </div>
+              ) : (
+                <div className="border rounded-2xl min-h-[300px] flex items-center justify-center glassmorphism bg-white/50">
+                  <div className="text-center animate-fade-in">
+                    <ImageIcon className="h-20 w-20 text-gray-300 mx-auto mb-4 animate-float" />
+                    <p className="text-gray-500 text-lg font-medium">Your processed image will appear here</p>
+                    <p className="text-gray-400 text-sm mt-2">With before/after comparison</p>
+                  </div>
+                </div>
               )}
             </div>
           </div>

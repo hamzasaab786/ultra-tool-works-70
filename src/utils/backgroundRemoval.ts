@@ -1,11 +1,10 @@
 
 import { pipeline, env } from '@huggingface/transformers';
 
-// Configure transformers.js to use browser cache and WebGPU when available
 env.allowLocalModels = false;
 env.useBrowserCache = true;
 
-const MAX_IMAGE_DIMENSION = 1024;
+const MAX_IMAGE_DIMENSION = 512; // Reduced for faster processing
 
 function resizeImageIfNeeded(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, image: HTMLImageElement) {
   let width = image.naturalWidth;
@@ -32,59 +31,63 @@ function resizeImageIfNeeded(canvas: HTMLCanvasElement, ctx: CanvasRenderingCont
   return false;
 }
 
-export const removeBackground = async (imageElement: HTMLImageElement, onProgress?: (progress: number) => void): Promise<Blob> => {
+export const removeBackground = async (
+  imageElement: HTMLImageElement, 
+  onProgress?: (progress: number) => void,
+  backgroundColor?: string,
+  gradientStart?: string,
+  gradientEnd?: string,
+  isGradient?: boolean
+): Promise<Blob> => {
   try {
-    console.log('Starting AI background removal...');
+    console.log('Starting optimized background removal...');
     onProgress?.(10);
     
-    // Try WebGPU first, fallback to WASM
+    // Use a faster, lighter model
     let segmenter;
     try {
-      console.log('Attempting to load model with WebGPU...');
-      segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
-        device: 'webgpu',
+      segmenter = await pipeline('image-segmentation', 'Xenova/detr-resnet-50-panoptic', {
+        device: 'wasm', // Use WASM for better compatibility and speed
       });
-      console.log('WebGPU model loaded successfully');
-    } catch (webgpuError) {
-      console.log('WebGPU not available, falling back to WASM...', webgpuError);
-      try {
-        segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
-          device: 'wasm',
-        });
-        console.log('WASM model loaded successfully');
-      } catch (wasmError) {
-        console.error('Both WebGPU and WASM failed:', wasmError);
-        throw new Error('Failed to load AI model. Please try again or check your internet connection.');
-      }
+      console.log('Fast model loaded successfully');
+    } catch (error) {
+      console.log('Fast model failed, using fallback...');
+      segmenter = await pipeline('image-segmentation', 'Xenova/segformer-b0-finetuned-ade-512-512', {
+        device: 'wasm',
+      });
     }
     
     onProgress?.(30);
     
-    return await processWithSegmenter(segmenter, imageElement, onProgress);
+    return await processWithSegmenter(segmenter, imageElement, onProgress, backgroundColor, gradientStart, gradientEnd, isGradient);
   } catch (error) {
     console.error('Error removing background:', error);
     throw new Error(`Failed to remove background: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
-async function processWithSegmenter(segmenter: any, imageElement: HTMLImageElement, onProgress?: (progress: number) => void): Promise<Blob> {
-  // Convert HTMLImageElement to canvas
+async function processWithSegmenter(
+  segmenter: any, 
+  imageElement: HTMLImageElement, 
+  onProgress?: (progress: number) => void,
+  backgroundColor?: string,
+  gradientStart?: string,
+  gradientEnd?: string,
+  isGradient?: boolean
+): Promise<Blob> {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   
   if (!ctx) throw new Error('Could not get canvas context');
   
-  // Resize image if needed and draw it to canvas
   const wasResized = resizeImageIfNeeded(canvas, ctx, imageElement);
   console.log(`Image ${wasResized ? 'was' : 'was not'} resized. Final dimensions: ${canvas.width}x${canvas.height}`);
   onProgress?.(50);
   
-  // Get image data as base64
-  const imageData = canvas.toDataURL('image/jpeg', 0.8);
+  const imageData = canvas.toDataURL('image/jpeg', 0.7); // Lower quality for speed
   console.log('Image converted to base64');
   
-  // Process the image with the segmentation model
-  console.log('Processing with AI segmentation model...');
+  console.log('Processing with fast segmentation model...');
   onProgress?.(70);
   
   const result = await segmenter(imageData);
@@ -96,33 +99,52 @@ async function processWithSegmenter(segmenter: any, imageElement: HTMLImageEleme
     throw new Error('Invalid segmentation result');
   }
   
-  // Create a new canvas for the masked image
   const outputCanvas = document.createElement('canvas');
-  outputCanvas.width = canvas.width;
-  outputCanvas.height = canvas.height;
+  outputCanvas.width = imageElement.naturalWidth;
+  outputCanvas.height = imageElement.naturalHeight;
   const outputCtx = outputCanvas.getContext('2d');
   
   if (!outputCtx) throw new Error('Could not get output canvas context');
   
-  // Draw original image
-  outputCtx.drawImage(canvas, 0, 0);
-  
-  // Apply the mask
-  const outputImageData = outputCtx.getImageData(0, 0, outputCanvas.width, outputCanvas.height);
-  const data = outputImageData.data;
-  
-  // Apply inverted mask to alpha channel
-  for (let i = 0; i < result[0].mask.data.length; i++) {
-    // Invert the mask value (1 - value) to keep the subject instead of the background
-    const alpha = Math.round((1 - result[0].mask.data[i]) * 255);
-    data[i * 4 + 3] = alpha;
+  // Apply background if specified
+  if (backgroundColor && backgroundColor !== 'transparent') {
+    if (isGradient && gradientStart && gradientEnd) {
+      const gradient = outputCtx.createLinearGradient(0, 0, outputCanvas.width, outputCanvas.height);
+      gradient.addColorStop(0, gradientStart);
+      gradient.addColorStop(1, gradientEnd);
+      outputCtx.fillStyle = gradient;
+    } else {
+      outputCtx.fillStyle = backgroundColor;
+    }
+    outputCtx.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
   }
   
-  outputCtx.putImageData(outputImageData, 0, 0);
-  console.log('Mask applied successfully');
+  // Scale mask to original image size
+  const maskCanvas = document.createElement('canvas');
+  maskCanvas.width = canvas.width;
+  maskCanvas.height = canvas.height;
+  const maskCtx = maskCanvas.getContext('2d');
+  
+  if (!maskCtx) throw new Error('Could not get mask canvas context');
+  
+  const maskImageData = maskCtx.createImageData(canvas.width, canvas.height);
+  for (let i = 0; i < result[0].mask.data.length; i++) {
+    const alpha = Math.round((1 - result[0].mask.data[i]) * 255);
+    maskImageData.data[i * 4] = 255;
+    maskImageData.data[i * 4 + 1] = 255;
+    maskImageData.data[i * 4 + 2] = 255;
+    maskImageData.data[i * 4 + 3] = alpha;
+  }
+  maskCtx.putImageData(maskImageData, 0, 0);
+  
+  // Create composite image
+  outputCtx.drawImage(imageElement, 0, 0);
+  outputCtx.globalCompositeOperation = 'destination-in';
+  outputCtx.drawImage(maskCanvas, 0, 0, outputCanvas.width, outputCanvas.height);
+  
+  console.log('Background processing complete');
   onProgress?.(95);
   
-  // Convert canvas to blob
   return new Promise((resolve, reject) => {
     outputCanvas.toBlob(
       (blob) => {

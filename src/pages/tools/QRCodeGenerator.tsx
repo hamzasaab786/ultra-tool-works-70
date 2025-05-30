@@ -3,9 +3,11 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { QrCode, Link as LinkIcon, Mail, Phone, MessageSquare, Wifi, ImageIcon, Download, Upload, Palette } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { QrCode, Link as LinkIcon, Mail, Phone, MessageSquare, Wifi, ImageIcon, Download, Upload } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import GradientColorPicker from "@/components/GradientColorPicker";
 
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
@@ -15,7 +17,10 @@ const QRCodeGenerator = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [qrColor, setQrColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
-  const [qrSize, setQrSize] = useState(300);
+  const [qrSize, setQrSize] = useState([300]);
+  const [isGradient, setIsGradient] = useState(false);
+  const [gradientStart, setGradientStart] = useState("#3b82f6");
+  const [gradientEnd, setGradientEnd] = useState("#8b5cf6");
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const generateQR = async () => {
@@ -31,41 +36,65 @@ const QRCodeGenerator = () => {
     setLoading(true);
     
     try {
-      // Format text based on type
       const formattedText = formatTextForQR();
       const encodedText = encodeURIComponent(formattedText);
       
-      // Create QR code with custom colors
-      const colorParam = qrColor.replace('#', '');
-      const bgColorParam = bgColor.replace('#', '');
+      let qrApiUrl;
       
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
-      
-      // Test if the URL works
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      
-      img.onload = () => {
-        setQrCodeUrl(qrApiUrl);
-        setLoading(false);
-        toast({
-          title: "Success",
-          description: "QR code generated successfully!",
+      if (isGradient) {
+        // For gradient QR codes, we'll use a different approach
+        // Generate base QR code and apply gradient using canvas
+        const baseUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=000000&bgcolor=ffffff&format=png&ecc=M`;
+        
+        const response = await fetch(baseUrl);
+        const blob = await response.blob();
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Cannot get canvas context');
+        
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = URL.createObjectURL(blob);
         });
-      };
+        
+        canvas.width = qrSize[0];
+        canvas.height = qrSize[0];
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, gradientStart);
+        gradient.addColorStop(1, gradientEnd);
+        
+        // Fill background
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw QR code with gradient
+        ctx.drawImage(img, 0, 0);
+        ctx.globalCompositeOperation = 'source-in';
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Convert canvas to blob URL
+        qrApiUrl = canvas.toDataURL('image/png');
+        URL.revokeObjectURL(img.src);
+      } else {
+        const colorParam = qrColor.replace('#', '');
+        const bgColorParam = bgColor.replace('#', '');
+        qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
+      }
       
-      img.onerror = () => {
-        // Fallback to Google Charts API
-        const fallbackUrl = `https://chart.googleapis.com/chart?cht=qr&chl=${encodedText}&chs=${qrSize}x${qrSize}&choe=UTF-8`;
-        setQrCodeUrl(fallbackUrl);
-        setLoading(false);
-        toast({
-          title: "Success",
-          description: "QR code generated successfully!",
-        });
-      };
-      
-      img.src = qrApiUrl;
+      setQrCodeUrl(qrApiUrl);
+      setLoading(false);
+      toast({
+        title: "Success",
+        description: "QR code generated successfully!",
+      });
       
     } catch (error) {
       console.error('Error generating QR code:', error);
@@ -93,7 +122,7 @@ const QRCodeGenerator = () => {
     // For image QR, we'll encode a reference to the image
     const imageText = `Image uploaded - ${new Date().toISOString()}`;
     const encodedText = encodeURIComponent(imageText);
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodedText}&format=png`;
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&format=png`;
     
     setQrCodeUrl(qrApiUrl);
     setLoading(false);
@@ -227,7 +256,6 @@ const QRCodeGenerator = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* QR Code Input Section */}
           <div className="bg-card p-6 rounded-lg border shadow-sm">
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
               <TabsList className="grid grid-cols-4 mb-6">
@@ -249,28 +277,21 @@ const QRCodeGenerator = () => {
                 </TabsTrigger>
               </TabsList>
 
-              {/* Customization Options */}
-              <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-1 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                <GradientColorPicker
+                  startColor={gradientStart}
+                  endColor={gradientEnd}
+                  onStartColorChange={setGradientStart}
+                  onEndColorChange={setGradientEnd}
+                  isGradient={isGradient}
+                  onGradientToggle={setIsGradient}
+                  solidColor={qrColor}
+                  onSolidColorChange={setQrColor}
+                />
+                
                 <div>
-                  <Label>QR Color</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      type="color"
-                      value={qrColor}
-                      onChange={(e) => setQrColor(e.target.value)}
-                      className="w-12 h-8"
-                    />
-                    <Input
-                      value={qrColor}
-                      onChange={(e) => setQrColor(e.target.value)}
-                      placeholder="#000000"
-                      className="text-xs"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label>Background</Label>
-                  <div className="flex gap-2">
+                  <Label>Background Color</Label>
+                  <div className="flex gap-2 mt-2">
                     <Input
                       type="color"
                       value={bgColor}
@@ -285,15 +306,16 @@ const QRCodeGenerator = () => {
                     />
                   </div>
                 </div>
-                <div className="col-span-2">
-                  <Label>Size: {qrSize}px</Label>
-                  <Input
-                    type="range"
-                    min="200"
-                    max="500"
+                
+                <div>
+                  <Label>Size: {qrSize[0]}px</Label>
+                  <Slider
                     value={qrSize}
-                    onChange={(e) => setQrSize(parseInt(e.target.value))}
-                    className="w-full"
+                    onValueChange={setQrSize}
+                    max={500}
+                    min={200}
+                    step={10}
+                    className="w-full mt-2"
                   />
                 </div>
               </div>
@@ -452,7 +474,6 @@ const QRCodeGenerator = () => {
             </Tabs>
           </div>
           
-          {/* QR Code Display Section - Fixed the ref type issue */}
           <div className="bg-card p-6 rounded-lg border shadow-sm flex flex-col items-center justify-center">
             <div className="flex items-center justify-center min-h-[300px] w-full bg-gray-50 rounded-md mb-4">
               {qrCodeUrl ? (
@@ -460,7 +481,7 @@ const QRCodeGenerator = () => {
                   src={qrCodeUrl} 
                   alt="QR Code" 
                   className="w-auto h-auto max-w-full max-h-full"
-                  style={{ maxWidth: `${qrSize}px`, maxHeight: `${qrSize}px` }}
+                  style={{ maxWidth: `${qrSize[0]}px`, maxHeight: `${qrSize[0]}px` }}
                 />
               ) : (
                 <div className="text-gray-400 flex flex-col items-center">
@@ -482,7 +503,6 @@ const QRCodeGenerator = () => {
           </div>
         </div>
 
-        {/* Information Section */}
         <div className="mt-12 space-y-8">
           <div>
             <h2 className="text-2xl font-bold mb-4">How to Use Advanced QR Code Generator</h2>
