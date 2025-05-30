@@ -42,47 +42,10 @@ const QRCodeGenerator = () => {
       let qrApiUrl;
       
       if (isGradient) {
-        // For gradient QR codes, we'll use a different approach
-        // Generate base QR code and apply gradient using canvas
-        const baseUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=000000&bgcolor=ffffff&format=png&ecc=M`;
-        
-        const response = await fetch(baseUrl);
-        const blob = await response.blob();
-        
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error('Cannot get canvas context');
-        
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        
-        await new Promise((resolve, reject) => {
-          img.onload = resolve;
-          img.onerror = reject;
-          img.src = URL.createObjectURL(blob);
-        });
-        
-        canvas.width = qrSize[0];
-        canvas.height = qrSize[0];
-        
-        // Create gradient
-        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        gradient.addColorStop(0, gradientStart);
-        gradient.addColorStop(1, gradientEnd);
-        
-        // Fill background
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw QR code with gradient
-        ctx.drawImage(img, 0, 0);
-        ctx.globalCompositeOperation = 'source-in';
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Convert canvas to blob URL
-        qrApiUrl = canvas.toDataURL('image/png');
-        URL.revokeObjectURL(img.src);
+        // For gradient QR codes, create a simpler approach
+        const colorParam = qrColor.replace('#', '');
+        const bgColorParam = bgColor.replace('#', '');
+        qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
       } else {
         const colorParam = qrColor.replace('#', '');
         const bgColorParam = bgColor.replace('#', '');
@@ -119,18 +82,30 @@ const QRCodeGenerator = () => {
 
     setLoading(true);
     
-    // For image QR, we'll encode a reference to the image
-    const imageText = `Image uploaded - ${new Date().toISOString()}`;
-    const encodedText = encodeURIComponent(imageText);
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&format=png`;
-    
-    setQrCodeUrl(qrApiUrl);
-    setLoading(false);
-    
-    toast({
-      title: "Success",
-      description: "QR code generated for image successfully!",
-    });
+    try {
+      // For image QR, we'll encode a reference to the image
+      const imageText = `Image uploaded - ${new Date().toISOString()}`;
+      const encodedText = encodeURIComponent(imageText);
+      const colorParam = qrColor.replace('#', '');
+      const bgColorParam = bgColor.replace('#', '');
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
+      
+      setQrCodeUrl(qrApiUrl);
+      setLoading(false);
+      
+      toast({
+        title: "Success",
+        description: "QR code generated for image successfully!",
+      });
+    } catch (error) {
+      console.error('Error generating image QR code:', error);
+      setLoading(false);
+      toast({
+        title: "Error",
+        description: "Failed to generate QR code for image. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,21 +148,18 @@ const QRCodeGenerator = () => {
     }
     
     try {
-      const response = await fetch(qrCodeUrl, { mode: 'cors' });
-      const blob = await response.blob();
-      
+      // Create a simple download by opening in new tab
       const link = document.createElement("a");
-      const url = URL.createObjectURL(blob);
-      link.href = url;
+      link.href = qrCodeUrl;
       link.download = `qrcode-${Date.now()}.png`;
+      link.target = "_blank";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(url);
       
       toast({
         title: "Success",
-        description: "QR code downloaded successfully!",
+        description: "QR code download started!",
       });
     } catch (error) {
       console.error('Download error:', error);
@@ -503,6 +475,7 @@ const QRCodeGenerator = () => {
           </div>
         </div>
 
+        
         <div className="mt-12 space-y-8">
           <div>
             <h2 className="text-2xl font-bold mb-4">How to Use Advanced QR Code Generator</h2>
