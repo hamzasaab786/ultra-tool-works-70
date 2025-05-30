@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { QrCode, Link as LinkIcon, Mail, Phone, MessageSquare, Wifi, ImageIcon, 
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import GradientColorPicker from "@/components/GradientColorPicker";
+import QRCode from 'qrcode';
 
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
@@ -22,6 +24,7 @@ const QRCodeGenerator = () => {
   const [gradientStart, setGradientStart] = useState("#3b82f6");
   const [gradientEnd, setGradientEnd] = useState("#8b5cf6");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   
   const generateQR = async () => {
     if (!text.trim()) {
@@ -37,22 +40,76 @@ const QRCodeGenerator = () => {
     
     try {
       const formattedText = formatTextForQR();
-      const encodedText = encodeURIComponent(formattedText);
-      
-      let qrApiUrl;
+      const size = qrSize[0];
       
       if (isGradient) {
-        // For gradient QR codes, create a simpler approach
-        const colorParam = qrColor.replace('#', '');
-        const bgColorParam = bgColor.replace('#', '');
-        qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
+        // Generate QR with gradient using canvas
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        if (!ctx) {
+          throw new Error('Could not get canvas context');
+        }
+        
+        canvas.width = size;
+        canvas.height = size;
+        
+        // Generate QR code data
+        const qrData = await QRCode.toCanvas(canvas, formattedText, {
+          width: size,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: bgColor
+          }
+        });
+        
+        // Get image data to manipulate pixels
+        const imageData = ctx.getImageData(0, 0, size, size);
+        const data = imageData.data;
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, size, size);
+        gradient.addColorStop(0, gradientStart);
+        gradient.addColorStop(1, gradientEnd);
+        
+        // Apply gradient to dark pixels
+        for (let i = 0; i < data.length; i += 4) {
+          // If pixel is dark (QR code foreground)
+          if (data[i] < 128) {
+            const x = (i / 4) % size;
+            const y = Math.floor(i / 4 / size);
+            
+            // Calculate gradient color at this position
+            const ratio = (x + y) / (size * 2);
+            const startColor = hexToRgb(gradientStart);
+            const endColor = hexToRgb(gradientEnd);
+            
+            if (startColor && endColor) {
+              data[i] = Math.round(startColor.r + (endColor.r - startColor.r) * ratio);     // R
+              data[i + 1] = Math.round(startColor.g + (endColor.g - startColor.g) * ratio); // G
+              data[i + 2] = Math.round(startColor.b + (endColor.b - startColor.b) * ratio); // B
+            }
+          }
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+        
+        const qrUrl = canvas.toDataURL('image/png');
+        setQrCodeUrl(qrUrl);
       } else {
-        const colorParam = qrColor.replace('#', '');
-        const bgColorParam = bgColor.replace('#', '');
-        qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
+        // Generate simple QR code
+        const qrUrl = await QRCode.toDataURL(formattedText, {
+          width: size,
+          margin: 2,
+          color: {
+            dark: qrColor,
+            light: bgColor
+          }
+        });
+        setQrCodeUrl(qrUrl);
       }
       
-      setQrCodeUrl(qrApiUrl);
       setLoading(false);
       toast({
         title: "Success",
@@ -70,6 +127,15 @@ const QRCodeGenerator = () => {
     }
   };
 
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  };
+
   const generateImageQR = () => {
     if (!selectedImage) {
       toast({
@@ -80,32 +146,10 @@ const QRCodeGenerator = () => {
       return;
     }
 
-    setLoading(true);
-    
-    try {
-      // For image QR, we'll encode a reference to the image
-      const imageText = `Image uploaded - ${new Date().toISOString()}`;
-      const encodedText = encodeURIComponent(imageText);
-      const colorParam = qrColor.replace('#', '');
-      const bgColorParam = bgColor.replace('#', '');
-      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize[0]}x${qrSize[0]}&data=${encodedText}&color=${colorParam}&bgcolor=${bgColorParam}&format=png&ecc=M`;
-      
-      setQrCodeUrl(qrApiUrl);
-      setLoading(false);
-      
-      toast({
-        title: "Success",
-        description: "QR code generated for image successfully!",
-      });
-    } catch (error) {
-      console.error('Error generating image QR code:', error);
-      setLoading(false);
-      toast({
-        title: "Error",
-        description: "Failed to generate QR code for image. Please try again.",
-        variant: "destructive"
-      });
-    }
+    // For image QR, we'll encode a reference to the image
+    const imageText = `Image uploaded - ${new Date().toISOString()}`;
+    setText(imageText);
+    generateQR();
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,11 +192,9 @@ const QRCodeGenerator = () => {
     }
     
     try {
-      // Create a simple download by opening in new tab
       const link = document.createElement("a");
       link.href = qrCodeUrl;
       link.download = `qrcode-${Date.now()}.png`;
-      link.target = "_blank";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -163,7 +205,6 @@ const QRCodeGenerator = () => {
       });
     } catch (error) {
       console.error('Download error:', error);
-      // Fallback: open in new tab
       window.open(qrCodeUrl, '_blank');
       toast({
         title: "Download Started",
@@ -218,7 +259,7 @@ const QRCodeGenerator = () => {
   return (
     <ToolPageTemplate
       title="Advanced QR Code Generator"
-      description="Professional QR code generator with customization options - Create QR codes for URLs, text, contact info, WiFi, and images with custom colors and sizes"
+      description="Professional QR code generator with customization options - Create QR codes for URLs, text, contact info, WiFi, and images with custom colors and gradients"
     >
       <div className="space-y-6">
         <div className="p-4 bg-primary/5 rounded-md">
@@ -230,7 +271,7 @@ const QRCodeGenerator = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-card p-6 rounded-lg border shadow-sm">
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-              <TabsList className="grid grid-cols-4 mb-6">
+              <TabsList className="grid grid-cols-3 lg:grid-cols-6 mb-6">
                 <TabsTrigger value="url" className="flex items-center gap-1">
                   <LinkIcon className="h-4 w-4" />
                   URL
@@ -239,13 +280,21 @@ const QRCodeGenerator = () => {
                   <MessageSquare className="h-4 w-4" />
                   Text
                 </TabsTrigger>
-                <TabsTrigger value="image" className="flex items-center gap-1">
-                  <ImageIcon className="h-4 w-4" />
-                  Image
+                <TabsTrigger value="email" className="flex items-center gap-1">
+                  <Mail className="h-4 w-4" />
+                  Email
                 </TabsTrigger>
-                <TabsTrigger value="more" className="flex items-center gap-1">
-                  <QrCode className="h-4 w-4" />
-                  More
+                <TabsTrigger value="phone" className="flex items-center gap-1">
+                  <Phone className="h-4 w-4" />
+                  Phone
+                </TabsTrigger>
+                <TabsTrigger value="sms" className="flex items-center gap-1">
+                  <MessageSquare className="h-4 w-4" />
+                  SMS
+                </TabsTrigger>
+                <TabsTrigger value="wifi" className="flex items-center gap-1">
+                  <Wifi className="h-4 w-4" />
+                  WiFi
                 </TabsTrigger>
               </TabsList>
 
@@ -328,120 +377,76 @@ const QRCodeGenerator = () => {
                 </Button>
               </TabsContent>
 
-              <TabsContent value="image">
-                <Label>Upload Image for QR Code</Label>
-                <div className="mt-2 space-y-4">
-                  {!selectedImage ? (
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm text-gray-500 mb-4">
-                        Click to upload an image (Max 2MB)
-                      </p>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                      <Button 
-                        variant="outline" 
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        <Upload className="mr-2 h-4 w-4" /> Select Image
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="border rounded-lg p-4">
-                        <img 
-                          src={selectedImage} 
-                          alt="Selected" 
-                          className="w-full h-32 object-cover rounded"
-                        />
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="mt-2 w-full"
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          Change Image
-                        </Button>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="hidden"
-                        />
-                      </div>
-                      <Button 
-                        onClick={generateImageQR} 
-                        className="w-full"
-                        disabled={loading}
-                      >
-                        {loading ? "Generating..." : "Generate QR for Image"}
-                      </Button>
-                    </div>
-                  )}
-                </div>
+              <TabsContent value="email">
+                <Label htmlFor="email-input">Enter Email Address</Label>
+                <Input
+                  id="email-input"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={getPlaceholderText()}
+                  className="mb-4"
+                />
+                <Button 
+                  onClick={generateQR} 
+                  className="w-full"
+                  disabled={loading || !text.trim()}
+                >
+                  {loading ? "Generating..." : "Generate Email QR Code"}
+                </Button>
               </TabsContent>
-              
-              <TabsContent value="more">
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <Button
-                    variant={activeTab === "email" ? "default" : "outline"}
-                    className="flex items-center justify-start gap-2"
-                    onClick={() => setActiveTab("email")}
-                  >
-                    <Mail className="h-4 w-4" />
-                    Email
-                  </Button>
-                  <Button
-                    variant={activeTab === "phone" ? "default" : "outline"}
-                    className="flex items-center justify-start gap-2"
-                    onClick={() => setActiveTab("phone")}
-                  >
-                    <Phone className="h-4 w-4" />
-                    Phone
-                  </Button>
-                  <Button
-                    variant={activeTab === "sms" ? "default" : "outline"}
-                    className="flex items-center justify-start gap-2"
-                    onClick={() => setActiveTab("sms")}
-                  >
-                    <MessageSquare className="h-4 w-4" />
-                    SMS
-                  </Button>
-                  <Button
-                    variant={activeTab === "wifi" ? "default" : "outline"}
-                    className="flex items-center justify-start gap-2"
-                    onClick={() => setActiveTab("wifi")}
-                  >
-                    <Wifi className="h-4 w-4" />
-                    WiFi
-                  </Button>
-                </div>
-                
-                {(activeTab === "email" || activeTab === "phone" || activeTab === "sms" || activeTab === "wifi") && (
-                  <>
-                    <Label htmlFor="specific-input">{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</Label>
-                    <Input
-                      id="specific-input"
-                      value={text}
-                      onChange={(e) => setText(e.target.value)}
-                      placeholder={getPlaceholderText()}
-                      className="mb-4"
-                    />
-                    <Button 
-                      onClick={generateQR} 
-                      className="w-full"
-                      disabled={loading || !text.trim()}
-                    >
-                      {loading ? "Generating..." : "Generate QR Code"}
-                    </Button>
-                  </>
-                )}
+
+              <TabsContent value="phone">
+                <Label htmlFor="phone-input">Enter Phone Number</Label>
+                <Input
+                  id="phone-input"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={getPlaceholderText()}
+                  className="mb-4"
+                />
+                <Button 
+                  onClick={generateQR} 
+                  className="w-full"
+                  disabled={loading || !text.trim()}
+                >
+                  {loading ? "Generating..." : "Generate Phone QR Code"}
+                </Button>
+              </TabsContent>
+
+              <TabsContent value="sms">
+                <Label htmlFor="sms-input">Enter Phone Number for SMS</Label>
+                <Input
+                  id="sms-input"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={getPlaceholderText()}
+                  className="mb-4"
+                />
+                <Button 
+                  onClick={generateQR} 
+                  className="w-full"
+                  disabled={loading || !text.trim()}
+                >
+                  {loading ? "Generating..." : "Generate SMS QR Code"}
+                </Button>
+              </TabsContent>
+
+              <TabsContent value="wifi">
+                <Label htmlFor="wifi-input">Enter WiFi Network Name</Label>
+                <Input
+                  id="wifi-input"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder={getPlaceholderText()}
+                  className="mb-4"
+                />
+                <Button 
+                  onClick={generateQR} 
+                  className="w-full"
+                  disabled={loading || !text.trim()}
+                >
+                  {loading ? "Generating..." : "Generate WiFi QR Code"}
+                </Button>
               </TabsContent>
             </Tabs>
           </div>
@@ -480,20 +485,20 @@ const QRCodeGenerator = () => {
           <div>
             <h2 className="text-2xl font-bold mb-4">How to Use Advanced QR Code Generator</h2>
             <ol className="list-decimal list-inside space-y-2 ml-4">
-              <li>Select the type of content you want to encode (URL, Text, Image, Email, etc.)</li>
-              <li>Enter your content or upload an image in the input field</li>
+              <li>Select the type of content you want to encode (URL, Text, Email, Phone, SMS, WiFi)</li>
+              <li>Enter your content in the input field</li>
+              <li>Customize colors and gradients in the settings panel</li>
               <li>Click "Generate QR Code" to create your personalized QR code</li>
               <li>Click "Download QR Code" to save the high-quality image to your device</li>
-              <li>Use your QR code in marketing materials, business cards, or digital content</li>
             </ol>
           </div>
           
           <div>
             <h2 className="text-2xl font-bold mb-4">About Our QR Code Generator</h2>
             <p className="text-gray-600 mb-4">
-              Our advanced QR code generator supports multiple content types including URLs, plain text, images, 
-              contact information, WiFi credentials, and more. Perfect for businesses, marketers, and individuals 
-              who need professional QR codes for various applications.
+              Our advanced QR code generator supports multiple content types including URLs, plain text, 
+              contact information, WiFi credentials, and more. Features include gradient colors, custom sizing,
+              and professional quality output perfect for businesses and personal use.
             </p>
             <p className="text-gray-600">
               All QR codes are generated in high quality and can be downloaded immediately. The tool works 
@@ -504,7 +509,8 @@ const QRCodeGenerator = () => {
           <div>
             <h2 className="text-2xl font-bold mb-4">Why Use Our Advanced QR Code Generator?</h2>
             <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Support for multiple content types including images</li>
+              <li>Support for multiple content types with dedicated options</li>
+              <li>Beautiful gradient colors and customization options</li>
               <li>High-quality, downloadable QR codes</li>
               <li>No sign-up or account creation required</li>
               <li>Completely free with unlimited usage</li>
@@ -514,6 +520,8 @@ const QRCodeGenerator = () => {
             </ul>
           </div>
         </div>
+        
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
     </ToolPageTemplate>
   );
