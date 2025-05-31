@@ -31,6 +31,7 @@ import SvgToJpg from "./pages/tools/SvgToJpg";
 // New PDF Tools
 import SplitPdf from "./pages/tools/SplitPdf";
 import CompressPdf from "./pages/tools/CompressPdf";
+import PdfToJpg from "./pages/tools/PdfToJpg";
 
 // New Calculator/Converter Tools
 import UnitConverter from "./pages/tools/UnitConverter";
@@ -83,6 +84,7 @@ const AppContent = () => {
       <Route path="/tools/merge-pdf" element={<MergePDF />} />
       <Route path="/tools/split-pdf" element={<SplitPdf />} />
       <Route path="/tools/compress-pdf" element={<CompressPdf />} />
+      <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
       
       {/* Calculator/Converter Tool Routes */}
       <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />

@@ -69,6 +69,10 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Compress PDF</div>
                 <p className="text-sm text-muted-foreground">Reduce PDF file size</p>
               </Link>
+              <Link to="/tools/pdf-to-jpg" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">PDF to JPG</div>
+                <p className="text-sm text-muted-foreground">Convert PDF pages to high-quality images</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>

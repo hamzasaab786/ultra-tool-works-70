@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
 // Import tool icons
-import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser } from "lucide-react";
+import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage } from "lucide-react";
 const Index = () => {
   const scrollToTools = () => {
     document.getElementById('popular-tools')?.scrollIntoView({
@@ -72,6 +72,11 @@ const Index = () => {
       description: "Reduce PDF file size while maintaining document quality and readability",
       icon: <FileDown />,
       path: "/tools/compress-pdf"
+    }, {
+      title: "PDF to JPG",
+      description: "Convert PDF pages to high-quality JPG or PNG images with customizable settings",
+      icon: <FileImage />,
+      path: "/tools/pdf-to-jpg"
     }]
   }, {
     title: "🧮 Calculators & Converters",
@@ -219,15 +224,17 @@ const Index = () => {
           // Merge PDF
           toolCategories[1].tools[0],
           // Percentage Calculator
-          toolCategories[4].tools[0],
+          toolCategories[2].tools[0],
           // QR Code Generator
-          toolCategories[0].tools[5],
+          toolCategories[4].tools[0],
           // Background Remover
-          toolCategories[4].tools[2],
+          toolCategories[0].tools[5],
           // Timer & Stopwatch
-          toolCategories[3].tools[2],
+          toolCategories[4].tools[2],
           // Base64 Tool
-          toolCategories[4].tools[3] // Color Picker
+          toolCategories[3].tools[2],
+          // Color Picker
+          toolCategories[4].tools[3] // PDF to JPG
           ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
             animationDelay: `${index * 100}ms`
           }}>
