@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
@@ -14,8 +13,8 @@ import { FileText, Download, Settings, Zap, Image, AlertCircle } from 'lucide-re
 import ToolPageTemplate from './ToolPageTemplate';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure PDF.js worker with correct version
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configure PDF.js worker with correct version - using unpkg for better reliability
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
 
 interface ConversionSettings {
   format: 'jpg' | 'png';
@@ -56,6 +55,8 @@ const PdfToJpg = () => {
     const file = acceptedFiles[0];
     if (!file) return;
 
+    console.log('File dropped:', file.name, file.type, file.size);
+
     if (file.type !== 'application/pdf') {
       toast({
         title: 'Invalid file type',
@@ -80,14 +81,21 @@ const PdfToJpg = () => {
     setIsLoading(true);
 
     try {
+      console.log('Starting PDF processing...');
       const arrayBuffer = await file.arrayBuffer();
+      console.log('ArrayBuffer created, size:', arrayBuffer.byteLength);
+      
       const loadingTask = pdfjsLib.getDocument({ 
         data: arrayBuffer,
-        cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+        cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/cmaps/`,
         cMapPacked: true,
+        verbosity: 0, // Reduce console noise
       });
       
+      console.log('PDF loading task created');
       const pdf = await loadingTask.promise;
+      console.log('PDF loaded successfully, pages:', pdf.numPages);
+      
       setPdfDocument(pdf);
       setTotalPages(pdf.numPages);
 
@@ -95,20 +103,27 @@ const PdfToJpg = () => {
       const previews: string[] = [];
       const maxPreviews = Math.min(3, pdf.numPages);
       
+      console.log('Generating previews for', maxPreviews, 'pages');
+      
       for (let i = 1; i <= maxPreviews; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 0.8 });
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d')!;
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+        try {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 0.8 });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d')!;
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
 
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        }).promise;
+          await page.render({
+            canvasContext: context,
+            viewport: viewport,
+          }).promise;
 
-        previews.push(canvas.toDataURL('image/jpeg', 0.8));
+          previews.push(canvas.toDataURL('image/jpeg', 0.8));
+          console.log('Preview generated for page', i);
+        } catch (pageError) {
+          console.error('Error generating preview for page', i, pageError);
+        }
       }
       
       setPreviewPages(previews);
@@ -143,48 +158,58 @@ const PdfToJpg = () => {
   const convertPdfToImages = async () => {
     if (!pdfDocument || !selectedFile) return;
 
+    console.log('Starting conversion...');
     setIsConverting(true);
     setConversionProgress(0);
     setConvertedPages([]);
 
     try {
       const pagesToConvert = getPageNumbers();
+      console.log('Pages to convert:', pagesToConvert);
       const converted: ConvertedPage[] = [];
 
       for (let i = 0; i < pagesToConvert.length; i++) {
         const pageNum = pagesToConvert[i];
-        const page = await pdfDocument.getPage(pageNum);
+        console.log('Converting page', pageNum);
         
-        // Calculate scale based on DPI
-        const scale = settings.dpi / 72; // 72 is the default DPI
-        const viewport = page.getViewport({ scale });
-        
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d')!;
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+        try {
+          const page = await pdfDocument.getPage(pageNum);
+          
+          // Calculate scale based on DPI
+          const scale = settings.dpi / 72; // 72 is the default DPI
+          const viewport = page.getViewport({ scale });
+          
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d')!;
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
 
-        await page.render({
-          canvasContext: context,
-          viewport: viewport,
-        }).promise;
+          await page.render({
+            canvasContext: context,
+            viewport: viewport,
+          }).promise;
 
-        // Convert to blob
-        const blob = await new Promise<Blob>((resolve) => {
-          canvas.toBlob((blob) => {
-            resolve(blob!);
-          }, `image/${settings.format}`, settings.format === 'jpg' ? settings.quality / 100 : 1);
-        });
+          // Convert to blob
+          const blob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => {
+              resolve(blob!);
+            }, `image/${settings.format}`, settings.format === 'jpg' ? settings.quality / 100 : 1);
+          });
 
-        const dataUrl = canvas.toDataURL(`image/${settings.format}`, settings.format === 'jpg' ? settings.quality / 100 : 1);
-        const filename = `${selectedFile.name.replace('.pdf', '')}_page_${pageNum}.${settings.format}`;
+          const dataUrl = canvas.toDataURL(`image/${settings.format}`, settings.format === 'jpg' ? settings.quality / 100 : 1);
+          const filename = `${selectedFile.name.replace('.pdf', '')}_page_${pageNum}.${settings.format}`;
 
-        converted.push({
-          pageNumber: pageNum,
-          dataUrl,
-          blob,
-          filename
-        });
+          converted.push({
+            pageNumber: pageNum,
+            dataUrl,
+            blob,
+            filename
+          });
+
+          console.log('Page', pageNum, 'converted successfully');
+        } catch (pageError) {
+          console.error('Error converting page', pageNum, pageError);
+        }
 
         setConversionProgress(((i + 1) / pagesToConvert.length) * 100);
       }
