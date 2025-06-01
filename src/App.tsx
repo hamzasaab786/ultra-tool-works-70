@@ -41,6 +41,7 @@ import CurrencyConverter from "./pages/tools/CurrencyConverter";
 import WordCounter from "./pages/tools/WordCounter";
 import CaseConverter from "./pages/tools/CaseConverter";
 import Base64Tool from "./pages/tools/Base64Tool";
+import SpeechConverter from "./pages/tools/SpeechConverter";
 
 // New Utility Tools
 import PasswordGenerator from "./pages/tools/PasswordGenerator";
@@ -95,6 +96,7 @@ const AppContent = () => {
       <Route path="/tools/word-counter" element={<WordCounter />} />
       <Route path="/tools/case-converter" element={<CaseConverter />} />
       <Route path="/tools/base64-tool" element={<Base64Tool />} />
+      <Route path="/tools/speech-converter" element={<SpeechConverter />} />
       
       {/* Utility Tool Routes */}
       <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
