@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -8,13 +9,15 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
 // Import tool icons
-import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage } from "lucide-react";
+import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, Volume2 } from "lucide-react";
+
 const Index = () => {
   const scrollToTools = () => {
     document.getElementById('popular-tools')?.scrollIntoView({
       behavior: 'smooth'
     });
   };
+
   const toolCategories = [{
     title: "🖼️ Image Tools",
     description: "Professional image processing tools for compression, resizing, format conversion, and enhancement. Perfect for photographers, designers, and content creators.",
@@ -53,6 +56,11 @@ const Index = () => {
       description: "Create professional passport photos with correct dimensions and quality standards",
       icon: <Camera />,
       path: "/tools/passport-photo-maker"
+    }, {
+      title: "Image to URL",
+      description: "Upload images and get shareable URLs for web hosting and sharing",
+      icon: <Link2 />,
+      path: "/tools/image-to-url"
     }]
   }, {
     title: "📄 PDF Tools",
@@ -115,6 +123,11 @@ const Index = () => {
       description: "Encode and decode Base64 strings for data transmission and storage",
       icon: <Type />,
       path: "/tools/base64-tool"
+    }, {
+      title: "Speech Converter",
+      description: "Convert between direct and indirect speech with proper grammar rules and examples",
+      icon: <MessageSquare />,
+      path: "/tools/speech-converter"
     }]
   }, {
     title: "🛠️ Utility Tools",
@@ -146,6 +159,7 @@ const Index = () => {
       path: "/tools/budget-tracker"
     }]
   }];
+
   const faqs = [{
     question: "Are all tools completely free to use?",
     answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
@@ -162,8 +176,9 @@ const Index = () => {
     question: "Are there any file size limitations?",
     answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
   }];
+
   return <Layout>
-      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 20+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 25+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
@@ -219,27 +234,67 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[toolCategories[0].tools[0],
-          // Image Compressor
-          // Merge PDF
-          toolCategories[1].tools[0],
-          // Percentage Calculator
-          toolCategories[2].tools[0],
-          // QR Code Generator
-          toolCategories[4].tools[0],
-          // Background Remover
-          toolCategories[0].tools[5],
-          // Timer & Stopwatch
-          toolCategories[4].tools[2],
-          // Base64 Tool
-          toolCategories[3].tools[2],
-          // Color Picker
-          toolCategories[4].tools[3] // PDF to JPG
-          ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
+            {[
+              toolCategories[0].tools[0], // Image Compressor
+              toolCategories[1].tools[0], // Merge PDF
+              toolCategories[2].tools[0], // Percentage Calculator
+              toolCategories[4].tools[0], // QR Code Generator
+              toolCategories[0].tools[5], // Background Remover
+              toolCategories[4].tools[2], // Timer & Stopwatch
+              toolCategories[3].tools[2], // Base64 Tool
+              toolCategories[4].tools[3], // Color Picker
+              toolCategories[1].tools[3], // PDF to JPG
+              toolCategories[3].tools[3]  // Speech Converter
+            ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
             animationDelay: `${index * 100}ms`
           }}>
                 <ToolCard title={tool.title} description={tool.description} icon={tool.icon} path={tool.path} className="h-full" />
               </div>)}
+          </div>
+        </div>
+      </section>
+
+      {/* All Tools Categories Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-indigo-50/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+              🚀 All Tools by Category
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Explore our complete collection of professional-grade tools, organized by category for easy discovery
+            </p>
+          </div>
+
+          <div className="space-y-16">
+            {toolCategories.map((category, categoryIndex) => (
+              <div key={categoryIndex} className="space-y-8">
+                <div className="text-center">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
+                    {category.title}
+                  </h3>
+                  <p className="text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                    {category.description}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {category.tools.map((tool, toolIndex) => (
+                    <div key={toolIndex} className="animate-fade-in" style={{
+                      animationDelay: `${toolIndex * 50}ms`
+                    }}>
+                      <ToolCard 
+                        title={tool.title} 
+                        description={tool.description} 
+                        icon={tool.icon} 
+                        path={tool.path} 
+                        className="h-full"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -333,4 +388,5 @@ const Index = () => {
       </section>
     </Layout>;
 };
+
 export default Index;

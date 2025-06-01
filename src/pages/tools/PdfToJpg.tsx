@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
@@ -13,8 +12,10 @@ import { FileText, Download, Settings, Zap, Image, AlertCircle } from 'lucide-re
 import ToolPageTemplate from './ToolPageTemplate';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// Configure PDF.js worker with a more reliable URL
+if (typeof window !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+}
 
 interface ConversionSettings {
   format: 'jpg' | 'png';
@@ -53,6 +54,8 @@ const PdfToJpg = () => {
     const file = acceptedFiles[0];
     if (!file) return;
 
+    console.log('File selected:', file.name, file.type, file.size);
+
     if (file.type !== 'application/pdf') {
       toast({
         title: 'Invalid file type',
@@ -77,14 +80,20 @@ const PdfToJpg = () => {
     setIsLoading(true);
 
     try {
+      console.log('Starting PDF loading...');
       const arrayBuffer = await file.arrayBuffer();
+      console.log('ArrayBuffer created, size:', arrayBuffer.byteLength);
       
       const loadingTask = pdfjsLib.getDocument({ 
         data: arrayBuffer,
         verbosity: 0,
+        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
+        cMapPacked: true,
       });
       
+      console.log('Loading task created...');
       const pdf = await loadingTask.promise;
+      console.log('PDF loaded successfully, pages:', pdf.numPages);
       
       setPdfDocument(pdf);
       setTotalPages(pdf.numPages);
@@ -95,6 +104,7 @@ const PdfToJpg = () => {
       
       for (let i = 1; i <= maxPreviews; i++) {
         try {
+          console.log('Generating preview for page:', i);
           const page = await pdf.getPage(i);
           const viewport = page.getViewport({ scale: 0.5 });
           const canvas = document.createElement('canvas');
@@ -108,6 +118,7 @@ const PdfToJpg = () => {
           }).promise;
 
           previews.push(canvas.toDataURL('image/jpeg', 0.8));
+          console.log('Preview generated for page:', i);
         } catch (pageError) {
           console.error('Error generating preview for page', i, pageError);
         }
@@ -120,10 +131,10 @@ const PdfToJpg = () => {
         description: `Found ${pdf.numPages} pages`,
       });
     } catch (error) {
-      console.error('Error loading PDF:', error);
+      console.error('Detailed PDF loading error:', error);
       toast({
         title: 'Error loading PDF',
-        description: 'Failed to load PDF. Please try a different file.',
+        description: 'Failed to load PDF. The file might be corrupted or password-protected.',
         variant: 'destructive',
       });
       setSelectedFile(null);
