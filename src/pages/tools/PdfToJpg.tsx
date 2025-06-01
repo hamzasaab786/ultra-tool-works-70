@@ -14,8 +14,8 @@ import { FileText, Download, Settings, Zap, Image, AlertCircle } from 'lucide-re
 import ToolPageTemplate from './ToolPageTemplate';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// Configure PDF.js worker with correct version
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface ConversionSettings {
   format: 'jpg' | 'png';
@@ -41,6 +41,7 @@ const PdfToJpg = () => {
   const [conversionProgress, setConversionProgress] = useState(0);
   const [convertedPages, setConvertedPages] = useState<ConvertedPage[]>([]);
   const [previewPages, setPreviewPages] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
   const [settings, setSettings] = useState<ConversionSettings>({
     format: 'jpg',
@@ -76,10 +77,17 @@ const PdfToJpg = () => {
     setSelectedFile(file);
     setConvertedPages([]);
     setPreviewPages([]);
+    setIsLoading(true);
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const loadingTask = pdfjsLib.getDocument({ 
+        data: arrayBuffer,
+        cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+        cMapPacked: true,
+      });
+      
+      const pdf = await loadingTask.promise;
       setPdfDocument(pdf);
       setTotalPages(pdf.numPages);
 
@@ -89,7 +97,7 @@ const PdfToJpg = () => {
       
       for (let i = 1; i <= maxPreviews; i++) {
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 0.5 });
+        const viewport = page.getViewport({ scale: 0.8 });
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d')!;
         canvas.height = viewport.height;
@@ -113,9 +121,14 @@ const PdfToJpg = () => {
       console.error('Error loading PDF:', error);
       toast({
         title: 'Error loading PDF',
-        description: 'The PDF file appears to be corrupted or invalid',
+        description: 'The PDF file appears to be corrupted, password-protected, or in an unsupported format',
         variant: 'destructive',
       });
+      setSelectedFile(null);
+      setPdfDocument(null);
+      setTotalPages(0);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -186,7 +199,7 @@ const PdfToJpg = () => {
       console.error('Conversion error:', error);
       toast({
         title: 'Conversion failed',
-        description: 'An error occurred during conversion',
+        description: 'An error occurred during conversion. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -240,18 +253,9 @@ const PdfToJpg = () => {
       return;
     }
 
-    if (settings.zipOutput) {
-      // For now, download individually
-      // In a real implementation, you'd use JSZip here
-      for (const page of convertedPages) {
-        downloadSingle(page);
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-    } else {
-      for (const page of convertedPages) {
-        downloadSingle(page);
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
+    for (const page of convertedPages) {
+      downloadSingle(page);
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
 
     toast({
@@ -268,6 +272,7 @@ const PdfToJpg = () => {
     setPreviewPages([]);
     setConversionProgress(0);
     setIsConverting(false);
+    setIsLoading(false);
   };
 
   return (
@@ -280,7 +285,7 @@ const PdfToJpg = () => {
         {/* File Upload Section */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
               <FileText className="h-5 w-5" />
               Upload PDF File
             </CardTitle>
@@ -288,19 +293,19 @@ const PdfToJpg = () => {
           <CardContent>
             <div
               {...getRootProps()}
-              className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+              className={`border-2 border-dashed rounded-lg p-4 md:p-8 text-center cursor-pointer transition-colors ${
                 isDragActive
                   ? 'border-blue-400 bg-blue-50'
                   : 'border-gray-300 hover:border-gray-400'
               }`}
             >
               <input {...getInputProps()} />
-              <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <FileText className="mx-auto h-8 w-8 md:h-12 md:w-12 text-gray-400 mb-2 md:mb-4" />
               {isDragActive ? (
-                <p className="text-lg text-blue-600">Drop the PDF file here...</p>
+                <p className="text-base md:text-lg text-blue-600">Drop the PDF file here...</p>
               ) : (
                 <div>
-                  <p className="text-lg mb-2">
+                  <p className="text-base md:text-lg mb-2">
                     Drag & drop a PDF file here, or click to select
                   </p>
                   <p className="text-sm text-gray-500">
@@ -310,16 +315,25 @@ const PdfToJpg = () => {
               )}
             </div>
 
-            {selectedFile && (
+            {isLoading && (
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <span className="text-blue-800">Loading PDF...</span>
+                </div>
+              </div>
+            )}
+
+            {selectedFile && !isLoading && (
               <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <p className="font-medium text-green-800">{selectedFile.name}</p>
+                    <p className="font-medium text-green-800 break-all">{selectedFile.name}</p>
                     <p className="text-sm text-green-600">
                       {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {totalPages} pages
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={resetTool}>
+                  <Button variant="outline" size="sm" onClick={resetTool} className="shrink-0">
                     Change File
                   </Button>
                 </div>
@@ -332,16 +346,16 @@ const PdfToJpg = () => {
         {previewPages.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>PDF Preview</CardTitle>
+              <CardTitle className="text-lg md:text-xl">PDF Preview</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {previewPages.map((preview, index) => (
                   <div key={index} className="border rounded-lg overflow-hidden">
                     <img
                       src={preview}
                       alt={`Page ${index + 1}`}
-                      className="w-full h-auto"
+                      className="w-full h-auto max-h-64 object-contain"
                     />
                     <div className="p-2 bg-gray-50 text-center text-sm">
                       Page {index + 1}
@@ -349,7 +363,7 @@ const PdfToJpg = () => {
                   </div>
                 ))}
                 {totalPages > 3 && (
-                  <div className="border rounded-lg p-8 flex items-center justify-center bg-gray-50">
+                  <div className="border rounded-lg p-4 md:p-8 flex items-center justify-center bg-gray-50">
                     <div className="text-center text-gray-500">
                       <p className="font-medium">+{totalPages - 3} more pages</p>
                       <p className="text-sm">Will be included in conversion</p>
@@ -362,10 +376,10 @@ const PdfToJpg = () => {
         )}
 
         {/* Settings Section */}
-        {selectedFile && (
+        {selectedFile && !isLoading && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
                 <Settings className="h-5 w-5" />
                 Conversion Settings
               </CardTitle>
@@ -373,11 +387,11 @@ const PdfToJpg = () => {
             <CardContent>
               <Tabs defaultValue="basic" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="basic">Basic Settings</TabsTrigger>
-                  <TabsTrigger value="advanced">Advanced Options</TabsTrigger>
+                  <TabsTrigger value="basic" className="text-sm">Basic Settings</TabsTrigger>
+                  <TabsTrigger value="advanced" className="text-sm">Advanced Options</TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="basic" className="space-y-4">
+                <TabsContent value="basic" className="space-y-4 mt-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="format">Output Format</Label>
@@ -434,7 +448,7 @@ const PdfToJpg = () => {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="advanced" className="space-y-4">
+                <TabsContent value="advanced" className="space-y-4 mt-4">
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>Page Range</Label>
@@ -466,7 +480,7 @@ const PdfToJpg = () => {
                           onChange={(e) =>
                             setSettings({ ...settings, specificPages: e.target.value })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                           placeholder="1,3,5-8"
                         />
                         <p className="text-xs text-gray-500">
@@ -474,17 +488,6 @@ const PdfToJpg = () => {
                         </p>
                       </div>
                     )}
-
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="zipOutput"
-                        checked={settings.zipOutput}
-                        onCheckedChange={(checked) =>
-                          setSettings({ ...settings, zipOutput: !!checked })
-                        }
-                      />
-                      <Label htmlFor="zipOutput">Download as ZIP file (for multiple pages)</Label>
-                    </div>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -493,13 +496,13 @@ const PdfToJpg = () => {
         )}
 
         {/* Convert Button */}
-        {selectedFile && !isConverting && (
+        {selectedFile && !isConverting && !isLoading && (
           <Card>
             <CardContent className="pt-6">
               <Button
                 onClick={convertPdfToImages}
-                className="w-full h-12 text-lg"
-                disabled={!selectedFile || isConverting}
+                className="w-full h-12 text-base md:text-lg"
+                disabled={!selectedFile || isConverting || isLoading}
               >
                 <Zap className="mr-2 h-5 w-5" />
                 Convert to {settings.format.toUpperCase()}
@@ -527,18 +530,18 @@ const PdfToJpg = () => {
         {convertedPages.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
                 <Image className="h-5 w-5" />
                 Converted Images ({convertedPages.length})
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <p className="text-sm text-gray-600">
                     Conversion completed successfully
                   </p>
-                  <Button onClick={downloadAll} className="flex items-center gap-2">
+                  <Button onClick={downloadAll} className="flex items-center gap-2 w-full sm:w-auto">
                     <Download className="h-4 w-4" />
                     Download All
                   </Button>

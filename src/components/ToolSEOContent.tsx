@@ -18,8 +18,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Improve SEO rankings with faster page speeds",
           "Maintain image quality with smart compression"
         ],
-        techSpecs: "Uses lossy and lossless compression algorithms, supports batch processing up to 20 images, maximum file size 10MB per image",
-        localUse: "Ideal for Pakistani businesses, bloggers, e-commerce stores, photographers, and digital marketers who need to optimize images for better online performance and reduced data usage."
+        techSpecs: "Uses lossy and lossless compression algorithms, supports batch processing up to 20 images, maximum file size 10MB per image"
       },
       "Merge PDF": {
         title: "Professional PDF Merger - Combine Multiple PDF Files Into One Document",
@@ -31,8 +30,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Reduce file clutter and improve organization",
           "Create comprehensive reports and presentations"
         ],
-        techSpecs: "Supports PDF files up to 100MB each, unlimited merging, preserves metadata and bookmarks, secure client-side processing",
-        localUse: "Perfect for Pakistani students preparing thesis documents, businesses creating comprehensive reports, legal professionals combining case files, and government offices organizing official documents."
+        techSpecs: "Supports PDF files up to 100MB each, unlimited merging, preserves metadata and bookmarks, secure client-side processing"
       },
       "Percentage Calculator": {
         title: "Advanced Percentage Calculator - Calculate Percentages, Increases, and Decreases",
@@ -44,8 +42,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Business markup and discount calculations",
           "Academic grade and score calculations"
         ],
-        techSpecs: "Supports decimal calculations, percentage points, compound calculations, and provides detailed step-by-step solutions",
-        localUse: "Essential for Pakistani students solving math problems, business owners calculating profits and discounts, shopkeepers determining sale prices, and financial planners working with investment returns."
+        techSpecs: "Supports decimal calculations, percentage points, compound calculations, and provides detailed step-by-step solutions"
       },
       "QR Code Generator": {
         title: "Free QR Code Generator - Create Custom QR Codes for Any Purpose",
@@ -57,8 +54,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Download in multiple formats and sizes",
           "Track engagement and usage analytics"
         ],
-        techSpecs: "Supports URL, text, email, phone, SMS, WiFi, and vCard formats, customizable colors and sizes, SVG and PNG export options",
-        localUse: "Ideal for Pakistani restaurants creating digital menus, shops enabling mobile payments, event organizers sharing information, and businesses connecting customers to social media and websites."
+        techSpecs: "Supports URL, text, email, phone, SMS, WiFi, and vCard formats, customizable colors and sizes, SVG and PNG export options"
       },
       "Word Counter": {
         title: "Professional Word Counter Tool - Count Words, Characters, and Reading Time",
@@ -70,8 +66,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Meet assignment and article requirements",
           "Optimize content for SEO and readability"
         ],
-        techSpecs: "Real-time counting, supports multiple languages, calculates average reading speed, tracks various text metrics",
-        localUse: "Perfect for Pakistani students writing essays and assignments, bloggers creating content, journalists meeting article requirements, and social media managers optimizing posts for platforms."
+        techSpecs: "Real-time counting, supports multiple languages, calculates average reading speed, tracks various text metrics"
       },
       "Background Remover": {
         title: "AI-Powered Background Remover - Remove Image Backgrounds Instantly",
@@ -83,8 +78,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Professional results without design skills",
           "Save time on manual editing"
         ],
-        techSpecs: "AI-powered background detection, supports JPG and PNG formats, automatic edge refinement, transparent PNG output",
-        localUse: "Essential for Pakistani e-commerce sellers creating product catalogs, job seekers preparing professional photos, graphic designers working on projects, and social media content creators."
+        techSpecs: "AI-powered background detection, supports JPG and PNG formats, automatic edge refinement, transparent PNG output"
       },
       "Password Generator": {
         title: "Secure Password Generator - Create Strong, Unbreakable Passwords",
@@ -96,8 +90,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Generate multiple passwords at once",
           "Protect accounts from cyber attacks"
         ],
-        techSpecs: "Supports 4-100 character passwords, customizable character sets, cryptographically secure generation, no password storage",
-        localUse: "Crucial for Pakistani professionals securing business accounts, students protecting academic portals, online shoppers safeguarding payment information, and anyone concerned about cybersecurity."
+        techSpecs: "Supports 4-100 character passwords, customizable character sets, cryptographically secure generation, no password storage"
       },
       "Unit Converter": {
         title: "Universal Unit Converter - Convert Length, Weight, Temperature, and More",
@@ -109,21 +102,19 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Essential for international business",
           "Educational tool for learning measurements"
         ],
-        techSpecs: "Supports metric, imperial, and scientific units, high-precision calculations, multiple unit categories",
-        localUse: "Valuable for Pakistani engineers working with international standards, students learning different measurement systems, cooks following international recipes, and businesses dealing with global suppliers."
+        techSpecs: "Supports metric, imperial, and scientific units, high-precision calculations, multiple unit categories"
       },
       "Currency Converter": {
-        title: "Real-Time Currency Converter - Convert PKR to USD, EUR, and More",
-        description: "Convert between major world currencies with up-to-date exchange rates. Essential for international business, travel planning, online shopping, and financial calculations with Pakistani Rupee support.",
+        title: "Real-Time Currency Converter - Convert Between Major World Currencies",
+        description: "Convert between major world currencies with up-to-date exchange rates. Essential for international business, travel planning, online shopping, and financial calculations with comprehensive currency support.",
         benefits: [
           "Real-time exchange rates for accurate conversions",
-          "Support for Pakistani Rupee and major currencies",
+          "Support for major world currencies",
           "Essential for international business",
           "Plan travel budgets effectively",
           "Calculate online purchase costs"
         ],
-        techSpecs: "Real-time exchange rates, supports 50+ currencies, historical rate tracking, API-powered updates",
-        localUse: "Essential for Pakistani businesses importing/exporting goods, students planning foreign education, travelers budgeting international trips, and online shoppers calculating actual costs in PKR."
+        techSpecs: "Real-time exchange rates, supports 50+ currencies, historical rate tracking, API-powered updates"
       },
       "Base64 Tool": {
         title: "Base64 Encoder/Decoder - Secure Data Encoding and Decoding",
@@ -135,8 +126,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
           "Image and file encoding",
           "Data obfuscation and security"
         ],
-        techSpecs: "Supports text and file encoding, real-time conversion, handles large data sets, secure client-side processing",
-        localUse: "Valuable for Pakistani developers building web applications, IT professionals managing data transmission, cybersecurity experts encoding sensitive information, and students learning data encoding concepts."
+        techSpecs: "Supports text and file encoding, real-time conversion, handles large data sets, secure client-side processing"
       }
     };
 
@@ -144,8 +134,7 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
       title: `${tool} - Professional Online Tool`,
       description: `Use our free ${tool} for all your digital needs.`,
       benefits: [],
-      techSpecs: "",
-      localUse: ""
+      techSpecs: ""
     };
   };
 
@@ -180,14 +169,6 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
         <section className="glassmorphism rounded-2xl p-8 border border-gray-200/50">
           <h3 className="text-xl font-semibold mb-3 text-gray-900">Technical Specifications</h3>
           <p className="text-gray-700 leading-relaxed">{content.techSpecs}</p>
-        </section>
-      )}
-
-      {/* Local SEO Content */}
-      {content.localUse && (
-        <section className="glassmorphism rounded-2xl p-8 border border-gray-200/50">
-          <h3 className="text-xl font-semibold mb-3 text-gray-900">Perfect for Pakistani Users</h3>
-          <p className="text-gray-700 leading-relaxed">{content.localUse}</p>
         </section>
       )}
 
