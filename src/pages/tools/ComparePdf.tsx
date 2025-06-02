@@ -1,8 +1,7 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Compare, Download, Upload, FileText } from "lucide-react";
+import { GitCompare, Download, Upload, FileText } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 
 const ComparePdf = () => {
@@ -184,7 +183,7 @@ const ComparePdf = () => {
             "Comparing PDFs..."
           ) : (
             <>
-              <Compare className="h-4 w-4 mr-2" />
+              <GitCompare className="h-4 w-4 mr-2" />
               Compare PDFs
             </>
           )}
