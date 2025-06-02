@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -43,6 +44,12 @@ import PdfToWord from "./pages/tools/PdfToWord";
 
 // PDF Security Tools
 import ProtectPdf from "./pages/tools/ProtectPdf";
+import UnlockPdf from "./pages/tools/UnlockPdf";
+
+// PDF Enhancement Tools
+import RepairPdf from "./pages/tools/RepairPdf";
+import AddPageNumbers from "./pages/tools/AddPageNumbers";
+import AddWatermark from "./pages/tools/AddWatermark";
 
 // New Calculator/Converter Tools
 import UnitConverter from "./pages/tools/UnitConverter";
@@ -109,6 +116,12 @@ const AppContent = () => {
       
       {/* PDF Security Routes */}
       <Route path="/tools/protect-pdf" element={<ProtectPdf />} />
+      <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
+      
+      {/* PDF Enhancement Routes */}
+      <Route path="/tools/repair-pdf" element={<RepairPdf />} />
+      <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
+      <Route path="/tools/add-watermark" element={<AddWatermark />} />
       
       {/* Calculator/Converter Tool Routes */}
       <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />

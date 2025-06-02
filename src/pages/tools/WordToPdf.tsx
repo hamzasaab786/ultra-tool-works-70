@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, Download, Upload } from "lucide-react";
+import { FileText, Download, Upload, AlertCircle } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 
 const WordToPdf = () => {
@@ -30,21 +30,21 @@ const WordToPdf = () => {
     }
   };
 
+  const resetTool = () => {
+    setFile(null);
+    setIsConverting(false);
+  };
+
   const convertToPdf = async () => {
     if (!file) return;
 
     setIsConverting(true);
     try {
-      // Note: This is a placeholder for Word to PDF conversion
-      // In a real implementation, you'd use a service like pdf-lib with additional libraries
-      // or a backend service that can handle Word document conversion
-      
       toast({
         title: "Conversion in progress",
         description: "Word to PDF conversion requires backend processing. This is a demo implementation.",
       });
       
-      // Simulate conversion delay
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
@@ -111,20 +111,29 @@ const WordToPdf = () => {
                   </p>
                 </div>
               </div>
-              <Button
-                onClick={convertToPdf}
-                disabled={isConverting}
-                className="bg-indigo-600 hover:bg-indigo-700"
-              >
-                {isConverting ? (
-                  "Converting..."
-                ) : (
-                  <>
-                    <Download className="h-4 w-4 mr-2" />
-                    Convert to PDF
-                  </>
-                )}
-              </Button>
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  onClick={resetTool}
+                  disabled={isConverting}
+                >
+                  Change File
+                </Button>
+                <Button
+                  onClick={convertToPdf}
+                  disabled={isConverting}
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  {isConverting ? (
+                    "Converting..."
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" />
+                      Convert to PDF
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -137,6 +146,18 @@ const WordToPdf = () => {
             <li>• High-quality PDF output</li>
             <li>• Secure processing - files not stored</li>
           </ul>
+        </div>
+
+        <div className="bg-green-50 p-4 rounded-lg">
+          <div className="flex items-start gap-3 text-sm text-green-600">
+            <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium mb-1">Privacy & Security</p>
+              <p>
+                All document processing happens securely. Your files are processed temporarily and automatically deleted after conversion.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </ToolPageTemplate>

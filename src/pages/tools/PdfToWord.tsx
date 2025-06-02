@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, Download, Upload } from "lucide-react";
+import { FileText, Download, Upload, AlertCircle } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 
 const PdfToWord = () => {
@@ -27,6 +27,11 @@ const PdfToWord = () => {
         });
       }
     }
+  };
+
+  const resetTool = () => {
+    setFile(null);
+    setIsConverting(false);
   };
 
   const convertToWord = async () => {
@@ -105,20 +110,29 @@ const PdfToWord = () => {
                   </p>
                 </div>
               </div>
-              <Button
-                onClick={convertToWord}
-                disabled={isConverting}
-                className="bg-indigo-600 hover:bg-indigo-700"
-              >
-                {isConverting ? (
-                  "Converting..."
-                ) : (
-                  <>
-                    <Download className="h-4 w-4 mr-2" />
-                    Convert to Word
-                  </>
-                )}
-              </Button>
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  onClick={resetTool}
+                  disabled={isConverting}
+                >
+                  Change File
+                </Button>
+                <Button
+                  onClick={convertToWord}
+                  disabled={isConverting}
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  {isConverting ? (
+                    "Converting..."
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" />
+                      Convert to Word
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -131,6 +145,18 @@ const PdfToWord = () => {
             <li>• OCR for scanned documents</li>
             <li>• Editable Word document output</li>
           </ul>
+        </div>
+
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="flex items-start gap-3 text-sm text-blue-600">
+            <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium mb-1">Privacy & Security</p>
+              <p>
+                All PDF processing happens securely. Your files are processed temporarily and automatically deleted after conversion.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </ToolPageTemplate>
