@@ -41,15 +41,24 @@ import HtmlToPdf from "./pages/tools/HtmlToPdf";
 
 // Convert from PDF Tools
 import PdfToWord from "./pages/tools/PdfToWord";
+import PdfToPowerPoint from "./pages/tools/PdfToPowerPoint";
+import PdfToExcel from "./pages/tools/PdfToExcel";
+import PdfToPdfA from "./pages/tools/PdfToPdfA";
 
 // PDF Security Tools
 import ProtectPdf from "./pages/tools/ProtectPdf";
 import UnlockPdf from "./pages/tools/UnlockPdf";
+import SignPdf from "./pages/tools/SignPdf";
+import RedactPdf from "./pages/tools/RedactPdf";
 
 // PDF Enhancement Tools
 import RepairPdf from "./pages/tools/RepairPdf";
 import AddPageNumbers from "./pages/tools/AddPageNumbers";
 import AddWatermark from "./pages/tools/AddWatermark";
+import RotatePdf from "./pages/tools/RotatePdf";
+import CropPdf from "./pages/tools/CropPdf";
+import EditPdf from "./pages/tools/EditPdf";
+import ComparePdf from "./pages/tools/ComparePdf";
 
 // New Calculator/Converter Tools
 import UnitConverter from "./pages/tools/UnitConverter";
@@ -113,15 +122,24 @@ const AppContent = () => {
       
       {/* Convert from PDF Routes */}
       <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
+      <Route path="/tools/pdf-to-powerpoint" element={<PdfToPowerPoint />} />
+      <Route path="/tools/pdf-to-excel" element={<PdfToExcel />} />
+      <Route path="/tools/pdf-to-pdfa" element={<PdfToPdfA />} />
       
       {/* PDF Security Routes */}
       <Route path="/tools/protect-pdf" element={<ProtectPdf />} />
       <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
+      <Route path="/tools/sign-pdf" element={<SignPdf />} />
+      <Route path="/tools/redact-pdf" element={<RedactPdf />} />
       
       {/* PDF Enhancement Routes */}
       <Route path="/tools/repair-pdf" element={<RepairPdf />} />
       <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
       <Route path="/tools/add-watermark" element={<AddWatermark />} />
+      <Route path="/tools/rotate-pdf" element={<RotatePdf />} />
+      <Route path="/tools/crop-pdf" element={<CropPdf />} />
+      <Route path="/tools/edit-pdf" element={<EditPdf />} />
+      <Route path="/tools/compare-pdf" element={<ComparePdf />} />
       
       {/* Calculator/Converter Tool Routes */}
       <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
