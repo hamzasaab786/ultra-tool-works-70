@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,6 +31,18 @@ import SvgToJpg from "./pages/tools/SvgToJpg";
 import SplitPdf from "./pages/tools/SplitPdf";
 import CompressPdf from "./pages/tools/CompressPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
+
+// Convert to PDF Tools
+import WordToPdf from "./pages/tools/WordToPdf";
+import PowerPointToPdf from "./pages/tools/PowerPointToPdf";
+import ExcelToPdf from "./pages/tools/ExcelToPdf";
+import HtmlToPdf from "./pages/tools/HtmlToPdf";
+
+// Convert from PDF Tools
+import PdfToWord from "./pages/tools/PdfToWord";
+
+// PDF Security Tools
+import ProtectPdf from "./pages/tools/ProtectPdf";
 
 // New Calculator/Converter Tools
 import UnitConverter from "./pages/tools/UnitConverter";
@@ -86,6 +97,18 @@ const AppContent = () => {
       <Route path="/tools/split-pdf" element={<SplitPdf />} />
       <Route path="/tools/compress-pdf" element={<CompressPdf />} />
       <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
+      
+      {/* Convert to PDF Routes */}
+      <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
+      <Route path="/tools/powerpoint-to-pdf" element={<PowerPointToPdf />} />
+      <Route path="/tools/excel-to-pdf" element={<ExcelToPdf />} />
+      <Route path="/tools/html-to-pdf" element={<HtmlToPdf />} />
+      
+      {/* Convert from PDF Routes */}
+      <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
+      
+      {/* PDF Security Routes */}
+      <Route path="/tools/protect-pdf" element={<ProtectPdf />} />
       
       {/* Calculator/Converter Tool Routes */}
       <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />

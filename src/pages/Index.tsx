@@ -64,7 +64,7 @@ const Index = () => {
     }]
   }, {
     title: "📄 PDF Tools",
-    description: "Complete PDF management suite for merging, splitting, and compressing PDF documents. Essential tools for document workflow automation.",
+    description: "Complete PDF management suite for merging, splitting, compressing, converting, and securing PDF documents. Essential tools for document workflow automation.",
     tools: [{
       title: "Merge PDF",
       description: "Combine multiple PDF files into one document with custom page ordering",
@@ -85,6 +85,36 @@ const Index = () => {
       description: "Convert PDF pages to high-quality JPG or PNG images with customizable settings",
       icon: <FileImage />,
       path: "/tools/pdf-to-jpg"
+    }, {
+      title: "Word to PDF",
+      description: "Convert Microsoft Word documents to PDF with preserved formatting",
+      icon: <FileIcon />,
+      path: "/tools/word-to-pdf"
+    }, {
+      title: "PowerPoint to PDF",
+      description: "Convert PowerPoint presentations to PDF format with slide layouts",
+      icon: <FileIcon />,
+      path: "/tools/powerpoint-to-pdf"
+    }, {
+      title: "Excel to PDF",
+      description: "Convert Excel spreadsheets to PDF with preserved data and formatting",
+      icon: <FileIcon />,
+      path: "/tools/excel-to-pdf"
+    }, {
+      title: "HTML to PDF",
+      description: "Convert HTML content or files to PDF with CSS styling preserved",
+      icon: <FileIcon />,
+      path: "/tools/html-to-pdf"
+    }, {
+      title: "PDF to Word",
+      description: "Convert PDF documents to editable Word format with OCR support",
+      icon: <FileIcon />,
+      path: "/tools/pdf-to-word"
+    }, {
+      title: "Protect PDF",
+      description: "Add password protection and permission restrictions to PDF documents",
+      icon: <Shield />,
+      path: "/tools/protect-pdf"
     }]
   }, {
     title: "🧮 Calculators & Converters",
