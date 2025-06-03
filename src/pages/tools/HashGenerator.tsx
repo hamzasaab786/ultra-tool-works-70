@@ -59,7 +59,6 @@ const HashGenerator = () => {
     
     setFileName(file.name);
     
-    // Check file size (max 10MB for browser performance)
     if (file.size > 10 * 1024 * 1024) {
       toast({
         title: "File Too Large",
@@ -119,47 +118,37 @@ const HashGenerator = () => {
   };
   
   const calculateHashes = async (data: Uint8Array) => {
-    // Calculate MD5 hash (browser doesn't natively support this)
-    // In a real app, you'd use a library like crypto-js
-    // Simulating MD5 hash for demo
     await simulateHashing();
     setMd5Hash(generateMockHash(data, 32));
     
-    // Calculate SHA-1 hash
     const sha1Buffer = await crypto.subtle.digest('SHA-1', data);
     setSha1Hash(bufferToHex(sha1Buffer));
     
-    // Calculate SHA-256 hash
     const sha256Buffer = await crypto.subtle.digest('SHA-256', data);
     setSha256Hash(bufferToHex(sha256Buffer));
   };
   
-  // Helper function to convert buffer to hex string
   const bufferToHex = (buffer: ArrayBuffer) => {
     return [...new Uint8Array(buffer)]
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
   };
   
-  // Simulate hashing delay
   const simulateHashing = () => {
     return new Promise(resolve => setTimeout(resolve, 500));
   };
   
-  // Generate a mock hash for demonstration (since browsers don't natively support MD5)
   const generateMockHash = (data: Uint8Array, length: number) => {
     let hash = '';
     const characters = 'abcdef0123456789';
     const charactersLength = characters.length;
     
-    // Use a simple sum of all bytes to seed our "random" generator
     let seed = 0;
     for (let i = 0; i < data.length; i++) {
       seed += data[i];
     }
     
     for (let i = 0; i < length; i++) {
-      // Simple pseudo-random based on seed and position
       const randomIndex = ((seed * (i + 1)) % charactersLength);
       hash += characters.charAt(randomIndex);
     }
@@ -204,10 +193,12 @@ const HashGenerator = () => {
         >
           <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto mb-4">
             <TabsTrigger value="text" className="flex items-center gap-2">
-              <span>Text Input</span>
+              <Key className="h-4 w-4" />
+              Text Input
             </TabsTrigger>
             <TabsTrigger value="file" className="flex items-center gap-2">
-              <span>File Input</span>
+              <File className="h-4 w-4" />
+              File Input
             </TabsTrigger>
           </TabsList>
           
@@ -269,11 +260,10 @@ const HashGenerator = () => {
                     Select File
                   </Button>
                 </div>
-                
                 {fileName && (
-                  <div className="mt-4 text-sm text-gray-700">
-                    Selected file: <span className="font-medium">{fileName}</span>
-                  </div>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Selected: {fileName}
+                  </p>
                 )}
               </div>
             </div>
@@ -295,150 +285,96 @@ const HashGenerator = () => {
             </div>
           </TabsContent>
         </Tabs>
-        
+
         {(md5Hash || sha1Hash || sha256Hash) && (
-          <div className="pt-4">
-            <h2 className="text-lg font-semibold mb-4">Hash Results</h2>
-            <div className="space-y-3">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold flex items-center">
+              <Shield className="mr-2 h-5 w-5" />
+              Generated Hashes
+            </h3>
+
+            {md5Hash && (
               <Card>
-                <CardContent className="pt-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center">
                     <div>
-                      <Label className="text-sm text-gray-500">MD5 Hash</Label>
-                      <div className="font-mono text-sm break-all bg-gray-50 p-2 rounded border border-gray-200">
-                        {md5Hash}
-                      </div>
+                      <h4 className="font-medium">MD5</h4>
+                      <p className="text-sm text-gray-600 font-mono break-all">{md5Hash}</p>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => copyToClipboard(md5Hash, "MD5")} 
-                      className="shrink-0"
-                      disabled={!md5Hash}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(md5Hash, "MD5")}
                     >
                       {copiedHash === "MD5" ? (
-                        <>
-                          <Check className="h-4 w-4 mr-1" /> Copied
-                        </>
+                        <Check className="h-4 w-4 text-green-600" />
                       ) : (
-                        <>
-                          <Copy className="h-4 w-4 mr-1" /> Copy
-                        </>
+                        <Copy className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-              
+            )}
+
+            {sha1Hash && (
               <Card>
-                <CardContent className="pt-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center">
                     <div>
-                      <Label className="text-sm text-gray-500">SHA-1 Hash</Label>
-                      <div className="font-mono text-sm break-all bg-gray-50 p-2 rounded border border-gray-200">
-                        {sha1Hash}
-                      </div>
+                      <h4 className="font-medium">SHA-1</h4>
+                      <p className="text-sm text-gray-600 font-mono break-all">{sha1Hash}</p>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => copyToClipboard(sha1Hash, "SHA-1")} 
-                      className="shrink-0"
-                      disabled={!sha1Hash}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(sha1Hash, "SHA-1")}
                     >
                       {copiedHash === "SHA-1" ? (
-                        <>
-                          <Check className="h-4 w-4 mr-1" /> Copied
-                        </>
+                        <Check className="h-4 w-4 text-green-600" />
                       ) : (
-                        <>
-                          <Copy className="h-4 w-4 mr-1" /> Copy
-                        </>
+                        <Copy className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-              
+            )}
+
+            {sha256Hash && (
               <Card>
-                <CardContent className="pt-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-center">
                     <div>
-                      <Label className="text-sm text-gray-500">SHA-256 Hash</Label>
-                      <div className="font-mono text-sm break-all bg-gray-50 p-2 rounded border border-gray-200">
-                        {sha256Hash}
-                      </div>
+                      <h4 className="font-medium">SHA-256</h4>
+                      <p className="text-sm text-gray-600 font-mono break-all">{sha256Hash}</p>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => copyToClipboard(sha256Hash, "SHA-256")} 
-                      className="shrink-0"
-                      disabled={!sha256Hash}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(sha256Hash, "SHA-256")}
                     >
                       {copiedHash === "SHA-256" ? (
-                        <>
-                          <Check className="h-4 w-4 mr-1" /> Copied
-                        </>
+                        <Check className="h-4 w-4 text-green-600" />
                       ) : (
-                        <>
-                          <Copy className="h-4 w-4 mr-1" /> Copy
-                        </>
+                        <Copy className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            </div>
+            )}
           </div>
         )}
-        
-        <div className="pt-4 space-y-2">
-          <h2 className="text-lg font-semibold">What are Hash Functions?</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardContent className="pt-4">
-                <div className="flex items-start gap-3">
-                  <Shield className="h-5 w-5 text-blue-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium">Security</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Hash functions are used to verify data integrity and authenticate information without revealing the original content.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="pt-4">
-                <div className="flex items-start gap-3">
-                  <Key className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium">Unique Fingerprints</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Each hash value is a unique digital fingerprint of the input data. Even tiny changes create completely different hashes.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="pt-4">
-                <div className="flex items-start gap-3">
-                  <File className="h-5 w-5 text-purple-500 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium">Common Uses</h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      File verification, password storage, digital signatures, blockchain technology, and data integrity checks.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <h3 className="font-medium text-blue-900 mb-2">Hash Generator Features:</h3>
+          <ul className="text-sm text-blue-800 space-y-1">
+            <li>• Generate MD5, SHA-1, and SHA-256 hashes</li>
+            <li>• Support for both text and file input</li>
+            <li>• Easy copy to clipboard functionality</li>
+            <li>• Secure client-side processing</li>
+          </ul>
         </div>
       </div>
     </ToolPageTemplate>

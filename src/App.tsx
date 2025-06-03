@@ -1,184 +1,124 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
-import { useEffect } from "react";
-import Index from "./pages/Index";
-import AboutUs from "./pages/AboutUs";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Terms from "./pages/Terms";
-import Disclaimer from "./pages/Disclaimer";
-import NotFound from "./pages/NotFound";
-
-// Tool pages
-import QRCodeGenerator from "./pages/tools/QRCodeGenerator";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
 import ImageCompressor from "./pages/tools/ImageCompressor";
-import MergePDF from "./pages/tools/MergePDF";
-import PercentageCalculator from "./pages/tools/PercentageCalculator";
-
-// New Image Tools
-import ImageEnhancer from "./pages/tools/ImageEnhancer";
 import ImageResizer from "./pages/tools/ImageResizer";
+import ImageEnhancer from "./pages/tools/ImageEnhancer";
 import JpgToPdf from "./pages/tools/JpgToPdf";
+import SvgToJpg from "./pages/tools/SvgToJpg";
+import VideoToGif from "./pages/tools/VideoToGif";
 import ImageToUrl from "./pages/tools/ImageToUrl";
 import BackgroundRemover from "./pages/tools/BackgroundRemover";
 import PassportPhotoMaker from "./pages/tools/PassportPhotoMaker";
-import SvgToJpg from "./pages/tools/SvgToJpg";
-
-// New PDF Tools
+import PhotoEditor from "./pages/tools/PhotoEditor";
+import ImageFormatConverter from "./pages/tools/ImageFormatConverter";
+import MergePdf from "./pages/tools/MergePdf";
 import SplitPdf from "./pages/tools/SplitPdf";
 import CompressPdf from "./pages/tools/CompressPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
-
-// Convert from PDF Tools
-import PdfToPowerPoint from "./pages/tools/PdfToPowerPoint";
-import PdfToExcel from "./pages/tools/PdfToExcel";
-import PdfToPdfA from "./pages/tools/PdfToPdfA";
-
-// PDF Security Tools
-import UnlockPdf from "./pages/tools/UnlockPdf";
-import SignPdf from "./pages/tools/SignPdf";
-import RedactPdf from "./pages/tools/RedactPdf";
-
-// PDF Enhancement Tools
-import RepairPdf from "./pages/tools/RepairPdf";
-import AddPageNumbers from "./pages/tools/AddPageNumbers";
-import AddWatermark from "./pages/tools/AddWatermark";
-import RotatePdf from "./pages/tools/RotatePdf";
-import CropPdf from "./pages/tools/CropPdf";
+import PdfToWord from "./pages/tools/PdfToWord";
+import WordToPdf from "./pages/tools/WordToPdf";
 import EditPdf from "./pages/tools/EditPdf";
-import ComparePdf from "./pages/tools/ComparePdf";
-
-// New Calculator/Converter Tools
+import CropPdf from "./pages/tools/CropPdf";
+import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import UnitConverter from "./pages/tools/UnitConverter";
 import CurrencyConverter from "./pages/tools/CurrencyConverter";
-
-// New Text Tools
+import AgeCalculator from "./pages/tools/AgeCalculator";
+import BmiCalculator from "./pages/tools/BmiCalculator";
+import LoanCalculator from "./pages/tools/LoanCalculator";
+import TipCalculator from "./pages/tools/TipCalculator";
 import WordCounter from "./pages/tools/WordCounter";
 import CaseConverter from "./pages/tools/CaseConverter";
 import Base64Tool from "./pages/tools/Base64Tool";
-import SpeechConverter from "./pages/tools/SpeechConverter";
-
-// New Utility Tools
+import TextToSpeech from "./pages/tools/TextToSpeech";
+import MarkdownToHtml from "./pages/tools/MarkdownToHtml";
+import TextDiff from "./pages/tools/TextDiff";
+import LoremIpsum from "./pages/tools/LoremIpsum";
+import QrCodeGenerator from "./pages/tools/QrCodeGenerator";
 import PasswordGenerator from "./pages/tools/PasswordGenerator";
+import UrlShortener from "./pages/tools/UrlShortener";
+import HashGenerator from "./pages/tools/HashGenerator";
 import TimerStopwatch from "./pages/tools/TimerStopwatch";
 import ColorPicker from "./pages/tools/ColorPicker";
 import BudgetTracker from "./pages/tools/BudgetTracker";
+import BarcodeGenerator from "./pages/tools/BarcodeGenerator";
+import UuidGenerator from "./pages/tools/UuidGenerator";
+import FileConverter from "./pages/tools/FileConverter";
+import ZipExtractor from "./pages/tools/ZipExtractor";
+import FileSizeConverter from "./pages/tools/FileSizeConverter";
+import DuplicateFileFinder from "./pages/tools/DuplicateFileFinder";
+import { Toaster } from "@/components/ui/toaster";
 
-// Additional New Tools
-import TextToSpeech from "./pages/tools/TextToSpeech";
-import VideoToGif from "./pages/tools/VideoToGif";
-import MarkdownToHtml from "./pages/tools/MarkdownToHtml";
-import UrlShortener from "./pages/tools/UrlShortener";
-import HashGenerator from "./pages/tools/HashGenerator";
-import AgeCalculator from "./pages/tools/AgeCalculator";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    },
-  },
-});
-
-const AppContent = () => {
-  useEffect(() => {
-    console.log("App initialized, document ready state:", document.readyState);
-  }, []);
-
+function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/about" element={<AboutUs />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/disclaimer" element={<Disclaimer />} />
-      
-      {/* Image Tool Routes */}
-      <Route path="/tools/image-compressor" element={<ImageCompressor />} />
-      <Route path="/tools/image-enhancer" element={<ImageEnhancer />} />
-      <Route path="/tools/image-resizer" element={<ImageResizer />} />
-      <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
-      <Route path="/tools/image-to-url" element={<ImageToUrl />} />
-      <Route path="/tools/background-remover" element={<BackgroundRemover />} />
-      <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
-      <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
-      
-      {/* PDF Tool Routes */}
-      <Route path="/tools/merge-pdf" element={<MergePDF />} />
-      <Route path="/tools/split-pdf" element={<SplitPdf />} />
-      <Route path="/tools/compress-pdf" element={<CompressPdf />} />
-      <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
-      
-      {/* Convert from PDF Routes */}
-      <Route path="/tools/pdf-to-powerpoint" element={<PdfToPowerPoint />} />
-      <Route path="/tools/pdf-to-excel" element={<PdfToExcel />} />
-      <Route path="/tools/pdf-to-pdfa" element={<PdfToPdfA />} />
-      
-      {/* PDF Security Routes */}
-      <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
-      <Route path="/tools/sign-pdf" element={<SignPdf />} />
-      <Route path="/tools/redact-pdf" element={<RedactPdf />} />
-      
-      {/* PDF Enhancement Routes */}
-      <Route path="/tools/repair-pdf" element={<RepairPdf />} />
-      <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
-      <Route path="/tools/add-watermark" element={<AddWatermark />} />
-      <Route path="/tools/rotate-pdf" element={<RotatePdf />} />
-      <Route path="/tools/crop-pdf" element={<CropPdf />} />
-      <Route path="/tools/edit-pdf" element={<EditPdf />} />
-      <Route path="/tools/compare-pdf" element={<ComparePdf />} />
-      
-      {/* Calculator/Converter Tool Routes */}
-      <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
-      <Route path="/tools/unit-converter" element={<UnitConverter />} />
-      <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
-      
-      {/* Text Tool Routes */}
-      <Route path="/tools/word-counter" element={<WordCounter />} />
-      <Route path="/tools/case-converter" element={<CaseConverter />} />
-      <Route path="/tools/base64-tool" element={<Base64Tool />} />
-      <Route path="/tools/speech-converter" element={<SpeechConverter />} />
-      
-      {/* Utility Tool Routes */}
-      <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
-      <Route path="/tools/password-generator" element={<PasswordGenerator />} />
-      <Route path="/tools/timer-stopwatch" element={<TimerStopwatch />} />
-      <Route path="/tools/color-picker" element={<ColorPicker />} />
-      <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
-      
-      {/* New Additional Tool Routes */}
-      <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
-      <Route path="/tools/video-to-gif" element={<VideoToGif />} />
-      <Route path="/tools/markdown-to-html" element={<MarkdownToHtml />} />
-      <Route path="/tools/url-shortener" element={<UrlShortener />} />
-      <Route path="/tools/hash-generator" element={<HashGenerator />} />
-      <Route path="/tools/age-calculator" element={<AgeCalculator />} />
-      
-      {/* Catch-all route for 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          
+          {/* Image Tools */}
+          <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+          <Route path="/tools/image-resizer" element={<ImageResizer />} />
+          <Route path="/tools/image-enhancer" element={<ImageEnhancer />} />
+          <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
+          <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
+          <Route path="/tools/video-to-gif" element={<VideoToGif />} />
+          <Route path="/tools/image-to-url" element={<ImageToUrl />} />
+          <Route path="/tools/background-remover" element={<BackgroundRemover />} />
+          <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
+          <Route path="/tools/photo-editor" element={<PhotoEditor />} />
+          <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
+          
+          {/* PDF Tools */}
+          <Route path="/tools/merge-pdf" element={<MergePdf />} />
+          <Route path="/tools/split-pdf" element={<SplitPdf />} />
+          <Route path="/tools/compress-pdf" element={<CompressPdf />} />
+          <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
+          <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
+          <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
+          <Route path="/tools/edit-pdf" element={<EditPdf />} />
+          <Route path="/tools/crop-pdf" element={<CropPdf />} />
+          
+          {/* Calculators & Converters */}
+          <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
+          <Route path="/tools/unit-converter" element={<UnitConverter />} />
+          <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
+          <Route path="/tools/age-calculator" element={<AgeCalculator />} />
+          <Route path="/tools/bmi-calculator" element={<BmiCalculator />} />
+          <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
+          <Route path="/tools/tip-calculator" element={<TipCalculator />} />
+          
+          {/* Text Tools */}
+          <Route path="/tools/word-counter" element={<WordCounter />} />
+          <Route path="/tools/case-converter" element={<CaseConverter />} />
+          <Route path="/tools/base64-tool" element={<Base64Tool />} />
+          <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
+          <Route path="/tools/markdown-to-html" element={<MarkdownToHtml />} />
+          <Route path="/tools/text-diff" element={<TextDiff />} />
+          <Route path="/tools/lorem-ipsum" element={<LoremIpsum />} />
+          
+          {/* Utilities */}
+          <Route path="/tools/qr-code-generator" element={<QrCodeGenerator />} />
+          <Route path="/tools/password-generator" element={<PasswordGenerator />} />
+          <Route path="/tools/url-shortener" element={<UrlShortener />} />
+          <Route path="/tools/hash-generator" element={<HashGenerator />} />
+          <Route path="/tools/timer-stopwatch" element={<TimerStopwatch />} />
+          <Route path="/tools/color-picker" element={<ColorPicker />} />
+          <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
+          <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
+          <Route path="/tools/uuid-generator" element={<UuidGenerator />} />
+          
+          {/* File Tools */}
+          <Route path="/tools/file-converter" element={<FileConverter />} />
+          <Route path="/tools/zip-extractor" element={<ZipExtractor />} />
+          <Route path="/tools/file-size-converter" element={<FileSizeConverter />} />
+          <Route path="/tools/duplicate-file-finder" element={<DuplicateFileFinder />} />
+        </Routes>
+      </Layout>
+      <Toaster />
+    </Router>
   );
-};
-
-const App = () => {
-  return (
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider delayDuration={300}>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-  );
-};
+}
 
 export default App;
