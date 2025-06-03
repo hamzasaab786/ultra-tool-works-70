@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -12,7 +13,9 @@ import {
   ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, 
   Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, 
   Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
-  Volume2, Film, FileCode, Hash, CalendarRange
+  Volume2, Film, FileCode, Hash, CalendarRange, Zap as ZapIcon, Heart, 
+  CreditCard, Archive, Search, Copy, Target, BarChart, Users, Repeat, 
+  Shield as ShieldIcon
 } from "lucide-react";
 
 const Index = () => {
@@ -65,6 +68,16 @@ const Index = () => {
       description: "Upload images and get shareable URLs for web hosting and sharing",
       icon: <Link2 />,
       path: "/tools/image-to-url"
+    }, {
+      title: "Photo Editor",
+      description: "Edit photos with filters, effects, and professional adjustments",
+      icon: <ImageIcon />,
+      path: "/tools/photo-editor"
+    }, {
+      title: "Image Format Converter",
+      description: "Convert between PNG, JPG, WebP, and other image formats",
+      icon: <Repeat />,
+      path: "/tools/image-format-converter"
     }]
   }, {
     title: "📄 PDF Tools",
@@ -89,6 +102,16 @@ const Index = () => {
       description: "Convert PDF pages to high-quality JPG or PNG images with customizable settings",
       icon: <FileImage />,
       path: "/tools/pdf-to-jpg"
+    }, {
+      title: "PDF to Word",
+      description: "Convert PDF documents to editable Word files with preserved formatting",
+      icon: <FileCode />,
+      path: "/tools/pdf-to-word"
+    }, {
+      title: "Word to PDF",
+      description: "Convert Word documents to PDF format with professional quality",
+      icon: <FileIcon />,
+      path: "/tools/word-to-pdf"
     }]
   }, {
     title: "🧮 Calculators & Converters",
@@ -113,6 +136,21 @@ const Index = () => {
       description: "Calculate exact age in years, months, days, and more from any birth date",
       icon: <CalendarRange />,
       path: "/tools/age-calculator"
+    }, {
+      title: "BMI Calculator",
+      description: "Calculate your Body Mass Index and get health recommendations",
+      icon: <Heart />,
+      path: "/tools/bmi-calculator"
+    }, {
+      title: "Loan Calculator",
+      description: "Calculate monthly payments, interest rates, and loan terms",
+      icon: <CreditCard />,
+      path: "/tools/loan-calculator"
+    }, {
+      title: "Tip Calculator",
+      description: "Calculate tips and split bills among multiple people easily",
+      icon: <Calculator />,
+      path: "/tools/tip-calculator"
     }]
   }, {
     title: "📝 Text Tools",
@@ -147,6 +185,16 @@ const Index = () => {
       description: "Convert Markdown text to formatted HTML with preview and custom styling",
       icon: <FileCode />,
       path: "/tools/markdown-to-html"
+    }, {
+      title: "Text Diff Checker",
+      description: "Compare two texts and highlight differences side by side",
+      icon: <Search />,
+      path: "/tools/text-diff"
+    }, {
+      title: "Lorem Ipsum Generator",
+      description: "Generate placeholder text for design and development projects",
+      icon: <Type />,
+      path: "/tools/lorem-ipsum"
     }]
   }, {
     title: "🛠️ Utility Tools",
@@ -191,6 +239,40 @@ const Index = () => {
       description: "Convert video clips to animated GIFs with customizable settings",
       icon: <Film />,
       path: "/tools/video-to-gif"
+    }, {
+      title: "Barcode Generator",
+      description: "Generate various types of barcodes for products and inventory",
+      icon: <Target />,
+      path: "/tools/barcode-generator"
+    }, {
+      title: "UUID Generator",
+      description: "Generate unique identifiers for your development projects",
+      icon: <ShieldIcon />,
+      path: "/tools/uuid-generator"
+    }]
+  }, {
+    title: "📁 File Tools",
+    description: "File management and conversion tools for handling various file formats and operations.",
+    tools: [{
+      title: "File Converter",
+      description: "Convert between various file formats with professional quality",
+      icon: <Repeat />,
+      path: "/tools/file-converter"
+    }, {
+      title: "ZIP Extractor",
+      description: "Extract files from ZIP archives safely and efficiently",
+      icon: <Archive />,
+      path: "/tools/zip-extractor"
+    }, {
+      title: "File Size Converter",
+      description: "Convert between bytes, KB, MB, GB, TB and other file size units",
+      icon: <Ruler />,
+      path: "/tools/file-size-converter"
+    }, {
+      title: "Duplicate File Finder",
+      description: "Find and identify duplicate files to save storage space",
+      icon: <Copy />,
+      path: "/tools/duplicate-file-finder"
     }]
   }];
 
@@ -212,7 +294,7 @@ const Index = () => {
   }];
 
   return <Layout>
-      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 25+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 45+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
@@ -274,11 +356,13 @@ const Index = () => {
               toolCategories[2].tools[0], // Percentage Calculator
               toolCategories[4].tools[0], // QR Code Generator
               toolCategories[0].tools[5], // Background Remover
-              toolCategories[3].tools[4], // Text-to-Speech - new
-              toolCategories[4].tools[5], // URL Shortener - new
-              toolCategories[4].tools[7], // Video to GIF - new
-              toolCategories[3].tools[5], // Markdown to HTML - new
-              toolCategories[2].tools[3]  // Age Calculator - new
+              toolCategories[3].tools[4], // Text-to-Speech
+              toolCategories[4].tools[5], // URL Shortener
+              toolCategories[4].tools[7], // Video to GIF
+              toolCategories[3].tools[5], // Markdown to HTML
+              toolCategories[2].tools[3], // Age Calculator
+              toolCategories[2].tools[4], // BMI Calculator
+              toolCategories[0].tools[8]  // Photo Editor
             ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
             animationDelay: `${index * 100}ms`
           }}>
@@ -296,7 +380,7 @@ const Index = () => {
               🚀 All Tools by Category
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Explore our complete collection of professional-grade tools, organized by category for easy discovery
+              Explore our complete collection of 45+ professional-grade tools, organized by category for easy discovery
             </p>
           </div>
 

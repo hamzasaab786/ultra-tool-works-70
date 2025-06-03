@@ -53,6 +53,14 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Passport Photo Maker</div>
                 <p className="text-sm text-muted-foreground">Create professional passport photos</p>
               </Link>
+              <Link to="/tools/photo-editor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Photo Editor</div>
+                <p className="text-sm text-muted-foreground">Edit photos with filters, effects, and adjustments</p>
+              </Link>
+              <Link to="/tools/image-format-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Image Format Converter</div>
+                <p className="text-sm text-muted-foreground">Convert between PNG, JPG, WebP, and other formats</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -77,6 +85,14 @@ const Navigation = () => {
                 <div className="font-medium leading-none">PDF to JPG</div>
                 <p className="text-sm text-muted-foreground">Convert PDF pages to high-quality images</p>
               </Link>
+              <Link to="/tools/pdf-to-word" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">PDF to Word</div>
+                <p className="text-sm text-muted-foreground">Convert PDF documents to editable Word files</p>
+              </Link>
+              <Link to="/tools/word-to-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Word to PDF</div>
+                <p className="text-sm text-muted-foreground">Convert Word documents to PDF format</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -100,6 +116,18 @@ const Navigation = () => {
               <Link to="/tools/age-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Age Calculator</div>
                 <p className="text-sm text-muted-foreground">Calculate exact age between any two dates</p>
+              </Link>
+              <Link to="/tools/bmi-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">BMI Calculator</div>
+                <p className="text-sm text-muted-foreground">Calculate your Body Mass Index and health status</p>
+              </Link>
+              <Link to="/tools/loan-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Loan Calculator</div>
+                <p className="text-sm text-muted-foreground">Calculate monthly payments and interest</p>
+              </Link>
+              <Link to="/tools/tip-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Tip Calculator</div>
+                <p className="text-sm text-muted-foreground">Calculate tips and split bills easily</p>
               </Link>
             </div>
           </NavigationMenuContent>
@@ -128,6 +156,14 @@ const Navigation = () => {
               <Link to="/tools/markdown-to-html" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Markdown to HTML</div>
                 <p className="text-sm text-muted-foreground">Convert Markdown text to HTML code</p>
+              </Link>
+              <Link to="/tools/text-diff" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Text Diff Checker</div>
+                <p className="text-sm text-muted-foreground">Compare two texts and highlight differences</p>
+              </Link>
+              <Link to="/tools/lorem-ipsum" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Lorem Ipsum Generator</div>
+                <p className="text-sm text-muted-foreground">Generate placeholder text for design projects</p>
               </Link>
             </div>
           </NavigationMenuContent>
@@ -164,6 +200,38 @@ const Navigation = () => {
               <Link to="/tools/budget-tracker" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Budget Tracker</div>
                 <p className="text-sm text-muted-foreground">Track your monthly income and expenses</p>
+              </Link>
+              <Link to="/tools/barcode-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Barcode Generator</div>
+                <p className="text-sm text-muted-foreground">Generate various types of barcodes</p>
+              </Link>
+              <Link to="/tools/uuid-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">UUID Generator</div>
+                <p className="text-sm text-muted-foreground">Generate unique identifiers for your projects</p>
+              </Link>
+            </div>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuTrigger>File Tools</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <div className="grid gap-3 p-4 w-[400px]">
+              <Link to="/tools/file-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">File Converter</div>
+                <p className="text-sm text-muted-foreground">Convert between various file formats</p>
+              </Link>
+              <Link to="/tools/zip-extractor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">ZIP Extractor</div>
+                <p className="text-sm text-muted-foreground">Extract files from ZIP archives</p>
+              </Link>
+              <Link to="/tools/file-size-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">File Size Converter</div>
+                <p className="text-sm text-muted-foreground">Convert between bytes, KB, MB, GB, TB</p>
+              </Link>
+              <Link to="/tools/duplicate-file-finder" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Duplicate File Finder</div>
+                <p className="text-sm text-muted-foreground">Find and remove duplicate files</p>
               </Link>
             </div>
           </NavigationMenuContent>
