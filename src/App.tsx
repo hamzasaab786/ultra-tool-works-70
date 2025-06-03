@@ -68,6 +68,14 @@ import TimerStopwatch from "./pages/tools/TimerStopwatch";
 import ColorPicker from "./pages/tools/ColorPicker";
 import BudgetTracker from "./pages/tools/BudgetTracker";
 
+// Additional New Tools
+import TextToSpeech from "./pages/tools/TextToSpeech";
+import VideoToGif from "./pages/tools/VideoToGif";
+import MarkdownToHtml from "./pages/tools/MarkdownToHtml";
+import UrlShortener from "./pages/tools/UrlShortener";
+import HashGenerator from "./pages/tools/HashGenerator";
+import AgeCalculator from "./pages/tools/AgeCalculator";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -142,6 +150,14 @@ const AppContent = () => {
       <Route path="/tools/timer-stopwatch" element={<TimerStopwatch />} />
       <Route path="/tools/color-picker" element={<ColorPicker />} />
       <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
+      
+      {/* New Additional Tool Routes */}
+      <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
+      <Route path="/tools/video-to-gif" element={<VideoToGif />} />
+      <Route path="/tools/markdown-to-html" element={<MarkdownToHtml />} />
+      <Route path="/tools/url-shortener" element={<UrlShortener />} />
+      <Route path="/tools/hash-generator" element={<HashGenerator />} />
+      <Route path="/tools/age-calculator" element={<AgeCalculator />} />
       
       {/* Catch-all route for 404 */}
       <Route path="*" element={<NotFound />} />

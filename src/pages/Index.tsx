@@ -8,7 +8,12 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
 // Import tool icons
-import { ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, Volume2 } from "lucide-react";
+import { 
+  ImageIcon, FileIcon, Calculator, Type, QrCode, Fingerprint, FilePlus, 
+  Scissors, FileDown, Percent, Ruler, Coins, AlignLeft, CaseSensitive, 
+  Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
+  Volume2, Film, FileCode, Hash, CalendarRange
+} from "lucide-react";
 
 const Index = () => {
   const scrollToTools = () => {
@@ -103,6 +108,11 @@ const Index = () => {
       description: "Convert between major world currencies with up-to-date exchange rates",
       icon: <Coins />,
       path: "/tools/currency-converter"
+    }, {
+      title: "Age Calculator",
+      description: "Calculate exact age in years, months, days, and more from any birth date",
+      icon: <CalendarRange />,
+      path: "/tools/age-calculator"
     }]
   }, {
     title: "📝 Text Tools",
@@ -127,6 +137,16 @@ const Index = () => {
       description: "Convert between direct and indirect speech with proper grammar rules and examples",
       icon: <MessageSquare />,
       path: "/tools/speech-converter"
+    }, {
+      title: "Text-to-Speech",
+      description: "Convert text to natural-sounding speech with adjustable voice settings",
+      icon: <Volume2 />,
+      path: "/tools/text-to-speech"
+    }, {
+      title: "Markdown to HTML",
+      description: "Convert Markdown text to formatted HTML with preview and custom styling",
+      icon: <FileCode />,
+      path: "/tools/markdown-to-html"
     }]
   }, {
     title: "🛠️ Utility Tools",
@@ -156,6 +176,21 @@ const Index = () => {
       description: "Track your monthly income and expenses with category management and currency support",
       icon: <DollarSign />,
       path: "/tools/budget-tracker"
+    }, {
+      title: "URL Shortener",
+      description: "Create short, shareable links from long URLs with custom options",
+      icon: <Link2 />,
+      path: "/tools/url-shortener"
+    }, {
+      title: "Hash Generator",
+      description: "Generate MD5, SHA-1, and SHA-256 hash values from text or files",
+      icon: <Hash />,
+      path: "/tools/hash-generator"
+    }, {
+      title: "Video to GIF",
+      description: "Convert video clips to animated GIFs with customizable settings",
+      icon: <Film />,
+      path: "/tools/video-to-gif"
     }]
   }];
 
@@ -239,11 +274,11 @@ const Index = () => {
               toolCategories[2].tools[0], // Percentage Calculator
               toolCategories[4].tools[0], // QR Code Generator
               toolCategories[0].tools[5], // Background Remover
-              toolCategories[4].tools[2], // Timer & Stopwatch
-              toolCategories[3].tools[2], // Base64 Tool
-              toolCategories[4].tools[3], // Color Picker
-              toolCategories[1].tools[3], // PDF to JPG
-              toolCategories[3].tools[3]  // Speech Converter
+              toolCategories[3].tools[4], // Text-to-Speech - new
+              toolCategories[4].tools[5], // URL Shortener - new
+              toolCategories[4].tools[7], // Video to GIF - new
+              toolCategories[3].tools[5], // Markdown to HTML - new
+              toolCategories[2].tools[3]  // Age Calculator - new
             ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
             animationDelay: `${index * 100}ms`
           }}>

@@ -37,6 +37,10 @@ const Navigation = () => {
                 <div className="font-medium leading-none">SVG to JPG</div>
                 <p className="text-sm text-muted-foreground">Convert SVG vector graphics to high-quality JPG images</p>
               </Link>
+              <Link to="/tools/video-to-gif" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Video to GIF</div>
+                <p className="text-sm text-muted-foreground">Convert video clips to animated GIFs</p>
+              </Link>
               <Link to="/tools/image-to-url" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Image to URL</div>
                 <p className="text-sm text-muted-foreground">Convert images to shareable URLs</p>
@@ -93,6 +97,10 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Currency Converter</div>
                 <p className="text-sm text-muted-foreground">Convert between major world currencies</p>
               </Link>
+              <Link to="/tools/age-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Age Calculator</div>
+                <p className="text-sm text-muted-foreground">Calculate exact age between any two dates</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -113,6 +121,14 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Base64 Encoder/Decoder</div>
                 <p className="text-sm text-muted-foreground">Encode and decode Base64 strings</p>
               </Link>
+              <Link to="/tools/text-to-speech" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Text to Speech</div>
+                <p className="text-sm text-muted-foreground">Convert text to spoken words with multiple voices</p>
+              </Link>
+              <Link to="/tools/markdown-to-html" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Markdown to HTML</div>
+                <p className="text-sm text-muted-foreground">Convert Markdown text to HTML code</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -128,6 +144,14 @@ const Navigation = () => {
               <Link to="/tools/password-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Password Generator</div>
                 <p className="text-sm text-muted-foreground">Generate strong, secure passwords</p>
+              </Link>
+              <Link to="/tools/url-shortener" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">URL Shortener</div>
+                <p className="text-sm text-muted-foreground">Create short links from long URLs</p>
+              </Link>
+              <Link to="/tools/hash-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Hash Generator</div>
+                <p className="text-sm text-muted-foreground">Generate MD5, SHA-1, SHA-256 hashes</p>
               </Link>
               <Link to="/tools/timer-stopwatch" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Timer & Stopwatch</div>
