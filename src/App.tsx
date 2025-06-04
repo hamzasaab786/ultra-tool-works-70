@@ -1,5 +1,6 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import Layout from "./components/Layout";
 import Index from "./pages/Index";
 import ImageCompressor from "./pages/tools/ImageCompressor";
@@ -52,72 +53,74 @@ import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          
-          {/* Image Tools */}
-          <Route path="/tools/image-compressor" element={<ImageCompressor />} />
-          <Route path="/tools/image-resizer" element={<ImageResizer />} />
-          <Route path="/tools/image-enhancer" element={<ImageEnhancer />} />
-          <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
-          <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
-          <Route path="/tools/video-to-gif" element={<VideoToGif />} />
-          <Route path="/tools/image-to-url" element={<ImageToUrl />} />
-          <Route path="/tools/background-remover" element={<BackgroundRemover />} />
-          <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
-          <Route path="/tools/photo-editor" element={<PhotoEditor />} />
-          <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
-          
-          {/* PDF Tools */}
-          <Route path="/tools/merge-pdf" element={<MergePDF />} />
-          <Route path="/tools/split-pdf" element={<SplitPdf />} />
-          <Route path="/tools/compress-pdf" element={<CompressPdf />} />
-          <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
-          <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
-          <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
-          <Route path="/tools/edit-pdf" element={<EditPdf />} />
-          <Route path="/tools/crop-pdf" element={<CropPdf />} />
-          
-          {/* Calculators & Converters */}
-          <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
-          <Route path="/tools/unit-converter" element={<UnitConverter />} />
-          <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
-          <Route path="/tools/age-calculator" element={<AgeCalculator />} />
-          <Route path="/tools/bmi-calculator" element={<BmiCalculator />} />
-          <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
-          <Route path="/tools/tip-calculator" element={<TipCalculator />} />
-          
-          {/* Text Tools */}
-          <Route path="/tools/word-counter" element={<WordCounter />} />
-          <Route path="/tools/case-converter" element={<CaseConverter />} />
-          <Route path="/tools/base64-tool" element={<Base64Tool />} />
-          <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
-          <Route path="/tools/markdown-to-html" element={<MarkdownToHtml />} />
-          <Route path="/tools/text-diff" element={<TextDiff />} />
-          <Route path="/tools/lorem-ipsum" element={<LoremIpsum />} />
-          
-          {/* Utilities */}
-          <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
-          <Route path="/tools/password-generator" element={<PasswordGenerator />} />
-          <Route path="/tools/url-shortener" element={<UrlShortener />} />
-          <Route path="/tools/hash-generator" element={<HashGenerator />} />
-          <Route path="/tools/timer-stopwatch" element={<TimerStopwatch />} />
-          <Route path="/tools/color-picker" element={<ColorPicker />} />
-          <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
-          <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
-          <Route path="/tools/uuid-generator" element={<UuidGenerator />} />
-          
-          {/* File Tools */}
-          <Route path="/tools/file-converter" element={<FileConverter />} />
-          <Route path="/tools/zip-extractor" element={<ZipExtractor />} />
-          <Route path="/tools/file-size-converter" element={<FileSizeConverter />} />
-          <Route path="/tools/duplicate-file-finder" element={<DuplicateFileFinder />} />
-        </Routes>
-      </Layout>
-      <Toaster />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            
+            {/* Image Tools */}
+            <Route path="/tools/image-compressor" element={<ImageCompressor />} />
+            <Route path="/tools/image-resizer" element={<ImageResizer />} />
+            <Route path="/tools/image-enhancer" element={<ImageEnhancer />} />
+            <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
+            <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
+            <Route path="/tools/video-to-gif" element={<VideoToGif />} />
+            <Route path="/tools/image-to-url" element={<ImageToUrl />} />
+            <Route path="/tools/background-remover" element={<BackgroundRemover />} />
+            <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
+            <Route path="/tools/photo-editor" element={<PhotoEditor />} />
+            <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
+            
+            {/* PDF Tools */}
+            <Route path="/tools/merge-pdf" element={<MergePDF />} />
+            <Route path="/tools/split-pdf" element={<SplitPdf />} />
+            <Route path="/tools/compress-pdf" element={<CompressPdf />} />
+            <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
+            <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
+            <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
+            <Route path="/tools/edit-pdf" element={<EditPdf />} />
+            <Route path="/tools/crop-pdf" element={<CropPdf />} />
+            
+            {/* Calculators & Converters */}
+            <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
+            <Route path="/tools/unit-converter" element={<UnitConverter />} />
+            <Route path="/tools/currency-converter" element={<CurrencyConverter />} />
+            <Route path="/tools/age-calculator" element={<AgeCalculator />} />
+            <Route path="/tools/bmi-calculator" element={<BmiCalculator />} />
+            <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
+            <Route path="/tools/tip-calculator" element={<TipCalculator />} />
+            
+            {/* Text Tools */}
+            <Route path="/tools/word-counter" element={<WordCounter />} />
+            <Route path="/tools/case-converter" element={<CaseConverter />} />
+            <Route path="/tools/base64-tool" element={<Base64Tool />} />
+            <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
+            <Route path="/tools/markdown-to-html" element={<MarkdownToHtml />} />
+            <Route path="/tools/text-diff" element={<TextDiff />} />
+            <Route path="/tools/lorem-ipsum" element={<LoremIpsum />} />
+            
+            {/* Utilities */}
+            <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
+            <Route path="/tools/password-generator" element={<PasswordGenerator />} />
+            <Route path="/tools/url-shortener" element={<UrlShortener />} />
+            <Route path="/tools/hash-generator" element={<HashGenerator />} />
+            <Route path="/tools/timer-stopwatch" element={<TimerStopwatch />} />
+            <Route path="/tools/color-picker" element={<ColorPicker />} />
+            <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
+            <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
+            <Route path="/tools/uuid-generator" element={<UuidGenerator />} />
+            
+            {/* File Tools */}
+            <Route path="/tools/file-converter" element={<FileConverter />} />
+            <Route path="/tools/zip-extractor" element={<ZipExtractor />} />
+            <Route path="/tools/file-size-converter" element={<FileSizeConverter />} />
+            <Route path="/tools/duplicate-file-finder" element={<DuplicateFileFinder />} />
+          </Routes>
+        </Layout>
+        <Toaster />
+      </Router>
+    </HelmetProvider>
   );
 }
 
