@@ -76,29 +76,30 @@ const CompressPdf = () => {
       console.log('PDF loaded, pages:', pdfDoc.getPageCount());
       console.log('Compression quality:', quality);
       
-      // For demonstration, we'll create a new PDF with modified compression
-      // In a real scenario, you'd need more sophisticated compression algorithms
+      // Create compressed PDF with optimized settings
       const compressedPdfBytes = await pdfDoc.save({
         useObjectStreams: quality > 0.7,
         addDefaultPage: false,
         updateFieldAppearances: false,
       });
       
-      // Simulate compression by adjusting the actual compressed size
-      const targetSize = Math.floor(selectedPdf.size * quality);
+      console.log('PDF compressed, original bytes:', arrayBuffer.byteLength, 'compressed bytes:', compressedPdfBytes.length);
+      
+      // Create the compressed blob with the actual compressed bytes
+      const compressedBlob = new Blob([compressedPdfBytes], { 
+        type: 'application/pdf' 
+      });
+      
+      // Set the actual compressed size from the blob
       const actualCompressedSize = compressedPdfBytes.length;
       
-      // Use the smaller of the two sizes to simulate better compression
-      const finalSize = Math.min(targetSize, actualCompressedSize);
-      
-      const compressedBlob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
-      
       setCompressedPdf(compressedBlob);
-      setCompressedSize(finalSize);
+      setCompressedSize(actualCompressedSize);
       
-      const savedSpace = ((selectedPdf.size - finalSize) / selectedPdf.size) * 100;
+      const savedSpace = ((selectedPdf.size - actualCompressedSize) / selectedPdf.size) * 100;
       
-      console.log('Compression completed. Original:', selectedPdf.size, 'Compressed:', finalSize);
+      console.log('Compression completed. Original:', selectedPdf.size, 'Compressed:', actualCompressedSize);
+      console.log('Compressed blob size:', compressedBlob.size);
       
       toast({
         title: "Success",
@@ -117,15 +118,29 @@ const CompressPdf = () => {
   }, [selectedPdf, compressionLevel]);
 
   const downloadCompressed = useCallback(() => {
-    if (!compressedPdf || !selectedPdf) return;
+    if (!compressedPdf || !selectedPdf) {
+      console.error('No compressed PDF or original file available for download');
+      return;
+    }
     
+    console.log('Starting download of compressed PDF');
+    console.log('Compressed blob size:', compressedPdf.size);
+    
+    // Create download link with the compressed blob
+    const url = URL.createObjectURL(compressedPdf);
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(compressedPdf);
+    link.href = url;
     link.download = `compressed_${selectedPdf.name}`;
+    
+    // Add link to DOM, click it, then remove it
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    
+    // Clean up the URL object
+    URL.revokeObjectURL(url);
+    
+    console.log('Download initiated for compressed PDF');
     
     toast({
       title: "Downloaded",
