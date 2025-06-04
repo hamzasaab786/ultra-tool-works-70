@@ -13,7 +13,7 @@ import BackgroundRemover from "./pages/tools/BackgroundRemover";
 import PassportPhotoMaker from "./pages/tools/PassportPhotoMaker";
 import PhotoEditor from "./pages/tools/PhotoEditor";
 import ImageFormatConverter from "./pages/tools/ImageFormatConverter";
-import MergePdf from "./pages/tools/MergePdf";
+import MergePDF from "./pages/tools/MergePDF";
 import SplitPdf from "./pages/tools/SplitPdf";
 import CompressPdf from "./pages/tools/CompressPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
@@ -35,7 +35,7 @@ import TextToSpeech from "./pages/tools/TextToSpeech";
 import MarkdownToHtml from "./pages/tools/MarkdownToHtml";
 import TextDiff from "./pages/tools/TextDiff";
 import LoremIpsum from "./pages/tools/LoremIpsum";
-import QrCodeGenerator from "./pages/tools/QrCodeGenerator";
+import QRCodeGenerator from "./pages/tools/QRCodeGenerator";
 import PasswordGenerator from "./pages/tools/PasswordGenerator";
 import UrlShortener from "./pages/tools/UrlShortener";
 import HashGenerator from "./pages/tools/HashGenerator";
@@ -71,7 +71,7 @@ function App() {
           <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
           
           {/* PDF Tools */}
-          <Route path="/tools/merge-pdf" element={<MergePdf />} />
+          <Route path="/tools/merge-pdf" element={<MergePDF />} />
           <Route path="/tools/split-pdf" element={<SplitPdf />} />
           <Route path="/tools/compress-pdf" element={<CompressPdf />} />
           <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
@@ -99,7 +99,7 @@ function App() {
           <Route path="/tools/lorem-ipsum" element={<LoremIpsum />} />
           
           {/* Utilities */}
-          <Route path="/tools/qr-code-generator" element={<QrCodeGenerator />} />
+          <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
           <Route path="/tools/password-generator" element={<PasswordGenerator />} />
           <Route path="/tools/url-shortener" element={<UrlShortener />} />
           <Route path="/tools/hash-generator" element={<HashGenerator />} />
