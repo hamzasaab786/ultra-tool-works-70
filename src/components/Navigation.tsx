@@ -85,14 +85,6 @@ const Navigation = () => {
                 <div className="font-medium leading-none">PDF to JPG</div>
                 <p className="text-sm text-muted-foreground">Convert PDF pages to high-quality images</p>
               </Link>
-              <Link to="/tools/pdf-to-word" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">PDF to Word</div>
-                <p className="text-sm text-muted-foreground">Convert PDF documents to editable Word files</p>
-              </Link>
-              <Link to="/tools/word-to-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Word to PDF</div>
-                <p className="text-sm text-muted-foreground">Convert Word documents to PDF format</p>
-              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -148,10 +140,6 @@ const Navigation = () => {
               <Link to="/tools/base64-tool" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Base64 Encoder/Decoder</div>
                 <p className="text-sm text-muted-foreground">Encode and decode Base64 strings</p>
-              </Link>
-              <Link to="/tools/text-to-speech" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Text to Speech</div>
-                <p className="text-sm text-muted-foreground">Convert text to spoken words with multiple voices</p>
               </Link>
               <Link to="/tools/markdown-to-html" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Markdown to HTML</div>

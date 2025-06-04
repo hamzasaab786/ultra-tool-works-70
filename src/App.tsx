@@ -18,8 +18,6 @@ import MergePDF from "./pages/tools/MergePDF";
 import SplitPdf from "./pages/tools/SplitPdf";
 import CompressPdf from "./pages/tools/CompressPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
-import PdfToWord from "./pages/tools/PdfToWord";
-import WordToPdf from "./pages/tools/WordToPdf";
 import EditPdf from "./pages/tools/EditPdf";
 import CropPdf from "./pages/tools/CropPdf";
 import PercentageCalculator from "./pages/tools/PercentageCalculator";
@@ -32,7 +30,6 @@ import TipCalculator from "./pages/tools/TipCalculator";
 import WordCounter from "./pages/tools/WordCounter";
 import CaseConverter from "./pages/tools/CaseConverter";
 import Base64Tool from "./pages/tools/Base64Tool";
-import TextToSpeech from "./pages/tools/TextToSpeech";
 import MarkdownToHtml from "./pages/tools/MarkdownToHtml";
 import TextDiff from "./pages/tools/TextDiff";
 import LoremIpsum from "./pages/tools/LoremIpsum";
@@ -77,8 +74,6 @@ function App() {
             <Route path="/tools/split-pdf" element={<SplitPdf />} />
             <Route path="/tools/compress-pdf" element={<CompressPdf />} />
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
-            <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
-            <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
             <Route path="/tools/edit-pdf" element={<EditPdf />} />
             <Route path="/tools/crop-pdf" element={<CropPdf />} />
             
@@ -95,7 +90,6 @@ function App() {
             <Route path="/tools/word-counter" element={<WordCounter />} />
             <Route path="/tools/case-converter" element={<CaseConverter />} />
             <Route path="/tools/base64-tool" element={<Base64Tool />} />
-            <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
             <Route path="/tools/markdown-to-html" element={<MarkdownToHtml />} />
             <Route path="/tools/text-diff" element={<TextDiff />} />
             <Route path="/tools/lorem-ipsum" element={<LoremIpsum />} />
