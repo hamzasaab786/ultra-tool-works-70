@@ -1,7 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import Home from "./pages/Home";
+import Index from "./pages/Index";
 import ImageCompressor from "./pages/tools/ImageCompressor";
 import ImageResizer from "./pages/tools/ImageResizer";
 import ImageEnhancer from "./pages/tools/ImageEnhancer";
@@ -55,7 +55,7 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Index />} />
           
           {/* Image Tools */}
           <Route path="/tools/image-compressor" element={<ImageCompressor />} />
