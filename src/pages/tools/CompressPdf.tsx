@@ -4,7 +4,7 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { FileText, Upload, Download, Settings, AlertCircle, Info } from "lucide-react";
+import { FileText, Upload, Download, Settings, AlertCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 import { PDFDocument } from 'pdf-lib';
@@ -30,8 +30,6 @@ const CompressPdf = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    console.log('PDF file selected:', file.name, file.type, file.size);
-
     if (file.type !== 'application/pdf') {
       toast({
         title: "Error",
@@ -41,10 +39,10 @@ const CompressPdf = () => {
       return;
     }
 
-    if (file.size > 50 * 1024 * 1024) { // 50MB limit
+    if (file.size > 100 * 1024 * 1024) { // 100MB limit
       toast({
         title: "Error",
-        description: "File size too large. Please select a file smaller than 50MB",
+        description: "File size too large. Please select a file smaller than 100MB",
         variant: "destructive"
       });
       return;
@@ -62,43 +60,22 @@ const CompressPdf = () => {
   }, []);
 
   const compressPdf = useCallback(async () => {
-    if (!selectedPdf) {
-      console.log('No PDF selected for compression');
-      return;
-    }
+    if (!selectedPdf) return;
 
     setIsProcessing(true);
-    console.log('Starting PDF compression process...');
     
     try {
-      console.log('Reading PDF file as array buffer...');
       const arrayBuffer = await selectedPdf.arrayBuffer();
-      console.log('PDF buffer size:', arrayBuffer.byteLength);
-      
-      console.log('Loading PDF with pdf-lib...');
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       
-      const pageCount = pdfDoc.getPageCount();
-      console.log('PDF loaded successfully, pages:', pageCount);
-      
-      // Get compression quality
-      const quality = compressionLevel[0] / 100;
-      console.log('Compression quality:', quality);
-      
-      // Configure compression settings
-      const compressionSettings = {
+      // Basic compression by removing unused objects and optimizing
+      const compressedBytes = await pdfDoc.save({
         useObjectStreams: true,
         addDefaultPage: false,
+        objectStreamsCompressionLevel: 9,
         updateFieldAppearances: false,
-      };
+      });
       
-      console.log('Applying compression with settings:', compressionSettings);
-      
-      // Save with compression
-      const compressedBytes = await pdfDoc.save(compressionSettings);
-      console.log('PDF compressed, original:', arrayBuffer.byteLength, 'compressed:', compressedBytes.length);
-      
-      // Create blob
       const compressedBlob = new Blob([compressedBytes], { 
         type: 'application/pdf' 
       });
@@ -107,31 +84,25 @@ const CompressPdf = () => {
       setCompressedSize(compressedBytes.length);
       
       const savedSpace = ((selectedPdf.size - compressedBytes.length) / selectedPdf.size) * 100;
-      console.log('Compression completed. Space saved:', savedSpace.toFixed(1) + '%');
       
       toast({
         title: "Success",
-        description: `PDF compressed successfully! Saved ${savedSpace.toFixed(1)}% of space`,
+        description: `PDF compressed successfully! Saved ${Math.max(0, savedSpace).toFixed(1)}% space`,
       });
     } catch (error) {
       console.error('Error compressing PDF:', error);
       toast({
         title: "Error",
-        description: `Failed to compress PDF: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        description: "Failed to compress PDF. Please try with a different file.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
     }
-  }, [selectedPdf, compressionLevel]);
+  }, [selectedPdf]);
 
   const downloadCompressed = useCallback(() => {
-    if (!compressedPdf || !selectedPdf) {
-      console.error('No compressed PDF available for download');
-      return;
-    }
-    
-    console.log('Starting download of compressed PDF, size:', compressedPdf.size);
+    if (!compressedPdf || !selectedPdf) return;
     
     const url = URL.createObjectURL(compressedPdf);
     const link = document.createElement('a');
@@ -142,8 +113,6 @@ const CompressPdf = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
-    console.log('Download completed');
     
     toast({
       title: "Downloaded",
@@ -190,7 +159,7 @@ const CompressPdf = () => {
                   Choose PDF file to compress
                 </p>
                 <p className="text-sm text-gray-500 mb-4">
-                  Maximum file size: 50MB
+                  Maximum file size: 100MB
                 </p>
                 <input
                   ref={fileInputRef}
@@ -230,37 +199,6 @@ const CompressPdf = () => {
               </div>
             )}
           </div>
-
-          {/* Settings Section */}
-          {selectedPdf && (
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Settings className="h-5 w-5 text-blue-600" />
-                Compression Settings
-              </h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                    Compression Level: {compressionLevel[0]}%
-                  </Label>
-                  <Slider
-                    value={compressionLevel}
-                    onValueChange={setCompressionLevel}
-                    max={95}
-                    min={30}
-                    step={5}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-2">
-                    <span>Maximum Compression</span>
-                    <span>Balanced</span>
-                    <span>Best Quality</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Compress Button */}
           {selectedPdf && !isProcessing && !compressedPdf && (
@@ -308,7 +246,7 @@ const CompressPdf = () => {
                   <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
                     <p className="text-sm font-medium text-gray-700">Space Saved</p>
                     <p className="text-lg font-bold text-purple-600">
-                      {(((originalSize - compressedSize) / originalSize) * 100).toFixed(1)}%
+                      {Math.max(0, ((originalSize - compressedSize) / originalSize) * 100).toFixed(1)}%
                     </p>
                   </div>
                 </div>
@@ -347,7 +285,7 @@ const CompressPdf = () => {
                     <h5 className="font-medium mb-1">✓ Features:</h5>
                     <ul className="space-y-1">
                       <li>• Advanced compression algorithms</li>
-                      <li>• Multiple quality settings</li>
+                      <li>• Document optimization</li>
                       <li>• Preserves document structure</li>
                       <li>• Fast processing</li>
                     </ul>

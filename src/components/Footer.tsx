@@ -22,6 +22,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/tools/image-compressor" className="text-gray-300 hover:text-white transition-colors">Image Compressor</Link></li>
               <li><Link to="/tools/merge-pdf" className="text-gray-300 hover:text-white transition-colors">Merge PDF</Link></li>
+              <li><Link to="/tools/compress-pdf" className="text-gray-300 hover:text-white transition-colors">Compress PDF</Link></li>
               <li><Link to="/tools/percentage-calculator" className="text-gray-300 hover:text-white transition-colors">Percentage Calculator</Link></li>
               <li><Link to="/tools/word-counter" className="text-gray-300 hover:text-white transition-colors">Word Counter</Link></li>
               <li><Link to="/tools/qr-code-generator" className="text-gray-300 hover:text-white transition-colors">QR Code Generator</Link></li>

@@ -12,7 +12,6 @@ import VideoToGif from "./pages/tools/VideoToGif";
 import ImageToUrl from "./pages/tools/ImageToUrl";
 import BackgroundRemover from "./pages/tools/BackgroundRemover";
 import PassportPhotoMaker from "./pages/tools/PassportPhotoMaker";
-import PhotoEditor from "./pages/tools/PhotoEditor";
 import ImageFormatConverter from "./pages/tools/ImageFormatConverter";
 import MergePDF from "./pages/tools/MergePDF";
 import SplitPdf from "./pages/tools/SplitPdf";
@@ -66,7 +65,6 @@ function App() {
             <Route path="/tools/image-to-url" element={<ImageToUrl />} />
             <Route path="/tools/background-remover" element={<BackgroundRemover />} />
             <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
-            <Route path="/tools/photo-editor" element={<PhotoEditor />} />
             <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
             
             {/* PDF Tools */}

@@ -53,10 +53,6 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Passport Photo Maker</div>
                 <p className="text-sm text-muted-foreground">Create professional passport photos</p>
               </Link>
-              <Link to="/tools/photo-editor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Photo Editor</div>
-                <p className="text-sm text-muted-foreground">Edit photos with filters, effects, and adjustments</p>
-              </Link>
               <Link to="/tools/image-format-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Image Format Converter</div>
                 <p className="text-sm text-muted-foreground">Convert between PNG, JPG, WebP, and other formats</p>
@@ -84,6 +80,14 @@ const Navigation = () => {
               <Link to="/tools/pdf-to-jpg" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">PDF to JPG</div>
                 <p className="text-sm text-muted-foreground">Convert PDF pages to high-quality images</p>
+              </Link>
+              <Link to="/tools/edit-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Edit PDF</div>
+                <p className="text-sm text-muted-foreground">Edit and modify PDF documents</p>
+              </Link>
+              <Link to="/tools/crop-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Crop PDF</div>
+                <p className="text-sm text-muted-foreground">Crop and resize PDF pages</p>
               </Link>
             </div>
           </NavigationMenuContent>
