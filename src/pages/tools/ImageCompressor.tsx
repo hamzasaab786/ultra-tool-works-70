@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import SEO from "@/components/SEO";
 
 interface ProcessedImage {
   originalSize: number;
@@ -102,18 +103,22 @@ const ImageCompressor = () => {
         ctx.drawImage(img, 0, 0);
         setProgress(80);
         
-        // Convert to webp with quality setting
+        // Convert to JPEG with quality setting for proper compression
         canvas.toBlob((blob) => {
           if (blob) {
             setProgress(100);
             const compressedUrl = URL.createObjectURL(blob);
+            
+            // Generate proper filename with .jpg extension
+            const originalName = file.name.split('.').slice(0, -1).join('.');
+            const compressedName = originalName ? `${originalName}_compressed.jpg` : 'compressed_image.jpg';
             
             setProcessedImage({
               originalSize: file.size,
               compressedSize: blob.size,
               originalUrl,
               compressedUrl,
-              name: file.name.split('.').slice(0, -1).join('.') + '.webp'
+              name: compressedName
             });
             
             setTimeout(() => {
@@ -124,7 +129,7 @@ const ImageCompressor = () => {
               });
             }, 500);
           }
-        }, 'image/webp', quality / 100);
+        }, 'image/jpeg', quality / 100); // Use JPEG format for proper compression
       };
       
       img.src = event.target?.result as string;
@@ -154,9 +159,16 @@ const ImageCompressor = () => {
     const link = document.createElement('a');
     link.href = processedImage.compressedUrl;
     link.download = processedImage.name;
+    
+    // Ensure the download happens properly
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    toast({
+      title: "Success",
+      description: "Compressed image downloaded successfully!",
+    });
   }, [processedImage]);
   
   const resetCompressedImage = useCallback(() => {
@@ -168,124 +180,133 @@ const ImageCompressor = () => {
   }, [processedImage]);
   
   return (
-    <ToolPageTemplate
-      title="Image Compressor"
-      description="Reduce image file size with minimal quality loss"
-    >
-      {!processedImage ? (
-        <div 
-          className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg ${
-            isDragging 
-              ? "border-primary bg-primary/5" 
-              : "border-gray-300 bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
-          }`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <ImageIcon className="h-12 w-12 text-gray-400 mb-4" />
-          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">Click to upload</span> or drag and drop
-          </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            PNG, JPG or WEBP (MAX. 100MB)
-          </p>
-          <input
-            type="file"
-            id="file-upload"
-            className="hidden"
-            accept="image/*"
-            onChange={handleFileSelect}
-          />
-          <Label htmlFor="file-upload" className="mt-4">
-            <Button asChild>
-              <span>
-                <Upload className="mr-2 h-4 w-4" /> Select Image
-              </span>
-            </Button>
-          </Label>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Image Compression Results</h3>
-            <Button variant="ghost" size="sm" onClick={resetCompressedImage}>
-              <X className="mr-2 h-4 w-4" /> Reset
-            </Button>
+    <>
+      <SEO
+        title="Image Compressor - Reduce Image File Size Online Free | ToolifyConvert"
+        description="Compress images online for free. Reduce image file size while maintaining quality. Support for JPG, PNG, WebP formats."
+        keywords="image compressor, reduce image size, compress image online, image optimization"
+        canonicalUrl="https://toolifyconvert.com/tools/image-compressor"
+      />
+      
+      <ToolPageTemplate
+        title="Image Compressor"
+        description="Reduce image file size with minimal quality loss"
+      >
+        {!processedImage ? (
+          <div 
+            className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg ${
+              isDragging 
+                ? "border-primary bg-primary/5" 
+                : "border-gray-300 bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            <ImageIcon className="h-12 w-12 text-gray-400 mb-4" />
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold">Click to upload</span> or drag and drop
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              PNG, JPG or WEBP (MAX. 100MB)
+            </p>
+            <input
+              type="file"
+              id="file-upload"
+              className="hidden"
+              accept="image/*"
+              onChange={handleFileSelect}
+            />
+            <Label htmlFor="file-upload" className="mt-4">
+              <Button asChild>
+                <span>
+                  <Upload className="mr-2 h-4 w-4" /> Select Image
+                </span>
+              </Button>
+            </Label>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="border rounded-md p-4">
-              <h4 className="font-medium mb-2">Original Image</h4>
-              <div className="aspect-square relative bg-gray-100 rounded-md overflow-hidden">
-                <img 
-                  src={processedImage.originalUrl} 
-                  alt="Original" 
-                  className="absolute w-full h-full object-contain"
-                />
-              </div>
-              <p className="mt-2 text-sm">Size: {formatBytes(processedImage.originalSize)}</p>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">Image Compression Results</h3>
+              <Button variant="ghost" size="sm" onClick={resetCompressedImage}>
+                <X className="mr-2 h-4 w-4" /> Reset
+              </Button>
             </div>
             
-            <div className="border rounded-md p-4">
-              <h4 className="font-medium mb-2">Compressed Image</h4>
-              <div className="aspect-square relative bg-gray-100 rounded-md overflow-hidden">
-                <img 
-                  src={processedImage.compressedUrl} 
-                  alt="Compressed" 
-                  className="absolute w-full h-full object-contain"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="border rounded-md p-4">
+                <h4 className="font-medium mb-2">Original Image</h4>
+                <div className="aspect-square relative bg-gray-100 rounded-md overflow-hidden">
+                  <img 
+                    src={processedImage.originalUrl} 
+                    alt="Original" 
+                    className="absolute w-full h-full object-contain"
+                  />
+                </div>
+                <p className="mt-2 text-sm">Size: {formatBytes(processedImage.originalSize)}</p>
               </div>
-              <p className="mt-2 text-sm">Size: {formatBytes(processedImage.compressedSize)}</p>
+              
+              <div className="border rounded-md p-4">
+                <h4 className="font-medium mb-2">Compressed Image (JPG)</h4>
+                <div className="aspect-square relative bg-gray-100 rounded-md overflow-hidden">
+                  <img 
+                    src={processedImage.compressedUrl} 
+                    alt="Compressed" 
+                    className="absolute w-full h-full object-contain"
+                  />
+                </div>
+                <p className="mt-2 text-sm">Size: {formatBytes(processedImage.compressedSize)}</p>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-primary/5 rounded-md">
+              <h4 className="font-medium mb-2">Compression Results</h4>
+              <p>Original size: {formatBytes(processedImage.originalSize)}</p>
+              <p>Compressed size: {formatBytes(processedImage.compressedSize)}</p>
+              <p>Size reduction: {calculateSavings(processedImage.originalSize, processedImage.compressedSize)}</p>
+            </div>
+            
+            <Button className="w-full" onClick={downloadCompressedImage}>
+              <Download className="mr-2 h-4 w-4" /> Download Compressed JPG
+            </Button>
+          </div>
+        )}
+        
+        {isProcessing && (
+          <div className="mt-6 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Processing image...</span>
+              <span>{progress}%</span>
+            </div>
+            <Progress value={progress} />
+          </div>
+        )}
+        
+        {!isProcessing && !processedImage && (
+          <div className="mt-6 space-y-4">
+            <div>
+              <Label htmlFor="quality" className="mb-2 block">
+                Compression Quality: {quality}%
+              </Label>
+              <Input
+                id="quality"
+                type="range"
+                min="1"
+                max="100"
+                value={quality}
+                onChange={(e) => setQuality(parseInt(e.target.value))}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                <span>Lower quality, smaller file</span>
+                <span>Higher quality, larger file</span>
+              </div>
             </div>
           </div>
-          
-          <div className="p-4 bg-primary/5 rounded-md">
-            <h4 className="font-medium mb-2">Compression Results</h4>
-            <p>Original size: {formatBytes(processedImage.originalSize)}</p>
-            <p>Compressed size: {formatBytes(processedImage.compressedSize)}</p>
-            <p>Size reduction: {calculateSavings(processedImage.originalSize, processedImage.compressedSize)}</p>
-          </div>
-          
-          <Button className="w-full" onClick={downloadCompressedImage}>
-            <Download className="mr-2 h-4 w-4" /> Download Compressed Image
-          </Button>
-        </div>
-      )}
-      
-      {isProcessing && (
-        <div className="mt-6 space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Processing image...</span>
-            <span>{progress}%</span>
-          </div>
-          <Progress value={progress} />
-        </div>
-      )}
-      
-      {!isProcessing && !processedImage && (
-        <div className="mt-6 space-y-4">
-          <div>
-            <Label htmlFor="quality" className="mb-2 block">
-              Compression Quality: {quality}%
-            </Label>
-            <Input
-              id="quality"
-              type="range"
-              min="1"
-              max="100"
-              value={quality}
-              onChange={(e) => setQuality(parseInt(e.target.value))}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground mt-1">
-              <span>Lower quality, smaller file</span>
-              <span>Higher quality, larger file</span>
-            </div>
-          </div>
-        </div>
-      )}
-    </ToolPageTemplate>
+        )}
+      </ToolPageTemplate>
+    </>
   );
 };
 
