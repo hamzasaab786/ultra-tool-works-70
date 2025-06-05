@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
@@ -72,7 +71,6 @@ const CompressPdf = () => {
       const compressedBytes = await pdfDoc.save({
         useObjectStreams: true,
         addDefaultPage: false,
-        objectStreamsCompressionLevel: 9,
         updateFieldAppearances: false,
       });
       
