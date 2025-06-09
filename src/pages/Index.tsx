@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
@@ -91,6 +90,26 @@ const Index = () => {
       description: "Convert PDF pages to high-quality JPG or PNG images with customizable settings",
       icon: <FileImage />,
       path: "/tools/pdf-to-jpg"
+    }, {
+      title: "PDF Compressor",
+      description: "Compress PDF files to reduce size while maintaining quality with advanced algorithms",
+      icon: <Archive />,
+      path: "/tools/pdf-compressor"
+    }, {
+      title: "PDF to Word",
+      description: "Convert PDF documents to editable Word files with preserved formatting",
+      icon: <FileCode />,
+      path: "/tools/pdf-to-word"
+    }, {
+      title: "Add Watermark",
+      description: "Add text or image watermarks to PDF documents for protection",
+      icon: <ShieldIcon />,
+      path: "/tools/add-watermark"
+    }, {
+      title: "Compare PDF",
+      description: "Compare two PDF documents and highlight differences",
+      icon: <Search />,
+      path: "/tools/compare-pdf"
     }]
   }, {
     title: "🧮 Calculators & Converters",
@@ -132,7 +151,7 @@ const Index = () => {
       path: "/tools/tip-calculator"
     }]
   }, {
-    title: "📝 Text Tools",
+    title: "📝 Text Tools", 
     description: "Text processing and manipulation tools for writers, editors, and content creators. Count words, convert case, and encode/decode text.",
     tools: [{
       title: "Word & Character Counter",
