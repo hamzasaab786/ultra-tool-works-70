@@ -53,6 +53,10 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Image Format Converter</div>
                 <p className="text-sm text-muted-foreground">Convert between PNG, JPG, WebP, and other formats</p>
               </Link>
+              <Link to="/tools/image-metadata-extractor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Image Metadata Extractor</div>
+                <p className="text-sm text-muted-foreground">Extract EXIF and metadata from images</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -72,6 +76,14 @@ const Navigation = () => {
               <Link to="/tools/pdf-to-jpg" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">PDF to JPG</div>
                 <p className="text-sm text-muted-foreground">Convert PDF pages to high-quality images</p>
+              </Link>
+              <Link to="/tools/pdf-compressor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">PDF Compressor</div>
+                <p className="text-sm text-muted-foreground">Reduce PDF file size while maintaining quality</p>
+              </Link>
+              <Link to="/tools/pdf-metadata-extractor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">PDF Metadata Extractor</div>
+                <p className="text-sm text-muted-foreground">Extract metadata and properties from PDFs</p>
               </Link>
             </div>
           </NavigationMenuContent>
@@ -109,6 +121,14 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Tip Calculator</div>
                 <p className="text-sm text-muted-foreground">Calculate tips and split bills easily</p>
               </Link>
+              <Link to="/tools/hex-to-rgb" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Hex to RGB</div>
+                <p className="text-sm text-muted-foreground">Convert color codes between formats</p>
+              </Link>
+              <Link to="/tools/number-base-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Number Base Converter</div>
+                <p className="text-sm text-muted-foreground">Convert between binary, decimal, octal, hex</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -116,7 +136,7 @@ const Navigation = () => {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Text Tools</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
+            <div className="grid gap-3 p-4 w-[450px]">
               <Link to="/tools/word-counter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Word & Character Counter</div>
                 <p className="text-sm text-muted-foreground">Count words, characters, and lines in your text</p>
@@ -141,6 +161,26 @@ const Navigation = () => {
                 <div className="font-medium leading-none">Lorem Ipsum Generator</div>
                 <p className="text-sm text-muted-foreground">Generate placeholder text for design projects</p>
               </Link>
+              <Link to="/tools/url-decoder" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">URL Encoder/Decoder</div>
+                <p className="text-sm text-muted-foreground">Encode and decode URLs with special characters</p>
+              </Link>
+              <Link to="/tools/json-formatter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">JSON Formatter</div>
+                <p className="text-sm text-muted-foreground">Format, validate, and minify JSON data</p>
+              </Link>
+              <Link to="/tools/csv-to-json" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">CSV to JSON</div>
+                <p className="text-sm text-muted-foreground">Convert CSV data to JSON format</p>
+              </Link>
+              <Link to="/tools/text-to-speech" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Text to Speech</div>
+                <p className="text-sm text-muted-foreground">Convert text to natural-sounding speech</p>
+              </Link>
+              <Link to="/tools/regex-tester" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Regex Tester</div>
+                <p className="text-sm text-muted-foreground">Test and validate regular expressions</p>
+              </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -148,7 +188,7 @@ const Navigation = () => {
         <NavigationMenuItem>
           <NavigationMenuTrigger>Utilities</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
+            <div className="grid gap-3 p-4 w-[450px]">
               <Link to="/tools/qr-code-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">QR Code Generator</div>
                 <p className="text-sm text-muted-foreground">Create QR codes for various purposes</p>
@@ -180,6 +220,18 @@ const Navigation = () => {
               <Link to="/tools/uuid-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">UUID Generator</div>
                 <p className="text-sm text-muted-foreground">Generate unique identifiers for your projects</p>
+              </Link>
+              <Link to="/tools/url-shortener" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">URL Shortener</div>
+                <p className="text-sm text-muted-foreground">Create short links and track clicks</p>
+              </Link>
+              <Link to="/tools/email-validator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Email Validator</div>
+                <p className="text-sm text-muted-foreground">Validate email addresses and detect typos</p>
+              </Link>
+              <Link to="/tools/credit-card-validator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+                <div className="font-medium leading-none">Credit Card Validator</div>
+                <p className="text-sm text-muted-foreground">Validate credit card numbers and formats</p>
               </Link>
             </div>
           </NavigationMenuContent>

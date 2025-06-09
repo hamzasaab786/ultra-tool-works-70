@@ -15,6 +15,7 @@ import ImageFormatConverter from "./pages/tools/ImageFormatConverter";
 import MergePDF from "./pages/tools/MergePDF";
 import SplitPdf from "./pages/tools/SplitPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
+import PdfCompressor from "./pages/tools/PdfCompressor";
 import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import UnitConverter from "./pages/tools/UnitConverter";
 import CurrencyConverter from "./pages/tools/CurrencyConverter";
@@ -36,6 +37,27 @@ import ColorPicker from "./pages/tools/ColorPicker";
 import BudgetTracker from "./pages/tools/BudgetTracker";
 import BarcodeGenerator from "./pages/tools/BarcodeGenerator";
 import UuidGenerator from "./pages/tools/UuidGenerator";
+import UrlShortener from "./pages/tools/UrlShortener";
+import HexToRgb from "./pages/tools/HexToRgb";
+import UrlDecoder from "./pages/tools/UrlDecoder";
+import JsonFormatter from "./pages/tools/JsonFormatter";
+import CsvToJson from "./pages/tools/CsvToJson";
+import EmailValidator from "./pages/tools/EmailValidator";
+import PasswordStrength from "./pages/tools/PasswordStrength";
+import FileHashChecker from "./pages/tools/FileHashChecker";
+import TextToSpeech from "./pages/tools/TextToSpeech";
+import SpeechToText from "./pages/tools/SpeechToText";
+import ImageMetadataExtractor from "./pages/tools/ImageMetadataExtractor";
+import PdfMetadataExtractor from "./pages/tools/PdfMetadataExtractor";
+import TextEncryption from "./pages/tools/TextEncryption";
+import NumberBaseConverter from "./pages/tools/NumberBaseConverter";
+import MorseCodeTranslator from "./pages/tools/MorseCodeTranslator";
+import WhoisLookup from "./pages/tools/WhoisLookup";
+import DnsLookup from "./pages/tools/DnsLookup";
+import IpGeolocation from "./pages/tools/IpGeolocation";
+import CreditCardValidator from "./pages/tools/CreditCardValidator";
+import EmojiPicker from "./pages/tools/EmojiPicker";
+import RegexTester from "./pages/tools/RegexTester";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
@@ -57,11 +79,14 @@ function App() {
             <Route path="/tools/background-remover" element={<BackgroundRemover />} />
             <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
             <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
+            <Route path="/tools/image-metadata-extractor" element={<ImageMetadataExtractor />} />
             
             {/* PDF Tools */}
             <Route path="/tools/merge-pdf" element={<MergePDF />} />
             <Route path="/tools/split-pdf" element={<SplitPdf />} />
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
+            <Route path="/tools/pdf-compressor" element={<PdfCompressor />} />
+            <Route path="/tools/pdf-metadata-extractor" element={<PdfMetadataExtractor />} />
             
             {/* Calculators & Converters */}
             <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
@@ -71,6 +96,8 @@ function App() {
             <Route path="/tools/bmi-calculator" element={<BmiCalculator />} />
             <Route path="/tools/loan-calculator" element={<LoanCalculator />} />
             <Route path="/tools/tip-calculator" element={<TipCalculator />} />
+            <Route path="/tools/hex-to-rgb" element={<HexToRgb />} />
+            <Route path="/tools/number-base-converter" element={<NumberBaseConverter />} />
             
             {/* Text Tools */}
             <Route path="/tools/word-counter" element={<WordCounter />} />
@@ -79,6 +106,14 @@ function App() {
             <Route path="/tools/markdown-to-html" element={<MarkdownToHtml />} />
             <Route path="/tools/text-diff" element={<TextDiff />} />
             <Route path="/tools/lorem-ipsum" element={<LoremIpsum />} />
+            <Route path="/tools/url-decoder" element={<UrlDecoder />} />
+            <Route path="/tools/json-formatter" element={<JsonFormatter />} />
+            <Route path="/tools/csv-to-json" element={<CsvToJson />} />
+            <Route path="/tools/text-encryption" element={<TextEncryption />} />
+            <Route path="/tools/morse-code-translator" element={<MorseCodeTranslator />} />
+            <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
+            <Route path="/tools/speech-to-text" element={<SpeechToText />} />
+            <Route path="/tools/regex-tester" element={<RegexTester />} />
             
             {/* Utilities */}
             <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
@@ -89,6 +124,15 @@ function App() {
             <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
             <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
             <Route path="/tools/uuid-generator" element={<UuidGenerator />} />
+            <Route path="/tools/url-shortener" element={<UrlShortener />} />
+            <Route path="/tools/email-validator" element={<EmailValidator />} />
+            <Route path="/tools/password-strength" element={<PasswordStrength />} />
+            <Route path="/tools/file-hash-checker" element={<FileHashChecker />} />
+            <Route path="/tools/whois-lookup" element={<WhoisLookup />} />
+            <Route path="/tools/dns-lookup" element={<DnsLookup />} />
+            <Route path="/tools/ip-geolocation" element={<IpGeolocation />} />
+            <Route path="/tools/credit-card-validator" element={<CreditCardValidator />} />
+            <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
           </Routes>
         </Layout>
         {/* Toaster is outside Layout to avoid duplication */}
