@@ -29,7 +29,7 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.006)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.006)_1px,transparent_1px)] bg-[size:40px_40px] opacity-50"></div>
       </div>
 
-      {/* Header with Navigation */}
+      {/* Header with Navigation - Only rendered once here */}
       <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-white/95 border-b border-gray-200/60 shadow-sm">
         <div className="container mx-auto px-4 py-3 lg:py-4 flex items-center relative z-10">
           <div className="mr-4 flex items-center">
@@ -52,7 +52,7 @@ const Layout = ({ children }: LayoutProps) => {
         {children}
       </main>
       
-      {/* Footer */}
+      {/* Footer - Only rendered once here */}
       <Footer />
     </div>
   );

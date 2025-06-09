@@ -51,6 +51,7 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
+        {/* Layout component already includes header and footer */}
         <Layout>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -110,6 +111,7 @@ function App() {
             <Route path="/tools/duplicate-file-finder" element={<DuplicateFileFinder />} />
           </Routes>
         </Layout>
+        {/* Toaster is outside Layout to avoid duplication */}
         <Toaster />
       </Router>
     </HelmetProvider>
