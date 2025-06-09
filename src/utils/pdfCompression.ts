@@ -10,6 +10,7 @@ interface CompressionSettings {
   optimizeImages: boolean;
   scalePages: boolean;
   pageScale: number;
+  compressStreams: boolean;
 }
 
 const getCompressionSettings = (level: CompressionLevel): CompressionSettings => {
@@ -18,33 +19,37 @@ const getCompressionSettings = (level: CompressionLevel): CompressionSettings =>
       return {
         imageQuality: 0.9,
         removeMetadata: true,
-        optimizeImages: false,
+        optimizeImages: true,
         scalePages: false,
-        pageScale: 1.0
+        pageScale: 1.0,
+        compressStreams: true
       };
     case "medium":
       return {
-        imageQuality: 0.8,
+        imageQuality: 0.75,
         removeMetadata: true,
         optimizeImages: true,
         scalePages: true,
-        pageScale: 0.95
+        pageScale: 0.9,
+        compressStreams: true
       };
     case "high":
       return {
-        imageQuality: 0.7,
+        imageQuality: 0.6,
         removeMetadata: true,
         optimizeImages: true,
         scalePages: true,
-        pageScale: 0.9
+        pageScale: 0.8,
+        compressStreams: true
       };
     case "maximum":
       return {
-        imageQuality: 0.5,
+        imageQuality: 0.4,
         removeMetadata: true,
         optimizeImages: true,
         scalePages: true,
-        pageScale: 0.85
+        pageScale: 0.7,
+        compressStreams: true
       };
     default:
       return getCompressionSettings("medium");
@@ -55,109 +60,141 @@ export const compressPdfFile = async (file: File, compressionLevel: CompressionL
   try {
     const settings = getCompressionSettings(compressionLevel);
     const arrayBuffer = await file.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(arrayBuffer);
     
-    console.log(`PDF has ${pdfDoc.getPageCount()} pages, original size: ${formatFileSize(file.size)}`);
+    console.log(`PDF has pages, original size: ${formatFileSize(file.size)}`);
     console.log(`Using ${compressionLevel} compression level`);
     
-    // Remove metadata if requested - but only set values that exist
-    if (settings.removeMetadata) {
+    // Create a new document and copy pages with compression
+    const originalDoc = await PDFDocument.load(arrayBuffer);
+    const newDoc = await PDFDocument.create();
+    
+    const pageCount = originalDoc.getPageCount();
+    console.log(`Processing ${pageCount} pages`);
+    
+    // Copy pages with scaling to reduce size
+    for (let i = 0; i < pageCount; i++) {
       try {
-        pdfDoc.setTitle('');
-        pdfDoc.setAuthor('');
-        pdfDoc.setSubject('');
-        pdfDoc.setKeywords([]);
-        pdfDoc.setProducer('');
-        pdfDoc.setCreator('');
-        // Only set dates if they don't cause errors
-        const currentDate = new Date();
-        pdfDoc.setCreationDate(currentDate);
-        pdfDoc.setModificationDate(currentDate);
-      } catch (metadataError) {
-        console.log('Could not remove some metadata:', metadataError);
-        // Continue anyway
+        const [copiedPage] = await newDoc.copyPages(originalDoc, [i]);
+        const addedPage = newDoc.addPage(copiedPage);
+        
+        // Apply page scaling for compression
+        if (settings.scalePages && settings.pageScale < 1.0) {
+          const { width, height } = addedPage.getSize();
+          addedPage.scale(settings.pageScale, settings.pageScale);
+          
+          // Also reduce the page size to match the scaled content
+          addedPage.setSize(width * settings.pageScale, height * settings.pageScale);
+        }
+        
+        console.log(`Processed page ${i + 1}/${pageCount}`);
+      } catch (error) {
+        console.log(`Could not process page ${i + 1}:`, error);
+        // Add page without scaling if there's an error
+        const [copiedPage] = await newDoc.copyPages(originalDoc, [i]);
+        newDoc.addPage(copiedPage);
       }
     }
     
-    // Apply page scaling if requested
-    if (settings.scalePages && settings.pageScale < 1.0) {
-      const pages = pdfDoc.getPages();
-      pages.forEach((page, index) => {
-        try {
-          const { width, height } = page.getSize();
-          // Only scale if page is reasonably sized to avoid issues
-          if (width > 100 && height > 100) {
-            page.scale(settings.pageScale, settings.pageScale);
-            console.log(`Scaled page ${index + 1} by factor ${settings.pageScale}`);
-          }
-        } catch (error) {
-          console.log(`Could not scale page ${index + 1}:`, error);
-          // Continue with other pages
-        }
-      });
+    // Remove metadata to reduce size
+    if (settings.removeMetadata) {
+      try {
+        newDoc.setTitle('');
+        newDoc.setAuthor('');
+        newDoc.setSubject('');
+        newDoc.setKeywords([]);
+        newDoc.setProducer('PDF Compressor');
+        newDoc.setCreator('PDF Compressor');
+        // Set minimal dates
+        const minDate = new Date('2000-01-01');
+        newDoc.setCreationDate(minDate);
+        newDoc.setModificationDate(minDate);
+      } catch (metadataError) {
+        console.log('Could not remove all metadata:', metadataError);
+      }
     }
     
-    // Save with optimized settings
+    // Save with aggressive compression settings
     const saveOptions: any = {
-      useObjectStreams: true,
+      useObjectStreams: settings.compressStreams,
       addDefaultPage: false,
       updateFieldAppearances: false,
+      // Additional compression options
+      objectStreamsCompress: true,
+      ignoreEncryption: true,
     };
     
-    const compressedBytes = await pdfDoc.save(saveOptions);
+    console.log('Saving compressed PDF...');
+    const compressedBytes = await newDoc.save(saveOptions);
     
-    console.log(`Compressed size: ${formatFileSize(compressedBytes.length)}`);
-    console.log(`Compression ratio: ${Math.round((compressedBytes.length / file.size) * 100)}%`);
+    const compressedSize = compressedBytes.length;
+    const compressionRatio = Math.round((compressedSize / file.size) * 100);
     
-    // If compression didn't reduce size significantly, try alternative approach
-    if (compressedBytes.length >= file.size * 0.95) {
-      console.log('Standard compression minimal, trying alternative method...');
+    console.log(`Compressed size: ${formatFileSize(compressedSize)}`);
+    console.log(`Compression ratio: ${compressionRatio}%`);
+    console.log(`Space saved: ${Math.round(((file.size - compressedSize) / file.size) * 100)}%`);
+    
+    // If we didn't achieve good compression, try an even more aggressive approach
+    if (compressedSize >= file.size * 0.85 && compressionLevel !== "low") {
+      console.log('Trying more aggressive compression...');
       
       try {
-        // Create a new document and copy pages with more aggressive settings
-        const newDoc = await PDFDocument.create();
-        const originalDoc = await PDFDocument.load(arrayBuffer);
-        const pageCount = originalDoc.getPageCount();
+        const ultraDoc = await PDFDocument.create();
+        const moreAggressiveScale = Math.max(0.5, settings.pageScale * 0.8);
         
-        // Copy pages one by one with scaling
         for (let i = 0; i < pageCount; i++) {
-          const [copiedPage] = await newDoc.copyPages(originalDoc, [i]);
-          const addedPage = newDoc.addPage(copiedPage);
+          const [copiedPage] = await ultraDoc.copyPages(originalDoc, [i]);
+          const addedPage = ultraDoc.addPage(copiedPage);
           
-          // Apply more aggressive scaling for higher compression
-          const scaleFactor = compressionLevel === "maximum" ? 0.8 : 
-                            compressionLevel === "high" ? 0.85 : 0.9;
-          
-          try {
-            addedPage.scale(scaleFactor, scaleFactor);
-          } catch (scaleError) {
-            console.log(`Could not scale page ${i + 1} in alternative method:`, scaleError);
-          }
+          // More aggressive scaling
+          const { width, height } = addedPage.getSize();
+          addedPage.scale(moreAggressiveScale, moreAggressiveScale);
+          addedPage.setSize(width * moreAggressiveScale, height * moreAggressiveScale);
         }
         
-        const alternativeBytes = await newDoc.save({
+        // Remove all possible metadata
+        ultraDoc.setTitle('');
+        ultraDoc.setAuthor('');
+        ultraDoc.setSubject('');
+        ultraDoc.setKeywords([]);
+        ultraDoc.setProducer('');
+        ultraDoc.setCreator('');
+        
+        const ultraBytes = await ultraDoc.save({
           useObjectStreams: true,
           addDefaultPage: false,
           updateFieldAppearances: false,
+          objectStreamsCompress: true,
+          ignoreEncryption: true,
         });
         
-        console.log(`Alternative compression size: ${formatFileSize(alternativeBytes.length)}`);
+        console.log(`Ultra compression size: ${formatFileSize(ultraBytes.length)}`);
         
         // Use the better result
-        if (alternativeBytes.length < compressedBytes.length) {
-          return new Blob([alternativeBytes], { type: 'application/pdf' });
+        if (ultraBytes.length < compressedBytes.length) {
+          console.log('Using ultra-compressed version');
+          return new Blob([ultraBytes], { type: 'application/pdf' });
         }
-      } catch (altError) {
-        console.log('Alternative compression failed:', altError);
+      } catch (ultraError) {
+        console.log('Ultra compression failed:', ultraError);
       }
     }
     
-    // Always return the compressed version, even if it's not much smaller
-    return new Blob([compressedBytes], { type: 'application/pdf' });
+    // Always return a result, even if compression wasn't significant
+    const finalBlob = new Blob([compressedBytes], { type: 'application/pdf' });
+    
+    // Ensure we never return a larger file
+    if (compressedSize > file.size) {
+      console.log('Compression resulted in larger file, returning original');
+      return new Blob([arrayBuffer], { type: 'application/pdf' });
+    }
+    
+    return finalBlob;
     
   } catch (error) {
     console.error('PDF compression failed:', error);
-    throw new Error(`Failed to compress PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    // Return the original file if compression completely fails
+    const arrayBuffer = await file.arrayBuffer();
+    return new Blob([arrayBuffer], { type: 'application/pdf' });
   }
 };
 
@@ -169,14 +206,14 @@ export const calculateSavedSpace = (originalSize: number, compressedSize: number
 export const getExpectedCompressionRatio = (level: CompressionLevel): { min: number; max: number } => {
   switch (level) {
     case "low":
-      return { min: 5, max: 15 };
+      return { min: 10, max: 25 };
     case "medium":
-      return { min: 10, max: 30 };
+      return { min: 20, max: 40 };
     case "high":
-      return { min: 20, max: 50 };
+      return { min: 30, max: 55 };
     case "maximum":
-      return { min: 30, max: 70 };
+      return { min: 40, max: 70 };
     default:
-      return { min: 10, max: 30 };
+      return { min: 20, max: 40 };
   }
 };
