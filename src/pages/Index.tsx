@@ -75,7 +75,7 @@ const Index = () => {
     }]
   }, {
     title: "📄 PDF Tools",
-    description: "Complete PDF management suite for merging, splitting, compressing, converting, and securing PDF documents. Essential tools for document workflow automation.",
+    description: "Complete PDF management suite for merging, splitting, converting, and securing PDF documents. Essential tools for document workflow automation.",
     tools: [{
       title: "Merge PDF",
       description: "Combine multiple PDF files into one document with custom page ordering",
@@ -86,11 +86,6 @@ const Index = () => {
       description: "Extract specific pages from PDF documents with precision control",
       icon: <Scissors />,
       path: "/tools/split-pdf"
-    }, {
-      title: "Compress PDF",
-      description: "Reduce PDF file size while maintaining document quality and readability",
-      icon: <FileDown />,
-      path: "/tools/compress-pdf"
     }, {
       title: "PDF to JPG",
       description: "Convert PDF pages to high-quality JPG or PNG images with customizable settings",
@@ -199,20 +194,10 @@ const Index = () => {
       icon: <DollarSign />,
       path: "/tools/budget-tracker"
     }, {
-      title: "URL Shortener",
-      description: "Create short, shareable links from long URLs with custom options",
-      icon: <Link2 />,
-      path: "/tools/url-shortener"
-    }, {
       title: "Hash Generator",
       description: "Generate MD5, SHA-1, and SHA-256 hash values from text or files",
       icon: <Hash />,
       path: "/tools/hash-generator"
-    }, {
-      title: "Video to GIF",
-      description: "Convert video clips to animated GIFs with customizable settings",
-      icon: <Film />,
-      path: "/tools/video-to-gif"
     }, {
       title: "Barcode Generator",
       description: "Generate various types of barcodes for products and inventory",
@@ -244,7 +229,7 @@ const Index = () => {
   }];
 
   return <>
-      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 45+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
@@ -306,13 +291,13 @@ const Index = () => {
               toolCategories[2].tools[0], // Percentage Calculator
               toolCategories[4].tools[0], // QR Code Generator
               toolCategories[0].tools[5], // Background Remover
-              toolCategories[4].tools[5], // URL Shortener
-              toolCategories[4].tools[7], // Video to GIF
               toolCategories[3].tools[3], // Markdown to HTML
               toolCategories[2].tools[3], // Age Calculator
               toolCategories[2].tools[4], // BMI Calculator
               toolCategories[0].tools[8], // Image Format Converter
-              toolCategories[3].tools[5]  // Lorem Ipsum
+              toolCategories[3].tools[5], // Lorem Ipsum
+              toolCategories[4].tools[5], // Hash Generator
+              toolCategories[4].tools[6]  // Barcode Generator
             ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
             animationDelay: `${index * 100}ms`
           }}>

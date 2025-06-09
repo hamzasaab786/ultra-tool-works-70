@@ -8,14 +8,12 @@ import ImageResizer from "./pages/tools/ImageResizer";
 import ImageEnhancer from "./pages/tools/ImageEnhancer";
 import JpgToPdf from "./pages/tools/JpgToPdf";
 import SvgToJpg from "./pages/tools/SvgToJpg";
-import VideoToGif from "./pages/tools/VideoToGif";
 import ImageToUrl from "./pages/tools/ImageToUrl";
 import BackgroundRemover from "./pages/tools/BackgroundRemover";
 import PassportPhotoMaker from "./pages/tools/PassportPhotoMaker";
 import ImageFormatConverter from "./pages/tools/ImageFormatConverter";
 import MergePDF from "./pages/tools/MergePDF";
 import SplitPdf from "./pages/tools/SplitPdf";
-import CompressPdf from "./pages/tools/CompressPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
 import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import UnitConverter from "./pages/tools/UnitConverter";
@@ -32,7 +30,6 @@ import TextDiff from "./pages/tools/TextDiff";
 import LoremIpsum from "./pages/tools/LoremIpsum";
 import QRCodeGenerator from "./pages/tools/QRCodeGenerator";
 import PasswordGenerator from "./pages/tools/PasswordGenerator";
-import UrlShortener from "./pages/tools/UrlShortener";
 import HashGenerator from "./pages/tools/HashGenerator";
 import TimerStopwatch from "./pages/tools/TimerStopwatch";
 import ColorPicker from "./pages/tools/ColorPicker";
@@ -56,7 +53,6 @@ function App() {
             <Route path="/tools/image-enhancer" element={<ImageEnhancer />} />
             <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
             <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
-            <Route path="/tools/video-to-gif" element={<VideoToGif />} />
             <Route path="/tools/image-to-url" element={<ImageToUrl />} />
             <Route path="/tools/background-remover" element={<BackgroundRemover />} />
             <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
@@ -65,7 +61,6 @@ function App() {
             {/* PDF Tools */}
             <Route path="/tools/merge-pdf" element={<MergePDF />} />
             <Route path="/tools/split-pdf" element={<SplitPdf />} />
-            <Route path="/tools/compress-pdf" element={<CompressPdf />} />
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
             
             {/* Calculators & Converters */}
@@ -88,7 +83,6 @@ function App() {
             {/* Utilities */}
             <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
             <Route path="/tools/password-generator" element={<PasswordGenerator />} />
-            <Route path="/tools/url-shortener" element={<UrlShortener />} />
             <Route path="/tools/hash-generator" element={<HashGenerator />} />
             <Route path="/tools/timer-stopwatch" element={<TimerStopwatch />} />
             <Route path="/tools/color-picker" element={<ColorPicker />} />
