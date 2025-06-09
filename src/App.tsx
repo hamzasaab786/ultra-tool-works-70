@@ -45,8 +45,6 @@ import CsvToJson from "./pages/tools/CsvToJson";
 import EmailValidator from "./pages/tools/EmailValidator";
 import PasswordStrength from "./pages/tools/PasswordStrength";
 import FileHashChecker from "./pages/tools/FileHashChecker";
-import TextToSpeech from "./pages/tools/TextToSpeech";
-import SpeechToText from "./pages/tools/SpeechToText";
 import ImageMetadataExtractor from "./pages/tools/ImageMetadataExtractor";
 import PdfMetadataExtractor from "./pages/tools/PdfMetadataExtractor";
 import TextEncryption from "./pages/tools/TextEncryption";
@@ -58,13 +56,18 @@ import IpGeolocation from "./pages/tools/IpGeolocation";
 import CreditCardValidator from "./pages/tools/CreditCardValidator";
 import EmojiPicker from "./pages/tools/EmojiPicker";
 import RegexTester from "./pages/tools/RegexTester";
+import AddPageNumbers from "./pages/tools/AddPageNumbers";
+import ComparePdf from "./pages/tools/ComparePdf";
+import AddWatermark from "./pages/tools/AddWatermark";
+import RemoveWatermark from "./pages/tools/RemoveWatermark";
+import PdfToWord from "./pages/tools/PdfToWord";
+import DocumentTranslator from "./pages/tools/DocumentTranslator";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   return (
     <HelmetProvider>
       <Router>
-        {/* Layout component already includes header and footer */}
         <Layout>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -80,6 +83,7 @@ function App() {
             <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
             <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
             <Route path="/tools/image-metadata-extractor" element={<ImageMetadataExtractor />} />
+            <Route path="/tools/remove-watermark" element={<RemoveWatermark />} />
             
             {/* PDF Tools */}
             <Route path="/tools/merge-pdf" element={<MergePDF />} />
@@ -87,6 +91,10 @@ function App() {
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
             <Route path="/tools/pdf-compressor" element={<PdfCompressor />} />
             <Route path="/tools/pdf-metadata-extractor" element={<PdfMetadataExtractor />} />
+            <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
+            <Route path="/tools/compare-pdf" element={<ComparePdf />} />
+            <Route path="/tools/add-watermark" element={<AddWatermark />} />
+            <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
             
             {/* Calculators & Converters */}
             <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
@@ -111,9 +119,8 @@ function App() {
             <Route path="/tools/csv-to-json" element={<CsvToJson />} />
             <Route path="/tools/text-encryption" element={<TextEncryption />} />
             <Route path="/tools/morse-code-translator" element={<MorseCodeTranslator />} />
-            <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
-            <Route path="/tools/speech-to-text" element={<SpeechToText />} />
             <Route path="/tools/regex-tester" element={<RegexTester />} />
+            <Route path="/tools/document-translator" element={<DocumentTranslator />} />
             
             {/* Utilities */}
             <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
@@ -135,7 +142,6 @@ function App() {
             <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
           </Routes>
         </Layout>
-        {/* Toaster is outside Layout to avoid duplication */}
         <Toaster />
       </Router>
     </HelmetProvider>

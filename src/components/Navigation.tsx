@@ -1,243 +1,270 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { Menu, X } from "lucide-react";
 
 const Navigation = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const imageTools = [
+    { name: "Image Compressor", path: "/tools/image-compressor" },
+    { name: "Image Resizer", path: "/tools/image-resizer" },
+    { name: "Image Enhancer", path: "/tools/image-enhancer" },
+    { name: "JPG to PDF", path: "/tools/jpg-to-pdf" },
+    { name: "SVG to JPG", path: "/tools/svg-to-jpg" },
+    { name: "Image to URL", path: "/tools/image-to-url" },
+    { name: "Background Remover", path: "/tools/background-remover" },
+    { name: "Passport Photo Maker", path: "/tools/passport-photo-maker" },
+    { name: "Image Format Converter", path: "/tools/image-format-converter" },
+    { name: "Image Metadata Extractor", path: "/tools/image-metadata-extractor" },
+    { name: "Remove Watermark", path: "/tools/remove-watermark" },
+  ];
+
+  const pdfTools = [
+    { name: "Merge PDF", path: "/tools/merge-pdf" },
+    { name: "Split PDF", path: "/tools/split-pdf" },
+    { name: "PDF to JPG", path: "/tools/pdf-to-jpg" },
+    { name: "PDF Compressor", path: "/tools/pdf-compressor" },
+    { name: "PDF Metadata Extractor", path: "/tools/pdf-metadata-extractor" },
+    { name: "Add Page Numbers", path: "/tools/add-page-numbers" },
+    { name: "Compare PDF", path: "/tools/compare-pdf" },
+    { name: "Add Watermark", path: "/tools/add-watermark" },
+    { name: "PDF to Word", path: "/tools/pdf-to-word" },
+  ];
+
+  const calculatorTools = [
+    { name: "Percentage Calculator", path: "/tools/percentage-calculator" },
+    { name: "Unit Converter", path: "/tools/unit-converter" },
+    { name: "Currency Converter", path: "/tools/currency-converter" },
+    { name: "Age Calculator", path: "/tools/age-calculator" },
+    { name: "BMI Calculator", path: "/tools/bmi-calculator" },
+    { name: "Loan Calculator", path: "/tools/loan-calculator" },
+    { name: "Tip Calculator", path: "/tools/tip-calculator" },
+    { name: "Hex to RGB", path: "/tools/hex-to-rgb" },
+    { name: "Number Base Converter", path: "/tools/number-base-converter" },
+  ];
+
+  const textTools = [
+    { name: "Word Counter", path: "/tools/word-counter" },
+    { name: "Case Converter", path: "/tools/case-converter" },
+    { name: "Base64 Tool", path: "/tools/base64-tool" },
+    { name: "Markdown to HTML", path: "/tools/markdown-to-html" },
+    { name: "Text Diff", path: "/tools/text-diff" },
+    { name: "Lorem Ipsum", path: "/tools/lorem-ipsum" },
+    { name: "URL Decoder", path: "/tools/url-decoder" },
+    { name: "JSON Formatter", path: "/tools/json-formatter" },
+    { name: "CSV to JSON", path: "/tools/csv-to-json" },
+    { name: "Text Encryption", path: "/tools/text-encryption" },
+    { name: "Morse Code Translator", path: "/tools/morse-code-translator" },
+    { name: "Regex Tester", path: "/tools/regex-tester" },
+    { name: "Document Translator", path: "/tools/document-translator" },
+  ];
+
+  const utilityTools = [
+    { name: "QR Code Generator", path: "/tools/qr-code-generator" },
+    { name: "Password Generator", path: "/tools/password-generator" },
+    { name: "Hash Generator", path: "/tools/hash-generator" },
+    { name: "Timer & Stopwatch", path: "/tools/timer-stopwatch" },
+    { name: "Color Picker", path: "/tools/color-picker" },
+    { name: "Budget Tracker", path: "/tools/budget-tracker" },
+    { name: "Barcode Generator", path: "/tools/barcode-generator" },
+    { name: "UUID Generator", path: "/tools/uuid-generator" },
+    { name: "URL Shortener", path: "/tools/url-shortener" },
+    { name: "Email Validator", path: "/tools/email-validator" },
+    { name: "Password Strength", path: "/tools/password-strength" },
+    { name: "File Hash Checker", path: "/tools/file-hash-checker" },
+    { name: "Whois Lookup", path: "/tools/whois-lookup" },
+    { name: "DNS Lookup", path: "/tools/dns-lookup" },
+    { name: "IP Geolocation", path: "/tools/ip-geolocation" },
+    { name: "Credit Card Validator", path: "/tools/credit-card-validator" },
+    { name: "Emoji Picker", path: "/tools/emoji-picker" },
+  ];
+
+  const ToolSection = ({ title, tools }: { title: string; tools: { name: string; path: string }[] }) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 w-[600px]">
+      <div className="col-span-full">
+        <h3 className="font-semibold text-gray-900 mb-3">{title}</h3>
+      </div>
+      {tools.map((tool) => (
+        <Link
+          key={tool.path}
+          to={tool.path}
+          className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors"
+        >
+          {tool.name}
+        </Link>
+      ))}
+    </div>
+  );
+
   return (
-    <NavigationMenu className="max-w-screen-2xl mx-auto">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link to="/" className={navigationMenuTriggerStyle()}>
-            Home
+    <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center space-x-2">
+            <span className="text-xl font-bold text-indigo-600">ToolifyConvert</span>
           </Link>
-        </NavigationMenuItem>
-        
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Image Tools</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[500px]">
-              <Link to="/tools/image-compressor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Image Compressor</div>
-                <p className="text-sm text-muted-foreground">Reduce image file size with minimal quality loss</p>
-              </Link>
-              <Link to="/tools/image-resizer" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Image Resizer</div>
-                <p className="text-sm text-muted-foreground">Change dimensions of your images easily</p>
-              </Link>
-              <Link to="/tools/image-enhancer" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Image Enhancer</div>
-                <p className="text-sm text-muted-foreground">Adjust brightness, contrast and more</p>
-              </Link>
-              <Link to="/tools/jpg-to-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">JPG to PDF</div>
-                <p className="text-sm text-muted-foreground">Convert images to PDF documents</p>
-              </Link>
-              <Link to="/tools/svg-to-jpg" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">SVG to JPG</div>
-                <p className="text-sm text-muted-foreground">Convert SVG vector graphics to high-quality JPG images</p>
-              </Link>
-              <Link to="/tools/image-to-url" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Image to URL</div>
-                <p className="text-sm text-muted-foreground">Convert images to shareable URLs</p>
-              </Link>
-              <Link to="/tools/background-remover" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Background Remover</div>
-                <p className="text-sm text-muted-foreground">Remove backgrounds from images with AI</p>
-              </Link>
-              <Link to="/tools/passport-photo-maker" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Passport Photo Maker</div>
-                <p className="text-sm text-muted-foreground">Create professional passport photos</p>
-              </Link>
-              <Link to="/tools/image-format-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Image Format Converter</div>
-                <p className="text-sm text-muted-foreground">Convert between PNG, JPG, WebP, and other formats</p>
-              </Link>
-              <Link to="/tools/image-metadata-extractor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Image Metadata Extractor</div>
-                <p className="text-sm text-muted-foreground">Extract EXIF and metadata from images</p>
-              </Link>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>PDF Tools</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
-              <Link to="/tools/merge-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Merge PDF</div>
-                <p className="text-sm text-muted-foreground">Combine multiple PDF files into one</p>
-              </Link>
-              <Link to="/tools/split-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Split PDF</div>
-                <p className="text-sm text-muted-foreground">Extract specific pages from PDF documents</p>
-              </Link>
-              <Link to="/tools/pdf-to-jpg" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">PDF to JPG</div>
-                <p className="text-sm text-muted-foreground">Convert PDF pages to high-quality images</p>
-              </Link>
-              <Link to="/tools/pdf-compressor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">PDF Compressor</div>
-                <p className="text-sm text-muted-foreground">Reduce PDF file size while maintaining quality</p>
-              </Link>
-              <Link to="/tools/pdf-metadata-extractor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">PDF Metadata Extractor</div>
-                <p className="text-sm text-muted-foreground">Extract metadata and properties from PDFs</p>
-              </Link>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Calculators</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
-              <Link to="/tools/percentage-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Percentage Calculator</div>
-                <p className="text-sm text-muted-foreground">Calculate percentages easily</p>
-              </Link>
-              <Link to="/tools/unit-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Unit Converter</div>
-                <p className="text-sm text-muted-foreground">Convert between different units of measurement</p>
-              </Link>
-              <Link to="/tools/currency-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Currency Converter</div>
-                <p className="text-sm text-muted-foreground">Convert between major world currencies</p>
-              </Link>
-              <Link to="/tools/age-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Age Calculator</div>
-                <p className="text-sm text-muted-foreground">Calculate exact age between any two dates</p>
-              </Link>
-              <Link to="/tools/bmi-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">BMI Calculator</div>
-                <p className="text-sm text-muted-foreground">Calculate your Body Mass Index and health status</p>
-              </Link>
-              <Link to="/tools/loan-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Loan Calculator</div>
-                <p className="text-sm text-muted-foreground">Calculate monthly payments and interest</p>
-              </Link>
-              <Link to="/tools/tip-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Tip Calculator</div>
-                <p className="text-sm text-muted-foreground">Calculate tips and split bills easily</p>
-              </Link>
-              <Link to="/tools/hex-to-rgb" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Hex to RGB</div>
-                <p className="text-sm text-muted-foreground">Convert color codes between formats</p>
-              </Link>
-              <Link to="/tools/number-base-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Number Base Converter</div>
-                <p className="text-sm text-muted-foreground">Convert between binary, decimal, octal, hex</p>
-              </Link>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Text Tools</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[450px]">
-              <Link to="/tools/word-counter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Word & Character Counter</div>
-                <p className="text-sm text-muted-foreground">Count words, characters, and lines in your text</p>
-              </Link>
-              <Link to="/tools/case-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Case Converter</div>
-                <p className="text-sm text-muted-foreground">Convert text case (uppercase, lowercase, etc.)</p>
-              </Link>
-              <Link to="/tools/base64-tool" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Base64 Encoder/Decoder</div>
-                <p className="text-sm text-muted-foreground">Encode and decode Base64 strings</p>
-              </Link>
-              <Link to="/tools/markdown-to-html" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Markdown to HTML</div>
-                <p className="text-sm text-muted-foreground">Convert Markdown text to HTML code</p>
-              </Link>
-              <Link to="/tools/text-diff" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Text Diff Checker</div>
-                <p className="text-sm text-muted-foreground">Compare two texts and highlight differences</p>
-              </Link>
-              <Link to="/tools/lorem-ipsum" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Lorem Ipsum Generator</div>
-                <p className="text-sm text-muted-foreground">Generate placeholder text for design projects</p>
-              </Link>
-              <Link to="/tools/url-decoder" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">URL Encoder/Decoder</div>
-                <p className="text-sm text-muted-foreground">Encode and decode URLs with special characters</p>
-              </Link>
-              <Link to="/tools/json-formatter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">JSON Formatter</div>
-                <p className="text-sm text-muted-foreground">Format, validate, and minify JSON data</p>
-              </Link>
-              <Link to="/tools/csv-to-json" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">CSV to JSON</div>
-                <p className="text-sm text-muted-foreground">Convert CSV data to JSON format</p>
-              </Link>
-              <Link to="/tools/text-to-speech" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Text to Speech</div>
-                <p className="text-sm text-muted-foreground">Convert text to natural-sounding speech</p>
-              </Link>
-              <Link to="/tools/regex-tester" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Regex Tester</div>
-                <p className="text-sm text-muted-foreground">Test and validate regular expressions</p>
-              </Link>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+          {/* Desktop Navigation */}
+          <div className="hidden md:block">
+            <NavigationMenu>
+              <NavigationMenuList className="space-x-1">
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium">
+                    🖼️ Image Tools
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ToolSection title="Image Processing Tools" tools={imageTools} />
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Utilities</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[450px]">
-              <Link to="/tools/qr-code-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">QR Code Generator</div>
-                <p className="text-sm text-muted-foreground">Create QR codes for various purposes</p>
-              </Link>
-              <Link to="/tools/password-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Password Generator</div>
-                <p className="text-sm text-muted-foreground">Generate strong, secure passwords</p>
-              </Link>
-              <Link to="/tools/hash-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Hash Generator</div>
-                <p className="text-sm text-muted-foreground">Generate MD5, SHA-1, SHA-256 hashes</p>
-              </Link>
-              <Link to="/tools/timer-stopwatch" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Timer & Stopwatch</div>
-                <p className="text-sm text-muted-foreground">Professional timer and stopwatch</p>
-              </Link>
-              <Link to="/tools/color-picker" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Color Picker</div>
-                <p className="text-sm text-muted-foreground">Pick colors and get HEX, RGB, HSL values</p>
-              </Link>
-              <Link to="/tools/budget-tracker" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Budget Tracker</div>
-                <p className="text-sm text-muted-foreground">Track your monthly income and expenses</p>
-              </Link>
-              <Link to="/tools/barcode-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Barcode Generator</div>
-                <p className="text-sm text-muted-foreground">Generate various types of barcodes</p>
-              </Link>
-              <Link to="/tools/uuid-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">UUID Generator</div>
-                <p className="text-sm text-muted-foreground">Generate unique identifiers for your projects</p>
-              </Link>
-              <Link to="/tools/url-shortener" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">URL Shortener</div>
-                <p className="text-sm text-muted-foreground">Create short links and track clicks</p>
-              </Link>
-              <Link to="/tools/email-validator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Email Validator</div>
-                <p className="text-sm text-muted-foreground">Validate email addresses and detect typos</p>
-              </Link>
-              <Link to="/tools/credit-card-validator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Credit Card Validator</div>
-                <p className="text-sm text-muted-foreground">Validate credit card numbers and formats</p>
-              </Link>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium">
+                    📄 PDF Tools
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ToolSection title="PDF Management Tools" tools={pdfTools} />
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium">
+                    🧮 Calculators
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ToolSection title="Calculator & Converter Tools" tools={calculatorTools} />
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium">
+                    📝 Text Tools
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ToolSection title="Text Processing Tools" tools={textTools} />
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-sm font-medium">
+                    🛠️ Utilities
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ToolSection title="Utility Tools" tools={utilityTools} />
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden py-4 border-t">
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">🖼️ Image Tools</h3>
+                <div className="grid grid-cols-1 gap-1 ml-4">
+                  {imageTools.slice(0, 5).map((tool) => (
+                    <Link
+                      key={tool.path}
+                      to={tool.path}
+                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {tool.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">📄 PDF Tools</h3>
+                <div className="grid grid-cols-1 gap-1 ml-4">
+                  {pdfTools.slice(0, 5).map((tool) => (
+                    <Link
+                      key={tool.path}
+                      to={tool.path}
+                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {tool.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">🧮 Calculators</h3>
+                <div className="grid grid-cols-1 gap-1 ml-4">
+                  {calculatorTools.slice(0, 5).map((tool) => (
+                    <Link
+                      key={tool.path}
+                      to={tool.path}
+                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {tool.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">📝 Text Tools</h3>
+                <div className="grid grid-cols-1 gap-1 ml-4">
+                  {textTools.slice(0, 5).map((tool) => (
+                    <Link
+                      key={tool.path}
+                      to={tool.path}
+                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {tool.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">🛠️ Utilities</h3>
+                <div className="grid grid-cols-1 gap-1 ml-4">
+                  {utilityTools.slice(0, 5).map((tool) => (
+                    <Link
+                      key={tool.path}
+                      to={tool.path}
+                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {tool.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+          </div>
+        )}
+      </div>
+    </nav>
   );
 };
 

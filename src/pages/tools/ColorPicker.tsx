@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Check } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const ColorPicker = () => {
   const [selectedColor, setSelectedColor] = useState("#3b82f6");
   const [copied, setCopied] = useState<string>("");
+  const { toast } = useToast();
 
   const hexToRgb = (hex: string) => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -69,7 +70,7 @@ const ColorPicker = () => {
         variant: "destructive"
       });
     }
-  }, []);
+  }, [toast]);
 
   const rgb = hexToRgb(selectedColor);
   const hsl = hexToHsl(selectedColor);
@@ -91,6 +92,7 @@ const ColorPicker = () => {
     <ToolPageTemplate
       title="Color Picker Tool"
       description="Professional color picker with HEX, RGB, and HSL values"
+      keywords="color picker, hex color, rgb color, hsl color, color palette"
     >
       <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -108,71 +110,69 @@ const ColorPicker = () => {
                     type="color"
                     value={selectedColor}
                     onChange={(e) => setSelectedColor(e.target.value)}
-                    className="w-16 h-16 rounded border-2 border-gray-300 cursor-pointer"
+                    className="w-16 h-16 rounded cursor-pointer border-2 border-gray-300"
                   />
                 </div>
               </div>
-            </div>
 
-            <div>
-              <Label className="text-base font-semibold mb-3 block">Preset Colors</Label>
-              <div className="grid grid-cols-8 gap-2">
-                {presetColors.map((color, index) => (
-                  <button
-                    key={index}
-                    className="w-8 h-8 rounded border-2 border-gray-200 hover:border-gray-400 transition-colors"
-                    style={{ backgroundColor: color }}
-                    onClick={() => setSelectedColor(color)}
-                    title={color}
-                  />
-                ))}
+              <div className="space-y-2">
+                <Label>Enter HEX Color</Label>
+                <Input
+                  type="text"
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  placeholder="#3b82f6"
+                  className="text-center"
+                />
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <Label className="text-base font-semibold">Color Values</Label>
+            <h3 className="text-lg font-semibold">Color Values</h3>
             {colorFormats.map((format) => (
-              <div key={format.type} className="space-y-2">
-                <Label>{format.label}</Label>
-                <div className="flex space-x-2">
-                  <Input
-                    value={format.value}
-                    readOnly
-                    className="bg-gray-50"
-                  />
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => copyToClipboard(format.value, format.type)}
-                    className="px-3"
-                  >
-                    {copied === format.type ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  </Button>
-                </div>
+              <div key={format.type} className="flex items-center space-x-2">
+                <div className="w-16 text-sm font-medium">{format.label}:</div>
+                <Input
+                  value={format.value}
+                  readOnly
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => copyToClipboard(format.value, format.type)}
+                >
+                  {copied === format.type ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </Button>
               </div>
             ))}
-
-            <div className="pt-4 border-t">
-              <Label className="text-base font-semibold mb-3 block">Individual RGB Values</Label>
-              {rgb && (
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label className="text-sm">Red</Label>
-                    <Input value={rgb.r} readOnly className="bg-gray-50" />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Green</Label>
-                    <Input value={rgb.g} readOnly className="bg-gray-50" />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Blue</Label>
-                    <Input value={rgb.b} readOnly className="bg-gray-50" />
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Preset Colors</h3>
+          <div className="grid grid-cols-6 md:grid-cols-12 gap-2">
+            {presetColors.map((color) => (
+              <button
+                key={color}
+                className="w-12 h-12 rounded border-2 border-gray-300 hover:border-gray-400 transition-colors"
+                style={{ backgroundColor: color }}
+                onClick={() => setSelectedColor(color)}
+                title={color}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <h3 className="font-medium text-blue-900 mb-2">Features:</h3>
+          <ul className="text-sm text-blue-800 space-y-1">
+            <li>• Visual color picker with preview</li>
+            <li>• HEX, RGB, and HSL format support</li>
+            <li>• Preset color palette</li>
+            <li>• One-click copy to clipboard</li>
+          </ul>
         </div>
       </div>
     </ToolPageTemplate>
