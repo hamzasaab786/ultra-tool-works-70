@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -106,80 +105,86 @@ const Navigation = () => {
   );
 
   return (
-    <nav className="bg-white shadow-sm border-b sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-indigo-600">ToolifyConvert</span>
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-white/95 border-b border-gray-200/60 shadow-sm">
+      <div className="container mx-auto px-4 py-3 lg:py-4 flex items-center relative z-10">
+        <div className="mr-4 flex items-center">
+          <Link to="/" className="flex items-center group">
+            <div className="relative transform transition-transform duration-200 group-hover:scale-105">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+                ToolifyConvert
+              </span>
+            </div>
           </Link>
+        </div>
+        
+        {/* Desktop Navigation */}
+        <div className="hidden md:block flex-1">
+          <NavigationMenu>
+            <NavigationMenuList className="space-x-1">
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-sm font-medium">
+                  🖼️ Image Tools
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ToolSection title="Image Processing Tools" tools={imageTools} />
+                </NavigationMenuContent>
+              </NavigationMenuItem>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <NavigationMenu>
-              <NavigationMenuList className="space-x-1">
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium">
-                    🖼️ Image Tools
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ToolSection title="Image Processing Tools" tools={imageTools} />
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-sm font-medium">
+                  📄 PDF Tools
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ToolSection title="PDF Management Tools" tools={pdfTools} />
+                </NavigationMenuContent>
+              </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium">
-                    📄 PDF Tools
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ToolSection title="PDF Management Tools" tools={pdfTools} />
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-sm font-medium">
+                  🧮 Calculators
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ToolSection title="Calculator & Converter Tools" tools={calculatorTools} />
+                </NavigationMenuContent>
+              </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium">
-                    🧮 Calculators
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ToolSection title="Calculator & Converter Tools" tools={calculatorTools} />
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-sm font-medium">
+                  📝 Text Tools
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ToolSection title="Text Processing Tools" tools={textTools} />
+                </NavigationMenuContent>
+              </NavigationMenuItem>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium">
-                    📝 Text Tools
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ToolSection title="Text Processing Tools" tools={textTools} />
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium">
-                    🛠️ Utilities
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ToolSection title="Utility Tools" tools={utilityTools} />
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-sm font-medium">
+                  🛠️ Utilities
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ToolSection title="Utility Tools" tools={utilityTools} />
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
 
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t">
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden py-4 border-t bg-white/95 backdrop-blur-xl">
+          <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">🖼️ Image Tools</h3>
@@ -262,9 +267,9 @@ const Navigation = () => {
               </div>
             </div>
           </div>
-        )}
-      </div>
-    </nav>
+        </div>
+      )}
+    </header>
   );
 };
 

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import ToolPageTemplate from "./ToolPageTemplate";
@@ -6,8 +5,9 @@ import PdfUploadSection from "@/components/pdf/PdfUploadSection";
 import PdfCompressionButton from "@/components/pdf/PdfCompressionButton";
 import PdfProcessingState from "@/components/pdf/PdfProcessingState";
 import PdfResultsSection from "@/components/pdf/PdfResultsSection";
+import PdfCompressionOptions, { CompressionLevel } from "@/components/pdf/PdfCompressionOptions";
 import { validatePdfFile } from "@/utils/fileUtils";
-import { compressPdfFile } from "@/utils/pdfCompression";
+import { compressPdfFile, getExpectedCompressionRatio } from "@/utils/pdfCompression";
 
 const PdfCompressor = () => {
   const [selectedPdf, setSelectedPdf] = useState<File | null>(null);
@@ -16,6 +16,7 @@ const PdfCompressor = () => {
   const [compressedBlob, setCompressedBlob] = useState<Blob | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [compressionLevel, setCompressionLevel] = useState<CompressionLevel>("medium");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -61,16 +62,18 @@ const PdfCompressor = () => {
         });
       }, 200);
 
-      // Perform actual compression
-      const compressed = await compressPdfFile(selectedPdf);
+      // Perform actual compression with selected level
+      const compressed = await compressPdfFile(selectedPdf, compressionLevel);
       
       setProgress(100);
       setCompressedBlob(compressed);
       setCompressedSize(compressed.size);
       
+      const savingsPercent = Math.round(((originalSize - compressed.size) / originalSize) * 100);
+      
       toast({
         title: "Compression complete!",
-        description: `PDF compressed successfully. Size reduced by ${Math.round(((originalSize - compressed.size) / originalSize) * 100)}%`,
+        description: `PDF compressed successfully using ${compressionLevel} compression. Size reduced by ${savingsPercent}%`,
       });
       
     } catch (error) {
@@ -109,15 +112,18 @@ const PdfCompressor = () => {
     setCompressedSize(0);
     setCompressedBlob(null);
     setProgress(0);
+    setCompressionLevel("medium");
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
+  const expectedRatio = getExpectedCompressionRatio(compressionLevel);
+
   return (
     <ToolPageTemplate
       title="PDF Compressor"
-      description="Compress PDF files to reduce their size while maintaining quality. Perfect for email attachments and web uploads."
+      description="Compress PDF files to reduce their size while maintaining quality. Choose from multiple compression levels to balance file size and quality."
       keywords="PDF compressor, compress PDF, reduce PDF size, PDF optimization, PDF file size reducer"
     >
       <div className="space-y-6">
@@ -130,15 +136,29 @@ const PdfCompressor = () => {
         />
 
         {selectedPdf && !compressedBlob && !isProcessing && (
-          <PdfCompressionButton
-            onCompress={handleCompress}
-            isProcessing={isProcessing}
-          />
+          <>
+            <PdfCompressionOptions
+              compressionLevel={compressionLevel}
+              onCompressionLevelChange={setCompressionLevel}
+            />
+            
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+              <h4 className="font-medium text-amber-900 mb-1">Expected Results</h4>
+              <p className="text-sm text-amber-800">
+                With {compressionLevel} compression, expect {expectedRatio.min}% - {expectedRatio.max}% file size reduction.
+              </p>
+            </div>
+
+            <PdfCompressionButton
+              onCompress={handleCompress}
+              isProcessing={isProcessing}
+            />
+          </>
         )}
 
         {isProcessing && (
           <PdfProcessingState
-            message="Compressing PDF..."
+            message={`Compressing PDF with ${compressionLevel} compression...`}
             progress={progress}
           />
         )}
