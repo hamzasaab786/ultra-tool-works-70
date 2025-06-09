@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import Layout from "@/components/Layout";
 import ToolCard from "@/components/ToolCard";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -69,11 +68,6 @@ const Index = () => {
       icon: <Link2 />,
       path: "/tools/image-to-url"
     }, {
-      title: "Photo Editor",
-      description: "Edit photos with filters, effects, and professional adjustments",
-      icon: <ImageIcon />,
-      path: "/tools/photo-editor"
-    }, {
       title: "Image Format Converter",
       description: "Convert between PNG, JPG, WebP, and other image formats",
       icon: <Repeat />,
@@ -102,16 +96,6 @@ const Index = () => {
       description: "Convert PDF pages to high-quality JPG or PNG images with customizable settings",
       icon: <FileImage />,
       path: "/tools/pdf-to-jpg"
-    }, {
-      title: "PDF to Word",
-      description: "Convert PDF documents to editable Word files with preserved formatting",
-      icon: <FileCode />,
-      path: "/tools/pdf-to-word"
-    }, {
-      title: "Word to PDF",
-      description: "Convert Word documents to PDF format with professional quality",
-      icon: <FileIcon />,
-      path: "/tools/word-to-pdf"
     }]
   }, {
     title: "🧮 Calculators & Converters",
@@ -170,16 +154,6 @@ const Index = () => {
       description: "Encode and decode Base64 strings for data transmission and storage",
       icon: <Type />,
       path: "/tools/base64-tool"
-    }, {
-      title: "Speech Converter",
-      description: "Convert between direct and indirect speech with proper grammar rules and examples",
-      icon: <MessageSquare />,
-      path: "/tools/speech-converter"
-    }, {
-      title: "Text-to-Speech",
-      description: "Convert text to natural-sounding speech with adjustable voice settings",
-      icon: <Volume2 />,
-      path: "/tools/text-to-speech"
     }, {
       title: "Markdown to HTML",
       description: "Convert Markdown text to formatted HTML with preview and custom styling",
@@ -250,30 +224,6 @@ const Index = () => {
       icon: <ShieldIcon />,
       path: "/tools/uuid-generator"
     }]
-  }, {
-    title: "📁 File Tools",
-    description: "File management and conversion tools for handling various file formats and operations.",
-    tools: [{
-      title: "File Converter",
-      description: "Convert between various file formats with professional quality",
-      icon: <Repeat />,
-      path: "/tools/file-converter"
-    }, {
-      title: "ZIP Extractor",
-      description: "Extract files from ZIP archives safely and efficiently",
-      icon: <Archive />,
-      path: "/tools/zip-extractor"
-    }, {
-      title: "File Size Converter",
-      description: "Convert between bytes, KB, MB, GB, TB and other file size units",
-      icon: <Ruler />,
-      path: "/tools/file-size-converter"
-    }, {
-      title: "Duplicate File Finder",
-      description: "Find and identify duplicate files to save storage space",
-      icon: <Copy />,
-      path: "/tools/duplicate-file-finder"
-    }]
   }];
 
   const faqs = [{
@@ -293,7 +243,7 @@ const Index = () => {
     answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
   }];
 
-  return <Layout>
+  return <>
       <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 45+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
@@ -356,13 +306,13 @@ const Index = () => {
               toolCategories[2].tools[0], // Percentage Calculator
               toolCategories[4].tools[0], // QR Code Generator
               toolCategories[0].tools[5], // Background Remover
-              toolCategories[3].tools[4], // Text-to-Speech
               toolCategories[4].tools[5], // URL Shortener
               toolCategories[4].tools[7], // Video to GIF
-              toolCategories[3].tools[5], // Markdown to HTML
+              toolCategories[3].tools[3], // Markdown to HTML
               toolCategories[2].tools[3], // Age Calculator
               toolCategories[2].tools[4], // BMI Calculator
-              toolCategories[0].tools[8]  // Photo Editor
+              toolCategories[0].tools[8], // Image Format Converter
+              toolCategories[3].tools[5]  // Lorem Ipsum
             ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
             animationDelay: `${index * 100}ms`
           }}>
@@ -380,7 +330,7 @@ const Index = () => {
               🚀 All Tools by Category
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Explore our complete collection of 45+ professional-grade tools, organized by category for easy discovery
+              Explore our complete collection of professional-grade tools, organized by category for easy discovery
             </p>
           </div>
 
@@ -504,7 +454,7 @@ const Index = () => {
           </Button>
         </div>
       </section>
-    </Layout>;
+    </>;
 };
 
 export default Index;
