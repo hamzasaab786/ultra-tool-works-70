@@ -30,19 +30,23 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="font-bold text-lg mb-4 text-white">Resources</h3>
+            <h3 className="font-bold text-lg mb-4 text-white">Tool Categories</h3>
             <ul className="space-y-2">
-              <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">About Us</Link></li>
-              <li><Link to="/privacy-policy" className="text-gray-300 hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><Link to="/disclaimer" className="text-gray-300 hover:text-white transition-colors">Disclaimer</Link></li>
+              <li><span className="text-gray-300">Image Tools</span></li>
+              <li><span className="text-gray-300">PDF Tools</span></li>
+              <li><span className="text-gray-300">Calculators</span></li>
+              <li><span className="text-gray-300">Text Tools</span></li>
+              <li><span className="text-gray-300">Utilities</span></li>
             </ul>
           </div>
           
           <div>
-            <h3 className="font-bold text-lg mb-4 text-white">Connect</h3>
-            <div className="flex space-x-4">
-              <p className="text-gray-300">Follow us on social media for updates and tips</p>
+            <h3 className="font-bold text-lg mb-4 text-white">About</h3>
+            <div className="space-y-2">
+              <p className="text-gray-300 text-sm">
+                ToolifyConvert provides essential online tools that work entirely in your browser. 
+                Your files are processed locally for maximum privacy and security.
+              </p>
             </div>
           </div>
         </div>

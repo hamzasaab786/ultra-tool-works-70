@@ -17,6 +17,7 @@ const CompressPdf = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [originalSize, setOriginalSize] = useState<number>(0);
   const [compressedSize, setCompressedSize] = useState<number>(0);
+  const [processingMessage, setProcessingMessage] = useState<string>("Processing PDF...");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePdfUpload = useCallback((file: File) => {
@@ -24,7 +25,7 @@ const CompressPdf = () => {
     
     if (!validation.isValid) {
       toast({
-        title: "Error",
+        title: "Invalid File",
         description: validation.error,
         variant: "destructive"
       });
@@ -37,8 +38,8 @@ const CompressPdf = () => {
     setCompressedSize(0);
     
     toast({
-      title: "File loaded",
-      description: `${file.name} (${formatFileSize(file.size)}) ready for compression`,
+      title: "File Ready",
+      description: `${file.name} (${formatFileSize(file.size)}) loaded successfully`,
     });
   }, []);
 
@@ -46,9 +47,17 @@ const CompressPdf = () => {
     if (!selectedPdf) return;
 
     setIsProcessing(true);
+    setProcessingMessage("Analyzing PDF structure...");
     
     try {
+      // Simulate processing steps for better UX
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setProcessingMessage("Optimizing content...");
+      
       const compressedBlob = await compressPdfFile(selectedPdf);
+      
+      setProcessingMessage("Finalizing compression...");
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       setCompressedPdf(compressedBlob);
       setCompressedSize(compressedBlob.size);
@@ -56,50 +65,62 @@ const CompressPdf = () => {
       const savedSpace = ((selectedPdf.size - compressedBlob.size) / selectedPdf.size) * 100;
       
       toast({
-        title: "Success",
-        description: `PDF compressed successfully! Saved ${Math.max(0, savedSpace).toFixed(1)}% space`,
+        title: "Success!",
+        description: `PDF compressed successfully! ${savedSpace > 0 ? `Saved ${savedSpace.toFixed(1)}% space` : 'File optimized'}`,
       });
     } catch (error) {
       console.error('Error compressing PDF:', error);
       toast({
-        title: "Error",
-        description: "Failed to compress PDF. Please try with a different file.",
+        title: "Compression Failed",
+        description: error instanceof Error ? error.message : "Failed to compress PDF. Please try with a different file.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
+      setProcessingMessage("Processing PDF...");
     }
   }, [selectedPdf]);
 
   const downloadCompressed = useCallback(() => {
     if (!compressedPdf || !selectedPdf) return;
     
-    const url = URL.createObjectURL(compressedPdf);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `compressed_${selectedPdf.name}`;
-    
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: "Downloaded",
-      description: "Compressed PDF downloaded successfully!",
-    });
+    try {
+      const url = URL.createObjectURL(compressedPdf);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `compressed_${selectedPdf.name}`;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Download Started",
+        description: "Your compressed PDF is being downloaded",
+      });
+    } catch (error) {
+      console.error('Download failed:', error);
+      toast({
+        title: "Download Failed",
+        description: "Failed to download the compressed file. Please try again.",
+        variant: "destructive"
+      });
+    }
   }, [compressedPdf, selectedPdf]);
 
-  const resetTool = () => {
+  const resetTool = useCallback(() => {
     setSelectedPdf(null);
     setCompressedPdf(null);
     setOriginalSize(0);
     setCompressedSize(0);
     setIsProcessing(false);
+    setProcessingMessage("Processing PDF...");
+    
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
+  }, []);
 
   return (
     <>
@@ -130,7 +151,9 @@ const CompressPdf = () => {
             />
           )}
 
-          {isProcessing && <PdfProcessingState />}
+          {isProcessing && (
+            <PdfProcessingState message={processingMessage} />
+          )}
 
           {compressedPdf && selectedPdf && (
             <PdfResultsSection

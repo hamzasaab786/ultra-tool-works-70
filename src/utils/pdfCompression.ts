@@ -2,84 +2,99 @@
 import { PDFDocument } from 'pdf-lib';
 
 export const compressPdfFile = async (file: File): Promise<Blob> => {
-  const arrayBuffer = await file.arrayBuffer();
-  const pdfDoc = await PDFDocument.load(arrayBuffer);
-  
-  // Get all pages and their resources
-  const pages = pdfDoc.getPages();
-  console.log(`PDF has ${pages.length} pages, original size: ${file.size} bytes`);
-  
-  // Remove metadata to reduce size
-  pdfDoc.setTitle('');
-  pdfDoc.setAuthor('');
-  pdfDoc.setSubject('');
-  pdfDoc.setKeywords([]);
-  pdfDoc.setProducer('ToolifyConvert');
-  pdfDoc.setCreator('ToolifyConvert');
-  
-  // Process each page for compression
-  for (let i = 0; i < pages.length; i++) {
-    const page = pages[i];
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdfDoc = await PDFDocument.load(arrayBuffer);
     
-    // Get page dimensions
-    const { width, height } = page.getSize();
+    // Get all pages and their resources
+    const pages = pdfDoc.getPages();
+    console.log(`PDF has ${pages.length} pages, original size: ${formatFileSize(file.size)}`);
     
-    // Compress by reducing quality and optimizing content streams
-    try {
-      // This helps compress the page content
-      page.scale(0.98, 0.98); // Slight scale reduction
-      page.scale(1.02, 1.02); // Scale back to trigger recompression
-    } catch (error) {
-      console.log(`Could not optimize page ${i + 1}:`, error);
-    }
-  }
-  
-  // Save with maximum compression settings (removed invalid compress option)
-  const compressedBytes = await pdfDoc.save({
-    useObjectStreams: true,
-    addDefaultPage: false,
-    updateFieldAppearances: false,
-  });
-  
-  console.log(`Compressed size: ${compressedBytes.length} bytes`);
-  
-  // If compression didn't work well, try alternative approach
-  if (compressedBytes.length >= file.size * 0.95) {
-    console.log('Trying alternative compression method...');
+    // Remove metadata to reduce size
+    pdfDoc.setTitle('');
+    pdfDoc.setAuthor('');
+    pdfDoc.setSubject('');
+    pdfDoc.setKeywords([]);
+    pdfDoc.setProducer('ToolifyConvert');
+    pdfDoc.setCreator('ToolifyConvert');
     
-    // Create a new PDF and copy content with compression
-    const newDoc = await PDFDocument.create();
-    
+    // Process each page for compression
     for (let i = 0; i < pages.length; i++) {
-      const [copiedPage] = await newDoc.copyPages(pdfDoc, [i]);
-      const addedPage = newDoc.addPage(copiedPage);
+      const page = pages[i];
       
-      // Scale down slightly to reduce file size
-      const { width, height } = addedPage.getSize();
-      addedPage.scale(0.95, 0.95);
+      try {
+        // Optimize page content by slight scaling to trigger recompression
+        const { width, height } = page.getSize();
+        
+        // Only apply optimization if page is reasonably sized
+        if (width > 100 && height > 100) {
+          page.scale(0.98, 0.98);
+          page.scale(1.02, 1.02);
+        }
+      } catch (error) {
+        console.log(`Could not optimize page ${i + 1}:`, error);
+        // Continue with other pages even if one fails
+      }
     }
     
-    const alternativeBytes = await newDoc.save({
+    // Save with maximum compression settings
+    const compressedBytes = await pdfDoc.save({
       useObjectStreams: true,
       addDefaultPage: false,
       updateFieldAppearances: false,
     });
     
-    console.log(`Alternative compression size: ${alternativeBytes.length} bytes`);
+    console.log(`Compressed size: ${formatFileSize(compressedBytes.length)}`);
     
-    // Use whichever compression method worked better
-    const finalBytes = alternativeBytes.length < compressedBytes.length ? alternativeBytes : compressedBytes;
+    // If compression didn't achieve much, try alternative approach
+    if (compressedBytes.length >= file.size * 0.95) {
+      console.log('Trying alternative compression method...');
+      
+      try {
+        const newDoc = await PDFDocument.create();
+        
+        for (let i = 0; i < pages.length; i++) {
+          const [copiedPage] = await newDoc.copyPages(pdfDoc, [i]);
+          const addedPage = newDoc.addPage(copiedPage);
+          
+          // Apply more aggressive scaling
+          addedPage.scale(0.95, 0.95);
+        }
+        
+        const alternativeBytes = await newDoc.save({
+          useObjectStreams: true,
+          addDefaultPage: false,
+          updateFieldAppearances: false,
+        });
+        
+        console.log(`Alternative compression size: ${formatFileSize(alternativeBytes.length)}`);
+        
+        // Use whichever compression method worked better
+        const finalBytes = alternativeBytes.length < compressedBytes.length ? alternativeBytes : compressedBytes;
+        
+        return new Blob([finalBytes], { type: 'application/pdf' });
+      } catch (altError) {
+        console.log('Alternative compression failed, using original result:', altError);
+        return new Blob([compressedBytes], { type: 'application/pdf' });
+      }
+    }
     
-    return new Blob([finalBytes], { 
-      type: 'application/pdf' 
-    });
+    return new Blob([compressedBytes], { type: 'application/pdf' });
+    
+  } catch (error) {
+    console.error('PDF compression failed:', error);
+    throw new Error('Failed to compress PDF. The file may be corrupted or use unsupported features.');
   }
-  
-  return new Blob([compressedBytes], { 
-    type: 'application/pdf' 
-  });
 };
 
 export const calculateSavedSpace = (originalSize: number, compressedSize: number): number => {
-  return Math.max(0, ((originalSize - compressedSize) / originalSize) * 100);
+  return Math.max(0, Math.round(((originalSize - compressedSize) / originalSize) * 100 * 10) / 10);
+};
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };

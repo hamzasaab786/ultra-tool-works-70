@@ -17,8 +17,6 @@ import MergePDF from "./pages/tools/MergePDF";
 import SplitPdf from "./pages/tools/SplitPdf";
 import CompressPdf from "./pages/tools/CompressPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
-import EditPdf from "./pages/tools/EditPdf";
-import CropPdf from "./pages/tools/CropPdf";
 import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import UnitConverter from "./pages/tools/UnitConverter";
 import CurrencyConverter from "./pages/tools/CurrencyConverter";
@@ -41,10 +39,6 @@ import ColorPicker from "./pages/tools/ColorPicker";
 import BudgetTracker from "./pages/tools/BudgetTracker";
 import BarcodeGenerator from "./pages/tools/BarcodeGenerator";
 import UuidGenerator from "./pages/tools/UuidGenerator";
-import FileConverter from "./pages/tools/FileConverter";
-import ZipExtractor from "./pages/tools/ZipExtractor";
-import FileSizeConverter from "./pages/tools/FileSizeConverter";
-import DuplicateFileFinder from "./pages/tools/DuplicateFileFinder";
 import { Toaster } from "@/components/ui/toaster";
 
 function App() {
@@ -73,8 +67,6 @@ function App() {
             <Route path="/tools/split-pdf" element={<SplitPdf />} />
             <Route path="/tools/compress-pdf" element={<CompressPdf />} />
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
-            <Route path="/tools/edit-pdf" element={<EditPdf />} />
-            <Route path="/tools/crop-pdf" element={<CropPdf />} />
             
             {/* Calculators & Converters */}
             <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
@@ -103,12 +95,6 @@ function App() {
             <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
             <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
             <Route path="/tools/uuid-generator" element={<UuidGenerator />} />
-            
-            {/* File Tools */}
-            <Route path="/tools/file-converter" element={<FileConverter />} />
-            <Route path="/tools/zip-extractor" element={<ZipExtractor />} />
-            <Route path="/tools/file-size-converter" element={<FileSizeConverter />} />
-            <Route path="/tools/duplicate-file-finder" element={<DuplicateFileFinder />} />
           </Routes>
         </Layout>
         {/* Toaster is outside Layout to avoid duplication */}

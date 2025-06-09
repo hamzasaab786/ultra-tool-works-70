@@ -75,26 +75,18 @@ const Navigation = () => {
               </Link>
               <Link to="/tools/compress-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">Compress PDF</div>
-                <p className="text-sm text-muted-foreground">Reduce PDF file size</p>
+                <p className="text-sm text-muted-foreground">Reduce PDF file size while maintaining quality</p>
               </Link>
               <Link to="/tools/pdf-to-jpg" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">PDF to JPG</div>
                 <p className="text-sm text-muted-foreground">Convert PDF pages to high-quality images</p>
-              </Link>
-              <Link to="/tools/edit-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Edit PDF</div>
-                <p className="text-sm text-muted-foreground">Edit and modify PDF documents</p>
-              </Link>
-              <Link to="/tools/crop-pdf" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Crop PDF</div>
-                <p className="text-sm text-muted-foreground">Crop and resize PDF pages</p>
               </Link>
             </div>
           </NavigationMenuContent>
         </NavigationMenuItem>
         
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Calculators & Converters</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Calculators</NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="grid gap-3 p-4 w-[400px]">
               <Link to="/tools/percentage-calculator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
@@ -200,30 +192,6 @@ const Navigation = () => {
               <Link to="/tools/uuid-generator" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
                 <div className="font-medium leading-none">UUID Generator</div>
                 <p className="text-sm text-muted-foreground">Generate unique identifiers for your projects</p>
-              </Link>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>File Tools</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
-              <Link to="/tools/file-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">File Converter</div>
-                <p className="text-sm text-muted-foreground">Convert between various file formats</p>
-              </Link>
-              <Link to="/tools/zip-extractor" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">ZIP Extractor</div>
-                <p className="text-sm text-muted-foreground">Extract files from ZIP archives</p>
-              </Link>
-              <Link to="/tools/file-size-converter" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">File Size Converter</div>
-                <p className="text-sm text-muted-foreground">Convert between bytes, KB, MB, GB, TB</p>
-              </Link>
-              <Link to="/tools/duplicate-file-finder" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                <div className="font-medium leading-none">Duplicate File Finder</div>
-                <p className="text-sm text-muted-foreground">Find and remove duplicate files</p>
               </Link>
             </div>
           </NavigationMenuContent>
