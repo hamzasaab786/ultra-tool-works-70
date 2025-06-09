@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -241,26 +240,7 @@ const UrlShortener = () => {
           </div>
         </div>
 
-        <ToolSEOContent
-          title="Professional URL Shortening Service"
-          description="Our URL shortener provides a reliable way to create short, trackable links for your marketing campaigns, social media posts, and professional communications."
-          features={[
-            "Instant URL shortening",
-            "Click tracking and analytics",
-            "Custom short codes",
-            "Bulk URL processing",
-            "QR code generation",
-            "Link expiration dates"
-          ]}
-          useCases={[
-            "Social media marketing",
-            "Email campaigns",
-            "SMS marketing",
-            "Print materials",
-            "Presentation slides",
-            "Document sharing"
-          ]}
-        />
+        <ToolSEOContent toolName="URL Shortener" />
       </div>
     </>
   );

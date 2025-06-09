@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
@@ -221,26 +220,7 @@ const PdfCompressor = () => {
           </div>
         </div>
 
-        <ToolSEOContent
-          title="Professional PDF Compression Tool"
-          description="Our PDF compressor helps you reduce file sizes efficiently while maintaining document quality. Perfect for professionals who need to optimize PDFs for email, web upload, or storage."
-          features={[
-            "High-quality compression algorithms",
-            "Maintains document integrity",
-            "Fast processing speed",
-            "Secure file handling",
-            "No file size limits",
-            "Batch compression support"
-          ]}
-          useCases={[
-            "Email attachments",
-            "Web uploads", 
-            "Storage optimization",
-            "Document sharing",
-            "Archive management",
-            "Mobile compatibility"
-          ]}
-        />
+        <ToolSEOContent toolName="PDF Compressor" />
       </div>
     </>
   );

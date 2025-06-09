@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, RotateCcw, FileSpreadsheet, FileCode } from "lucide-react";
 import SEO from "@/components/SEO";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const CsvToJson = () => {
   const [csvInput, setCsvInput] = useState("");
@@ -262,7 +262,7 @@ Jane,25,Los Angeles"
                     <Checkbox 
                       id="headers" 
                       checked={hasHeaders}
-                      onCheckedChange={setHasHeaders}
+                      onCheckedChange={(checked) => setHasHeaders(checked === true)}
                     />
                     <Label htmlFor="headers">First row is headers</Label>
                   </div>
@@ -274,7 +274,7 @@ Jane,25,Los Angeles"
                     <Checkbox 
                       id="pretty" 
                       checked={prettyPrint}
-                      onCheckedChange={setPrettyPrint}
+                      onCheckedChange={(checked) => setPrettyPrint(checked === true)}
                     />
                     <Label htmlFor="pretty">Pretty print JSON</Label>
                   </div>
@@ -317,6 +317,8 @@ Bob Johnson,35,Chicago`}
             </CardContent>
           </Card>
         </div>
+
+        <ToolSEOContent toolName="CSV to JSON Converter" />
       </div>
     </>
   );
