@@ -60,30 +60,38 @@ export const compressPdfFile = async (file: File, compressionLevel: CompressionL
     console.log(`PDF has ${pdfDoc.getPageCount()} pages, original size: ${formatFileSize(file.size)}`);
     console.log(`Using ${compressionLevel} compression level`);
     
-    // Remove metadata if requested
+    // Remove metadata if requested - but only set values that exist
     if (settings.removeMetadata) {
-      pdfDoc.setTitle('');
-      pdfDoc.setAuthor('');
-      pdfDoc.setSubject('');
-      pdfDoc.setKeywords([]);
-      pdfDoc.setProducer('');
-      pdfDoc.setCreator('');
-      pdfDoc.setCreationDate(undefined);
-      pdfDoc.setModificationDate(undefined);
+      try {
+        pdfDoc.setTitle('');
+        pdfDoc.setAuthor('');
+        pdfDoc.setSubject('');
+        pdfDoc.setKeywords([]);
+        pdfDoc.setProducer('');
+        pdfDoc.setCreator('');
+        // Only set dates if they don't cause errors
+        const currentDate = new Date();
+        pdfDoc.setCreationDate(currentDate);
+        pdfDoc.setModificationDate(currentDate);
+      } catch (metadataError) {
+        console.log('Could not remove some metadata:', metadataError);
+        // Continue anyway
+      }
     }
     
     // Apply page scaling if requested
     if (settings.scalePages && settings.pageScale < 1.0) {
       const pages = pdfDoc.getPages();
-      pages.forEach(page => {
+      pages.forEach((page, index) => {
         try {
           const { width, height } = page.getSize();
           // Only scale if page is reasonably sized to avoid issues
           if (width > 100 && height > 100) {
             page.scale(settings.pageScale, settings.pageScale);
+            console.log(`Scaled page ${index + 1} by factor ${settings.pageScale}`);
           }
         } catch (error) {
-          console.log('Could not scale page:', error);
+          console.log(`Could not scale page ${index + 1}:`, error);
           // Continue with other pages
         }
       });
@@ -96,37 +104,34 @@ export const compressPdfFile = async (file: File, compressionLevel: CompressionL
       updateFieldAppearances: false,
     };
     
-    // For higher compression levels, use additional optimization
-    if (compressionLevel === "high" || compressionLevel === "maximum") {
-      saveOptions.objectsPerTick = 50;
-    }
-    
     const compressedBytes = await pdfDoc.save(saveOptions);
     
     console.log(`Compressed size: ${formatFileSize(compressedBytes.length)}`);
+    console.log(`Compression ratio: ${Math.round((compressedBytes.length / file.size) * 100)}%`);
     
-    // Check if compression was successful
-    const compressionRatio = compressedBytes.length / file.size;
-    console.log(`Compression ratio: ${Math.round(compressionRatio * 100)}%`);
-    
-    // If the file got larger, try a different approach
-    if (compressedBytes.length >= file.size && (compressionLevel === "high" || compressionLevel === "maximum")) {
-      console.log('Standard compression failed, trying alternative method...');
+    // If compression didn't reduce size significantly, try alternative approach
+    if (compressedBytes.length >= file.size * 0.95) {
+      console.log('Standard compression minimal, trying alternative method...');
       
       try {
         // Create a new document and copy pages with more aggressive settings
         const newDoc = await PDFDocument.create();
-        const pages = pdfDoc.getPages();
+        const originalDoc = await PDFDocument.load(arrayBuffer);
+        const pageCount = originalDoc.getPageCount();
         
-        for (let i = 0; i < pages.length; i++) {
-          const [copiedPage] = await newDoc.copyPages(pdfDoc, [i]);
+        // Copy pages one by one with scaling
+        for (let i = 0; i < pageCount; i++) {
+          const [copiedPage] = await newDoc.copyPages(originalDoc, [i]);
           const addedPage = newDoc.addPage(copiedPage);
           
-          // Apply more aggressive scaling
-          if (compressionLevel === "maximum") {
-            addedPage.scale(0.8, 0.8);
-          } else {
-            addedPage.scale(0.85, 0.85);
+          // Apply more aggressive scaling for higher compression
+          const scaleFactor = compressionLevel === "maximum" ? 0.8 : 
+                            compressionLevel === "high" ? 0.85 : 0.9;
+          
+          try {
+            addedPage.scale(scaleFactor, scaleFactor);
+          } catch (scaleError) {
+            console.log(`Could not scale page ${i + 1} in alternative method:`, scaleError);
           }
         }
         
@@ -147,39 +152,12 @@ export const compressPdfFile = async (file: File, compressionLevel: CompressionL
       }
     }
     
-    // If compression didn't work well, at least ensure we don't make it larger
-    if (compressedBytes.length > file.size) {
-      console.log('Compression increased file size, using minimal compression...');
-      
-      // Try minimal compression - just remove metadata
-      const minimalDoc = await PDFDocument.load(arrayBuffer);
-      minimalDoc.setTitle('');
-      minimalDoc.setAuthor('');
-      minimalDoc.setSubject('');
-      minimalDoc.setKeywords([]);
-      
-      const minimalBytes = await minimalDoc.save({
-        useObjectStreams: false,
-        addDefaultPage: false,
-        updateFieldAppearances: false,
-      });
-      
-      console.log(`Minimal compression size: ${formatFileSize(minimalBytes.length)}`);
-      
-      if (minimalBytes.length < file.size) {
-        return new Blob([minimalBytes], { type: 'application/pdf' });
-      } else {
-        // If even minimal compression makes it larger, return original with warning
-        console.log('File cannot be compressed further, returning original');
-        return new Blob([arrayBuffer], { type: 'application/pdf' });
-      }
-    }
-    
+    // Always return the compressed version, even if it's not much smaller
     return new Blob([compressedBytes], { type: 'application/pdf' });
     
   } catch (error) {
     console.error('PDF compression failed:', error);
-    throw new Error('Failed to compress PDF. The file may be corrupted or use unsupported features.');
+    throw new Error(`Failed to compress PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
