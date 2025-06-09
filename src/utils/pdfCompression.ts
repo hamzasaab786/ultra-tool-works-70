@@ -34,12 +34,11 @@ export const compressPdfFile = async (file: File): Promise<Blob> => {
     }
   }
   
-  // Save with maximum compression settings
+  // Save with maximum compression settings (removed invalid compress option)
   const compressedBytes = await pdfDoc.save({
     useObjectStreams: true,
     addDefaultPage: false,
     updateFieldAppearances: false,
-    compress: true,
   });
   
   console.log(`Compressed size: ${compressedBytes.length} bytes`);
@@ -64,7 +63,6 @@ export const compressPdfFile = async (file: File): Promise<Blob> => {
       useObjectStreams: true,
       addDefaultPage: false,
       updateFieldAppearances: false,
-      compress: true,
     });
     
     console.log(`Alternative compression size: ${alternativeBytes.length} bytes`);
