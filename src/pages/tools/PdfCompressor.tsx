@@ -1,228 +1,199 @@
-import React, { useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+
+import React, { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Download, Upload, FileIcon, Zap } from "lucide-react";
-import SEO from "@/components/SEO";
-import ToolSEOContent from "@/components/ToolSEOContent";
+import ToolPageTemplate from "./ToolPageTemplate";
+import PdfUploadSection from "@/components/pdf/PdfUploadSection";
+import PdfCompressionButton from "@/components/pdf/PdfCompressionButton";
+import PdfProcessingState from "@/components/pdf/PdfProcessingState";
+import PdfResultsSection from "@/components/pdf/PdfResultsSection";
+import { validatePdfFile } from "@/utils/fileUtils";
+import { compressPdfFile } from "@/utils/pdfCompression";
 
 const PdfCompressor = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [compressedFile, setCompressedFile] = useState<{ blob: Blob; name: string } | null>(null);
-  const [isCompressing, setIsCompressing] = useState(false);
+  const [selectedPdf, setSelectedPdf] = useState<File | null>(null);
+  const [originalSize, setOriginalSize] = useState(0);
+  const [compressedSize, setCompressedSize] = useState(0);
+  const [compressedBlob, setCompressedBlob] = useState<Blob | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const onDrop = (acceptedFiles: File[]) => {
-    if (acceptedFiles.length > 0) {
-      const uploadedFile = acceptedFiles[0];
-      if (uploadedFile.type === 'application/pdf') {
-        setFile(uploadedFile);
-        setCompressedFile(null);
-        toast({
-          title: "PDF uploaded successfully",
-          description: `File: ${uploadedFile.name}`,
-        });
-      } else {
-        toast({
-          title: "Invalid file type",
-          description: "Please upload a PDF file.",
-          variant: "destructive",
-        });
-      }
+  const handleFileSelect = (file: File) => {
+    const validation = validatePdfFile(file);
+    
+    if (!validation.isValid) {
+      toast({
+        title: "Invalid file",
+        description: validation.error,
+        variant: "destructive",
+      });
+      return;
     }
+
+    setSelectedPdf(file);
+    setOriginalSize(file.size);
+    setCompressedBlob(null);
+    setCompressedSize(0);
+    setProgress(0);
+    
+    toast({
+      title: "PDF uploaded successfully",
+      description: `${file.name} is ready for compression`,
+    });
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'application/pdf': ['.pdf'],
-    },
-    multiple: false,
-  });
+  const handleCompress = async () => {
+    if (!selectedPdf) return;
 
-  const compressPdf = async () => {
-    if (!file) return;
-
-    setIsCompressing(true);
+    setIsProcessing(true);
     setProgress(0);
 
     try {
-      // Simulate compression process with progress
-      const interval = setInterval(() => {
+      // Simulate progress updates
+      const progressInterval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 90) {
-            clearInterval(interval);
+            clearInterval(progressInterval);
             return 90;
           }
           return prev + 10;
         });
       }, 200);
 
-      // Create a compressed version (simulation - in real app you'd use PDF compression library)
-      const arrayBuffer = await file.arrayBuffer();
-      const compressedBlob = new Blob([arrayBuffer], { type: 'application/pdf' });
+      // Perform actual compression
+      const compressed = await compressPdfFile(selectedPdf);
       
       setProgress(100);
-      setCompressedFile({
-        blob: compressedBlob,
-        name: file.name.replace('.pdf', '_compressed.pdf')
-      });
-
+      setCompressedBlob(compressed);
+      setCompressedSize(compressed.size);
+      
       toast({
-        title: "PDF compressed successfully",
-        description: "Your PDF has been compressed and is ready for download.",
+        title: "Compression complete!",
+        description: `PDF compressed successfully. Size reduced by ${Math.round(((originalSize - compressed.size) / originalSize) * 100)}%`,
       });
+      
     } catch (error) {
+      console.error('Compression error:', error);
       toast({
         title: "Compression failed",
-        description: "There was an error compressing your PDF.",
+        description: error instanceof Error ? error.message : "Failed to compress PDF",
         variant: "destructive",
       });
     } finally {
-      setIsCompressing(false);
+      setIsProcessing(false);
     }
   };
 
-  const downloadCompressed = () => {
-    if (!compressedFile) return;
-
-    const url = URL.createObjectURL(compressedFile.blob);
+  const handleDownload = () => {
+    if (!compressedBlob || !selectedPdf) return;
+    
+    const url = URL.createObjectURL(compressedBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = compressedFile.name;
+    a.download = `compressed_${selectedPdf.name}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Download started",
+      description: "Your compressed PDF is downloading",
+    });
+  };
+
+  const handleReset = () => {
+    setSelectedPdf(null);
+    setOriginalSize(0);
+    setCompressedSize(0);
+    setCompressedBlob(null);
+    setProgress(0);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
-    <>
-      <SEO
-        title="PDF Compressor - Reduce PDF File Size Online Free"
-        description="Compress PDF files online for free. Reduce PDF file size while maintaining quality. Fast, secure, and easy to use PDF compression tool."
-        keywords="PDF compressor, compress PDF, reduce PDF size, PDF optimization, PDF file size reducer"
-      />
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              PDF Compressor
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Compress your PDF files to reduce file size while maintaining quality. Perfect for email attachments and web uploads.
-            </p>
-          </div>
+    <ToolPageTemplate
+      title="PDF Compressor"
+      description="Compress PDF files to reduce their size while maintaining quality. Perfect for email attachments and web uploads."
+      keywords="PDF compressor, compress PDF, reduce PDF size, PDF optimization, PDF file size reducer"
+    >
+      <div className="space-y-6">
+        <PdfUploadSection
+          selectedPdf={selectedPdf}
+          originalSize={originalSize}
+          onFileSelect={handleFileSelect}
+          onReset={handleReset}
+          fileInputRef={fileInputRef}
+        />
 
-          <div className="grid gap-6">
-            {/* Upload Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5" />
-                  Upload PDF File
-                </CardTitle>
-                <CardDescription>
-                  Select a PDF file to compress (Max size: 10MB)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-                    isDragActive
-                      ? 'border-indigo-500 bg-indigo-50'
-                      : 'border-gray-300 hover:border-gray-400'
-                  }`}
-                >
-                  <input {...getInputProps()} />
-                  <FileIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  {isDragActive ? (
-                    <p className="text-indigo-600">Drop the PDF file here...</p>
-                  ) : (
-                    <div>
-                      <p className="text-gray-600 mb-2">
-                        Drag & drop a PDF file here, or click to select
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Supports: PDF files up to 10MB
-                      </p>
-                    </div>
-                  )}
-                </div>
-                
-                {file && (
-                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">{file.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
-                      </div>
-                      <Button onClick={compressPdf} disabled={isCompressing}>
-                        <Zap className="mr-2 h-4 w-4" />
-                        {isCompressing ? 'Compressing...' : 'Compress PDF'}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+        {selectedPdf && !compressedBlob && !isProcessing && (
+          <PdfCompressionButton
+            onCompress={handleCompress}
+            isProcessing={isProcessing}
+          />
+        )}
 
-            {/* Progress Section */}
-            {isCompressing && (
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Compressing PDF...</span>
-                      <span>{progress}%</span>
-                    </div>
-                    <Progress value={progress} className="w-full" />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+        {isProcessing && (
+          <PdfProcessingState
+            message="Compressing PDF..."
+            progress={progress}
+          />
+        )}
 
-            {/* Download Section */}
-            {compressedFile && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Download className="h-5 w-5" />
-                    Download Compressed PDF
-                  </CardTitle>
-                  <CardDescription>
-                    Your PDF has been compressed successfully
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-                    <div>
-                      <p className="font-medium">{compressedFile.name}</p>
-                      <p className="text-sm text-gray-500">
-                        Compressed PDF ready for download
-                      </p>
-                    </div>
-                    <Button onClick={downloadCompressed}>
-                      <Download className="mr-2 h-4 w-4" />
-                      Download
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+        {compressedBlob && selectedPdf && (
+          <PdfResultsSection
+            originalSize={originalSize}
+            compressedSize={compressedSize}
+            selectedPdf={selectedPdf}
+            onDownload={handleDownload}
+            onReset={handleReset}
+          />
+        )}
+
+        <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+          <h3 className="text-lg font-semibold text-blue-900 mb-3">How PDF Compression Works</h3>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-800">
+            <div>
+              <h4 className="font-medium mb-2">Compression Features:</h4>
+              <ul className="space-y-1">
+                <li>• Remove unnecessary metadata</li>
+                <li>• Optimize image quality</li>
+                <li>• Compress embedded fonts</li>
+                <li>• Remove duplicate resources</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">Benefits:</h4>
+              <ul className="space-y-1">
+                <li>• Faster file transfers</li>
+                <li>• Reduced storage space</li>
+                <li>• Email-friendly file sizes</li>
+                <li>• Maintained visual quality</li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <ToolSEOContent toolName="PDF Compressor" />
+        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mt-0.5">
+              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="font-medium text-green-900">Privacy & Security</h4>
+              <p className="text-sm text-green-800 mt-1">
+                All compression is done locally in your browser. Your files never leave your device, ensuring complete privacy and security.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </>
+    </ToolPageTemplate>
   );
 };
 

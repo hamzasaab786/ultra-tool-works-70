@@ -1,5 +1,6 @@
 
 import { PDFDocument } from 'pdf-lib';
+import { formatFileSize } from './fileUtils';
 
 export const compressPdfFile = async (file: File): Promise<Blob> => {
   try {
@@ -89,12 +90,4 @@ export const compressPdfFile = async (file: File): Promise<Blob> => {
 
 export const calculateSavedSpace = (originalSize: number, compressedSize: number): number => {
   return Math.max(0, Math.round(((originalSize - compressedSize) / originalSize) * 100 * 10) / 10);
-};
-
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };
