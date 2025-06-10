@@ -39,6 +39,7 @@ interface ProcessedFile {
   error?: string;
   compressedBlob?: Blob;
   compressionRatio?: number;
+  file?: File;
 }
 
 const PdfCompressor = () => {
@@ -81,15 +82,11 @@ const PdfCompressor = () => {
       id: generateFileId(),
       name: file.name,
       originalSize: file.size,
-      status: 'pending'
+      status: 'pending',
+      file: file
     }));
 
     setFiles(prev => [...prev, ...newFiles]);
-    
-    // Store the actual file objects for processing
-    newFiles.forEach((processedFile, index) => {
-      (processedFile as any).file = pdfFiles[index];
-    });
 
     toast({
       title: "Files Added",
@@ -110,38 +107,60 @@ const PdfCompressor = () => {
         pdfDoc.setKeywords([]);
         pdfDoc.setProducer('PDF Compressor Tool');
         pdfDoc.setCreator('');
+        pdfDoc.setCreationDate(new Date());
+        pdfDoc.setModificationDate(new Date());
       }
 
-      // Get compression level settings
-      let imageQuality = 0.8;
-      let objectCompressionLevel = 6;
-      
+      // Flatten forms if requested
+      if (options.flattenForms) {
+        const form = pdfDoc.getForm();
+        try {
+          form.flatten();
+        } catch (e) {
+          console.log('No forms to flatten or form flattening failed');
+        }
+      }
+
+      // Configure compression based on level
+      let compressionLevel = 6;
+      let objectStreams = true;
+      let updateFieldAppearances = false;
+
       switch (options.level) {
         case 'basic':
-          imageQuality = 0.4;
-          objectCompressionLevel = 9;
+          compressionLevel = 9;
+          objectStreams = true;
           break;
         case 'recommended':
-          imageQuality = 0.7;
-          objectCompressionLevel = 7;
+          compressionLevel = 6;
+          objectStreams = true;
           break;
         case 'high':
-          imageQuality = 0.9;
-          objectCompressionLevel = 3;
+          compressionLevel = 3;
+          objectStreams = false;
           break;
       }
 
       // Save with compression options
       const compressedBytes = await pdfDoc.save({
-        useObjectStreams: true,
-        addDefaultPage: false
+        useObjectStreams: objectStreams,
+        addDefaultPage: false,
+        objectStreamsThreshold: 40,
+        updateFieldAppearances
       });
 
       const blob = new Blob([compressedBytes], { type: 'application/pdf' });
-      const compressionRatio = ((file.size - blob.size) / file.size) * 100;
+      const originalSize = file.size;
+      const compressedSize = blob.size;
+      
+      // Calculate compression ratio
+      const compressionRatio = originalSize > compressedSize 
+        ? ((originalSize - compressedSize) / originalSize) * 100 
+        : 0;
       
       return { blob, compressionRatio };
     } catch (error) {
+      console.error('PDF compression error:', error);
       throw new Error(`Failed to compress PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
@@ -160,16 +179,22 @@ const PdfCompressor = () => {
     setProgress(0);
 
     try {
-      const totalFiles = files.length;
+      const filesToProcess = files.filter(f => f.status === 'pending' && f.file);
+      const totalFiles = filesToProcess.length;
+      
+      if (totalFiles === 0) {
+        toast({
+          title: "No Files to Process",
+          description: "All files have already been processed.",
+          variant: "destructive"
+        });
+        setIsProcessing(false);
+        return;
+      }
+
       let processedCount = 0;
 
-      for (const processedFile of files) {
-        const fileObject = (processedFile as any).file;
-        if (!fileObject || processedFile.status === 'completed') {
-          processedCount++;
-          continue;
-        }
-
+      for (const processedFile of filesToProcess) {
         // Update status to processing
         setFiles(prev => prev.map(f => 
           f.id === processedFile.id 
@@ -178,7 +203,11 @@ const PdfCompressor = () => {
         ));
 
         try {
-          const { blob, compressionRatio } = await compressPDF(fileObject, compressionOptions);
+          if (!processedFile.file) {
+            throw new Error('File not found');
+          }
+
+          const { blob, compressionRatio } = await compressPDF(processedFile.file, compressionOptions);
           
           // Update file with results
           setFiles(prev => prev.map(f => 
@@ -194,6 +223,7 @@ const PdfCompressor = () => {
           ));
 
         } catch (error) {
+          console.error(`Error compressing file ${processedFile.name}:`, error);
           setFiles(prev => prev.map(f => 
             f.id === processedFile.id 
               ? { 
@@ -216,6 +246,7 @@ const PdfCompressor = () => {
       });
 
     } catch (error) {
+      console.error('Compression process error:', error);
       toast({
         title: "Compression Failed",
         description: error instanceof Error ? error.message : "An unexpected error occurred.",
@@ -240,7 +271,7 @@ const PdfCompressor = () => {
     URL.revokeObjectURL(url);
   };
 
-  const downloadAllAsZip = async () => {
+  const downloadAllFiles = () => {
     const completedFiles = files.filter(f => f.status === 'completed' && f.compressedBlob);
     
     if (completedFiles.length === 0) {
@@ -252,8 +283,6 @@ const PdfCompressor = () => {
       return;
     }
 
-    // For simplicity, we'll download files individually
-    // In a production environment, you'd want to use a ZIP library
     completedFiles.forEach(file => downloadFile(file));
     
     toast({
@@ -390,6 +419,7 @@ const PdfCompressor = () => {
               isProcessing={isProcessing}
               progress={progress}
               maxFiles={10}
+              acceptedFileTypes="pdf"
             />
           </CardContent>
         </Card>
@@ -417,7 +447,7 @@ const PdfCompressor = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={downloadAllAsZip}
+                      onClick={downloadAllFiles}
                     >
                       <Archive className="h-4 w-4 mr-2" />
                       Download All
@@ -464,9 +494,12 @@ const PdfCompressor = () => {
                           <span>Compressed: {formatFileSize(file.compressedSize)}</span>
                         )}
                       </div>
-                      {file.compressionRatio && (
+                      {file.compressionRatio !== undefined && (
                         <div className="text-green-600 font-medium">
-                          Space saved: {file.compressionRatio.toFixed(1)}%
+                          {file.compressionRatio > 0 
+                            ? `Space saved: ${file.compressionRatio.toFixed(1)}%`
+                            : 'File size optimized'
+                          }
                         </div>
                       )}
                       {file.error && (
@@ -490,7 +523,7 @@ const PdfCompressor = () => {
         <div className="flex justify-center">
           <Button
             onClick={handleCompress}
-            disabled={files.length === 0 || isProcessing}
+            disabled={files.length === 0 || isProcessing || !files.some(f => f.status === 'pending')}
             size="lg"
             className="min-w-[200px]"
           >

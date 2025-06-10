@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Upload, FileImage, X, Download } from 'lucide-react';
+import { Upload, FileImage, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -13,6 +13,7 @@ interface DragDropUploadProps {
   progress?: number;
   maxFiles?: number;
   className?: string;
+  acceptedFileTypes?: 'images' | 'pdf' | 'all';
 }
 
 const DragDropUpload: React.FC<DragDropUploadProps> = ({
@@ -20,14 +21,46 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
   isProcessing = false,
   progress = 0,
   maxFiles = 10,
-  className
+  className,
+  acceptedFileTypes = 'images'
 }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const isMobile = useIsMobile();
 
+  const getAcceptedFiles = () => {
+    switch (acceptedFileTypes) {
+      case 'pdf':
+        return { 'application/pdf': ['.pdf'] };
+      case 'images':
+        return { 'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'] };
+      case 'all':
+        return {
+          'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'],
+          'application/pdf': ['.pdf']
+        };
+      default:
+        return { 'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'] };
+    }
+  };
+
+  const filterFiles = (files: File[]) => {
+    switch (acceptedFileTypes) {
+      case 'pdf':
+        return files.filter(file => file.type === 'application/pdf');
+      case 'images':
+        return files.filter(file => file.type.startsWith('image/'));
+      case 'all':
+        return files.filter(file => 
+          file.type.startsWith('image/') || file.type === 'application/pdf'
+        );
+      default:
+        return files.filter(file => file.type.startsWith('image/'));
+    }
+  };
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const imageFiles = acceptedFiles.filter(file => file.type.startsWith('image/'));
-    const limitedFiles = imageFiles.slice(0, maxFiles);
+    const filteredFiles = filterFiles(acceptedFiles);
+    const limitedFiles = filteredFiles.slice(0, maxFiles);
     
     setSelectedFiles(limitedFiles);
     
@@ -37,13 +70,11 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
     const fileList = dt.files;
     
     onFilesSelected(fileList);
-  }, [onFilesSelected, maxFiles]);
+  }, [onFilesSelected, maxFiles, acceptedFileTypes]);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
-    accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif']
-    },
+    accept: getAcceptedFiles(),
     maxFiles,
     disabled: isProcessing
   });
@@ -70,6 +101,35 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const getFileIcon = (file: File) => {
+    if (file.type === 'application/pdf') {
+      return <FileText className="h-5 w-5 text-red-600 flex-shrink-0" />;
+    }
+    return <FileImage className="h-5 w-5 text-blue-600 flex-shrink-0" />;
+  };
+
+  const getUploadText = () => {
+    if (isDragActive) {
+      return isDragReject ? "Some files are not supported" : `Drop your ${acceptedFileTypes === 'pdf' ? 'PDF files' : acceptedFileTypes === 'images' ? 'images' : 'files'} here`;
+    }
+    
+    if (acceptedFileTypes === 'pdf') {
+      return isMobile ? "Tap to select PDF files" : "Drag & drop PDF files here, or click to browse";
+    } else if (acceptedFileTypes === 'images') {
+      return isMobile ? "Tap to select images" : "Drag & drop images here, or click to browse";
+    }
+    return isMobile ? "Tap to select files" : "Drag & drop files here, or click to browse";
+  };
+
+  const getFileTypeText = () => {
+    if (acceptedFileTypes === 'pdf') {
+      return isMobile ? `Up to ${maxFiles} PDF files` : `Supports PDF • Up to ${maxFiles} files`;
+    } else if (acceptedFileTypes === 'images') {
+      return isMobile ? `Up to ${maxFiles} images` : `Supports PNG, JPG, WebP • Up to ${maxFiles} images`;
+    }
+    return isMobile ? `Up to ${maxFiles} files` : `Supports PDF, PNG, JPG, WebP • Up to ${maxFiles} files`;
   };
 
   return (
@@ -107,17 +167,13 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
               "font-medium text-gray-700",
               isMobile ? "text-sm" : "text-base"
             )}>
-              {isDragActive ? (
-                isDragReject ? "Some files are not supported" : "Drop your images here"
-              ) : (
-                isMobile ? "Tap to select images" : "Drag & drop images here, or click to browse"
-              )}
+              {getUploadText()}
             </p>
             <p className={cn(
               "text-gray-500",
               isMobile ? "text-xs" : "text-sm"
             )}>
-              {isMobile ? `Up to ${maxFiles} images` : `Supports PNG, JPG, WebP • Up to ${maxFiles} images`}
+              {getFileTypeText()}
             </p>
           </div>
         </div>
@@ -130,7 +186,7 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
             "font-medium text-gray-700",
             isMobile ? "text-sm" : "text-base"
           )}>
-            Selected Images ({selectedFiles.length})
+            Selected {acceptedFileTypes === 'pdf' ? 'PDF Files' : acceptedFileTypes === 'images' ? 'Images' : 'Files'} ({selectedFiles.length})
           </h4>
           
           <div className={cn(
@@ -139,7 +195,7 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
           )}>
             {selectedFiles.map((file, index) => (
               <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border">
-                <FileImage className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                {getFileIcon(file)}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-700 truncate">
                     {file.name}
@@ -168,7 +224,7 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
       {isProcessing && selectedFiles.length > 0 && (
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Processing images...</span>
+            <span className="text-gray-600">Processing {acceptedFileTypes === 'pdf' ? 'PDF files' : acceptedFileTypes === 'images' ? 'images' : 'files'}...</span>
             <span className="font-medium">{Math.round(progress)}%</span>
           </div>
           <Progress value={progress} className="h-2" />
