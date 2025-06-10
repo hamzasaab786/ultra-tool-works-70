@@ -2,8 +2,8 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Settings, Zap, Shield, Gauge, Maximize } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { Settings } from "lucide-react";
 
 export type CompressionLevel = "low" | "medium" | "high" | "maximum";
 
@@ -16,90 +16,59 @@ const PdfCompressionOptions: React.FC<PdfCompressionOptionsProps> = ({
   compressionLevel,
   onCompressionLevelChange
 }) => {
-  const compressionLevels = [
-    { 
-      value: "low" as CompressionLevel, 
-      label: "Low", 
-      icon: Shield,
-      description: "Minimal compression, best quality", 
-      savings: "5-15%",
-      color: "text-green-600"
-    },
-    { 
-      value: "medium" as CompressionLevel, 
-      label: "Medium", 
-      icon: Gauge,
-      description: "Balanced compression and quality", 
-      savings: "15-30%",
-      color: "text-blue-600"
-    },
-    { 
-      value: "high" as CompressionLevel, 
-      label: "High", 
-      icon: Zap,
-      description: "Strong compression, good quality", 
-      savings: "25-45%",
-      color: "text-orange-600"
-    },
-    { 
-      value: "maximum" as CompressionLevel, 
-      label: "Maximum", 
-      icon: Maximize,
-      description: "Highest compression, minimum size", 
-      savings: "35-60%",
-      color: "text-red-600"
-    }
+  const compressionLevels: { value: CompressionLevel; label: string; description: string }[] = [
+    { value: "low", label: "Low", description: "Minimal compression, preserves maximum quality" },
+    { value: "medium", label: "Medium", description: "Balanced compression and quality" },
+    { value: "high", label: "High", description: "Strong compression, good quality" },
+    { value: "maximum", label: "Maximum", description: "Highest compression, minimum file size" }
   ];
 
-  const currentLevel = compressionLevels.find(level => level.value === compressionLevel);
+  const getCurrentLevelIndex = () => {
+    return compressionLevels.findIndex(level => level.value === compressionLevel);
+  };
+
+  const handleSliderChange = (value: number[]) => {
+    const newLevel = compressionLevels[value[0]];
+    if (newLevel) {
+      onCompressionLevelChange(newLevel.value);
+    }
+  };
+
+  const currentLevel = compressionLevels[getCurrentLevelIndex()];
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Settings className="h-5 w-5" />
-          Compression Level
+          Compression Options
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-3">
-          <Label>Choose compression strength:</Label>
-          
-          <ToggleGroup 
-            type="single" 
-            value={compressionLevel} 
-            onValueChange={(value) => value && onCompressionLevelChange(value as CompressionLevel)}
-            className="grid grid-cols-2 gap-2 w-full"
-          >
-            {compressionLevels.map((level) => {
-              const IconComponent = level.icon;
-              return (
-                <ToggleGroupItem
-                  key={level.value}
-                  value={level.value}
-                  className="flex flex-col h-auto p-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                >
-                  <IconComponent className={`h-4 w-4 mb-1 ${level.color}`} />
-                  <span className="font-medium text-sm">{level.label}</span>
-                  <span className="text-xs opacity-75">{level.savings}</span>
-                </ToggleGroupItem>
-              );
-            })}
-          </ToggleGroup>
+        <div className="space-y-2">
+          <Label htmlFor="compression-level">Compression Level</Label>
+          <div className="px-2">
+            <Slider
+              id="compression-level"
+              min={0}
+              max={compressionLevels.length - 1}
+              step={1}
+              value={[getCurrentLevelIndex()]}
+              onValueChange={handleSliderChange}
+              className="w-full"
+            />
+          </div>
+          <div className="flex justify-between text-xs text-gray-500 px-2">
+            {compressionLevels.map((level) => (
+              <span key={level.value}>{level.label}</span>
+            ))}
+          </div>
         </div>
         
-        {currentLevel && (
-          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-            <div className="flex items-center gap-2 mb-1">
-              <currentLevel.icon className={`h-4 w-4 ${currentLevel.color}`} />
-              <span className="font-medium text-blue-900">{currentLevel.label} Compression</span>
-            </div>
-            <div className="text-sm text-blue-700">{currentLevel.description}</div>
-            <div className="text-xs text-blue-600 mt-1">
-              Expected file size reduction: {currentLevel.savings}
-            </div>
-          </div>
-        )}
+        <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+          <div className="font-medium text-blue-900">{currentLevel.label} Compression</div>
+          <div className="text-sm text-blue-700">{currentLevel.description}</div>
+        </div>
       </CardContent>
     </Card>
   );
