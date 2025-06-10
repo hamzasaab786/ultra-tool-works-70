@@ -1,4 +1,3 @@
-
 import { PDFDocument } from 'pdf-lib';
 import { formatFileSize } from './fileUtils';
 
@@ -113,14 +112,11 @@ export const compressPdfFile = async (file: File, compressionLevel: CompressionL
       }
     }
     
-    // Save with aggressive compression settings
-    const saveOptions: any = {
+    // Save with compression settings - using only valid SaveOptions
+    const saveOptions = {
       useObjectStreams: settings.compressStreams,
       addDefaultPage: false,
-      updateFieldAppearances: false,
-      // Additional compression options
-      objectStreamsCompress: true,
-      ignoreEncryption: true,
+      updateFieldAppearances: false
     };
     
     console.log('Saving compressed PDF...');
@@ -162,9 +158,7 @@ export const compressPdfFile = async (file: File, compressionLevel: CompressionL
         const ultraBytes = await ultraDoc.save({
           useObjectStreams: true,
           addDefaultPage: false,
-          updateFieldAppearances: false,
-          objectStreamsCompress: true,
-          ignoreEncryption: true,
+          updateFieldAppearances: false
         });
         
         console.log(`Ultra compression size: ${formatFileSize(ultraBytes.length)}`);
