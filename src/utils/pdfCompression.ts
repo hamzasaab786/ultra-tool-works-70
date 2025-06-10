@@ -120,12 +120,11 @@ const applyAggressiveCompression = async (
     cleanupMetadata(newDoc);
   }
   
-  // Save with maximum compression options
+  // Save with maximum compression options (removed invalid 'compress' property)
   return await newDoc.save({
     useObjectStreams: settings.useObjectStreams,
     addDefaultPage: false,
-    updateFieldAppearances: false,
-    compress: true
+    updateFieldAppearances: false
   });
 };
 
