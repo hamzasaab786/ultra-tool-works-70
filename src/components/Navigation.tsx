@@ -31,6 +31,7 @@ const Navigation = () => {
     { name: "Merge PDF", path: "/tools/merge-pdf" },
     { name: "Split PDF", path: "/tools/split-pdf" },
     { name: "PDF to JPG", path: "/tools/pdf-to-jpg" },
+    { name: "PDF Compressor", path: "/tools/pdf-compressor" },
     { name: "Pdf to Excel", path: "/tools/PdfToExcel" },
     { name: "Unlock Pdf", path: "/tools/UnlockPdf" },
     { name: "PDF Metadata Extractor", path: "/tools/pdf-metadata-extractor" },

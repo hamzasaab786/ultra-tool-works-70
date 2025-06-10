@@ -17,6 +17,7 @@ import SplitPdf from "./pages/tools/SplitPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
 import PdfToExcel from "./pages/tools/PdfToExcel";
 import UnlockPdf from "./pages/tools/UnlockPdf";
+import PdfCompressor from "./pages/tools/PdfCompressor";
 import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import UnitConverter from "./pages/tools/UnitConverter";
 import CurrencyConverter from "./pages/tools/CurrencyConverter";
@@ -91,6 +92,7 @@ function App() {
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
             <Route path="/tools/pdf-to-excel" element={<PdfToExcel />} />
             <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
+            <Route path="/tools/pdf-compressor" element={<PdfCompressor />} />
             <Route path="/tools/pdf-metadata-extractor" element={<PdfMetadataExtractor />} />
             <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
             <Route path="/tools/compare-pdf" element={<ComparePdf />} />
