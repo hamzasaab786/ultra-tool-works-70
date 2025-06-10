@@ -15,7 +15,8 @@ import ImageFormatConverter from "./pages/tools/ImageFormatConverter";
 import MergePDF from "./pages/tools/MergePDF";
 import SplitPdf from "./pages/tools/SplitPdf";
 import PdfToJpg from "./pages/tools/PdfToJpg";
-import PdfCompressor from "./pages/tools/PdfCompressor";
+import PdfToExcel from "./pages/tools/PdfToExcel";
+import UnlockPdf from "./pages/tools/UnlockPdf";
 import PercentageCalculator from "./pages/tools/PercentageCalculator";
 import UnitConverter from "./pages/tools/UnitConverter";
 import CurrencyConverter from "./pages/tools/CurrencyConverter";
@@ -60,7 +61,6 @@ import AddPageNumbers from "./pages/tools/AddPageNumbers";
 import ComparePdf from "./pages/tools/ComparePdf";
 import AddWatermark from "./pages/tools/AddWatermark";
 import RemoveWatermark from "./pages/tools/RemoveWatermark";
-import PdfToWord from "./pages/tools/PdfToWord";
 import DocumentTranslator from "./pages/tools/DocumentTranslator";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -89,12 +89,12 @@ function App() {
             <Route path="/tools/merge-pdf" element={<MergePDF />} />
             <Route path="/tools/split-pdf" element={<SplitPdf />} />
             <Route path="/tools/pdf-to-jpg" element={<PdfToJpg />} />
-            <Route path="/tools/pdf-compressor" element={<PdfCompressor />} />
+            <Route path="/tools/pdf-to-excel" element={<PdfToExcel />} />
+            <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
             <Route path="/tools/pdf-metadata-extractor" element={<PdfMetadataExtractor />} />
             <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
             <Route path="/tools/compare-pdf" element={<ComparePdf />} />
             <Route path="/tools/add-watermark" element={<AddWatermark />} />
-            <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
             
             {/* Calculators & Converters */}
             <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
