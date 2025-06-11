@@ -1,6 +1,5 @@
 
 import { PDFDocument, PDFPage } from 'pdf-lib';
-import Jimp from 'jimp';
 
 export interface CompressionSettings {
   level: 'low' | 'medium' | 'high' | 'maximum';
@@ -117,15 +116,7 @@ export class PDFCompressor {
         const fields = form.getFields();
         console.log(`Found ${fields.length} form fields to flatten`);
         
-        // Flatten all form fields
-        fields.forEach(field => {
-          try {
-            field.updateAppearances();
-          } catch (error) {
-            console.log('Field appearance update skipped:', error);
-          }
-        });
-        
+        // Simply flatten without trying to update appearances
         form.flatten();
       }
     } catch (error) {
