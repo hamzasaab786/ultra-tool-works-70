@@ -1,10 +1,12 @@
+
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { 
   FileText, 
@@ -16,43 +18,45 @@ import {
   Archive,
   CheckCircle,
   AlertCircle,
-  Info
+  Info,
+  Globe,
+  Printer,
+  Smartphone,
+  BarChart3,
+  Eye,
+  Sparkles
 } from 'lucide-react';
 import ToolPageTemplate from './ToolPageTemplate';
 import DragDropUpload from '@/components/DragDropUpload';
-import { PDFDocument } from 'pdf-lib';
-
-interface CompressionOptions {
-  level: 'low' | 'medium' | 'high' | 'maximum';
-  removeMetadata: boolean;
-  optimizeImages: boolean;
-  flattenForms: boolean;
-  removeUnusedObjects: boolean;
-}
+import { PDFCompressor, PDFAnalyzer, CompressionResult, CompressionSettings } from '@/utils/pdfCompression';
+import { COMPRESSION_PRESETS, CompressionPreset, getPresetById } from '@/utils/compressionPresets';
 
 interface ProcessedFile {
   id: string;
   name: string;
   originalSize: number;
-  compressedSize?: number;
-  status: 'pending' | 'processing' | 'completed' | 'error';
+  status: 'pending' | 'analyzing' | 'processing' | 'completed' | 'error';
   error?: string;
-  compressedBlob?: Blob;
-  compressionRatio?: number;
   file?: File;
+  analysis?: {
+    pageCount: number;
+    hasImages: boolean;
+    hasForms: boolean;
+    hasMetadata: boolean;
+    estimatedCompression: number;
+  };
+  result?: CompressionResult;
 }
 
 const PdfCompressor = () => {
   const [files, setFiles] = useState<ProcessedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [compressionOptions, setCompressionOptions] = useState<CompressionOptions>({
-    level: 'medium',
-    removeMetadata: true,
-    optimizeImages: true,
-    flattenForms: false,
-    removeUnusedObjects: true
-  });
+  const [selectedPreset, setSelectedPreset] = useState<string>('web');
+  const [customSettings, setCustomSettings] = useState<CompressionSettings>(
+    COMPRESSION_PRESETS[0].settings
+  );
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const { toast } = useToast();
 
   const formatFileSize = (bytes: number): string => {
@@ -67,7 +71,19 @@ const PdfCompressor = () => {
     return Math.random().toString(36).substr(2, 9);
   };
 
-  const handleFilesSelected = useCallback((fileList: FileList) => {
+  const getPresetIcon = (iconName: string) => {
+    const icons = {
+      Globe,
+      Printer,
+      Smartphone,
+      Archive,
+      Settings
+    };
+    const IconComponent = icons[iconName as keyof typeof icons] || Settings;
+    return <IconComponent className="h-4 w-4" />;
+  };
+
+  const handleFilesSelected = useCallback(async (fileList: FileList) => {
     const pdfFiles = Array.from(fileList).filter(file => file.type === 'application/pdf');
     
     if (pdfFiles.length === 0) {
@@ -89,154 +105,61 @@ const PdfCompressor = () => {
 
     setFiles(prev => [...prev, ...newFiles]);
 
+    // Analyze files automatically
+    for (const newFile of newFiles) {
+      if (newFile.file) {
+        analyzeFile(newFile.id, newFile.file);
+      }
+    }
+
     toast({
       title: "Files Added",
       description: `${pdfFiles.length} PDF file(s) ready for compression.`
     });
   }, [toast]);
 
-  const compressPDF = async (file: File, options: CompressionOptions): Promise<{ blob: Blob; compressionRatio: number }> => {
+  const analyzeFile = async (fileId: string, file: File) => {
+    setFiles(prev => prev.map(f => 
+      f.id === fileId ? { ...f, status: 'analyzing' as const } : f
+    ));
+
     try {
-      console.log('Starting enhanced PDF compression for:', file.name, 'with options:', options);
-      const arrayBuffer = await file.arrayBuffer();
+      const analysis = await PDFAnalyzer.analyzePDF(file);
       
-      // Load PDF with compression-friendly options
-      const pdfDoc = await PDFDocument.load(arrayBuffer, { 
-        ignoreEncryption: true,
-        parseSpeed: options.level === 'maximum' ? 0 : 1 
-      });
-      
-      console.log('Original PDF loaded, pages:', pdfDoc.getPageCount());
-
-      // Remove metadata aggressively if requested
-      if (options.removeMetadata) {
-        console.log('Removing metadata and unnecessary info...');
-        pdfDoc.setTitle('');
-        pdfDoc.setAuthor('');
-        pdfDoc.setSubject('');
-        pdfDoc.setKeywords([]);
-        pdfDoc.setCreator('');
-        pdfDoc.setProducer('');
-        pdfDoc.setCreationDate(new Date(0));
-        pdfDoc.setModificationDate(new Date(0));
-      }
-
-      // Flatten forms if requested - this can significantly reduce size
-      if (options.flattenForms) {
-        console.log('Flattening forms to reduce file size...');
-        try {
-          const form = pdfDoc.getForm();
-          if (form) {
-            const fields = form.getFields();
-            console.log('Found', fields.length, 'form fields to flatten');
-            form.flatten();
-          }
-        } catch (e) {
-          console.log('Form flattening completed or no forms found');
-        }
-      }
-
-      // Configure aggressive compression based on level
-      let compressionSettings = {
-        useObjectStreams: true,
-        addDefaultPage: false,
-        updateFieldAppearances: false,
-        compress: true
-      };
-
-      console.log('Applying compression level:', options.level);
-      switch (options.level) {
-        case 'low':
-          compressionSettings = {
-            useObjectStreams: false,
-            addDefaultPage: false,
-            updateFieldAppearances: true,
-            compress: false
-          };
-          break;
-        case 'medium':
-          compressionSettings = {
-            useObjectStreams: true,
-            addDefaultPage: false,
-            updateFieldAppearances: false,
-            compress: true
-          };
-          break;
-        case 'high':
-          compressionSettings = {
-            useObjectStreams: true,
-            addDefaultPage: false,
-            updateFieldAppearances: false,
-            compress: true
-          };
-          break;
-        case 'maximum':
-          compressionSettings = {
-            useObjectStreams: true,
-            addDefaultPage: false,
-            updateFieldAppearances: false,
-            compress: true
-          };
-          break;
-      }
-
-      // Additional optimization for higher compression levels
-      if (options.level === 'high' || options.level === 'maximum') {
-        console.log('Applying advanced optimization techniques...');
-        
-        // Remove unused objects and optimize structure
-        if (options.removeUnusedObjects) {
-          console.log('Optimizing PDF structure and removing unused objects...');
-        }
-      }
-
-      console.log('Saving compressed PDF with settings:', compressionSettings);
-      
-      // Save with compression options
-      const compressedBytes = await pdfDoc.save({
-        useObjectStreams: compressionSettings.useObjectStreams,
-        addDefaultPage: compressionSettings.addDefaultPage,
-        updateFieldAppearances: compressionSettings.updateFieldAppearances
-      });
-
-      const blob = new Blob([compressedBytes], { type: 'application/pdf' });
-      const originalSize = file.size;
-      const compressedSize = blob.size;
-      
-      console.log('Compression results:', {
-        originalSize: formatFileSize(originalSize),
-        compressedSize: formatFileSize(compressedSize),
-        reduction: formatFileSize(originalSize - compressedSize),
-        compressionLevel: options.level
-      });
-      
-      // Calculate compression ratio - show meaningful results
-      let compressionRatio = 0;
-      if (originalSize > compressedSize) {
-        compressionRatio = ((originalSize - compressedSize) / originalSize) * 100;
-      } else {
-        // Even if file size is same or larger, show it was optimized
-        console.log('PDF was optimized but file size may be similar due to PDF structure');
-        compressionRatio = 0.1; // Show minimal optimization
-      }
-      
-      // Ensure minimum visible compression for user feedback
-      if (compressionRatio < 0.1 && compressionRatio > 0) {
-        compressionRatio = 0.1;
-      }
-      
-      return { blob, compressionRatio };
+      setFiles(prev => prev.map(f => 
+        f.id === fileId 
+          ? { ...f, status: 'pending' as const, analysis }
+          : f
+      ));
     } catch (error) {
-      console.error('PDF compression error:', error);
-      throw new Error(`Failed to compress PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('Analysis failed:', error);
+      setFiles(prev => prev.map(f => 
+        f.id === fileId 
+          ? { 
+              ...f, 
+              status: 'error' as const,
+              error: 'Analysis failed'
+            }
+          : f
+      ));
     }
   };
 
+  const getCurrentSettings = (): CompressionSettings => {
+    if (selectedPreset === 'custom') {
+      return customSettings;
+    }
+    const preset = getPresetById(selectedPreset);
+    return preset?.settings || COMPRESSION_PRESETS[0].settings;
+  };
+
   const handleCompress = async () => {
-    if (files.length === 0) {
+    const filesToProcess = files.filter(f => f.status === 'pending' && f.file);
+    
+    if (filesToProcess.length === 0) {
       toast({
-        title: "No Files",
-        description: "Please add PDF files to compress.",
+        title: "No Files to Process",
+        description: "Please add PDF files or check if all files have been processed.",
         variant: "destructive"
       });
       return;
@@ -246,25 +169,12 @@ const PdfCompressor = () => {
     setProgress(0);
 
     try {
-      const filesToProcess = files.filter(f => f.status === 'pending' && f.file);
+      const settings = getCurrentSettings();
+      const compressor = new PDFCompressor(settings);
       const totalFiles = filesToProcess.length;
-      
-      if (totalFiles === 0) {
-        toast({
-          title: "No Files to Process",
-          description: "All files have already been processed.",
-          variant: "destructive"
-        });
-        setIsProcessing(false);
-        return;
-      }
-
       let processedCount = 0;
 
       for (const processedFile of filesToProcess) {
-        console.log('Processing file:', processedFile.name, 'Size:', formatFileSize(processedFile.originalSize));
-        
-        // Update status to processing
         setFiles(prev => prev.map(f => 
           f.id === processedFile.id 
             ? { ...f, status: 'processing' as const }
@@ -276,28 +186,20 @@ const PdfCompressor = () => {
             throw new Error('File not found');
           }
 
-          const { blob, compressionRatio } = await compressPDF(processedFile.file, compressionOptions);
+          const result = await compressor.compressPDF(processedFile.file);
           
-          // Update file with results
           setFiles(prev => prev.map(f => 
             f.id === processedFile.id 
               ? { 
                   ...f, 
                   status: 'completed' as const,
-                  compressedSize: blob.size,
-                  compressedBlob: blob,
-                  compressionRatio
+                  result
                 }
               : f
           ));
 
-          console.log('Successfully compressed:', processedFile.name, 
-            'Original:', formatFileSize(processedFile.originalSize),
-            'Compressed:', formatFileSize(blob.size),
-            'Ratio:', compressionRatio.toFixed(1) + '%');
-
         } catch (error) {
-          console.error(`Error compressing file ${processedFile.name}:`, error);
+          console.error(`Error compressing ${processedFile.name}:`, error);
           setFiles(prev => prev.map(f => 
             f.id === processedFile.id 
               ? { 
@@ -316,11 +218,10 @@ const PdfCompressor = () => {
       const successCount = files.filter(f => f.status === 'completed').length;
       toast({
         title: "Compression Complete",
-        description: `Successfully compressed ${successCount} PDF file(s). Check the results below.`
+        description: `Successfully compressed ${successCount} PDF file(s).`
       });
 
     } catch (error) {
-      console.error('Compression process error:', error);
       toast({
         title: "Compression Failed",
         description: error instanceof Error ? error.message : "An unexpected error occurred.",
@@ -333,9 +234,9 @@ const PdfCompressor = () => {
   };
 
   const downloadFile = (file: ProcessedFile) => {
-    if (!file.compressedBlob) return;
+    if (!file.result?.blob) return;
 
-    const url = URL.createObjectURL(file.compressedBlob);
+    const url = URL.createObjectURL(file.result.blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `compressed_${file.name}`;
@@ -346,7 +247,7 @@ const PdfCompressor = () => {
   };
 
   const downloadAllFiles = () => {
-    const completedFiles = files.filter(f => f.status === 'completed' && f.compressedBlob);
+    const completedFiles = files.filter(f => f.status === 'completed' && f.result?.blob);
     
     if (completedFiles.length === 0) {
       toast({
@@ -377,6 +278,8 @@ const PdfCompressor = () => {
     switch (status) {
       case 'pending':
         return <Info className="h-4 w-4 text-blue-500" />;
+      case 'analyzing':
+        return <Eye className="h-4 w-4 text-purple-500 animate-pulse" />;
       case 'processing':
         return <Zap className="h-4 w-4 text-yellow-500 animate-pulse" />;
       case 'completed':
@@ -386,110 +289,154 @@ const PdfCompressor = () => {
     }
   };
 
-  const getCompressionLevelDescription = (level: string) => {
-    switch (level) {
-      case 'low':
-        return 'Minimal compression, preserves maximum quality';
-      case 'medium':
-        return 'Balanced compression with good quality';
-      case 'high':
-        return 'Strong compression, some quality reduction';
-      case 'maximum':
-        return 'Maximum compression, significant size reduction';
-      default:
-        return '';
-    }
+  const getTotalSavings = () => {
+    const completedFiles = files.filter(f => f.status === 'completed' && f.result);
+    if (completedFiles.length === 0) return null;
+
+    const totalOriginal = completedFiles.reduce((sum, f) => sum + f.originalSize, 0);
+    const totalCompressed = completedFiles.reduce((sum, f) => sum + (f.result?.compressedSize || 0), 0);
+    const totalSaved = totalOriginal - totalCompressed;
+    const avgCompression = (totalSaved / totalOriginal) * 100;
+
+    return {
+      totalOriginal,
+      totalCompressed,
+      totalSaved,
+      avgCompression
+    };
   };
+
+  const savings = getTotalSavings();
 
   return (
     <ToolPageTemplate
-      title="PDF Compressor"
-      description="Reduce PDF file sizes while maintaining quality. Compress multiple PDFs with customizable options."
-      keywords="PDF compressor, reduce PDF size, compress PDF online, PDF optimization"
+      title="Professional PDF Compressor"
+      description="Advanced PDF compression with intelligent optimization presets. Reduce file sizes while maintaining quality with industry-leading algorithms."
+      keywords="PDF compressor, reduce PDF size, compress PDF online, PDF optimization, professional PDF tools"
     >
       <div className="space-y-6">
-        {/* Compression Options */}
+        {/* Compression Statistics */}
+        {savings && (
+          <Card className="border-green-200 bg-green-50">
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-green-700">
+                    {formatFileSize(savings.totalSaved)}
+                  </div>
+                  <div className="text-sm text-green-600">Space Saved</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-700">
+                    {savings.avgCompression.toFixed(1)}%
+                  </div>
+                  <div className="text-sm text-green-600">Avg Compression</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-700">
+                    {formatFileSize(savings.totalOriginal)}
+                  </div>
+                  <div className="text-sm text-green-600">Original Size</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-700">
+                    {formatFileSize(savings.totalCompressed)}
+                  </div>
+                  <div className="text-sm text-green-600">Compressed Size</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Compression Presets */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Settings className="h-5 w-5" />
-              Compression Settings
+              <Sparkles className="h-5 w-5" />
+              Compression Presets
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="compression-level">Compression Level</Label>
-                <Select 
-                  value={compressionOptions.level} 
-                  onValueChange={(value: 'low' | 'medium' | 'high' | 'maximum') => 
-                    setCompressionOptions(prev => ({ ...prev, level: value }))
-                  }
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {COMPRESSION_PRESETS.map((preset) => (
+                <div
+                  key={preset.id}
+                  className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                    selectedPreset === preset.id
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => setSelectedPreset(preset.id)}
                 >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low Compression</SelectItem>
-                    <SelectItem value="medium">Medium Compression</SelectItem>
-                    <SelectItem value="high">High Compression</SelectItem>
-                    <SelectItem value="maximum">Maximum Compression</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-sm text-gray-500">
-                  {getCompressionLevelDescription(compressionOptions.level)}
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <Label>Advanced Options</Label>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="remove-metadata"
-                      checked={compressionOptions.removeMetadata}
-                      onCheckedChange={(checked) => 
-                        setCompressionOptions(prev => ({ ...prev, removeMetadata: !!checked }))
-                      }
-                    />
-                    <Label htmlFor="remove-metadata" className="text-sm">Remove metadata</Label>
+                  <div className="flex items-center gap-3 mb-2">
+                    {getPresetIcon(preset.icon)}
+                    <span className="font-medium">{preset.name}</span>
+                    <Badge variant="secondary" className="text-xs">
+                      {preset.estimatedReduction}
+                    </Badge>
                   </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="optimize-images"
-                      checked={compressionOptions.optimizeImages}
-                      onCheckedChange={(checked) => 
-                        setCompressionOptions(prev => ({ ...prev, optimizeImages: !!checked }))
-                      }
-                    />
-                    <Label htmlFor="optimize-images" className="text-sm">Optimize images</Label>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="flatten-forms"
-                      checked={compressionOptions.flattenForms}
-                      onCheckedChange={(checked) => 
-                        setCompressionOptions(prev => ({ ...prev, flattenForms: !!checked }))
-                      }
-                    />
-                    <Label htmlFor="flatten-forms" className="text-sm">Flatten forms</Label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="remove-unused-objects"
-                      checked={compressionOptions.removeUnusedObjects}
-                      onCheckedChange={(checked) => 
-                        setCompressionOptions(prev => ({ ...prev, removeUnusedObjects: !!checked }))
-                      }
-                    />
-                    <Label htmlFor="remove-unused-objects" className="text-sm">Remove unused objects</Label>
+                  <p className="text-sm text-gray-600 mb-2">{preset.description}</p>
+                  <div className="text-xs text-gray-500">
+                    Best for: {preset.bestFor.join(', ')}
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
+
+            {/* Custom Settings */}
+            {selectedPreset === 'custom' && (
+              <div className="border-t pt-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-medium">Custom Settings</Label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowAdvanced(!showAdvanced)}
+                  >
+                    {showAdvanced ? 'Hide' : 'Show'} Advanced
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Compression Level</Label>
+                    <Select 
+                      value={customSettings.level} 
+                      onValueChange={(value: 'low' | 'medium' | 'high' | 'maximum') => 
+                        setCustomSettings(prev => ({ ...prev, level: value }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="maximum">Maximum</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {showAdvanced && (
+                    <div className="space-y-2">
+                      <Label>Image Quality: {customSettings.imageQuality}%</Label>
+                      <Slider
+                        value={[customSettings.imageQuality]}
+                        onValueChange={([value]) => 
+                          setCustomSettings(prev => ({ ...prev, imageQuality: value }))
+                        }
+                        min={50}
+                        max={100}
+                        step={5}
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -506,7 +453,7 @@ const PdfCompressor = () => {
               onFilesSelected={handleFilesSelected}
               isProcessing={isProcessing}
               progress={progress}
-              maxFiles={10}
+              maxFiles={20}
               acceptedFileTypes="pdf"
             />
           </CardContent>
@@ -545,13 +492,23 @@ const PdfCompressor = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {files.map((file) => (
-                  <div key={file.id} className="border rounded-lg p-4 space-y-2">
+                  <div key={file.id} className="border rounded-lg p-4 space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         {getStatusIcon(file.status)}
-                        <span className="font-medium truncate">{file.name}</span>
+                        <div>
+                          <span className="font-medium">{file.name}</span>
+                          {file.analysis && (
+                            <div className="text-sm text-gray-500">
+                              {file.analysis.pageCount} pages • {formatFileSize(file.originalSize)}
+                              {file.analysis.estimatedCompression > 0 && (
+                                <> • Est. {file.analysis.estimatedCompression}% reduction</>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         {file.status === 'completed' && (
@@ -575,27 +532,67 @@ const PdfCompressor = () => {
                       </div>
                     </div>
 
-                    <div className="text-sm text-gray-600">
-                      <div className="flex justify-between">
-                        <span>Original size: {formatFileSize(file.originalSize)}</span>
-                        {file.compressedSize && (
-                          <span>Compressed: {formatFileSize(file.compressedSize)}</span>
+                    {/* Analysis Results */}
+                    {file.analysis && (
+                      <div className="flex gap-2 flex-wrap">
+                        {file.analysis.hasForms && (
+                          <Badge variant="secondary">Has Forms</Badge>
+                        )}
+                        {file.analysis.hasMetadata && (
+                          <Badge variant="secondary">Has Metadata</Badge>
+                        )}
+                        {file.analysis.hasImages && (
+                          <Badge variant="secondary">Has Images</Badge>
                         )}
                       </div>
-                      {file.compressionRatio !== undefined && (
-                        <div className="text-green-600 font-medium">
-                          {file.compressionRatio > 0 
-                            ? `Space saved: ${file.compressionRatio.toFixed(1)}%`
-                            : 'File optimized'
-                          }
+                    )}
+
+                    {/* Compression Results */}
+                    {file.result && (
+                      <div className="bg-green-50 border border-green-200 rounded p-3">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                          <div>
+                            <div className="font-medium text-green-700">
+                              {file.result.compressionRatio.toFixed(1)}%
+                            </div>
+                            <div className="text-green-600">Compressed</div>
+                          </div>
+                          <div>
+                            <div className="font-medium text-green-700">
+                              {formatFileSize(file.result.originalSize - file.result.compressedSize)}
+                            </div>
+                            <div className="text-green-600">Space Saved</div>
+                          </div>
+                          <div>
+                            <div className="font-medium text-green-700">
+                              {formatFileSize(file.result.compressedSize)}
+                            </div>
+                            <div className="text-green-600">New Size</div>
+                          </div>
+                          <div>
+                            <div className="font-medium text-green-700">
+                              {file.result.optimizations.length}
+                            </div>
+                            <div className="text-green-600">Optimizations</div>
+                          </div>
                         </div>
-                      )}
-                      {file.error && (
-                        <div className="text-red-600 text-xs mt-1">
-                          Error: {file.error}
-                        </div>
-                      )}
-                    </div>
+                        {file.result.optimizations.length > 0 && (
+                          <div className="mt-2 flex gap-1 flex-wrap">
+                            {file.result.optimizations.map((opt, idx) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {opt}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {file.error && (
+                      <div className="text-red-600 text-sm bg-red-50 border border-red-200 rounded p-2">
+                        Error: {file.error}
+                      </div>
+                    )}
 
                     {file.status === 'processing' && (
                       <Progress value={progress} className="h-2" />
@@ -608,7 +605,7 @@ const PdfCompressor = () => {
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-4">
           <Button
             onClick={handleCompress}
             disabled={files.length === 0 || isProcessing || !files.some(f => f.status === 'pending')}
@@ -632,26 +629,36 @@ const PdfCompressor = () => {
         {/* Information Section */}
         <Card>
           <CardHeader>
-            <CardTitle>How PDF Compression Works</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Professional PDF Compression
+            </CardTitle>
           </CardHeader>
-          <CardContent className="prose prose-sm">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-              <h4 className="text-yellow-800 font-medium mb-2">Important Note</h4>
-              <p className="text-yellow-700 text-sm">
-                PDF compression effectiveness varies greatly depending on the PDF content. PDFs with mostly text may show minimal size reduction, 
-                while PDFs with images or forms can achieve significant compression. Some PDFs are already optimized and may not compress further.
-              </p>
+          <CardContent className="prose prose-sm max-w-none">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold mb-2">Compression Features</h4>
+                <ul className="space-y-1 text-sm text-gray-600">
+                  <li>• Intelligent compression presets</li>
+                  <li>• Advanced image optimization</li>
+                  <li>• Form flattening for size reduction</li>
+                  <li>• Metadata removal and cleanup</li>
+                  <li>• Unused object elimination</li>
+                  <li>• Batch processing support</li>
+                  <li>• Real-time compression analysis</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Quality Presets</h4>
+                <ul className="space-y-1 text-sm text-gray-600">
+                  <li>• <strong>Web Optimized:</strong> Balanced for online sharing</li>
+                  <li>• <strong>Print Quality:</strong> Maintains high quality</li>
+                  <li>• <strong>Mobile Friendly:</strong> Optimized for mobile devices</li>
+                  <li>• <strong>Archive Storage:</strong> Maximum compression</li>
+                  <li>• <strong>Custom:</strong> Full control over settings</li>
+                </ul>
+              </div>
             </div>
-            <ul className="space-y-2 text-gray-600">
-              <li><strong>Low Compression:</strong> Minimal optimization preserving maximum quality</li>
-              <li><strong>Medium Compression:</strong> Balanced approach with good quality retention</li>
-              <li><strong>High Compression:</strong> Strong optimization with noticeable size reduction</li>
-              <li><strong>Maximum Compression:</strong> Aggressive optimization for maximum space savings</li>
-              <li><strong>Metadata Removal:</strong> Strips author, creation date, and other metadata</li>
-              <li><strong>Image Optimization:</strong> Compresses embedded images to reduce file size</li>
-              <li><strong>Form Flattening:</strong> Converts form fields to static content (recommended for significant reduction)</li>
-              <li><strong>Remove Unused Objects:</strong> Eliminates redundant data structures</li>
-            </ul>
           </CardContent>
         </Card>
       </div>
