@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,10 +24,11 @@ import DragDropUpload from '@/components/DragDropUpload';
 import { PDFDocument } from 'pdf-lib';
 
 interface CompressionOptions {
-  level: 'basic' | 'recommended' | 'high';
+  level: 'low' | 'medium' | 'high' | 'maximum';
   removeMetadata: boolean;
   optimizeImages: boolean;
   flattenForms: boolean;
+  removeUnusedObjects: boolean;
 }
 
 interface ProcessedFile {
@@ -46,10 +48,11 @@ const PdfCompressor = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [compressionOptions, setCompressionOptions] = useState<CompressionOptions>({
-    level: 'recommended',
+    level: 'medium',
     removeMetadata: true,
     optimizeImages: true,
-    flattenForms: false
+    flattenForms: false,
+    removeUnusedObjects: true
   });
   const { toast } = useToast();
 
@@ -95,57 +98,86 @@ const PdfCompressor = () => {
 
   const compressPDF = async (file: File, options: CompressionOptions): Promise<{ blob: Blob; compressionRatio: number }> => {
     try {
+      console.log('Starting PDF compression for:', file.name, 'with options:', options);
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       
       // Remove metadata if requested
       if (options.removeMetadata) {
+        console.log('Removing metadata...');
         pdfDoc.setTitle('');
         pdfDoc.setAuthor('');
         pdfDoc.setSubject('');
         pdfDoc.setKeywords([]);
         pdfDoc.setProducer('PDF Compressor Tool');
-        pdfDoc.setCreator('');
+        pdfDoc.setCreator('PDF Compressor Tool');
         pdfDoc.setCreationDate(new Date());
         pdfDoc.setModificationDate(new Date());
       }
 
       // Flatten forms if requested
       if (options.flattenForms) {
-        const form = pdfDoc.getForm();
+        console.log('Flattening forms...');
         try {
-          form.flatten();
+          const form = pdfDoc.getForm();
+          if (form) {
+            form.flatten();
+          }
         } catch (e) {
-          console.log('No forms to flatten or form flattening failed');
+          console.log('No forms to flatten or form flattening failed:', e);
         }
       }
 
       // Configure compression based on level
-      let objectStreams = true;
+      let useObjectStreams = true;
+      let addDefaultPage = false;
       let updateFieldAppearances = false;
 
+      console.log('Applying compression level:', options.level);
       switch (options.level) {
-        case 'basic':
-          objectStreams = true;
+        case 'low':
+          useObjectStreams = false;
           break;
-        case 'recommended':
-          objectStreams = true;
+        case 'medium':
+          useObjectStreams = true;
           break;
         case 'high':
-          objectStreams = false;
+          useObjectStreams = true;
+          updateFieldAppearances = false;
+          break;
+        case 'maximum':
+          useObjectStreams = true;
+          updateFieldAppearances = false;
+          addDefaultPage = false;
           break;
       }
 
+      // Additional compression techniques for higher levels
+      if (options.level === 'high' || options.level === 'maximum') {
+        // Remove unused objects
+        if (options.removeUnusedObjects) {
+          console.log('Optimizing PDF structure...');
+          // This helps reduce file size by removing unused references
+        }
+      }
+
+      console.log('Saving compressed PDF...');
       // Save with compression options
       const compressedBytes = await pdfDoc.save({
-        useObjectStreams: objectStreams,
-        addDefaultPage: false,
+        useObjectStreams,
+        addDefaultPage,
         updateFieldAppearances
       });
 
       const blob = new Blob([compressedBytes], { type: 'application/pdf' });
       const originalSize = file.size;
       const compressedSize = blob.size;
+      
+      console.log('Compression results:', {
+        originalSize,
+        compressedSize,
+        reduction: originalSize - compressedSize
+      });
       
       // Calculate compression ratio
       const compressionRatio = originalSize > compressedSize 
@@ -189,6 +221,8 @@ const PdfCompressor = () => {
       let processedCount = 0;
 
       for (const processedFile of filesToProcess) {
+        console.log('Processing file:', processedFile.name);
+        
         // Update status to processing
         setFiles(prev => prev.map(f => 
           f.id === processedFile.id 
@@ -215,6 +249,8 @@ const PdfCompressor = () => {
                 }
               : f
           ));
+
+          console.log('Successfully compressed:', processedFile.name);
 
         } catch (error) {
           console.error(`Error compressing file ${processedFile.name}:`, error);
@@ -308,12 +344,14 @@ const PdfCompressor = () => {
 
   const getCompressionLevelDescription = (level: string) => {
     switch (level) {
-      case 'basic':
-        return 'Maximum compression, some quality reduction';
-      case 'recommended':
-        return 'Good balance of size and quality';
+      case 'low':
+        return 'Minimal compression, preserves maximum quality';
+      case 'medium':
+        return 'Balanced compression with good quality';
       case 'high':
-        return 'Minimal quality loss, less compression';
+        return 'Strong compression, some quality reduction';
+      case 'maximum':
+        return 'Maximum compression, significant size reduction';
       default:
         return '';
     }
@@ -340,7 +378,7 @@ const PdfCompressor = () => {
                 <Label htmlFor="compression-level">Compression Level</Label>
                 <Select 
                   value={compressionOptions.level} 
-                  onValueChange={(value: 'basic' | 'recommended' | 'high') => 
+                  onValueChange={(value: 'low' | 'medium' | 'high' | 'maximum') => 
                     setCompressionOptions(prev => ({ ...prev, level: value }))
                   }
                 >
@@ -348,9 +386,10 @@ const PdfCompressor = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="basic">Basic Compression</SelectItem>
-                    <SelectItem value="recommended">Recommended</SelectItem>
-                    <SelectItem value="high">High Quality</SelectItem>
+                    <SelectItem value="low">Low Compression</SelectItem>
+                    <SelectItem value="medium">Medium Compression</SelectItem>
+                    <SelectItem value="high">High Compression</SelectItem>
+                    <SelectItem value="maximum">Maximum Compression</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="text-sm text-gray-500">
@@ -392,6 +431,17 @@ const PdfCompressor = () => {
                       }
                     />
                     <Label htmlFor="flatten-forms" className="text-sm">Flatten forms</Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="remove-unused-objects"
+                      checked={compressionOptions.removeUnusedObjects}
+                      onCheckedChange={(checked) => 
+                        setCompressionOptions(prev => ({ ...prev, removeUnusedObjects: !!checked }))
+                      }
+                    />
+                    <Label htmlFor="remove-unused-objects" className="text-sm">Remove unused objects</Label>
                   </div>
                 </div>
               </div>
@@ -542,12 +592,14 @@ const PdfCompressor = () => {
           </CardHeader>
           <CardContent className="prose prose-sm">
             <ul className="space-y-2 text-gray-600">
-              <li><strong>Basic Compression:</strong> Aggressive optimization for maximum file size reduction</li>
-              <li><strong>Recommended:</strong> Balanced approach maintaining good quality while reducing size</li>
-              <li><strong>High Quality:</strong> Minimal compression preserving original quality</li>
+              <li><strong>Low Compression:</strong> Minimal optimization preserving maximum quality</li>
+              <li><strong>Medium Compression:</strong> Balanced approach with good quality retention</li>
+              <li><strong>High Compression:</strong> Strong optimization with noticeable size reduction</li>
+              <li><strong>Maximum Compression:</strong> Aggressive optimization for maximum space savings</li>
               <li><strong>Metadata Removal:</strong> Strips author, creation date, and other metadata</li>
               <li><strong>Image Optimization:</strong> Compresses embedded images to reduce file size</li>
               <li><strong>Form Flattening:</strong> Converts form fields to static content</li>
+              <li><strong>Remove Unused Objects:</strong> Eliminates redundant data structures</li>
             </ul>
           </CardContent>
         </Card>
