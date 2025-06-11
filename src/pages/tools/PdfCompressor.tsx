@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -122,21 +121,17 @@ const PdfCompressor = () => {
       }
 
       // Configure compression based on level
-      let compressionLevel = 6;
       let objectStreams = true;
       let updateFieldAppearances = false;
 
       switch (options.level) {
         case 'basic':
-          compressionLevel = 9;
           objectStreams = true;
           break;
         case 'recommended':
-          compressionLevel = 6;
           objectStreams = true;
           break;
         case 'high':
-          compressionLevel = 3;
           objectStreams = false;
           break;
       }
@@ -145,7 +140,6 @@ const PdfCompressor = () => {
       const compressedBytes = await pdfDoc.save({
         useObjectStreams: objectStreams,
         addDefaultPage: false,
-        objectStreamsThreshold: 40,
         updateFieldAppearances
       });
 
