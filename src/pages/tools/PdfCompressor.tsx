@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -53,10 +52,7 @@ const PdfCompressor = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [selectedPreset, setSelectedPreset] = useState<string>('web');
-  const [customSettings, setCustomSettings] = useState<CompressionSettings>(
-    COMPRESSION_PRESETS[0].settings
-  );
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [customCompressionStrength, setCustomCompressionStrength] = useState(50);
   const { toast } = useToast();
 
   const formatFileSize = (bytes: number): string => {
@@ -147,9 +143,27 @@ const PdfCompressor = () => {
 
   const getCurrentSettings = (): CompressionSettings => {
     if (selectedPreset === 'custom') {
-      return customSettings;
+      const strength = customCompressionStrength;
+      const quality = Math.max(5, 100 - strength); // Ensure quality is at least 5
+
+      let level: 'low' | 'medium' | 'high' | 'maximum' = 'low';
+      if (strength > 80) level = 'maximum';
+      else if (strength > 50) level = 'high';
+      else if (strength > 20) level = 'medium';
+      
+      return {
+        level,
+        removeMetadata: strength > 20,
+        optimizeImages: true,
+        flattenForms: strength > 50,
+        removeUnusedObjects: true,
+        imageQuality: quality,
+        downscaleImages: strength > 20,
+        maxImageDimension: strength > 80 ? 800 : (strength > 50 ? 1280 : 1920),
+      };
     }
     const preset = getPresetById(selectedPreset);
+    // Fallback to the first preset if ID is somehow invalid
     return preset?.settings || COMPRESSION_PRESETS[0].settings;
   };
 
@@ -387,54 +401,27 @@ const PdfCompressor = () => {
             {/* Custom Settings */}
             {selectedPreset === 'custom' && (
               <div className="border-t pt-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label className="text-base font-medium">Custom Settings</Label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowAdvanced(!showAdvanced)}
-                  >
-                    {showAdvanced ? 'Hide' : 'Show'} Advanced
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Label className="text-base font-medium">Custom Settings</Label>
                   <div className="space-y-2">
-                    <Label>Compression Level</Label>
-                    <Select 
-                      value={customSettings.level} 
-                      onValueChange={(value: 'low' | 'medium' | 'high' | 'maximum') => 
-                        setCustomSettings(prev => ({ ...prev, level: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="maximum">Maximum</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {showAdvanced && (
-                    <div className="space-y-2">
-                      <Label>Image Quality: {customSettings.imageQuality}%</Label>
+                    <Label htmlFor="compression-strength">
+                      Compression Strength: {customCompressionStrength}%
+                    </Label>
+                    <div className="flex items-center gap-4">
                       <Slider
-                        value={[customSettings.imageQuality]}
-                        onValueChange={([value]) => 
-                          setCustomSettings(prev => ({ ...prev, imageQuality: value }))
-                        }
-                        min={50}
-                        max={100}
-                        step={5}
+                        id="compression-strength"
+                        value={[customCompressionStrength]}
+                        onValueChange={([value]) => setCustomCompressionStrength(value)}
+                        min={0}
+                        max={95}
+                        step={1}
                         className="w-full"
                       />
+                      <Badge variant="outline">{customCompressionStrength}%</Badge>
                     </div>
-                  )}
-                </div>
+                    <p className="text-xs text-gray-500">
+                      Higher strength means smaller file size but lower quality.
+                    </p>
+                  </div>
               </div>
             )}
           </CardContent>
