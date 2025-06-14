@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
@@ -18,17 +17,12 @@ import {
   CheckCircle,
   AlertCircle,
   Info,
-  Globe,
-  Printer,
-  Smartphone,
-  BarChart3,
   Eye,
-  Sparkles
+  BarChart3
 } from 'lucide-react';
 import ToolPageTemplate from './ToolPageTemplate';
 import DragDropUpload from '@/components/DragDropUpload';
 import { PDFCompressor, PDFAnalyzer, CompressionResult, CompressionSettings } from '@/utils/pdfCompression';
-import { COMPRESSION_PRESETS, CompressionPreset, getPresetById } from '@/utils/compressionPresets';
 
 interface ProcessedFile {
   id: string;
@@ -51,7 +45,6 @@ const PdfCompressor = () => {
   const [files, setFiles] = useState<ProcessedFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [selectedPreset, setSelectedPreset] = useState<string>('web');
   const [customCompressionStrength, setCustomCompressionStrength] = useState(50);
   const { toast } = useToast();
 
@@ -65,18 +58,6 @@ const PdfCompressor = () => {
 
   const generateFileId = (): string => {
     return Math.random().toString(36).substr(2, 9);
-  };
-
-  const getPresetIcon = (iconName: string) => {
-    const icons = {
-      Globe,
-      Printer,
-      Smartphone,
-      Archive,
-      Settings
-    };
-    const IconComponent = icons[iconName as keyof typeof icons] || Settings;
-    return <IconComponent className="h-4 w-4" />;
   };
 
   const handleFilesSelected = useCallback(async (fileList: FileList) => {
@@ -142,29 +123,24 @@ const PdfCompressor = () => {
   };
 
   const getCurrentSettings = (): CompressionSettings => {
-    if (selectedPreset === 'custom') {
-      const strength = customCompressionStrength;
-      const quality = Math.max(5, 100 - strength); // Ensure quality is at least 5
+    const strength = customCompressionStrength;
+    const quality = Math.max(5, 100 - strength); // Ensure quality is at least 5
 
-      let level: 'low' | 'medium' | 'high' | 'maximum' = 'low';
-      if (strength > 80) level = 'maximum';
-      else if (strength > 50) level = 'high';
-      else if (strength > 20) level = 'medium';
-      
-      return {
-        level,
-        removeMetadata: strength > 20,
-        optimizeImages: true,
-        flattenForms: strength > 50,
-        removeUnusedObjects: true,
-        imageQuality: quality,
-        downscaleImages: strength > 20,
-        maxImageDimension: strength > 80 ? 800 : (strength > 50 ? 1280 : 1920),
-      };
-    }
-    const preset = getPresetById(selectedPreset);
-    // Fallback to the first preset if ID is somehow invalid
-    return preset?.settings || COMPRESSION_PRESETS[0].settings;
+    let level: 'low' | 'medium' | 'high' | 'maximum' = 'low';
+    if (strength > 80) level = 'maximum';
+    else if (strength > 50) level = 'high';
+    else if (strength > 20) level = 'medium';
+    
+    return {
+      level,
+      removeMetadata: strength > 20,
+      optimizeImages: true,
+      flattenForms: strength > 50,
+      removeUnusedObjects: true,
+      imageQuality: quality,
+      downscaleImages: strength > 20,
+      maxImageDimension: strength > 80 ? 800 : (strength > 50 ? 1280 : 1920),
+    };
   };
 
   const handleCompress = async () => {
@@ -325,7 +301,7 @@ const PdfCompressor = () => {
   return (
     <ToolPageTemplate
       title="Professional PDF Compressor"
-      description="Advanced PDF compression with intelligent optimization presets. Reduce file sizes while maintaining quality with industry-leading algorithms."
+      description="Advanced PDF compression with intelligent optimization. Reduce file sizes while maintaining quality with industry-leading algorithms."
       keywords="PDF compressor, reduce PDF size, compress PDF online, PDF optimization, professional PDF tools"
     >
       <div className="space-y-6">
@@ -363,67 +339,35 @@ const PdfCompressor = () => {
           </Card>
         )}
 
-        {/* Compression Presets */}
+        {/* Compression Settings */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5" />
-              Compression Presets
+              <Settings className="h-5 w-5" />
+              Compression Settings
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {COMPRESSION_PRESETS.map((preset) => (
-                <div
-                  key={preset.id}
-                  className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                    selectedPreset === preset.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                  onClick={() => setSelectedPreset(preset.id)}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    {getPresetIcon(preset.icon)}
-                    <span className="font-medium">{preset.name}</span>
-                    <Badge variant="secondary" className="text-xs">
-                      {preset.estimatedReduction}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-2">{preset.description}</p>
-                  <div className="text-xs text-gray-500">
-                    Best for: {preset.bestFor.join(', ')}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Custom Settings */}
-            {selectedPreset === 'custom' && (
-              <div className="border-t pt-4 space-y-4">
-                <Label className="text-base font-medium">Custom Settings</Label>
-                  <div className="space-y-2">
-                    <Label htmlFor="compression-strength">
-                      Compression Strength: {customCompressionStrength}%
-                    </Label>
-                    <div className="flex items-center gap-4">
-                      <Slider
-                        id="compression-strength"
-                        value={[customCompressionStrength]}
-                        onValueChange={([value]) => setCustomCompressionStrength(value)}
-                        min={0}
-                        max={95}
-                        step={1}
-                        className="w-full"
-                      />
-                      <Badge variant="outline">{customCompressionStrength}%</Badge>
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      Higher strength means smaller file size but lower quality.
-                    </p>
-                  </div>
+            <div className="space-y-2">
+              <Label htmlFor="compression-strength">
+                Compression Strength: {customCompressionStrength}%
+              </Label>
+              <div className="flex items-center gap-4">
+                <Slider
+                  id="compression-strength"
+                  value={[customCompressionStrength]}
+                  onValueChange={([value]) => setCustomCompressionStrength(value)}
+                  min={0}
+                  max={95}
+                  step={1}
+                  className="w-full"
+                />
+                <Badge variant="outline">{customCompressionStrength}%</Badge>
               </div>
-            )}
+              <p className="text-xs text-gray-500">
+                Higher strength means smaller file size but lower quality.
+              </p>
+            </div>
           </CardContent>
         </Card>
 
@@ -626,7 +570,7 @@ const PdfCompressor = () => {
               <div>
                 <h4 className="font-semibold mb-2">Compression Features</h4>
                 <ul className="space-y-1 text-sm text-gray-600">
-                  <li>• Intelligent compression presets</li>
+                  <li>• Intelligent compression algorithms</li>
                   <li>• Advanced image optimization</li>
                   <li>• Form flattening for size reduction</li>
                   <li>• Metadata removal and cleanup</li>
@@ -636,13 +580,13 @@ const PdfCompressor = () => {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">Quality Presets</h4>
+                <h4 className="font-semibold mb-2">Compression Control</h4>
                 <ul className="space-y-1 text-sm text-gray-600">
-                  <li>• <strong>Web Optimized:</strong> Balanced for online sharing</li>
-                  <li>• <strong>Print Quality:</strong> Maintains high quality</li>
-                  <li>• <strong>Mobile Friendly:</strong> Optimized for mobile devices</li>
-                  <li>• <strong>Archive Storage:</strong> Maximum compression</li>
-                  <li>• <strong>Custom:</strong> Full control over settings</li>
+                  <li>• <strong>Low (0-20%):</strong> Minimal compression, preserves quality</li>
+                  <li>• <strong>Medium (20-50%):</strong> Balanced compression and quality</li>
+                  <li>• <strong>High (50-80%):</strong> Strong compression, good for web</li>
+                  <li>• <strong>Maximum (80-95%):</strong> Aggressive compression for storage</li>
+                  <li>• <strong>Custom:</strong> Full control over compression strength</li>
                 </ul>
               </div>
             </div>
