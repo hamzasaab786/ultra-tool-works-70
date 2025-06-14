@@ -1,4 +1,3 @@
-
 import { CompressionSettings } from './pdfCompression';
 
 export interface CompressionPreset {
@@ -59,11 +58,11 @@ export const COMPRESSION_PRESETS: CompressionPreset[] = [
       optimizeImages: true,
       flattenForms: true,
       removeUnusedObjects: true,
-      imageQuality: 75,
+      imageQuality: 65,
       downscaleImages: true,
-      maxImageDimension: 800
+      maxImageDimension: 720
     },
-    estimatedReduction: '50-70%',
+    estimatedReduction: '60-80%',
     bestFor: ['Mobile apps', 'Slow connections', 'Storage saving']
   },
   {
@@ -77,11 +76,11 @@ export const COMPRESSION_PRESETS: CompressionPreset[] = [
       optimizeImages: true,
       flattenForms: true,
       removeUnusedObjects: true,
-      imageQuality: 70,
+      imageQuality: 50,
       downscaleImages: true,
-      maxImageDimension: 1000
+      maxImageDimension: 600
     },
-    estimatedReduction: '60-80%',
+    estimatedReduction: '70-90%',
     bestFor: ['Long-term storage', 'Backup archives', 'Space optimization']
   },
   {

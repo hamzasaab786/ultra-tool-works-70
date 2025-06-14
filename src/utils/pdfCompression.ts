@@ -340,22 +340,22 @@ export class PDFAnalyzer {
     const hasMetadata = !!(title || author);
     
     // Enhanced compression estimation
-    let estimatedCompression = 10; // Base compression from pdf-lib optimization
+    let estimatedCompression = 15; // Base compression from pdf-lib optimization
     
-    if (hasForms) estimatedCompression += 15; // Forms can be flattened
+    if (hasForms) estimatedCompression += 20; // Forms can be flattened
     if (hasMetadata) estimatedCompression += 5; // Metadata removal
-    if (pageCount > 10) estimatedCompression += 15; // More pages = more optimization potential
-    if (fileSize > 10 * 1024 * 1024) estimatedCompression += 20; // Large files often have more waste
+    if (pageCount > 10) estimatedCompression += 20; // More pages = more optimization potential
+    if (fileSize > 10 * 1024 * 1024) estimatedCompression += 25; // Large files often have more waste
     
     // Estimate based on file size patterns
-    if (fileSize > 50 * 1024 * 1024) estimatedCompression += 10; // Very large files
+    if (fileSize > 50 * 1024 * 1024) estimatedCompression += 15; // Very large files
     
-    const finalEstimate = Math.min(estimatedCompression, 70); // Cap at 70%
+    const finalEstimate = Math.min(estimatedCompression, 90); // Cap at 90%
     
     let compressionPotential = 'Low';
-    if (finalEstimate > 20) compressionPotential = 'Medium';
-    if (finalEstimate > 40) compressionPotential = 'High';
-    if (finalEstimate > 60) compressionPotential = 'Very High';
+    if (finalEstimate > 30) compressionPotential = 'Medium';
+    if (finalEstimate > 50) compressionPotential = 'High';
+    if (finalEstimate > 75) compressionPotential = 'Very High';
     
     return {
       pageCount,
