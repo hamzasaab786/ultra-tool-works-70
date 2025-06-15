@@ -23,6 +23,7 @@ import PassportPhotoMaker from "@/pages/tools/PassportPhotoMaker";
 import ImageFormatConverter from "@/pages/tools/ImageFormatConverter";
 import ImageMetadataExtractor from "@/pages/tools/ImageMetadataExtractor";
 import RemoveWatermark from "@/pages/tools/RemoveWatermark";
+import ImageCropTool from "@/pages/tools/ImageCropTool";
 
 // PDF Tools
 import MergePDF from "@/pages/tools/MergePDF";
@@ -35,6 +36,7 @@ import PdfMetadataExtractor from "@/pages/tools/PdfMetadataExtractor";
 import AddPageNumbers from "@/pages/tools/AddPageNumbers";
 import ComparePdf from "@/pages/tools/ComparePdf";
 import AddWatermark from "@/pages/tools/AddWatermark";
+import PdfPasswordProtector from "@/pages/tools/PdfPasswordProtector";
 
 // Calculator Tools
 import PercentageCalculator from "@/pages/tools/PercentageCalculator";
@@ -61,6 +63,7 @@ import TextEncryption from "@/pages/tools/TextEncryption";
 import MorseCodeTranslator from "@/pages/tools/MorseCodeTranslator";
 import RegexTester from "@/pages/tools/RegexTester";
 import DocumentTranslator from "@/pages/tools/DocumentTranslator";
+import TextToSpeech from "@/pages/tools/TextToSpeech";
 
 // Utility Tools
 import QRCodeGenerator from "@/pages/tools/QRCodeGenerator";
@@ -80,6 +83,7 @@ import DnsLookup from "@/pages/tools/DnsLookup";
 import IpGeolocation from "@/pages/tools/IpGeolocation";
 import CreditCardValidator from "@/pages/tools/CreditCardValidator";
 import EmojiPicker from "@/pages/tools/EmojiPicker";
+import WebsiteScreenshot from "@/pages/tools/WebsiteScreenshot";
 
 // New Tools
 import QrCodeScanner from "@/pages/tools/QrCodeScanner";
@@ -110,6 +114,7 @@ const App = () => {
             <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
             <Route path="/tools/image-metadata-extractor" element={<ImageMetadataExtractor />} />
             <Route path="/tools/remove-watermark" element={<RemoveWatermark />} />
+            <Route path="/tools/image-crop-tool" element={<ImageCropTool />} />
 
             {/* PDF Tools */}
             <Route path="/tools/merge-pdf" element={<MergePDF />} />
@@ -122,6 +127,7 @@ const App = () => {
             <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
             <Route path="/tools/compare-pdf" element={<ComparePdf />} />
             <Route path="/tools/add-watermark" element={<AddWatermark />} />
+            <Route path="/tools/pdf-password-protector" element={<PdfPasswordProtector />} />
 
             {/* Calculator Tools */}
             <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
@@ -148,6 +154,7 @@ const App = () => {
             <Route path="/tools/morse-code-translator" element={<MorseCodeTranslator />} />
             <Route path="/tools/regex-tester" element={<RegexTester />} />
             <Route path="/tools/document-translator" element={<DocumentTranslator />} />
+            <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
 
             {/* Utility Tools */}
             <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
@@ -167,6 +174,7 @@ const App = () => {
             <Route path="/tools/ip-geolocation" element={<IpGeolocation />} />
             <Route path="/tools/credit-card-validator" element={<CreditCardValidator />} />
             <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
+            <Route path="/tools/website-screenshot" element={<WebsiteScreenshot />} />
 
             {/* New Tools */}
             <Route path="/tools/qr-code-scanner" element={<QrCodeScanner />} />

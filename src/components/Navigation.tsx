@@ -17,6 +17,7 @@ const Navigation = () => {
     { name: "Image Compressor", path: "/tools/image-compressor" },
     { name: "Image Resizer", path: "/tools/image-resizer" },
     { name: "Image Enhancer", path: "/tools/image-enhancer" },
+    { name: "Image Crop Tool", path: "/tools/image-crop-tool" },
     { name: "JPG to PDF", path: "/tools/jpg-to-pdf" },
     { name: "SVG to JPG", path: "/tools/svg-to-jpg" },
     { name: "Image to URL", path: "/tools/image-to-url" },
@@ -32,6 +33,7 @@ const Navigation = () => {
     { name: "Split PDF", path: "/tools/split-pdf" },
     { name: "PDF to JPG", path: "/tools/pdf-to-jpg" },
     { name: "PDF Compressor", path: "/tools/pdf-compressor" },
+    { name: "PDF Password Protector", path: "/tools/pdf-password-protector" },
     { name: "Pdf to Excel", path: "/tools/PdfToExcel" },
     { name: "Unlock Pdf", path: "/tools/UnlockPdf" },
     { name: "PDF Metadata Extractor", path: "/tools/pdf-metadata-extractor" },
@@ -66,6 +68,7 @@ const Navigation = () => {
     { name: "Morse Code Translator", path: "/tools/morse-code-translator" },
     { name: "Regex Tester", path: "/tools/regex-tester" },
     { name: "Document Translator", path: "/tools/document-translator" },
+    { name: "Text to Speech", path: "/tools/text-to-speech" },
   ];
 
   const utilityTools = [
@@ -89,6 +92,7 @@ const Navigation = () => {
     { name: "Emoji Picker", path: "/tools/emoji-picker" },
     { name: "Voice Recorder", path: "/tools/voice-recorder" },
     { name: "Speed Test", path: "/tools/speed-test" },
+    { name: "Website Screenshot", path: "/tools/website-screenshot" },
   ];
 
   const ToolSection = ({ title, tools }: { title: string; tools: { name: string; path: string }[] }) => (

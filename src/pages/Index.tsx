@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
@@ -13,7 +14,7 @@ import {
   Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
   Volume2, Film, FileCode, Hash, CalendarRange, Zap as ZapIcon, Heart, 
   CreditCard, Archive, Search, Copy, Target, BarChart, Users, Repeat, 
-  Shield as ShieldIcon, Mic, Wifi, Scan
+  Shield as ShieldIcon, Mic, Wifi, Scan, Crop
 } from "lucide-react";
 
 const Index = () => {
@@ -41,6 +42,11 @@ const Index = () => {
       description: "Adjust brightness, contrast, saturation and more with professional image enhancement tools",
       icon: <ImageIcon />,
       path: "/tools/image-enhancer"
+    }, {
+      title: "Image Crop Tool",
+      description: "Crop your images with precision using an intuitive click-and-drag interface",
+      icon: <Crop />,
+      path: "/tools/image-crop-tool"
     }, {
       title: "JPG to PDF",
       description: "Convert images to PDF documents with custom layouts and compression settings",
@@ -95,6 +101,11 @@ const Index = () => {
       description: "Compress PDF files to reduce size while maintaining quality with advanced algorithms",
       icon: <Archive />,
       path: "/tools/pdf-compressor"
+    }, {
+      title: "PDF Password Protector",
+      description: "Add password protection to your PDF files for enhanced security and privacy",
+      icon: <ShieldIcon />,
+      path: "/tools/pdf-password-protector"
     }, {
       title: "PDF to Word",
       description: "Convert PDF documents to editable Word files with preserved formatting",
@@ -183,6 +194,11 @@ const Index = () => {
       description: "Generate placeholder text for design and development projects",
       icon: <Type />,
       path: "/tools/lorem-ipsum"
+    }, {
+      title: "Text to Speech",
+      description: "Convert any text to natural-sounding speech with customizable voice settings",
+      icon: <Volume2 />,
+      path: "/tools/text-to-speech"
     }]
   }, {
     title: "🛠️ Utility Tools",
@@ -212,6 +228,11 @@ const Index = () => {
       description: "Test your internet connection speed with accurate download, upload, and ping measurements",
       icon: <Wifi />,
       path: "/tools/speed-test"
+    }, {
+      title: "Website Screenshot",
+      description: "Capture high-quality screenshots of any website instantly with one click",
+      icon: <Camera />,
+      path: "/tools/website-screenshot"
     }, {
       title: "Timer & Stopwatch",
       description: "Professional timer and stopwatch with lap tracking and notification features",
@@ -327,15 +348,15 @@ const Index = () => {
               toolCategories[4].tools[1], // QR Code Scanner
               toolCategories[4].tools[3], // Voice Recorder
               toolCategories[4].tools[4], // Speed Test
-              toolCategories[0].tools[5], // Background Remover
+              toolCategories[4].tools[5], // Website Screenshot
+              toolCategories[0].tools[3], // Image Crop Tool
+              toolCategories[1].tools[4], // PDF Password Protector
+              toolCategories[3].tools[6], // Text to Speech
+              toolCategories[0].tools[6], // Background Remover
               toolCategories[3].tools[3], // Markdown to HTML
               toolCategories[2].tools[3], // Age Calculator
               toolCategories[2].tools[4], // BMI Calculator
-              toolCategories[0].tools[8], // Image Format Converter
-              toolCategories[3].tools[5], // Lorem Ipsum
-              toolCategories[4].tools[8], // Hash Generator
-              toolCategories[4].tools[7], // Budget Tracker
-              toolCategories[4].tools[5]  // Timer & Stopwatch
+              toolCategories[0].tools[9], // Image Format Converter
             ].map((tool, index) => 
               <div key={index} className="animate-fade-in" style={{
                 animationDelay: `${index * 100}ms`
