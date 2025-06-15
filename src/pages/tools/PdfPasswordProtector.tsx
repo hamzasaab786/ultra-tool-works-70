@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Download, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useDropzone } from "react-dropzone";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, PDFEncryptionOptions, PDFPrintingPermissions } from "pdf-lib";
 import ToolPageTemplate from "./ToolPageTemplate";
 
 const PdfPasswordProtector = () => {
@@ -53,11 +53,11 @@ const PdfPasswordProtector = () => {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       
-      pdfDoc.encrypt({
+      const options: PDFEncryptionOptions = {
         userPassword: password,
         ownerPassword: password + "_owner",
         permissions: {
-          printing: 'highResolution',
+          printing: PDFPrintingPermissions.HighResolution,
           modifying: false,
           copying: false,
           annotating: false,
@@ -65,7 +65,9 @@ const PdfPasswordProtector = () => {
           contentAccessibility: true,
           documentAssembly: false
         }
-      });
+      };
+      
+      pdfDoc.encrypt(options);
 
       const pdfBytes = await pdfDoc.save();
 
