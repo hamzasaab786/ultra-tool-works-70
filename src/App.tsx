@@ -35,7 +35,6 @@ import PdfMetadataExtractor from "@/pages/tools/PdfMetadataExtractor";
 import AddPageNumbers from "@/pages/tools/AddPageNumbers";
 import ComparePdf from "@/pages/tools/ComparePdf";
 import AddWatermark from "@/pages/tools/AddWatermark";
-import PdfPasswordProtector from "@/pages/tools/PdfPasswordProtector";
 
 // Calculator Tools
 import PercentageCalculator from "@/pages/tools/PercentageCalculator";
@@ -123,7 +122,6 @@ const App = () => {
             <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
             <Route path="/tools/compare-pdf" element={<ComparePdf />} />
             <Route path="/tools/add-watermark" element={<AddWatermark />} />
-            <Route path="/tools/pdf-password-protector" element={<PdfPasswordProtector />} />
 
             {/* Calculator Tools */}
             <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />

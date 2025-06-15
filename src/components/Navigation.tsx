@@ -33,7 +33,6 @@ const Navigation = () => {
     { name: "Split PDF", path: "/tools/split-pdf" },
     { name: "PDF to JPG", path: "/tools/pdf-to-jpg" },
     { name: "PDF Compressor", path: "/tools/pdf-compressor" },
-    { name: "PDF Password Protector", path: "/tools/pdf-password-protector" },
     { name: "Pdf to Excel", path: "/tools/PdfToExcel" },
     { name: "Unlock Pdf", path: "/tools/UnlockPdf" },
     { name: "PDF Metadata Extractor", path: "/tools/pdf-metadata-extractor" },

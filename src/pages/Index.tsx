@@ -101,11 +101,6 @@ const Index = () => {
       icon: <Archive />,
       path: "/tools/pdf-compressor"
     }, {
-      title: "PDF Password Protector",
-      description: "Add password protection to your PDF files for enhanced security and privacy",
-      icon: <ShieldIcon />,
-      path: "/tools/pdf-password-protector"
-    }, {
       title: "Add Watermark",
       description: "Add text or image watermarks to PDF documents for protection",
       icon: <ShieldIcon />,
@@ -253,7 +248,6 @@ const Index = () => {
     "/tools/qr-code-scanner",
     "/tools/website-screenshot",
     "/tools/image-crop-tool",
-    "/tools/pdf-password-protector",
     "/tools/background-remover",
     "/tools/markdown-to-html",
     "/tools/age-calculator",
