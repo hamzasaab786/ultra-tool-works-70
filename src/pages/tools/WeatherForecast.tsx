@@ -4,7 +4,7 @@ import ToolPageTemplate from './ToolPageTemplate';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Cloud, Sun, CloudRain, Snow, Wind, Search, MapPin } from 'lucide-react';
+import { Cloud, Sun, CloudRain, Snowflake, Wind, Search, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface WeatherData {
@@ -134,7 +134,7 @@ const WeatherForecast = () => {
       case 'heavy rain':
         return <CloudRain className="h-8 w-8 text-blue-500" />;
       case 'snow':
-        return <Snow className="h-8 w-8 text-blue-200" />;
+        return <Snowflake className="h-8 w-8 text-blue-200" />;
       default:
         return <Sun className="h-8 w-8 text-yellow-500" />;
     }
