@@ -68,7 +68,6 @@ const Navigation = () => {
     { name: "Morse Code Translator", path: "/tools/morse-code-translator" },
     { name: "Regex Tester", path: "/tools/regex-tester" },
     { name: "Document Translator", path: "/tools/document-translator" },
-    { name: "Text to Speech", path: "/tools/text-to-speech" },
   ];
 
   const utilityTools = [
@@ -90,8 +89,6 @@ const Navigation = () => {
     { name: "IP Geolocation", path: "/tools/ip-geolocation" },
     { name: "Credit Card Validator", path: "/tools/credit-card-validator" },
     { name: "Emoji Picker", path: "/tools/emoji-picker" },
-    { name: "Voice Recorder", path: "/tools/voice-recorder" },
-    { name: "Speed Test", path: "/tools/speed-test" },
     { name: "Website Screenshot", path: "/tools/website-screenshot" },
   ];
 

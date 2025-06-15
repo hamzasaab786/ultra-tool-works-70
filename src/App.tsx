@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -63,7 +62,6 @@ import TextEncryption from "@/pages/tools/TextEncryption";
 import MorseCodeTranslator from "@/pages/tools/MorseCodeTranslator";
 import RegexTester from "@/pages/tools/RegexTester";
 import DocumentTranslator from "@/pages/tools/DocumentTranslator";
-import TextToSpeech from "@/pages/tools/TextToSpeech";
 
 // Utility Tools
 import QRCodeGenerator from "@/pages/tools/QRCodeGenerator";
@@ -87,8 +85,6 @@ import WebsiteScreenshot from "@/pages/tools/WebsiteScreenshot";
 
 // New Tools
 import QrCodeScanner from "@/pages/tools/QrCodeScanner";
-import VoiceRecorder from "@/pages/tools/VoiceRecorder";
-import SpeedTest from "@/pages/tools/SpeedTest";
 
 const App = () => {
   return (
@@ -154,7 +150,6 @@ const App = () => {
             <Route path="/tools/morse-code-translator" element={<MorseCodeTranslator />} />
             <Route path="/tools/regex-tester" element={<RegexTester />} />
             <Route path="/tools/document-translator" element={<DocumentTranslator />} />
-            <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
 
             {/* Utility Tools */}
             <Route path="/tools/qr-code-generator" element={<QRCodeGenerator />} />
@@ -178,8 +173,6 @@ const App = () => {
 
             {/* New Tools */}
             <Route path="/tools/qr-code-scanner" element={<QrCodeScanner />} />
-            <Route path="/tools/voice-recorder" element={<VoiceRecorder />} />
-            <Route path="/tools/speed-test" element={<SpeedTest />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

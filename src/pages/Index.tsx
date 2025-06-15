@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
@@ -107,11 +106,6 @@ const Index = () => {
       icon: <ShieldIcon />,
       path: "/tools/pdf-password-protector"
     }, {
-      title: "PDF to Word",
-      description: "Convert PDF documents to editable Word files with preserved formatting",
-      icon: <FileCode />,
-      path: "/tools/pdf-to-word"
-    }, {
       title: "Add Watermark",
       description: "Add text or image watermarks to PDF documents for protection",
       icon: <ShieldIcon />,
@@ -194,11 +188,6 @@ const Index = () => {
       description: "Generate placeholder text for design and development projects",
       icon: <Type />,
       path: "/tools/lorem-ipsum"
-    }, {
-      title: "Text to Speech",
-      description: "Convert any text to natural-sounding speech with customizable voice settings",
-      icon: <Volume2 />,
-      path: "/tools/text-to-speech"
     }]
   }, {
     title: "🛠️ Utility Tools",
@@ -218,16 +207,6 @@ const Index = () => {
       description: "Generate strong, secure passwords with customizable length and character sets",
       icon: <Fingerprint />,
       path: "/tools/password-generator"
-    }, {
-      title: "Voice Recorder",
-      description: "Record, save, and manage your voice recordings with a simple and intuitive interface",
-      icon: <Mic />,
-      path: "/tools/voice-recorder"
-    }, {
-      title: "Speed Test",
-      description: "Test your internet connection speed with accurate download, upload, and ping measurements",
-      icon: <Wifi />,
-      path: "/tools/speed-test"
     }, {
       title: "Website Screenshot",
       description: "Capture high-quality screenshots of any website instantly with one click",
@@ -266,6 +245,25 @@ const Index = () => {
     }]
   }];
 
+  const popularToolPaths = [
+    "/tools/image-compressor",
+    "/tools/merge-pdf",
+    "/tools/percentage-calculator",
+    "/tools/qr-code-generator",
+    "/tools/qr-code-scanner",
+    "/tools/website-screenshot",
+    "/tools/image-crop-tool",
+    "/tools/pdf-password-protector",
+    "/tools/background-remover",
+    "/tools/markdown-to-html",
+    "/tools/age-calculator",
+    "/tools/bmi-calculator",
+    "/tools/image-format-converter",
+  ];
+
+  const allTools = toolCategories.flatMap(category => category.tools);
+  const popularTools = popularToolPaths.map(path => allTools.find(tool => tool && tool.path === path)).filter(Boolean);
+
   const faqs = [{
     question: "Are all tools completely free to use?",
     answer: "Yes! All our tools are 100% free with no hidden costs, premium features, or subscription fees. We believe everyone should have access to essential digital tools."
@@ -284,7 +282,7 @@ const Index = () => {
   }];
 
   return <>
-      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background-remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
@@ -301,7 +299,7 @@ const Index = () => {
             
             <p className="text-xl md:text-2xl mb-8 text-gray-700 animate-slide-up delay-200">The Ultimate Collection of 100% Free Online Tools</p>
             
-            <p className="text-lg mb-12 text-gray-600 max-w-3xl mx-auto leading-relaxed animate-slide-up delay-300">
+            <p className="text-lg mb-12 text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Convert, compress, resize, calculate, and more - all powered by cutting-edge technology. 
               No sign-up required, lightning-fast processing, and completely secure.
             </p>
@@ -340,29 +338,12 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[
-              toolCategories[0].tools[0], // Image Compressor
-              toolCategories[1].tools[0], // Merge PDF
-              toolCategories[2].tools[0], // Percentage Calculator
-              toolCategories[4].tools[0], // QR Code Generator
-              toolCategories[4].tools[1], // QR Code Scanner
-              toolCategories[4].tools[3], // Voice Recorder
-              toolCategories[4].tools[4], // Speed Test
-              toolCategories[4].tools[5], // Website Screenshot
-              toolCategories[0].tools[3], // Image Crop Tool
-              toolCategories[1].tools[4], // PDF Password Protector
-              toolCategories[3].tools[6], // Text to Speech
-              toolCategories[0].tools[6], // Background Remover
-              toolCategories[3].tools[3], // Markdown to HTML
-              toolCategories[2].tools[3], // Age Calculator
-              toolCategories[2].tools[4], // BMI Calculator
-              toolCategories[0].tools[9], // Image Format Converter
-            ].map((tool, index) => 
+            {popularTools.map((tool, index) => tool && (
               <div key={index} className="animate-fade-in" style={{
                 animationDelay: `${index * 100}ms`
               }}>
                 <ToolCard title={tool.title} description={tool.description} icon={tool.icon} path={tool.path} className="h-full" />
-              </div>)}
+              </div>))}
           </div>
         </div>
       </section>
