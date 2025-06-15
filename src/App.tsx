@@ -84,7 +84,6 @@ import EmojiPicker from "@/pages/tools/EmojiPicker";
 // New Tools
 import QrCodeScanner from "@/pages/tools/QrCodeScanner";
 import VoiceRecorder from "@/pages/tools/VoiceRecorder";
-import WeatherForecast from "@/pages/tools/WeatherForecast";
 import SpeedTest from "@/pages/tools/SpeedTest";
 
 const App = () => {
@@ -172,7 +171,6 @@ const App = () => {
             {/* New Tools */}
             <Route path="/tools/qr-code-scanner" element={<QrCodeScanner />} />
             <Route path="/tools/voice-recorder" element={<VoiceRecorder />} />
-            <Route path="/tools/weather-forecast" element={<WeatherForecast />} />
             <Route path="/tools/speed-test" element={<SpeedTest />} />
 
             <Route path="*" element={<NotFound />} />

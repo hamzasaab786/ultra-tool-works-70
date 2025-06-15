@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -89,7 +88,6 @@ const Navigation = () => {
     { name: "Credit Card Validator", path: "/tools/credit-card-validator" },
     { name: "Emoji Picker", path: "/tools/emoji-picker" },
     { name: "Voice Recorder", path: "/tools/voice-recorder" },
-    { name: "Weather Forecast", path: "/tools/weather-forecast" },
     { name: "Speed Test", path: "/tools/speed-test" },
   ];
 

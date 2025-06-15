@@ -13,7 +13,7 @@ import {
   Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
   Volume2, Film, FileCode, Hash, CalendarRange, Zap as ZapIcon, Heart, 
   CreditCard, Archive, Search, Copy, Target, BarChart, Users, Repeat, 
-  Shield as ShieldIcon, Mic, Cloud, Wifi, Scan
+  Shield as ShieldIcon, Mic, Wifi, Scan
 } from "lucide-react";
 
 const Index = () => {
@@ -186,7 +186,7 @@ const Index = () => {
     }]
   }, {
     title: "🛠️ Utility Tools",
-    description: "Essential utility tools for productivity and daily tasks. Generate QR codes, create secure passwords, track budget, check weather, and test internet speed.",
+    description: "Essential utility tools for productivity and daily tasks. Generate QR codes, create secure passwords, track budget, and test internet speed.",
     tools: [{
       title: "QR Code Generator",
       description: "Create custom QR codes for URLs, text, contact info, and more with color customization",
@@ -207,11 +207,6 @@ const Index = () => {
       description: "Record, save, and manage your voice recordings with a simple and intuitive interface",
       icon: <Mic />,
       path: "/tools/voice-recorder"
-    }, {
-      title: "Weather Forecast",
-      description: "Get current weather conditions and 5-day forecast for any location worldwide",
-      icon: <Cloud />,
-      path: "/tools/weather-forecast"
     }, {
       title: "Speed Test",
       description: "Test your internet connection speed with accurate download, upload, and ping measurements",
@@ -268,7 +263,7 @@ const Index = () => {
   }];
 
   return <>
-      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, and more. No registration required, instant results." keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
@@ -331,16 +326,16 @@ const Index = () => {
               toolCategories[4].tools[0], // QR Code Generator
               toolCategories[4].tools[1], // QR Code Scanner
               toolCategories[4].tools[3], // Voice Recorder
-              toolCategories[4].tools[4], // Weather Forecast
-              toolCategories[4].tools[5], // Speed Test
+              toolCategories[4].tools[4], // Speed Test
               toolCategories[0].tools[5], // Background Remover
               toolCategories[3].tools[3], // Markdown to HTML
               toolCategories[2].tools[3], // Age Calculator
               toolCategories[2].tools[4], // BMI Calculator
               toolCategories[0].tools[8], // Image Format Converter
               toolCategories[3].tools[5], // Lorem Ipsum
-              toolCategories[4].tools[9], // Hash Generator
-              toolCategories[4].tools[8]  // Budget Tracker
+              toolCategories[4].tools[8], // Hash Generator
+              toolCategories[4].tools[7], // Budget Tracker
+              toolCategories[4].tools[5]  // Timer & Stopwatch
             ].map((tool, index) => 
               <div key={index} className="animate-fade-in" style={{
                 animationDelay: `${index * 100}ms`
