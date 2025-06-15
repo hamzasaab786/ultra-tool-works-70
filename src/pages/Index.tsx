@@ -13,7 +13,7 @@ import {
   Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
   Volume2, Film, FileCode, Hash, CalendarRange, Zap as ZapIcon, Heart, 
   CreditCard, Archive, Search, Copy, Target, BarChart, Users, Repeat, 
-  Shield as ShieldIcon
+  Shield as ShieldIcon, Mic, Cloud, Receipt, Wifi, Scan
 } from "lucide-react";
 
 const Index = () => {
@@ -186,17 +186,42 @@ const Index = () => {
     }]
   }, {
     title: "🛠️ Utility Tools",
-    description: "Essential utility tools for productivity and daily tasks. Generate QR codes, create secure passwords, track time, and manage finances.",
+    description: "Essential utility tools for productivity and daily tasks. Generate QR codes, create secure passwords, track expenses, check weather, and test internet speed.",
     tools: [{
       title: "QR Code Generator",
       description: "Create custom QR codes for URLs, text, contact info, and more with color customization",
       icon: <QrCode />,
       path: "/tools/qr-code-generator"
     }, {
+      title: "QR Code Scanner", 
+      description: "Scan QR codes using your camera or upload an image to decode QR codes instantly",
+      icon: <Scan />,
+      path: "/tools/qr-code-scanner"
+    }, {
       title: "Password Generator",
       description: "Generate strong, secure passwords with customizable length and character sets",
       icon: <Fingerprint />,
       path: "/tools/password-generator"
+    }, {
+      title: "Voice Recorder",
+      description: "Record, save, and manage your voice recordings with a simple and intuitive interface",
+      icon: <Mic />,
+      path: "/tools/voice-recorder"
+    }, {
+      title: "Expense Tracker",
+      description: "Track your income and expenses, manage your budget, and monitor your spending habits",
+      icon: <Receipt />,
+      path: "/tools/expense-tracker"
+    }, {
+      title: "Weather Forecast",
+      description: "Get current weather conditions and 5-day forecast for any location worldwide",
+      icon: <Cloud />,
+      path: "/tools/weather-forecast"
+    }, {
+      title: "Speed Test",
+      description: "Test your internet connection speed with accurate download, upload, and ping measurements",
+      icon: <Wifi />,
+      path: "/tools/speed-test"
     }, {
       title: "Timer & Stopwatch",
       description: "Professional timer and stopwatch with lap tracking and notification features",
@@ -309,14 +334,18 @@ const Index = () => {
               toolCategories[1].tools[0], // Merge PDF
               toolCategories[2].tools[0], // Percentage Calculator
               toolCategories[4].tools[0], // QR Code Generator
+              toolCategories[4].tools[1], // QR Code Scanner
+              toolCategories[4].tools[3], // Voice Recorder
+              toolCategories[4].tools[4], // Expense Tracker
+              toolCategories[4].tools[5], // Weather Forecast
+              toolCategories[4].tools[6], // Speed Test
               toolCategories[0].tools[5], // Background Remover
               toolCategories[3].tools[3], // Markdown to HTML
               toolCategories[2].tools[3], // Age Calculator
               toolCategories[2].tools[4], // BMI Calculator
               toolCategories[0].tools[8], // Image Format Converter
               toolCategories[3].tools[5], // Lorem Ipsum
-              toolCategories[4].tools[5], // Hash Generator
-              toolCategories[4].tools[6]  // Barcode Generator
+              toolCategories[4].tools[10] // Hash Generator
             ].map((tool, index) => <div key={index} className="animate-fade-in" style={{
             animationDelay: `${index * 100}ms`
           }}>

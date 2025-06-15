@@ -70,11 +70,13 @@ const Navigation = () => {
 
   const utilityTools = [
     { name: "QR Code Generator", path: "/tools/qr-code-generator" },
+    { name: "QR Code Scanner", path: "/tools/qr-code-scanner" },
     { name: "Password Generator", path: "/tools/password-generator" },
     { name: "Hash Generator", path: "/tools/hash-generator" },
     { name: "Timer & Stopwatch", path: "/tools/timer-stopwatch" },
     { name: "Color Picker", path: "/tools/color-picker" },
     { name: "Budget Tracker", path: "/tools/budget-tracker" },
+    { name: "Expense Tracker", path: "/tools/expense-tracker" },
     { name: "Barcode Generator", path: "/tools/barcode-generator" },
     { name: "UUID Generator", path: "/tools/uuid-generator" },
     { name: "URL Shortener", path: "/tools/url-shortener" },
@@ -86,6 +88,9 @@ const Navigation = () => {
     { name: "IP Geolocation", path: "/tools/ip-geolocation" },
     { name: "Credit Card Validator", path: "/tools/credit-card-validator" },
     { name: "Emoji Picker", path: "/tools/emoji-picker" },
+    { name: "Voice Recorder", path: "/tools/voice-recorder" },
+    { name: "Weather Forecast", path: "/tools/weather-forecast" },
+    { name: "Speed Test", path: "/tools/speed-test" },
   ];
 
   const ToolSection = ({ title, tools }: { title: string; tools: { name: string; path: string }[] }) => (
