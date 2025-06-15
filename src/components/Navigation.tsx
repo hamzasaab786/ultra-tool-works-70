@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -76,7 +77,6 @@ const Navigation = () => {
     { name: "Timer & Stopwatch", path: "/tools/timer-stopwatch" },
     { name: "Color Picker", path: "/tools/color-picker" },
     { name: "Budget Tracker", path: "/tools/budget-tracker" },
-    { name: "Expense Tracker", path: "/tools/expense-tracker" },
     { name: "Barcode Generator", path: "/tools/barcode-generator" },
     { name: "UUID Generator", path: "/tools/uuid-generator" },
     { name: "URL Shortener", path: "/tools/url-shortener" },

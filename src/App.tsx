@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
@@ -83,7 +84,6 @@ import EmojiPicker from "@/pages/tools/EmojiPicker";
 // New Tools
 import QrCodeScanner from "@/pages/tools/QrCodeScanner";
 import VoiceRecorder from "@/pages/tools/VoiceRecorder";
-import ExpenseTracker from "@/pages/tools/ExpenseTracker";
 import WeatherForecast from "@/pages/tools/WeatherForecast";
 import SpeedTest from "@/pages/tools/SpeedTest";
 
@@ -172,7 +172,6 @@ const App = () => {
             {/* New Tools */}
             <Route path="/tools/qr-code-scanner" element={<QrCodeScanner />} />
             <Route path="/tools/voice-recorder" element={<VoiceRecorder />} />
-            <Route path="/tools/expense-tracker" element={<ExpenseTracker />} />
             <Route path="/tools/weather-forecast" element={<WeatherForecast />} />
             <Route path="/tools/speed-test" element={<SpeedTest />} />
 
