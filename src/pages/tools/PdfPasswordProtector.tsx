@@ -53,22 +53,22 @@ const PdfPasswordProtector = () => {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       
-      // Encrypt the PDF with password
-      pdfDoc.encrypt({
-        userPassword: password,
-        ownerPassword: password + "_owner",
-        permissions: {
-          printing: 'highResolution',
-          modifying: false,
-          copying: false,
-          annotating: false,
-          fillingForms: false,
-          contentAccessibility: true,
-          documentAssembly: false
+      const pdfBytes = await pdfDoc.save({
+        encrypt: {
+          userPassword: password,
+          ownerPassword: password + "_owner",
+          permissions: {
+            printing: 'highResolution',
+            modifying: false,
+            copying: false,
+            annotating: false,
+            fillingForms: false,
+            contentAccessibility: true,
+            documentAssembly: false
+          }
         }
       });
 
-      const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       

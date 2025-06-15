@@ -1,11 +1,12 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import ToolPageTemplate from './ToolPageTemplate';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Camera, Upload, Scan, Copy, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import jsQR from 'jsqr';
 
 const QrCodeScanner = () => {
   const [result, setResult] = useState('');
@@ -15,6 +16,14 @@ const QrCodeScanner = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const stopCamera = useCallback(() => {
+    if (videoStream) {
+      videoStream.getTracks().forEach(track => track.stop());
+      setVideoStream(null);
+    }
+    setIsScanning(false);
+  }, [videoStream]);
 
   const startCamera = async () => {
     try {
@@ -29,51 +38,94 @@ const QrCodeScanner = () => {
         videoRef.current.play();
       }
     } catch (error) {
+      console.error("Camera Error:", error);
       toast({
         title: "Camera Error",
         description: "Unable to access camera. Please check permissions.",
         variant: "destructive"
       });
+      stopCamera();
     }
   };
 
-  const stopCamera = () => {
-    if (videoStream) {
-      videoStream.getTracks().forEach(track => track.stop());
-      setVideoStream(null);
-    }
-    setIsScanning(false);
-  };
+  useEffect(() => {
+    if (!isScanning || !videoRef.current || !canvasRef.current) return;
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    let animationFrameId: number;
+
+    const scan = () => {
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        const canvasContext = canvas.getContext('2d', { willReadFrequently: true });
+        if(canvasContext){
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
+            canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+            if (code) {
+                setResult(code.data);
+                toast({
+                    title: "QR Code Detected!",
+                    description: "Successfully scanned QR code from camera."
+                });
+                stopCamera();
+                return; // Stop scanning
+            }
+        }
+      }
+      animationFrameId = requestAnimationFrame(scan);
+    };
+
+    scan();
+
+    return () => {
+        cancelAnimationFrame(animationFrameId);
+    };
+  }, [isScanning, stopCamera, toast]);
+
+
+  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          // Simple QR code detection simulation
-          // In a real implementation, you'd use a QR code library like jsQR
-          const mockResults = [
-            'https://toolifyconvert.com',
-            'Hello World!',
-            'mailto:contact@example.com',
-            'tel:+1234567890',
-            'This is a sample QR code content'
-          ];
-          const randomResult = mockResults[Math.floor(Math.random() * mockResults.length)];
-          setResult(randomResult);
-          
-          toast({
-            title: "QR Code Detected!",
-            description: "Successfully scanned QR code from image."
-          });
+          const canvas = canvasRef.current;
+          if (canvas) {
+            const context = canvas.getContext('2d');
+            if(context){
+                canvas.width = img.width;
+                canvas.height = img.height;
+                context.drawImage(img, 0, 0, img.width, img.height);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+                
+                if (code) {
+                  setResult(code.data);
+                  toast({
+                    title: "QR Code Detected!",
+                    description: "Successfully scanned QR code from image."
+                  });
+                } else {
+                  setResult('');
+                  toast({
+                    title: "No QR Code Found",
+                    description: "Could not find a QR code in the uploaded image.",
+                    variant: "destructive"
+                  });
+                }
+            }
+          }
         };
         img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     }
-  };
+  }, [toast]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(result);
