@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Download, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useDropzone } from "react-dropzone";
-import { PDFDocument, PDFEncryptionOptions, PDFPrintingPermissions } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
 import ToolPageTemplate from "./ToolPageTemplate";
 
 const PdfPasswordProtector = () => {
@@ -50,34 +49,14 @@ const PdfPasswordProtector = () => {
 
     setIsProcessing(true);
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      // NOTE: The 'pdf-lib' library (v1.0.0+) no longer supports creating encrypted PDFs.
+      // The code to encrypt the PDF has been removed to resolve the build error.
+      // To implement this feature, a different library or an older version of 'pdf-lib' would be required.
       
-      const options: PDFEncryptionOptions = {
-        userPassword: password,
-        ownerPassword: password + "_owner",
-        permissions: {
-          printing: PDFPrintingPermissions.HighResolution,
-          modifying: false,
-          copying: false,
-          annotating: false,
-          fillingForms: false,
-          contentAccessibility: true,
-          documentAssembly: false
-        }
-      };
-      
-      pdfDoc.encrypt(options);
-
-      const pdfBytes = await pdfDoc.save();
-
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      
-      setProtectedPdfUrl(url);
       toast({
-        title: "Success",
-        description: "PDF has been password protected successfully!",
+        title: "Feature Currently Unavailable",
+        description: "Password protecting PDFs is not supported in the current version of the tool.",
+        variant: "destructive",
       });
     } catch (error) {
       console.error('Error protecting PDF:', error);
