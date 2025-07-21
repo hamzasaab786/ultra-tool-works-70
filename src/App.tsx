@@ -70,7 +70,6 @@ import TimerStopwatch from "@/pages/tools/TimerStopwatch";
 import ColorPicker from "@/pages/tools/ColorPicker";
 import BudgetTracker from "@/pages/tools/BudgetTracker";
 import BarcodeGenerator from "@/pages/tools/BarcodeGenerator";
-import UuidGenerator from "@/pages/tools/UuidGenerator";
 import UrlShortener from "@/pages/tools/UrlShortener";
 import EmailValidator from "@/pages/tools/EmailValidator";
 import PasswordStrength from "@/pages/tools/PasswordStrength";
@@ -80,10 +79,6 @@ import DnsLookup from "@/pages/tools/DnsLookup";
 import IpGeolocation from "@/pages/tools/IpGeolocation";
 import CreditCardValidator from "@/pages/tools/CreditCardValidator";
 import EmojiPicker from "@/pages/tools/EmojiPicker";
-import WebsiteScreenshot from "@/pages/tools/WebsiteScreenshot";
-
-// New Tools
-import QrCodeScanner from "@/pages/tools/QrCodeScanner";
 
 const App = () => {
   return (
@@ -157,7 +152,6 @@ const App = () => {
             <Route path="/tools/color-picker" element={<ColorPicker />} />
             <Route path="/tools/budget-tracker" element={<BudgetTracker />} />
             <Route path="/tools/barcode-generator" element={<BarcodeGenerator />} />
-            <Route path="/tools/uuid-generator" element={<UuidGenerator />} />
             <Route path="/tools/url-shortener" element={<UrlShortener />} />
             <Route path="/tools/email-validator" element={<EmailValidator />} />
             <Route path="/tools/password-strength" element={<PasswordStrength />} />
@@ -167,10 +161,6 @@ const App = () => {
             <Route path="/tools/ip-geolocation" element={<IpGeolocation />} />
             <Route path="/tools/credit-card-validator" element={<CreditCardValidator />} />
             <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
-            <Route path="/tools/website-screenshot" element={<WebsiteScreenshot />} />
-
-            {/* New Tools */}
-            <Route path="/tools/qr-code-scanner" element={<QrCodeScanner />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

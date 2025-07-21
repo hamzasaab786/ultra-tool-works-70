@@ -193,20 +193,10 @@ const Index = () => {
       icon: <QrCode />,
       path: "/tools/qr-code-generator"
     }, {
-      title: "QR Code Scanner", 
-      description: "Scan QR codes using your camera or upload an image to decode QR codes instantly",
-      icon: <Scan />,
-      path: "/tools/qr-code-scanner"
-    }, {
       title: "Password Generator",
       description: "Generate strong, secure passwords with customizable length and character sets",
       icon: <Fingerprint />,
       path: "/tools/password-generator"
-    }, {
-      title: "Website Screenshot",
-      description: "Capture high-quality screenshots of any website instantly with one click",
-      icon: <Camera />,
-      path: "/tools/website-screenshot"
     }, {
       title: "Timer & Stopwatch",
       description: "Professional timer and stopwatch with lap tracking and notification features",
@@ -232,11 +222,6 @@ const Index = () => {
       description: "Generate various types of barcodes for products and inventory",
       icon: <Target />,
       path: "/tools/barcode-generator"
-    }, {
-      title: "UUID Generator",
-      description: "Generate unique identifiers for your development projects",
-      icon: <ShieldIcon />,
-      path: "/tools/uuid-generator"
     }]
   }];
 
@@ -245,14 +230,14 @@ const Index = () => {
     "/tools/merge-pdf",
     "/tools/percentage-calculator",
     "/tools/qr-code-generator",
-    "/tools/qr-code-scanner",
-    "/tools/website-screenshot",
     "/tools/image-crop-tool",
     "/tools/background-remover",
     "/tools/markdown-to-html",
     "/tools/age-calculator",
     "/tools/bmi-calculator",
     "/tools/image-format-converter",
+    "/tools/password-generator",
+    "/tools/timer-stopwatch",
   ];
 
   const allTools = toolCategories.flatMap(category => category.tools);
