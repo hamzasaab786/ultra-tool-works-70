@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, Upload, Download, X, FileIcon } from "lucide-react";
+import { ImageIcon, Upload, Download, X, FileIcon, GripVertical } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import jsPDF from 'jspdf';
 
@@ -16,6 +16,8 @@ const JpgToPdf = () => {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -83,6 +85,56 @@ const JpgToPdf = () => {
   const removeImage = useCallback((id: string) => {
     setImages(prev => prev.filter(img => img.id !== id));
   }, []);
+
+  // Image reordering functions
+  const handleImageDragStart = useCallback((e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  }, []);
+
+  const handleImageDragOver = useCallback((e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  }, []);
+
+  const handleImageDragEnd = useCallback(() => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  }, []);
+
+  const handleImageDrop = useCallback((e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      return;
+    }
+
+    const newImages = [...images];
+    const draggedImage = newImages[draggedIndex];
+    
+    // Remove the dragged image from its original position
+    newImages.splice(draggedIndex, 1);
+    
+    // Insert it at the new position
+    newImages.splice(dropIndex, 0, draggedImage);
+    
+    setImages(newImages);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  }, [images, draggedIndex]);
+
+  const moveImage = useCallback((fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    
+    const newImages = [...images];
+    const movedImage = newImages[fromIndex];
+    
+    newImages.splice(fromIndex, 1);
+    newImages.splice(toIndex, 0, movedImage);
+    
+    setImages(newImages);
+  }, [images]);
 
   const convertToPdf = useCallback(async () => {
     if (images.length === 0) return;
@@ -203,9 +255,31 @@ const JpgToPdf = () => {
             </Button>
           </div>
 
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Drag and drop images to reorder them. The order will be maintained in the PDF.
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {images.map((image) => (
-              <div key={image.id} className="relative border rounded-md p-2">
+            {images.map((image, index) => (
+              <div 
+                key={image.id} 
+                className={`relative border rounded-md p-2 transition-all duration-200 ${
+                  draggedIndex === index ? 'opacity-50 scale-95' : ''
+                } ${
+                  dragOverIndex === index ? 'border-primary bg-primary/5' : ''
+                }`}
+                draggable
+                onDragStart={(e) => handleImageDragStart(e, index)}
+                onDragOver={(e) => handleImageDragOver(e, index)}
+                onDragEnd={handleImageDragEnd}
+                onDrop={(e) => handleImageDrop(e, index)}
+              >
+                <div className="absolute top-1 left-1 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium z-10">
+                  {index + 1}
+                </div>
+                <div className="absolute top-1 right-8 bg-black/50 text-white rounded p-1 cursor-move">
+                  <GripVertical className="h-3 w-3" />
+                </div>
                 <img 
                   src={image.preview} 
                   alt={image.file.name}
@@ -213,7 +287,7 @@ const JpgToPdf = () => {
                 />
                 <button
                   onClick={() => removeImage(image.id)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors z-10"
                 >
                   ×
                 </button>
