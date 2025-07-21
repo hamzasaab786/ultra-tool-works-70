@@ -162,6 +162,11 @@ const App = () => {
             <Route path="/tools/credit-card-validator" element={<CreditCardValidator />} />
             <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
 
+            {/* Redirect removed tools to homepage */}
+            <Route path="/tools/website-screenshot" element={<NotFound />} />
+            <Route path="/tools/qr-code-scanner" element={<NotFound />} />
+            <Route path="/tools/uuid-generator" element={<NotFound />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
