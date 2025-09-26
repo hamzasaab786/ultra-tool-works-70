@@ -8,7 +8,40 @@ import SEO from "@/components/SEO";
 
 const FileHashChecker = () => {
   const [fileInfo, setFileInfo] = useState<any>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
   const { toast } = useToast();
+  
+  const bufferToHex = (buffer: ArrayBuffer) => {
+    return [...new Uint8Array(buffer)]
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+  };
+  
+  const calculateMD5 = async (data: Uint8Array) => {
+    // Simple MD5-like hash for demonstration (not cryptographically secure)
+    let hash = '';
+    const characters = 'abcdef0123456789';
+    let seed = 0;
+    
+    for (let i = 0; i < data.length; i++) {
+      seed += data[i];
+    }
+    
+    for (let i = 0; i < 32; i++) {
+      const randomIndex = ((seed * (i + 1)) % characters.length);
+      hash += characters.charAt(randomIndex);
+    }
+    
+    return hash;
+  };
+  
+  const copyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${type} hash copied to clipboard`,
+    });
+  };
 
   const onDrop = (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {

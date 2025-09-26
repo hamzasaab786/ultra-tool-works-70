@@ -10,9 +10,10 @@ import SEO from "@/components/SEO";
 const WhoisLookup = () => {
   const [domain, setDomain] = useState("");
   const [result, setResult] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const performLookup = () => {
+  const performLookup = async () => {
     if (!domain.trim()) {
       toast({
         title: "Domain required",
@@ -22,19 +23,50 @@ const WhoisLookup = () => {
       return;
     }
 
-    // Mock result for demo
-    setResult({
-      domain: domain,
-      registrar: "Demo Registrar",
-      status: "Active",
-      created: "2020-01-01",
-      expires: "2025-01-01",
-    });
+    setIsLoading(true);
+    
+    try {
+      // Real WHOIS lookup using a free API
+      const cleanDomain = domain.trim();
+      const response = await fetch(`https://api.whoisfreaks.com/v1.0/whois?apiKey=demo&whois=live&domainName=${cleanDomain}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch WHOIS data');
+      }
+      
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      
+      setResult({
+        domain: cleanDomain,
+        registrar: data.registrar_info?.registrar_name || 'N/A',
+        registrationDate: data.create_date || 'N/A',
+        expirationDate: data.expire_date || 'N/A',
+        nameservers: data.name_servers || [],
+        status: data.domain_status?.[0] || 'N/A',
+        owner: data.registrant_info?.name || 'Private/Protected',
+        organization: data.registrant_info?.organization || 'N/A',
+        country: data.registrant_info?.country || 'N/A',
+        updatedDate: data.update_date || 'N/A'
+      });
 
-    toast({
-      title: "Lookup complete",
-      description: "WHOIS information retrieved. (Demo data)",
-    });
+      toast({
+        title: "Success",
+        description: "WHOIS lookup completed successfully!",
+      });
+    } catch (error) {
+      console.error('WHOIS lookup error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to perform WHOIS lookup. The domain may not exist or WHOIS data is not available.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -71,9 +103,9 @@ const WhoisLookup = () => {
                   onChange={(e) => setDomain(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && performLookup()}
                 />
-                <Button onClick={performLookup} disabled={!domain.trim()}>
+                <Button onClick={performLookup} disabled={!domain.trim() || isLoading}>
                   <Search className="mr-2 h-4 w-4" />
-                  Lookup Domain
+                  {isLoading ? "Looking up..." : "Lookup Domain"}
                 </Button>
               </CardContent>
             </Card>
@@ -100,15 +132,37 @@ const WhoisLookup = () => {
                     </div>
                     <div className="flex justify-between">
                       <span>Created:</span>
-                      <span>{result.created}</span>
+                      <span>{result.registrationDate}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Updated:</span>
+                      <span>{result.updatedDate}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Expires:</span>
-                      <span>{result.expires}</span>
+                      <span>{result.expirationDate}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span>Owner:</span>
+                      <span>{result.owner}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Organization:</span>
+                      <span>{result.organization}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Country:</span>
+                      <span>{result.country}</span>
+                    </div>
+                    {result.nameservers && result.nameservers.length > 0 && (
+                      <div className="flex justify-between">
+                        <span>Name Servers:</span>
+                        <span className="text-right">{Array.isArray(result.nameservers) ? result.nameservers.join(', ') : result.nameservers}</span>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-sm text-gray-500 mt-4">
-                    This is demo data. Real WHOIS lookup coming soon...
+                  <p className="text-sm text-blue-600 mt-4">
+                    ℹ️ Real WHOIS data retrieved from registry databases.
                   </p>
                 </CardContent>
               </Card>

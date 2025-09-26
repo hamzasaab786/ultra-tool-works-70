@@ -10,9 +10,10 @@ import SEO from "@/components/SEO";
 const IpGeolocation = () => {
   const [ipAddress, setIpAddress] = useState("");
   const [location, setLocation] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const lookupLocation = () => {
+  const lookupLocation = async () => {
     if (!ipAddress.trim()) {
       toast({
         title: "IP address required",
@@ -22,41 +23,94 @@ const IpGeolocation = () => {
       return;
     }
 
-    // Mock geolocation data for demo
-    setLocation({
-      ip: ipAddress,
-      country: "United States",
-      region: "California",
-      city: "San Francisco",
-      latitude: "37.7749",
-      longitude: "-122.4194",
-      timezone: "America/Los_Angeles",
-      isp: "Demo ISP",
-    });
+    setIsLoading(true);
+    
+    try {
+      const cleanIP = ipAddress.trim();
+      
+      // Use ipapi.co free API for IP geolocation
+      const response = await fetch(`https://ipapi.co/${cleanIP}/json/`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch location data');
+      }
+      
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.reason || 'Invalid IP address');
+      }
+      
+      setLocation({
+        ip: data.ip,
+        country: data.country_name || 'Unknown',
+        region: data.region || 'Unknown',
+        city: data.city || 'Unknown',
+        latitude: data.latitude || 'Unknown',
+        longitude: data.longitude || 'Unknown',
+        timezone: data.timezone || 'Unknown',
+        isp: data.org || 'Unknown',
+        postalCode: data.postal || 'Unknown',
+        countryCode: data.country_code || 'Unknown'
+      });
 
-    toast({
-      title: "Location found",
-      description: "IP geolocation data retrieved. (Demo data)",
-    });
+      toast({
+        title: "Success",
+        description: "IP geolocation lookup completed successfully!",
+      });
+    } catch (error) {
+      console.error('IP geolocation error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to lookup IP location. Please check the IP address.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const getMyLocation = () => {
-    setIpAddress("Your IP");
-    setLocation({
-      ip: "Your IP Address",
-      country: "Your Country",
-      region: "Your Region",
-      city: "Your City",
-      latitude: "Your Latitude",
-      longitude: "Your Longitude",
-      timezone: "Your Timezone",
-      isp: "Your ISP",
-    });
-
-    toast({
-      title: "Your location",
-      description: "Showing your approximate location. (Demo data)",
-    });
+  const getMyLocation = async () => {
+    setIsLoading(true);
+    
+    try {
+      // Get user's IP automatically
+      const response = await fetch('https://ipapi.co/json/');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch your location');
+      }
+      
+      const data = await response.json();
+      
+      setIpAddress(data.ip);
+      setLocation({
+        ip: data.ip,
+        country: data.country_name || 'Unknown',
+        region: data.region || 'Unknown',
+        city: data.city || 'Unknown',
+        latitude: data.latitude || 'Unknown',
+        longitude: data.longitude || 'Unknown',
+        timezone: data.timezone || 'Unknown',
+        isp: data.org || 'Unknown',
+        postalCode: data.postal || 'Unknown',
+        countryCode: data.country_code || 'Unknown'
+      });
+      
+      toast({
+        title: "Success",
+        description: "Your location has been detected!",
+      });
+    } catch (error) {
+      console.error('Error getting user location:', error);
+      toast({
+        title: "Error",
+        description: "Failed to detect your location.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -94,12 +148,12 @@ const IpGeolocation = () => {
                   onKeyPress={(e) => e.key === 'Enter' && lookupLocation()}
                 />
                 <div className="flex gap-2">
-                  <Button onClick={lookupLocation} disabled={!ipAddress.trim()}>
+                  <Button onClick={lookupLocation} disabled={!ipAddress.trim() || isLoading}>
                     <Search className="mr-2 h-4 w-4" />
-                    Lookup Location
+                    {isLoading ? "Looking up..." : "Lookup Location"}
                   </Button>
-                  <Button variant="outline" onClick={getMyLocation}>
-                    My Location
+                  <Button variant="outline" onClick={getMyLocation} disabled={isLoading}>
+                    {isLoading ? "Detecting..." : "My Location"}
                   </Button>
                 </div>
               </CardContent>
@@ -119,7 +173,7 @@ const IpGeolocation = () => {
                     </div>
                     <div className="flex justify-between">
                       <span>Country:</span>
-                      <span>{location.country}</span>
+                      <span>{location.country} ({location.countryCode})</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Region:</span>
@@ -128,6 +182,10 @@ const IpGeolocation = () => {
                     <div className="flex justify-between">
                       <span>City:</span>
                       <span>{location.city}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Postal Code:</span>
+                      <span>{location.postalCode}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Coordinates:</span>
@@ -142,8 +200,8 @@ const IpGeolocation = () => {
                       <span>{location.isp}</span>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 mt-4">
-                    This is demo data. Real IP geolocation coming soon...
+                  <p className="text-sm text-blue-600 mt-4">
+                    ℹ️ Real IP geolocation data provided by ipapi.co service.
                   </p>
                 </CardContent>
               </Card>

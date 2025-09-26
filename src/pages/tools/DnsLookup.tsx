@@ -10,9 +10,10 @@ import SEO from "@/components/SEO";
 const DnsLookup = () => {
   const [domain, setDomain] = useState("");
   const [records, setRecords] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const performLookup = () => {
+  const performLookup = async () => {
     if (!domain.trim()) {
       toast({
         title: "Domain required",
@@ -22,19 +23,68 @@ const DnsLookup = () => {
       return;
     }
 
-    // Mock DNS records for demo
-    setRecords({
-      A: ["192.168.1.1", "192.168.1.2"],
-      AAAA: ["2001:db8::1"],
-      MX: ["10 mail.example.com"],
-      TXT: ["v=spf1 include:_spf.google.com ~all"],
-      NS: ["ns1.example.com", "ns2.example.com"],
-    });
+    setIsLoading(true);
+    
+    try {
+      // Real DNS lookup using Google's DNS-over-HTTPS API
+      const cleanDomain = domain.trim();
+      const dnsResults: any = {};
+      
+      // Query different record types
+      const recordTypes = ['A', 'AAAA', 'MX', 'NS', 'TXT', 'CNAME'];
+      
+      for (const type of recordTypes) {
+        try {
+          const response = await fetch(`https://dns.google/resolve?name=${cleanDomain}&type=${type}`, {
+            headers: {
+              'Accept': 'application/dns-json'
+            }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.Answer && data.Answer.length > 0) {
+              if (type === 'MX') {
+                dnsResults[type] = data.Answer.map((record: any) => 
+                  `${record.data.split(' ')[1]} (Priority: ${record.data.split(' ')[0]})`
+                ).join(', ');
+              } else if (type === 'TXT') {
+                dnsResults[type] = data.Answer.map((record: any) => 
+                  record.data.replace(/"/g, '')
+                ).join('; ');
+              } else {
+                dnsResults[type] = data.Answer.map((record: any) => record.data).join(', ');
+              }
+            }
+          }
+        } catch (err) {
+          console.warn(`Failed to lookup ${type} record for ${cleanDomain}`);
+        }
+      }
+      
+      if (Object.keys(dnsResults).length === 0) {
+        throw new Error('No DNS records found');
+      }
+      
+      setRecords({
+        domain: cleanDomain,
+        ...dnsResults
+      });
 
-    toast({
-      title: "DNS lookup complete",
-      description: "DNS records retrieved. (Demo data)",
-    });
+      toast({
+        title: "Success",
+        description: "DNS lookup completed successfully!",
+      });
+    } catch (error) {
+      console.error('DNS lookup error:', error);
+      toast({
+        title: "Error", 
+        description: "Failed to perform DNS lookup. Please check the domain name.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -71,9 +121,9 @@ const DnsLookup = () => {
                   onChange={(e) => setDomain(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && performLookup()}
                 />
-                <Button onClick={performLookup} disabled={!domain.trim()}>
+                <Button onClick={performLookup} disabled={!domain.trim() || isLoading}>
                   <Search className="mr-2 h-4 w-4" />
-                  Lookup DNS Records
+                  {isLoading ? "Looking up..." : "Lookup DNS Records"}
                 </Button>
               </CardContent>
             </Card>
@@ -87,16 +137,18 @@ const DnsLookup = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {Object.entries(records).map(([type, values]: [string, any]) => (
-                      <div key={type} className="border-l-4 border-blue-500 pl-4">
-                        <h4 className="font-semibold">{type} Records</h4>
-                        <div className="text-sm text-gray-600 font-mono">
-                          {Array.isArray(values) ? values.join('\n') : values}
+                      type !== 'domain' && (
+                        <div key={type} className="border-l-4 border-blue-500 pl-4">
+                          <h4 className="font-semibold">{type} Records</h4>
+                          <div className="text-sm text-gray-600 font-mono whitespace-pre-wrap">
+                            {Array.isArray(values) ? values.join('\n') : values}
+                          </div>
                         </div>
-                      </div>
+                      )
                     ))}
                   </div>
-                  <p className="text-sm text-gray-500 mt-4">
-                    This is demo data. Real DNS lookup coming soon...
+                  <p className="text-sm text-blue-600 mt-4">
+                    ℹ️ Real DNS records retrieved using Google's DNS service.
                   </p>
                 </CardContent>
               </Card>
