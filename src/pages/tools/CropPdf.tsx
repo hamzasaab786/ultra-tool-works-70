@@ -41,16 +41,40 @@ const CropPdf = () => {
 
     setIsCropping(true);
     try {
-      toast({
-        title: "Cropping PDF",
-        description: "PDF cropping requires backend processing with page manipulation.",
-      });
+      const { PDFDocument } = await import('pdf-lib');
       
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pages = pdfDoc.getPages();
+      
+      // Crop each page
+      for (const page of pages) {
+        const { width, height } = page.getSize();
+        
+        const newWidth = width - cropSettings.left - cropSettings.right;
+        const newHeight = height - cropSettings.top - cropSettings.bottom;
+        
+        page.setCropBox(
+          cropSettings.left,
+          cropSettings.bottom,
+          newWidth,
+          newHeight
+        );
+      }
+      
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `cropped_${file.name}`;
+      link.click();
+      URL.revokeObjectURL(url);
       
       toast({
-        title: "Feature coming soon",
-        description: "PDF cropping will be available with backend integration",
+        title: "Success",
+        description: "PDF cropped successfully!",
       });
     } catch (error) {
       console.error('Cropping error:', error);

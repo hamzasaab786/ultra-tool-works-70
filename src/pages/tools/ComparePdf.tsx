@@ -60,23 +60,50 @@ const ComparePdf = () => {
 
     setIsComparing(true);
     try {
-      toast({
-        title: "Comparing PDFs",
-        description: "PDF comparison requires backend processing with content analysis.",
+      const formData = new FormData();
+      formData.append('file1', file1);
+      formData.append('file2', file2);
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/compare-pdfs`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: formData,
       });
+
+      if (!response.ok) {
+        throw new Error('Comparison failed');
+      }
+
+      const result = await response.json();
       
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      let message = `Comparison Results:\n\n`;
+      message += `${result.file1Name}: ${result.file1Pages} pages\n`;
+      message += `${result.file2Name}: ${result.file2Pages} pages\n\n`;
       
+      if (result.pageCountMatch) {
+        message += `✓ Page count matches\n\n`;
+      } else {
+        message += `✗ Page count differs\n\n`;
+      }
+      
+      message += `Differences Found:\n`;
+      result.differences.forEach((diff: string, index: number) => {
+        message += `${index + 1}. ${diff}\n`;
+      });
+
       toast({
-        title: "Feature coming soon",
-        description: "PDF comparison will be available with backend integration",
+        title: "Comparison Complete",
+        description: message,
+        duration: 10000,
       });
     } catch (error) {
       console.error('Comparison error:', error);
       toast({
         title: "Comparison failed",
         description: "There was an error comparing your PDFs",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsComparing(false);

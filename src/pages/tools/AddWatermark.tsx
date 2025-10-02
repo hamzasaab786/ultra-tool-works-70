@@ -48,16 +48,57 @@ const AddWatermark = () => {
 
     setIsProcessing(true);
     try {
-      toast({
-        title: "Adding watermark",
-        description: "Watermarking requires backend PDF processing capabilities.",
-      });
+      const { PDFDocument, rgb, degrees } = await import('pdf-lib');
       
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const arrayBuffer = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pages = pdfDoc.getPages();
+      
+      // Add watermark to each page
+      for (const page of pages) {
+        const { width, height } = page.getSize();
+        
+        // Calculate position
+        let x = width / 2;
+        let y = height / 2;
+        
+        if (position === 'top-left') {
+          x = 50;
+          y = height - 50;
+        } else if (position === 'top-right') {
+          x = width - 50;
+          y = height - 50;
+        } else if (position === 'bottom-left') {
+          x = 50;
+          y = 50;
+        } else if (position === 'bottom-right') {
+          x = width - 50;
+          y = 50;
+        }
+        
+        page.drawText(watermarkText, {
+          x,
+          y,
+          size: 48,
+          color: rgb(0.5, 0.5, 0.5),
+          opacity: opacity[0] / 100,
+          rotate: degrees(rotation[0]),
+        });
+      }
+      
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `watermarked_${file.name}`;
+      link.click();
+      URL.revokeObjectURL(url);
       
       toast({
-        title: "Feature coming soon",
-        description: "Watermarking will be available with backend integration",
+        title: "Success",
+        description: "Watermark added successfully!",
       });
     } catch (error) {
       console.error('Watermarking error:', error);

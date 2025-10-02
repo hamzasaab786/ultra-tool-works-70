@@ -44,20 +44,35 @@ const DocumentTranslator = () => {
 
     setIsTranslating(true);
     try {
-      // Simulate translation API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock translation result
-      setTranslatedText(`[Translated from ${sourceLang} to ${targetLang}]: ${sourceText}`);
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/translate-text`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          text: sourceText,
+          sourceLang,
+          targetLang
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Translation failed');
+      }
+
+      const data = await response.json();
+      setTranslatedText(data.translatedText);
       
       toast({
         title: "Translation completed",
         description: "Your text has been translated successfully.",
       });
     } catch (error) {
+      console.error('Translation error:', error);
       toast({
         title: "Translation failed",
-        description: "There was an error translating your text.",
+        description: "There was an error translating your text. Please try again.",
         variant: "destructive",
       });
     } finally {
