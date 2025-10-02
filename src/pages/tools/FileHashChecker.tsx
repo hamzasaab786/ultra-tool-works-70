@@ -43,21 +43,46 @@ const FileHashChecker = () => {
     });
   };
 
-  const onDrop = (acceptedFiles: File[]) => {
+  const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
+      setIsCalculating(true);
       
-      setFileInfo({
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        lastModified: new Date(file.lastModified).toLocaleString(),
-      });
-      
-      toast({
-        title: "File uploaded",
-        description: "Hash calculation feature coming soon.",
-      });
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+        
+        // Calculate hashes
+        const md5Hash = await calculateMD5(data);
+        const sha1Buffer = await crypto.subtle.digest('SHA-1', data);
+        const sha1Hash = bufferToHex(sha1Buffer);
+        const sha256Buffer = await crypto.subtle.digest('SHA-256', data);
+        const sha256Hash = bufferToHex(sha256Buffer);
+        
+        setFileInfo({
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          lastModified: new Date(file.lastModified).toLocaleString(),
+          md5: md5Hash,
+          sha1: sha1Hash,
+          sha256: sha256Hash
+        });
+        
+        toast({
+          title: "Success",
+          description: "File hashes calculated successfully!",
+        });
+      } catch (error) {
+        console.error('Hash calculation error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to calculate hashes",
+          variant: "destructive",
+        });
+      } finally {
+        setIsCalculating(false);
+      }
     }
   };
 
@@ -114,23 +139,74 @@ const FileHashChecker = () => {
                   <CardTitle>File Information</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span>File Name:</span>
-                      <span className="font-mono">{fileInfo.name}</span>
+                      <span className="font-medium">File Name:</span>
+                      <span className="font-mono text-sm">{fileInfo.name}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Size:</span>
+                      <span className="font-medium">Size:</span>
                       <span>{(fileInfo.size / 1024 / 1024).toFixed(2)} MB</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Type:</span>
+                      <span className="font-medium">Type:</span>
                       <span>{fileInfo.type}</span>
                     </div>
+                    
+                    {fileInfo.md5 && (
+                      <>
+                        <div className="border-t pt-3 mt-3">
+                          <h4 className="font-semibold mb-2">Hash Values</h4>
+                        </div>
+                        <div className="space-y-2">
+                          <div>
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="font-medium text-sm">MD5:</span>
+                              <button
+                                onClick={() => copyToClipboard(fileInfo.md5, "MD5")}
+                                className="text-xs text-blue-600 hover:text-blue-800"
+                              >
+                                Copy
+                              </button>
+                            </div>
+                            <p className="text-xs font-mono bg-gray-50 p-2 rounded break-all">
+                              {fileInfo.md5}
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="font-medium text-sm">SHA-1:</span>
+                              <button
+                                onClick={() => copyToClipboard(fileInfo.sha1, "SHA-1")}
+                                className="text-xs text-blue-600 hover:text-blue-800"
+                              >
+                                Copy
+                              </button>
+                            </div>
+                            <p className="text-xs font-mono bg-gray-50 p-2 rounded break-all">
+                              {fileInfo.sha1}
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="font-medium text-sm">SHA-256:</span>
+                              <button
+                                onClick={() => copyToClipboard(fileInfo.sha256, "SHA-256")}
+                                className="text-xs text-blue-600 hover:text-blue-800"
+                              >
+                                Copy
+                              </button>
+                            </div>
+                            <p className="text-xs font-mono bg-gray-50 p-2 rounded break-all">
+                              {fileInfo.sha256}
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
-                  <p className="text-sm text-gray-500 mt-4">
-                    Hash calculation feature coming soon...
-                  </p>
                 </CardContent>
               </Card>
             )}

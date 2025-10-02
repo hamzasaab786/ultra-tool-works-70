@@ -119,7 +119,9 @@ const HashGenerator = () => {
   
   const calculateHashes = async (data: Uint8Array) => {
     await simulateHashing();
-    setMd5Hash(generateMockHash(data, 32));
+    
+    // Calculate MD5-like hash (simplified for client-side)
+    setMd5Hash(generateSimpleHash(data, 32));
     
     const sha1Buffer = await crypto.subtle.digest('SHA-1', data);
     setSha1Hash(bufferToHex(sha1Buffer));
@@ -138,19 +140,27 @@ const HashGenerator = () => {
     return new Promise(resolve => setTimeout(resolve, 500));
   };
   
-  const generateMockHash = (data: Uint8Array, length: number) => {
+  const generateSimpleHash = (data: Uint8Array, length: number) => {
+    // Simple hash algorithm for demonstration
     let hash = '';
-    const characters = 'abcdef0123456789';
-    const charactersLength = characters.length;
+    const characters = '0123456789abcdef';
     
-    let seed = 0;
+    let h1 = 0xdeadbeef;
+    let h2 = 0x41c6ce57;
+    
     for (let i = 0; i < data.length; i++) {
-      seed += data[i];
+      h1 = Math.imul(h1 ^ data[i], 2654435761);
+      h2 = Math.imul(h2 ^ data[i], 1597334677);
     }
     
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    
+    const fullHash = (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16);
+    
     for (let i = 0; i < length; i++) {
-      const randomIndex = ((seed * (i + 1)) % charactersLength);
-      hash += characters.charAt(randomIndex);
+      const index = (parseInt(fullHash.charAt(i % fullHash.length), 16) + i) % 16;
+      hash += characters.charAt(index);
     }
     
     return hash;
