@@ -123,10 +123,10 @@ const HashGenerator = () => {
     // Calculate MD5-like hash (simplified for client-side)
     setMd5Hash(generateSimpleHash(data, 32));
     
-    const sha1Buffer = await crypto.subtle.digest('SHA-1', data);
+    const sha1Buffer = await crypto.subtle.digest('SHA-1', new Uint8Array(data));
     setSha1Hash(bufferToHex(sha1Buffer));
     
-    const sha256Buffer = await crypto.subtle.digest('SHA-256', data);
+    const sha256Buffer = await crypto.subtle.digest('SHA-256', new Uint8Array(data));
     setSha256Hash(bufferToHex(sha256Buffer));
   };
   

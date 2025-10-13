@@ -103,7 +103,7 @@ export class PDFCompressor {
 
     const compressedBytes = await newPdfDoc.save({ useObjectStreams: true });
     
-    const blob = new Blob([compressedBytes], { type: 'application/pdf' });
+    const blob = new Blob([new Uint8Array(compressedBytes)], { type: 'application/pdf' });
     const compressedSize = blob.size;
     
     const compressionRatio = originalSize > 0 ? ((originalSize - compressedSize) / originalSize) * 100 : 0;
