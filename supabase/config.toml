@@ -1,1 +1,13 @@
 project_id = "ykncsyybscvuavfnvbke"
+
+[auth]
+enabled = true
+
+[functions.translate-text]
+verify_jwt = false
+
+[functions.compare-pdfs]
+verify_jwt = false
+
+[functions.edit-passport-photo]
+verify_jwt = false

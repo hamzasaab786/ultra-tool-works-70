@@ -4,13 +4,16 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ImageIcon, Upload, Download, Camera } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { ImageIcon, Upload, Download, Camera, Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const PassportPhotoMaker = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [photoSize, setPhotoSize] = useState("passport");
+  const [instructions, setInstructions] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -45,78 +48,67 @@ const PassportPhotoMaker = () => {
   }, []);
 
   const processPhoto = useCallback(async () => {
-    if (!selectedImage) return;
+    if (!selectedImage) {
+      toast({
+        title: "Error",
+        description: "Please upload an image first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!instructions.trim()) {
+      toast({
+        title: "Error",
+        description: "Please describe what you want for your passport photo",
+        variant: "destructive"
+      });
+      return;
+    }
 
     setIsProcessing(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const img = new Image();
-      
-      img.onload = () => {
-        const size = photoSizes[photoSize as keyof typeof photoSizes];
-        
-        // Set canvas to exact pixel dimensions for high quality
-        canvas.width = size.pixels.width;
-        canvas.height = size.pixels.height;
-        
-        if (ctx) {
-          // Set white background
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          
-          // Calculate image positioning for better face centering
-          const aspectRatio = size.pixels.width / size.pixels.height;
-          const imgAspectRatio = img.width / img.height;
-          
-          let drawWidth, drawHeight, drawX, drawY;
-          
-          // Smart cropping for passport photos - focus on center-top area where face usually is
-          if (imgAspectRatio > aspectRatio) {
-            // Image is wider - crop sides, focus on center
-            drawHeight = canvas.height;
-            drawWidth = drawHeight * imgAspectRatio;
-            drawX = (canvas.width - drawWidth) / 2;
-            drawY = 0;
-          } else {
-            // Image is taller - crop top/bottom, focus slightly on upper portion
-            drawWidth = canvas.width;
-            drawHeight = drawWidth / imgAspectRatio;
-            drawX = 0;
-            // Position slightly higher to focus on face area
-            drawY = (canvas.height - drawHeight) * 0.3; // 30% from top instead of center
-          }
-          
-          // Apply some image enhancement
-          ctx.filter = 'contrast(1.1) brightness(1.05) saturate(1.1)';
-          ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-          
-          // Reset filter
-          ctx.filter = 'none';
-          
-          setProcessedImage(canvas.toDataURL('image/jpeg', 0.95)); // High quality JPEG
-        }
-      };
-      
-      img.src = selectedImage;
+      const size = photoSizes[photoSize as keyof typeof photoSizes];
       
       toast({
-        title: "Success",
-        description: "Professional passport photo created successfully!",
+        title: "Processing",
+        description: "AI is editing your photo... This may take a moment.",
       });
+
+      const { data, error } = await supabase.functions.invoke('edit-passport-photo', {
+        body: {
+          imageBase64: selectedImage,
+          instructions: instructions,
+          photoSize: size.name
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.editedImage) {
+        setProcessedImage(data.editedImage);
+        toast({
+          title: "Success",
+          description: "Your professional passport photo is ready!",
+        });
+      } else {
+        throw new Error('No edited image received from AI');
+      }
+
     } catch (error) {
+      console.error('Error processing photo:', error);
       toast({
         title: "Error",
-        description: "Failed to process photo. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to process photo. Please try again.",
         variant: "destructive"
       });
     } finally {
       setIsProcessing(false);
     }
-  }, [selectedImage, photoSize]);
+  }, [selectedImage, photoSize, instructions]);
 
   const downloadPhoto = useCallback(() => {
     if (!processedImage) return;
@@ -141,15 +133,14 @@ const PassportPhotoMaker = () => {
       description="Create high-quality passport photos with precise dimensions and professional standards"
     >
       <div className="space-y-6">
-        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <h3 className="font-semibold text-blue-800 mb-2">Photo Guidelines:</h3>
-          <ul className="text-sm text-blue-700 space-y-1">
-            <li>• Use a clear, recent photo with good lighting</li>
-            <li>• Face should be clearly visible and centered</li>
-            <li>• Neutral expression with both eyes open</li>
-            <li>• Plain background recommended</li>
-            <li>• No hats, sunglasses, or heavy shadows</li>
-          </ul>
+        <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-5 w-5 text-purple-600" />
+            <h3 className="font-semibold text-purple-800">AI-Powered Photo Editor</h3>
+          </div>
+          <p className="text-sm text-purple-700">
+            Upload your photo and describe how you want it edited. Our AI will automatically create a professional passport photo with perfect lighting, background, and composition!
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -211,19 +202,33 @@ const PassportPhotoMaker = () => {
               </Select>
             </div>
 
+            <div>
+              <Label>What do you want? (Describe your requirements)</Label>
+              <Textarea
+                placeholder="Example: Make the background pure white, improve lighting, center my face, remove shadows, enhance colors, professional look for visa application..."
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                rows={4}
+                className="resize-none"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Be specific! The AI will optimize your photo based on your description.
+              </p>
+            </div>
+
             <Button 
               onClick={processPhoto} 
-              disabled={!selectedImage || isProcessing}
-              className="w-full"
+              disabled={!selectedImage || !instructions.trim() || isProcessing}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
             >
               {isProcessing ? (
                 <>
                   <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                  Processing...
+                  AI Processing...
                 </>
               ) : (
                 <>
-                  <Camera className="mr-2 h-4 w-4" /> Create Professional Photo
+                  <Sparkles className="mr-2 h-4 w-4" /> Create with AI
                 </>
               )}
             </Button>
