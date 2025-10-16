@@ -63,32 +63,32 @@ Deno.serve(async (req) => {
 
     // Use AI to analyze differences if files have similar structure
     if (comparison.differences.length === 0) {
-      const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-      if (GEMINI_API_KEY) {
+      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+      if (LOVABLE_API_KEY) {
         try {
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+          const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
             method: 'POST',
             headers: {
+              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              contents: [{
-                parts: [{
-                  text: `You are a PDF comparison assistant. Analyze structural differences between PDFs.\n\nCompare two PDFs:
+              model: 'google/gemini-2.5-flash',
+              messages: [
+                {
+                  role: 'user',
+                  content: `You are a PDF comparison assistant. Analyze structural differences between PDFs.\n\nCompare two PDFs:
 File 1: ${file1.name} (${pages1.length} pages)
 File 2: ${file2.name} (${pages2.length} pages)
 Both have the same page count and dimensions. What should users look for when comparing these files?`
-                }]
-              }],
-              generationConfig: {
-                temperature: 0.3,
-              }
+                }
+              ]
             }),
           });
 
           if (response.ok) {
             const data = await response.json();
-            comparison.differences.push(data.candidates[0].content.parts[0].text);
+            comparison.differences.push(data.choices[0].message.content);
           }
         } catch (error) {
           console.error('AI analysis error:', error);

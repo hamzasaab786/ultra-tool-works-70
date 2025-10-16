@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.edit-passport-photo]
 verify_jwt = false
+
+[functions.remove-watermark]
+verify_jwt = false
