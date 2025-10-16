@@ -192,7 +192,7 @@ const PassportPhotoMaker = () => {
                 </div>
               ) : (
                 <div className="relative">
-                  <img src={selectedImage} alt="Selected" className="w-full h-64 object-cover rounded" />
+                  <img src={selectedImage} alt="Selected" className="w-full h-64 object-contain rounded bg-muted" />
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -250,11 +250,11 @@ const PassportPhotoMaker = () => {
               {isProcessing ? (
                 <>
                   <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                  AI Processing...
+                  Processing...
                 </>
               ) : (
                 <>
-                  <Sparkles className="mr-2 h-4 w-4" /> Create with AI
+                  <Sparkles className="mr-2 h-4 w-4" /> Generate
                 </>
               )}
             </Button>

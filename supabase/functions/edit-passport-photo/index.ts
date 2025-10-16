@@ -27,16 +27,17 @@ serve(async (req) => {
 
     console.log('Processing image edit request for size:', photoSize);
 
-    // Create the prompt for Nano Banana
-    const prompt = `Create a professional passport photo with these requirements: ${instructions}. 
-    Make sure the photo has:
-    - Professional lighting and quality
-    - Plain, neutral background (preferably white or light blue)
-    - Person centered and facing forward
-    - Clear facial features
-    - Appropriate framing for ${photoSize} passport photo
-    - High quality and sharp details
-    Maintain the person's appearance but optimize for official document standards.`;
+    // Create the prompt for Nano Banana - emphasizing preservation of original face
+    const prompt = `Edit this photo for ${photoSize} passport requirements: ${instructions}. 
+    
+    CRITICAL: Keep the person's facial features EXACTLY as they are - do NOT alter face shape, features, or appearance.
+    Only make these changes:
+    - Replace background with plain white or light blue
+    - Adjust lighting to be even and professional
+    - Center and properly frame the person
+    - Enhance sharpness and image quality
+    
+    The person's face and features must remain completely unchanged and accurate to the original photo.`;
 
     console.log('Calling Lovable AI (Nano Banana) for image editing...');
     
