@@ -47,6 +47,30 @@ const PassportPhotoMaker = () => {
     reader.readAsDataURL(file);
   }, []);
 
+  const optimizeImage = useCallback(async (dataUrl: string) => {
+    try {
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const i = new Image();
+        i.onload = () => resolve(i);
+        i.onerror = (e) => reject(e);
+        i.src = dataUrl;
+      });
+      const maxDim = 1500;
+      const { width, height } = img;
+      const scale = Math.min(1, maxDim / Math.max(width, height));
+      if (scale === 1) return dataUrl;
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(width * scale);
+      canvas.height = Math.round(height * scale);
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return dataUrl;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL('image/jpeg', 0.9);
+    } catch {
+      return dataUrl;
+    }
+  }, []);
+
   const processPhoto = useCallback(async () => {
     if (!selectedImage) {
       toast({
@@ -76,9 +100,11 @@ const PassportPhotoMaker = () => {
         description: "AI is editing your photo... This may take a moment.",
       });
 
+      const optimizedImage = await optimizeImage(selectedImage);
+
       const { data, error } = await supabase.functions.invoke('edit-passport-photo', {
         body: {
-          imageBase64: selectedImage,
+          imageBase64: optimizedImage,
           instructions: instructions,
           photoSize: size.name
         }
@@ -108,7 +134,7 @@ const PassportPhotoMaker = () => {
     } finally {
       setIsProcessing(false);
     }
-  }, [selectedImage, photoSize, instructions]);
+  }, [selectedImage, photoSize, instructions, optimizeImage]);
 
   const downloadPhoto = useCallback(() => {
     if (!processedImage) return;
