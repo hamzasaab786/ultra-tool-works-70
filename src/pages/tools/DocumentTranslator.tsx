@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Languages, Copy, RotateCcw } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
+import { supabase } from "@/integrations/supabase/client";
 
 const DocumentTranslator = () => {
   const [sourceText, setSourceText] = useState("");
@@ -44,30 +45,23 @@ const DocumentTranslator = () => {
 
     setIsTranslating(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/translate-text`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('translate-text', {
+        body: {
           text: sourceText,
           sourceLang,
           targetLang
-        }),
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Translation failed');
+      if (error) throw error;
+
+      if (data?.translatedText) {
+        setTranslatedText(data.translatedText);
+        toast({
+          title: "Translation completed",
+          description: "Your text has been translated successfully.",
+        });
       }
-
-      const data = await response.json();
-      setTranslatedText(data.translatedText);
-      
-      toast({
-        title: "Translation completed",
-        description: "Your text has been translated successfully.",
-      });
     } catch (error) {
       console.error('Translation error:', error);
       toast({

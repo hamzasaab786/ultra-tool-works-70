@@ -55,7 +55,8 @@ const PassportPhotoMaker = () => {
         i.onerror = (e) => reject(e);
         i.src = dataUrl;
       });
-      const maxDim = 1500;
+      // More aggressive optimization - max 800px for fastest AI processing
+      const maxDim = 800;
       const { width, height } = img;
       const scale = Math.min(1, maxDim / Math.max(width, height));
       if (scale === 1) return dataUrl;
@@ -65,7 +66,8 @@ const PassportPhotoMaker = () => {
       const ctx = canvas.getContext('2d');
       if (!ctx) return dataUrl;
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL('image/jpeg', 0.9);
+      // Higher compression (0.75) for speed
+      return canvas.toDataURL('image/jpeg', 0.75);
     } catch {
       return dataUrl;
     }
