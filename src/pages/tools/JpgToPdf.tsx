@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, Upload, Download, X, FileIcon, GripVertical } from "lucide-react";
+import { ImageIcon, Upload, Download, X, FileIcon, GripVertical, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import jsPDF from 'jspdf';
 
@@ -249,24 +249,32 @@ const JpgToPdf = () => {
       ) : (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium">Images to Convert ({images.length})</h3>
+            <div>
+              <h3 className="text-lg font-medium">Image Preview ({images.length} images)</h3>
+              <p className="text-sm text-muted-foreground mt-1">Drag images to reorder • Click × to remove</p>
+            </div>
             <Button variant="ghost" size="sm" onClick={resetImages}>
               <X className="mr-2 h-4 w-4" /> Clear All
             </Button>
           </div>
 
-          <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Drag and drop images to reorder them. The order will be maintained in the PDF.
+          <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="flex items-center gap-2">
+              <GripVertical className="h-5 w-5 text-blue-600" />
+              <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
+                Drag and drop images to change their order in the PDF
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {images.map((image, index) => (
               <div 
                 key={image.id} 
-                className={`relative border rounded-md p-2 transition-all duration-200 ${
-                  draggedIndex === index ? 'opacity-50 scale-95' : ''
+                className={`relative border-2 rounded-lg p-3 bg-card transition-all duration-200 cursor-move hover:shadow-lg ${
+                  draggedIndex === index ? 'opacity-40 scale-95 rotate-2' : ''
                 } ${
-                  dragOverIndex === index ? 'border-primary bg-primary/5' : ''
+                  dragOverIndex === index ? 'border-primary bg-primary/10 scale-105' : 'border-border'
                 }`}
                 draggable
                 onDragStart={(e) => handleImageDragStart(e, index)}
@@ -274,24 +282,48 @@ const JpgToPdf = () => {
                 onDragEnd={handleImageDragEnd}
                 onDrop={(e) => handleImageDrop(e, index)}
               >
-                <div className="absolute top-1 left-1 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium z-10">
+                <div className="absolute -top-2 -left-2 bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold z-10 shadow-lg">
                   {index + 1}
                 </div>
-                <div className="absolute top-1 right-8 bg-black/50 text-white rounded p-1 cursor-move">
-                  <GripVertical className="h-3 w-3" />
+                <div className="absolute top-2 left-2 bg-black/70 text-white rounded px-2 py-1 flex items-center gap-1">
+                  <GripVertical className="h-4 w-4" />
+                  <span className="text-xs">Drag</span>
                 </div>
                 <img 
                   src={image.preview} 
                   alt={image.file.name}
-                  className="w-full h-24 object-cover rounded"
+                  className="w-full h-48 object-cover rounded-lg mb-2"
                 />
                 <button
                   onClick={() => removeImage(image.id)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors z-10"
+                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg transition-colors z-10"
                 >
                   ×
                 </button>
-                <p className="text-xs mt-1 truncate">{image.file.name}</p>
+                
+                <div className="flex items-center justify-between gap-2 mt-2">
+                  <p className="text-xs truncate flex-1 font-medium">{image.file.name}</p>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 w-7 p-0"
+                      disabled={index === 0}
+                      onClick={() => moveImage(index, index - 1)}
+                    >
+                      <ChevronLeft className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 w-7 p-0"
+                      disabled={index === images.length - 1}
+                      onClick={() => moveImage(index, index + 1)}
+                    >
+                      <ChevronRight className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
