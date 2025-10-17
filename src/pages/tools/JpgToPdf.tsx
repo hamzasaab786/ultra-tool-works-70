@@ -88,15 +88,25 @@ const JpgToPdf = () => {
 
   // Image reordering functions
   const handleImageDragStart = useCallback((e: React.DragEvent, index: number) => {
+    e.stopPropagation();
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', 'image-reorder');
   }, []);
 
   const handleImageDragOver = useCallback((e: React.DragEvent, index: number) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    // Only handle if we're dragging an image
+    if (draggedIndex === null) return;
+    
     e.dataTransfer.dropEffect = 'move';
-    setDragOverIndex(index);
-  }, []);
+    
+    if (index !== dragOverIndex) {
+      setDragOverIndex(index);
+    }
+  }, [draggedIndex, dragOverIndex]);
 
   const handleImageDragEnd = useCallback(() => {
     setDraggedIndex(null);
@@ -105,8 +115,11 @@ const JpgToPdf = () => {
 
   const handleImageDrop = useCallback((e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
+    e.stopPropagation();
     
     if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
       return;
     }
 
@@ -122,6 +135,11 @@ const JpgToPdf = () => {
     setImages(newImages);
     setDraggedIndex(null);
     setDragOverIndex(null);
+    
+    toast({
+      title: "Image reordered",
+      description: "Image position updated successfully",
+    });
   }, [images, draggedIndex]);
 
   const moveImage = useCallback((fromIndex: number, toIndex: number) => {
