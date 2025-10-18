@@ -79,9 +79,6 @@ import DnsLookup from "@/pages/tools/DnsLookup";
 import IpGeolocation from "@/pages/tools/IpGeolocation";
 import CreditCardValidator from "@/pages/tools/CreditCardValidator";
 import EmojiPicker from "@/pages/tools/EmojiPicker";
-import AiContentWriter from "@/pages/tools/AiContentWriter";
-import AiEmailGenerator from "@/pages/tools/AiEmailGenerator";
-import AiImageAnalyzer from "@/pages/tools/AiImageAnalyzer";
 
 const App = () => {
   return (
@@ -164,11 +161,6 @@ const App = () => {
             <Route path="/tools/ip-geolocation" element={<IpGeolocation />} />
             <Route path="/tools/credit-card-validator" element={<CreditCardValidator />} />
             <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
-
-            {/* AI Tools */}
-            <Route path="/tools/ai-content-writer" element={<AiContentWriter />} />
-            <Route path="/tools/ai-email-generator" element={<AiEmailGenerator />} />
-            <Route path="/tools/ai-image-analyzer" element={<AiImageAnalyzer />} />
 
             {/* Redirect removed tools to homepage */}
             <Route path="/tools/website-screenshot" element={<NotFound />} />

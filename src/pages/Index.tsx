@@ -13,8 +13,7 @@ import {
   Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
   Volume2, Film, FileCode, Hash, CalendarRange, Zap as ZapIcon, Heart, 
   CreditCard, Archive, Search, Copy, Target, BarChart, Users, Repeat, 
-  Shield as ShieldIcon, Mic, Wifi, Scan, Crop, Sparkles as SparklesIcon, 
-  Mail, Eye
+  Shield as ShieldIcon, Mic, Wifi, Scan, Crop
 } from "lucide-react";
 
 const Index = () => {
@@ -223,25 +222,6 @@ const Index = () => {
       description: "Generate various types of barcodes for products and inventory",
       icon: <Target />,
       path: "/tools/barcode-generator"
-    }]
-  }, {
-    title: "🤖 AI Tools",
-    description: "Powerful AI-driven tools for content creation, analysis, and automation. Leverage cutting-edge artificial intelligence for your creative and professional needs.",
-    tools: [{
-      title: "AI Content Writer",
-      description: "Generate high-quality blog posts, articles, and content using advanced AI",
-      icon: <SparklesIcon />,
-      path: "/tools/ai-content-writer"
-    }, {
-      title: "AI Email Generator",
-      description: "Create professional emails for any purpose with AI assistance",
-      icon: <Mail />,
-      path: "/tools/ai-email-generator"
-    }, {
-      title: "AI Image Analyzer",
-      description: "Analyze images and extract detailed insights using AI vision technology",
-      icon: <Eye />,
-      path: "/tools/ai-image-analyzer"
     }]
   }];
 

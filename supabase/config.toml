@@ -14,12 +14,3 @@ verify_jwt = false
 
 [functions.remove-watermark]
 verify_jwt = false
-
-[functions.ai-content-writer]
-verify_jwt = false
-
-[functions.ai-email-generator]
-verify_jwt = false
-
-[functions.ai-image-analyzer]
-verify_jwt = false
