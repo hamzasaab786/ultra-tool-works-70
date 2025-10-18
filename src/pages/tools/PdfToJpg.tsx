@@ -32,14 +32,19 @@ interface ConvertedPage {
   filename: string;
 }
 
+interface ProcessedFile {
+  id: string;
+  file: File;
+  pdfDocument: any;
+  totalPages: number;
+  previewPages: string[];
+  convertedPages: ConvertedPage[];
+  isConverting: boolean;
+  conversionProgress: number;
+}
+
 const PdfToJpg = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [pdfDocument, setPdfDocument] = useState<any>(null);
-  const [totalPages, setTotalPages] = useState(0);
-  const [isConverting, setIsConverting] = useState(false);
-  const [conversionProgress, setConversionProgress] = useState(0);
-  const [convertedPages, setConvertedPages] = useState<ConvertedPage[]>([]);
-  const [previewPages, setPreviewPages] = useState<string[]>([]);
+  const [processedFiles, setProcessedFiles] = useState<ProcessedFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   
   const [settings, setSettings] = useState<ConversionSettings>({
@@ -51,98 +56,93 @@ const PdfToJpg = () => {
   });
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (!file) return;
+    const validFiles = acceptedFiles.filter(file => {
+      if (file.type !== 'application/pdf') {
+        toast({
+          title: 'Invalid file type',
+          description: `${file.name} is not a PDF file`,
+          variant: 'destructive',
+        });
+        return false;
+      }
+      if (file.size > 50 * 1024 * 1024) {
+        toast({
+          title: 'File too large',
+          description: `${file.name} exceeds 50MB limit`,
+          variant: 'destructive',
+        });
+        return false;
+      }
+      return true;
+    });
 
-    console.log('File selected:', file.name, file.type, file.size);
+    if (validFiles.length === 0) return;
 
-    if (file.type !== 'application/pdf') {
-      toast({
-        title: 'Invalid file type',
-        description: 'Please select a PDF file',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    if (file.size > 50 * 1024 * 1024) {
-      toast({
-        title: 'File too large',
-        description: 'Please select a PDF file smaller than 50MB',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    setSelectedFile(file);
-    setConvertedPages([]);
-    setPreviewPages([]);
     setIsLoading(true);
 
-    try {
-      console.log('Starting PDF loading...');
-      const arrayBuffer = await file.arrayBuffer();
-      console.log('ArrayBuffer created, size:', arrayBuffer.byteLength);
-      
-      const loadingTask = pdfjsLib.getDocument({ 
-        data: arrayBuffer,
-        verbosity: 0,
-        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
-        cMapPacked: true,
-      });
-      
-      console.log('Loading task created...');
-      const pdf = await loadingTask.promise;
-      console.log('PDF loaded successfully, pages:', pdf.numPages);
-      
-      setPdfDocument(pdf);
-      setTotalPages(pdf.numPages);
+    for (const file of validFiles) {
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = pdfjsLib.getDocument({ 
+          data: arrayBuffer,
+          verbosity: 0,
+          cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
+          cMapPacked: true,
+        });
+        
+        const pdf = await loadingTask.promise;
 
-      // Generate previews for first 3 pages
-      const previews: string[] = [];
-      const maxPreviews = Math.min(3, pdf.numPages);
-      
-      for (let i = 1; i <= maxPreviews; i++) {
-        try {
-          console.log('Generating preview for page:', i);
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 0.5 });
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d')!;
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
+        // Generate previews for first 3 pages
+        const previews: string[] = [];
+        const maxPreviews = Math.min(3, pdf.numPages);
+        
+        for (let i = 1; i <= maxPreviews; i++) {
+          try {
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 0.5 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d')!;
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-          await page.render({
-            canvasContext: context,
-            viewport: viewport,
-          }).promise;
+            await page.render({
+              canvasContext: context,
+              viewport: viewport,
+            }).promise;
 
-          previews.push(canvas.toDataURL('image/jpeg', 0.8));
-          console.log('Preview generated for page:', i);
-        } catch (pageError) {
-          console.error('Error generating preview for page', i, pageError);
+            previews.push(canvas.toDataURL('image/jpeg', 0.8));
+          } catch (pageError) {
+            console.error('Error generating preview for page', i, pageError);
+          }
         }
+
+        const processedFile: ProcessedFile = {
+          id: Math.random().toString(36).substr(2, 9),
+          file,
+          pdfDocument: pdf,
+          totalPages: pdf.numPages,
+          previewPages: previews,
+          convertedPages: [],
+          isConverting: false,
+          conversionProgress: 0,
+        };
+
+        setProcessedFiles(prev => [...prev, processedFile]);
+      } catch (error) {
+        console.error('Error loading PDF:', error);
+        toast({
+          title: 'Error loading PDF',
+          description: `Failed to load ${file.name}`,
+          variant: 'destructive',
+        });
       }
-      
-      setPreviewPages(previews);
-      
-      toast({
-        title: 'PDF loaded successfully',
-        description: `Found ${pdf.numPages} pages`,
-      });
-    } catch (error) {
-      console.error('Detailed PDF loading error:', error);
-      toast({
-        title: 'Error loading PDF',
-        description: 'Failed to load PDF. The file might be corrupted or password-protected.',
-        variant: 'destructive',
-      });
-      setSelectedFile(null);
-      setPdfDocument(null);
-      setTotalPages(0);
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
+    toast({
+      title: 'PDFs loaded',
+      description: `Successfully loaded ${validFiles.length} PDF file(s)`,
+    });
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -150,25 +150,28 @@ const PdfToJpg = () => {
     accept: {
       'application/pdf': ['.pdf']
     },
-    multiple: false,
+    multiple: true,
   });
 
-  const convertPdfToImages = async () => {
-    if (!pdfDocument || !selectedFile) return;
+  const convertPdfToImages = async (fileId: string) => {
+    const fileIndex = processedFiles.findIndex(f => f.id === fileId);
+    if (fileIndex === -1) return;
 
-    setIsConverting(true);
-    setConversionProgress(0);
-    setConvertedPages([]);
+    const processedFile = processedFiles[fileIndex];
+    
+    setProcessedFiles(prev => prev.map(f => 
+      f.id === fileId ? { ...f, isConverting: true, conversionProgress: 0, convertedPages: [] } : f
+    ));
 
     try {
-      const pagesToConvert = getPageNumbers();
+      const pagesToConvert = getPageNumbers(processedFile.totalPages);
       const converted: ConvertedPage[] = [];
 
       for (let i = 0; i < pagesToConvert.length; i++) {
         const pageNum = pagesToConvert[i];
         
         try {
-          const page = await pdfDocument.getPage(pageNum);
+          const page = await processedFile.pdfDocument.getPage(pageNum);
           
           const scale = settings.dpi / 72;
           const viewport = page.getViewport({ scale });
@@ -190,7 +193,7 @@ const PdfToJpg = () => {
           });
 
           const dataUrl = canvas.toDataURL(`image/${settings.format}`, settings.format === 'jpg' ? settings.quality / 100 : 1);
-          const filename = `${selectedFile.name.replace('.pdf', '')}_page_${pageNum}.${settings.format}`;
+          const filename = `${processedFile.file.name.replace('.pdf', '')}_page_${pageNum}.${settings.format}`;
 
           converted.push({
             pageNumber: pageNum,
@@ -203,28 +206,41 @@ const PdfToJpg = () => {
           console.error('Error converting page', pageNum, pageError);
         }
 
-        setConversionProgress(((i + 1) / pagesToConvert.length) * 100);
+        setProcessedFiles(prev => prev.map(f =>
+          f.id === fileId ? { ...f, conversionProgress: ((i + 1) / pagesToConvert.length) * 100 } : f
+        ));
       }
 
-      setConvertedPages(converted);
+      setProcessedFiles(prev => prev.map(f =>
+        f.id === fileId ? { ...f, convertedPages: converted, isConverting: false } : f
+      ));
       
       toast({
         title: 'Conversion completed',
-        description: `Successfully converted ${converted.length} pages`,
+        description: `Successfully converted ${converted.length} pages from ${processedFile.file.name}`,
       });
     } catch (error) {
       console.error('Conversion error:', error);
+      setProcessedFiles(prev => prev.map(f =>
+        f.id === fileId ? { ...f, isConverting: false } : f
+      ));
       toast({
         title: 'Conversion failed',
         description: 'An error occurred during conversion. Please try again.',
         variant: 'destructive',
       });
-    } finally {
-      setIsConverting(false);
     }
   };
 
-  const getPageNumbers = (): number[] => {
+  const convertAllFiles = async () => {
+    for (const file of processedFiles) {
+      if (file.convertedPages.length === 0) {
+        await convertPdfToImages(file.id);
+      }
+    }
+  };
+
+  const getPageNumbers = (totalPages: number): number[] => {
     if (settings.pageRange === 'all') {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
@@ -263,7 +279,11 @@ const PdfToJpg = () => {
     URL.revokeObjectURL(url);
   };
 
-  const downloadAll = async () => {
+  const downloadAll = async (fileId: string) => {
+    const processedFile = processedFiles.find(f => f.id === fileId);
+    if (!processedFile) return;
+
+    const convertedPages = processedFile.convertedPages;
     if (convertedPages.length === 1) {
       downloadSingle(convertedPages[0]);
       return;
@@ -276,18 +296,24 @@ const PdfToJpg = () => {
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${convertedPages.length} images`,
+      description: `Downloaded ${convertedPages.length} images from ${processedFile.file.name}`,
     });
   };
 
+  const downloadAllConverted = async () => {
+    for (const file of processedFiles) {
+      if (file.convertedPages.length > 0) {
+        await downloadAll(file.id);
+      }
+    }
+  };
+
+  const removeFile = (fileId: string) => {
+    setProcessedFiles(prev => prev.filter(f => f.id !== fileId));
+  };
+
   const resetTool = () => {
-    setSelectedFile(null);
-    setPdfDocument(null);
-    setTotalPages(0);
-    setConvertedPages([]);
-    setPreviewPages([]);
-    setConversionProgress(0);
-    setIsConverting(false);
+    setProcessedFiles([]);
     setIsLoading(false);
   };
 
@@ -335,63 +361,80 @@ const PdfToJpg = () => {
               <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-center justify-center space-x-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                  <span className="text-blue-800">Loading PDF...</span>
+                  <span className="text-blue-800">Loading PDFs...</span>
                 </div>
               </div>
             )}
 
-            {selectedFile && !isLoading && (
-              <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-green-800">{selectedFile.name}</p>
-                    <p className="text-sm text-green-600">
-                      {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {totalPages} pages
-                    </p>
-                  </div>
+            {processedFiles.length > 0 && !isLoading && (
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-gray-700">
+                    {processedFiles.length} PDF file(s) loaded
+                  </p>
                   <Button variant="outline" size="sm" onClick={resetTool}>
-                    Change File
+                    Clear All
                   </Button>
                 </div>
+                {processedFiles.map((file) => (
+                  <div key={file.id} className="p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="font-medium text-green-800 text-sm">{file.file.name}</p>
+                        <p className="text-xs text-green-600">
+                          {(file.file.size / (1024 * 1024)).toFixed(2)} MB • {file.totalPages} pages
+                        </p>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => removeFile(file.id)}>
+                        Remove
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Preview Section */}
-        {previewPages.length > 0 && (
+        {processedFiles.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>PDF Preview</CardTitle>
+              <CardTitle>PDF Previews</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {previewPages.map((preview, index) => (
-                  <div key={index} className="border rounded-lg overflow-hidden">
-                    <img
-                      src={preview}
-                      alt={`Page ${index + 1}`}
-                      className="w-full h-auto max-h-64 object-contain"
-                    />
-                    <div className="p-2 bg-gray-50 text-center text-sm">
-                      Page {index + 1}
-                    </div>
+            <CardContent className="space-y-6">
+              {processedFiles.map((file) => (
+                <div key={file.id} className="space-y-2">
+                  <p className="font-medium text-sm">{file.file.name}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {file.previewPages.map((preview, index) => (
+                      <div key={index} className="border rounded-lg overflow-hidden">
+                        <img
+                          src={preview}
+                          alt={`Page ${index + 1}`}
+                          className="w-full h-auto max-h-64 object-contain"
+                        />
+                        <div className="p-2 bg-gray-50 text-center text-sm">
+                          Page {index + 1}
+                        </div>
+                      </div>
+                    ))}
+                    {file.totalPages > 3 && (
+                      <div className="border rounded-lg p-8 flex items-center justify-center bg-gray-50">
+                        <div className="text-center text-gray-500">
+                          <p className="font-medium">+{file.totalPages - 3} more pages</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ))}
-                {totalPages > 3 && (
-                  <div className="border rounded-lg p-8 flex items-center justify-center bg-gray-50">
-                    <div className="text-center text-gray-500">
-                      <p className="font-medium">+{totalPages - 3} more pages</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         )}
 
         {/* Settings Section */}
-        {selectedFile && !isLoading && (
+        {processedFiles.length > 0 && !isLoading && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -492,81 +535,101 @@ const PdfToJpg = () => {
         )}
 
         {/* Convert Button */}
-        {selectedFile && !isConverting && !isLoading && (
+        {processedFiles.length > 0 && !isLoading && (
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-6 space-y-4">
+              {processedFiles.map((file) => (
+                <div key={file.id} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">{file.file.name}</p>
+                    {file.isConverting && (
+                      <span className="text-sm text-blue-600">Converting...</span>
+                    )}
+                    {file.convertedPages.length > 0 && !file.isConverting && (
+                      <span className="text-sm text-green-600">✓ Converted</span>
+                    )}
+                  </div>
+                  {file.isConverting && (
+                    <Progress value={file.conversionProgress} className="h-2" />
+                  )}
+                  {!file.isConverting && file.convertedPages.length === 0 && (
+                    <Button
+                      onClick={() => convertPdfToImages(file.id)}
+                      className="w-full"
+                      size="sm"
+                    >
+                      <Zap className="mr-2 h-4 w-4" />
+                      Convert This File
+                    </Button>
+                  )}
+                </div>
+              ))}
               <Button
-                onClick={convertPdfToImages}
+                onClick={convertAllFiles}
                 className="w-full h-12 text-lg"
-                disabled={!selectedFile || isConverting || isLoading}
+                disabled={processedFiles.length === 0 || isLoading}
               >
                 <Zap className="mr-2 h-5 w-5" />
-                Convert to {settings.format.toUpperCase()}
+                Convert All to {settings.format.toUpperCase()}
               </Button>
             </CardContent>
           </Card>
         )}
 
-        {/* Progress Section */}
-        {isConverting && (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Converting PDF pages...</span>
-                  <span>{Math.round(conversionProgress)}%</span>
-                </div>
-                <Progress value={conversionProgress} />
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Results Section */}
-        {convertedPages.length > 0 && (
+        {processedFiles.some(f => f.convertedPages.length > 0) && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Image className="h-5 w-5" />
-                Converted Images ({convertedPages.length})
+                Converted Images
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <p className="text-sm text-gray-600">
-                    Conversion completed successfully
-                  </p>
-                  <Button onClick={downloadAll} className="flex items-center gap-2">
-                    <Download className="h-4 w-4" />
-                    Download All
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {convertedPages.map((page) => (
-                    <div key={page.pageNumber} className="border rounded-lg overflow-hidden">
-                      <img
-                        src={page.dataUrl}
-                        alt={`Page ${page.pageNumber}`}
-                        className="w-full h-40 object-cover"
-                      />
-                      <div className="p-3 bg-gray-50">
-                        <p className="text-sm font-medium mb-2">Page {page.pageNumber}</p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => downloadSingle(page)}
-                          className="w-full"
-                        >
-                          <Download className="h-3 w-3 mr-1" />
-                          Download
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <CardContent className="space-y-6">
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-gray-600">
+                  {processedFiles.filter(f => f.convertedPages.length > 0).length} file(s) converted successfully
+                </p>
+                <Button onClick={downloadAllConverted} className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Download All
+                </Button>
               </div>
+
+              {processedFiles.filter(f => f.convertedPages.length > 0).map((file) => (
+                <div key={file.id} className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium text-sm">{file.file.name}</p>
+                    <Button onClick={() => downloadAll(file.id)} size="sm" variant="outline">
+                      <Download className="h-3 w-3 mr-1" />
+                      Download ({file.convertedPages.length})
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {file.convertedPages.map((page) => (
+                      <div key={page.pageNumber} className="border rounded-lg overflow-hidden">
+                        <img
+                          src={page.dataUrl}
+                          alt={`Page ${page.pageNumber}`}
+                          className="w-full h-40 object-cover"
+                        />
+                        <div className="p-3 bg-gray-50">
+                          <p className="text-sm font-medium mb-2">Page {page.pageNumber}</p>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => downloadSingle(page)}
+                            className="w-full"
+                          >
+                            <Download className="h-3 w-3 mr-1" />
+                            Download
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         )}
