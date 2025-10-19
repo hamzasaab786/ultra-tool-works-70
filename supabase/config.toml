@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.remove-watermark]
 verify_jwt = false
+
+[functions.ai-invoice-helper]
+verify_jwt = false

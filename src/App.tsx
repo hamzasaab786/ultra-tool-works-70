@@ -79,6 +79,7 @@ import DnsLookup from "@/pages/tools/DnsLookup";
 import IpGeolocation from "@/pages/tools/IpGeolocation";
 import CreditCardValidator from "@/pages/tools/CreditCardValidator";
 import EmojiPicker from "@/pages/tools/EmojiPicker";
+import InvoiceGenerator from "@/pages/tools/InvoiceGenerator";
 
 const App = () => {
   return (
@@ -161,6 +162,7 @@ const App = () => {
             <Route path="/tools/ip-geolocation" element={<IpGeolocation />} />
             <Route path="/tools/credit-card-validator" element={<CreditCardValidator />} />
             <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
+            <Route path="/tools/invoice-generator" element={<InvoiceGenerator />} />
 
             {/* Redirect removed tools to homepage */}
             <Route path="/tools/website-screenshot" element={<NotFound />} />

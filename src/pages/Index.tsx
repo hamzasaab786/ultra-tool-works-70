@@ -13,7 +13,7 @@ import {
   Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
   Volume2, Film, FileCode, Hash, CalendarRange, Zap as ZapIcon, Heart, 
   CreditCard, Archive, Search, Copy, Target, BarChart, Users, Repeat, 
-  Shield as ShieldIcon, Mic, Wifi, Scan, Crop
+  Shield as ShieldIcon, Mic, Wifi, Scan, Crop, FileText
 } from "lucide-react";
 
 const Index = () => {
@@ -222,6 +222,11 @@ const Index = () => {
       description: "Generate various types of barcodes for products and inventory",
       icon: <Target />,
       path: "/tools/barcode-generator"
+    }, {
+      title: "Invoice Generator",
+      description: "Create professional invoices with AI-powered features and automatic calculations",
+      icon: <FileText />,
+      path: "/tools/invoice-generator"
     }]
   }];
 
