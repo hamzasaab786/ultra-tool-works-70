@@ -11,6 +11,7 @@ import { FileText, Plus, Trash2, Download, Save, FolderOpen, Sparkles, Eye, Sett
 import ToolPageTemplate from "./ToolPageTemplate";
 import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface InvoiceItem {
   id: string;
@@ -235,119 +236,37 @@ const InvoiceGenerator = () => {
     }
   };
 
-  const downloadPDF = () => {
-    const pdf = new jsPDF();
-    let yPos = 20;
-
-    // Company Logo
-    if (invoice.companyLogo) {
-      pdf.addImage(invoice.companyLogo, "PNG", 20, yPos, 30, 30);
-      yPos += 35;
+  const downloadPDF = async () => {
+    const element = document.getElementById("invoice-preview");
+    if (!element) {
+      toast.error("Invoice preview not found!");
+      return;
     }
 
-    // Title
-    pdf.setFontSize(24);
-    pdf.text("INVOICE", 20, yPos);
-    yPos += 15;
+    try {
+      toast.info("Generating PDF...");
+      
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
 
-    // Invoice Details
-    pdf.setFontSize(10);
-    pdf.text(`Invoice #: ${invoice.invoiceNumber}`, 20, yPos);
-    pdf.text(`Date: ${invoice.invoiceDate}`, 120, yPos);
-    yPos += 7;
-    pdf.text(`Due Date: ${invoice.dueDate}`, 120, yPos);
-    yPos += 15;
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: canvas.width > canvas.height ? "landscape" : "portrait",
+        unit: "px",
+        format: [canvas.width, canvas.height],
+      });
 
-    // Company Info
-    pdf.setFontSize(12);
-    pdf.text("From:", 20, yPos);
-    yPos += 7;
-    pdf.setFontSize(10);
-    pdf.text(invoice.companyName, 20, yPos);
-    yPos += 5;
-    pdf.text(invoice.companyEmail, 20, yPos);
-    yPos += 5;
-    pdf.text(invoice.companyPhone, 20, yPos);
-    yPos += 5;
-    const companyAddressLines = pdf.splitTextToSize(invoice.companyAddress, 80);
-    pdf.text(companyAddressLines, 20, yPos);
-    yPos += companyAddressLines.length * 5 + 10;
-
-    // Client Info
-    pdf.setFontSize(12);
-    pdf.text("Bill To:", 20, yPos);
-    yPos += 7;
-    pdf.setFontSize(10);
-    pdf.text(invoice.clientName, 20, yPos);
-    yPos += 5;
-    pdf.text(invoice.clientEmail, 20, yPos);
-    yPos += 5;
-    pdf.text(invoice.clientPhone, 20, yPos);
-    yPos += 5;
-    const clientAddressLines = pdf.splitTextToSize(invoice.clientAddress, 80);
-    pdf.text(clientAddressLines, 20, yPos);
-    yPos += clientAddressLines.length * 5 + 10;
-
-    // Items Table
-    pdf.setFontSize(10);
-    pdf.text("Description", 20, yPos);
-    pdf.text("Qty", 110, yPos);
-    pdf.text("Rate", 130, yPos);
-    pdf.text("Tax%", 150, yPos);
-    pdf.text("Amount", 170, yPos);
-    yPos += 7;
-    pdf.line(20, yPos, 190, yPos);
-    yPos += 7;
-
-    invoice.items.forEach(item => {
-      const descLines = pdf.splitTextToSize(item.description, 85);
-      pdf.text(descLines, 20, yPos);
-      pdf.text(item.quantity.toString(), 110, yPos);
-      pdf.text(`${invoice.currency} ${item.rate.toFixed(2)}`, 130, yPos);
-      pdf.text(`${item.taxRate}%`, 150, yPos);
-      pdf.text(`${invoice.currency} ${item.amount.toFixed(2)}`, 170, yPos);
-      yPos += Math.max(descLines.length * 5, 7) + 5;
-    });
-
-    yPos += 5;
-    pdf.line(20, yPos, 190, yPos);
-    yPos += 10;
-
-    // Totals
-    pdf.text(`Subtotal:`, 130, yPos);
-    pdf.text(`${invoice.currency} ${invoice.subtotal.toFixed(2)}`, 170, yPos);
-    yPos += 7;
-    pdf.text(`Tax:`, 130, yPos);
-    pdf.text(`${invoice.currency} ${invoice.totalTax.toFixed(2)}`, 170, yPos);
-    yPos += 7;
-    pdf.text(`Discount:`, 130, yPos);
-    pdf.text(`${invoice.currency} ${invoice.totalDiscount.toFixed(2)}`, 170, yPos);
-    yPos += 7;
-    pdf.setFontSize(12);
-    pdf.text(`Total:`, 130, yPos);
-    pdf.text(`${invoice.currency} ${invoice.total.toFixed(2)}`, 170, yPos);
-    yPos += 15;
-
-    // Payment Terms
-    if (invoice.paymentTerms) {
-      pdf.setFontSize(10);
-      pdf.text("Payment Terms:", 20, yPos);
-      yPos += 7;
-      const termsLines = pdf.splitTextToSize(invoice.paymentTerms, 170);
-      pdf.text(termsLines, 20, yPos);
-      yPos += termsLines.length * 5 + 10;
+      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+      pdf.save(`${invoice.invoiceNumber}.pdf`);
+      toast.success("Invoice downloaded as PDF!");
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      toast.error("Failed to generate PDF");
     }
-
-    // Notes
-    if (invoice.notes) {
-      pdf.text("Notes:", 20, yPos);
-      yPos += 7;
-      const notesLines = pdf.splitTextToSize(invoice.notes, 170);
-      pdf.text(notesLines, 20, yPos);
-    }
-
-    pdf.save(`${invoice.invoiceNumber}.pdf`);
-    toast.success("Invoice downloaded as PDF!");
   };
 
   const createNewInvoice = () => {
@@ -397,13 +316,15 @@ const InvoiceGenerator = () => {
     const borderRadiusMap = { none: "rounded-none", small: "rounded-sm", medium: "rounded-md", large: "rounded-lg" };
     
     return (
-      <div 
-        className={`bg-background border-2 shadow-2xl ${borderRadiusMap[invoice.theme.borderRadius as keyof typeof borderRadiusMap]} overflow-hidden max-w-4xl mx-auto`}
-        style={{ 
-          fontFamily: invoice.theme.fontFamily,
-          borderColor: invoice.theme.primaryColor,
-        }}
-      >
+      <div className="space-y-6">
+        <div 
+          id="invoice-preview"
+          className={`bg-background border-2 shadow-2xl ${borderRadiusMap[invoice.theme.borderRadius as keyof typeof borderRadiusMap]} overflow-hidden max-w-4xl mx-auto`}
+          style={{ 
+            fontFamily: invoice.theme.fontFamily,
+            borderColor: invoice.theme.primaryColor,
+          }}
+        >
         {/* Header */}
         <div 
           className="p-8 text-white relative overflow-hidden"
@@ -556,6 +477,15 @@ const InvoiceGenerator = () => {
         >
           <p className="opacity-90">{invoice.companyAddress}</p>
           <p className="text-sm opacity-75 mt-2">Thank you for your business!</p>
+        </div>
+        </div>
+        
+        {/* Download Button below invoice */}
+        <div className="flex justify-center">
+          <Button onClick={downloadPDF} size="lg" className="gap-2">
+            <Download className="h-5 w-5" />
+            Download Invoice as PDF
+          </Button>
         </div>
       </div>
     );
@@ -902,12 +832,166 @@ const InvoiceGenerator = () => {
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USD">USD ($)</SelectItem>
-                      <SelectItem value="EUR">EUR (€)</SelectItem>
-                      <SelectItem value="GBP">GBP (£)</SelectItem>
-                      <SelectItem value="PKR">PKR (₨)</SelectItem>
-                      <SelectItem value="INR">INR (₹)</SelectItem>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
+                      <SelectItem value="AED">AED (د.إ) - UAE Dirham</SelectItem>
+                      <SelectItem value="AFN">AFN (؋) - Afghan Afghani</SelectItem>
+                      <SelectItem value="ALL">ALL (L) - Albanian Lek</SelectItem>
+                      <SelectItem value="AMD">AMD (֏) - Armenian Dram</SelectItem>
+                      <SelectItem value="ANG">ANG (ƒ) - Netherlands Antillean Guilder</SelectItem>
+                      <SelectItem value="AOA">AOA (Kz) - Angolan Kwanza</SelectItem>
+                      <SelectItem value="ARS">ARS ($) - Argentine Peso</SelectItem>
+                      <SelectItem value="AUD">AUD ($) - Australian Dollar</SelectItem>
+                      <SelectItem value="AWG">AWG (ƒ) - Aruban Florin</SelectItem>
+                      <SelectItem value="AZN">AZN (₼) - Azerbaijani Manat</SelectItem>
+                      <SelectItem value="BAM">BAM (KM) - Bosnia-Herzegovina Convertible Mark</SelectItem>
+                      <SelectItem value="BBD">BBD ($) - Barbadian Dollar</SelectItem>
+                      <SelectItem value="BDT">BDT (৳) - Bangladeshi Taka</SelectItem>
+                      <SelectItem value="BGN">BGN (лв) - Bulgarian Lev</SelectItem>
+                      <SelectItem value="BHD">BHD (.د.ب) - Bahraini Dinar</SelectItem>
+                      <SelectItem value="BIF">BIF (Fr) - Burundian Franc</SelectItem>
+                      <SelectItem value="BMD">BMD ($) - Bermudian Dollar</SelectItem>
+                      <SelectItem value="BND">BND ($) - Brunei Dollar</SelectItem>
+                      <SelectItem value="BOB">BOB (Bs.) - Bolivian Boliviano</SelectItem>
+                      <SelectItem value="BRL">BRL (R$) - Brazilian Real</SelectItem>
+                      <SelectItem value="BSD">BSD ($) - Bahamian Dollar</SelectItem>
+                      <SelectItem value="BTN">BTN (Nu.) - Bhutanese Ngultrum</SelectItem>
+                      <SelectItem value="BWP">BWP (P) - Botswanan Pula</SelectItem>
+                      <SelectItem value="BYN">BYN (Br) - Belarusian Ruble</SelectItem>
+                      <SelectItem value="BZD">BZD ($) - Belize Dollar</SelectItem>
+                      <SelectItem value="CAD">CAD ($) - Canadian Dollar</SelectItem>
+                      <SelectItem value="CDF">CDF (Fr) - Congolese Franc</SelectItem>
+                      <SelectItem value="CHF">CHF (Fr) - Swiss Franc</SelectItem>
+                      <SelectItem value="CLP">CLP ($) - Chilean Peso</SelectItem>
+                      <SelectItem value="CNY">CNY (¥) - Chinese Yuan</SelectItem>
+                      <SelectItem value="COP">COP ($) - Colombian Peso</SelectItem>
+                      <SelectItem value="CRC">CRC (₡) - Costa Rican Colón</SelectItem>
+                      <SelectItem value="CUP">CUP ($) - Cuban Peso</SelectItem>
+                      <SelectItem value="CVE">CVE ($) - Cape Verdean Escudo</SelectItem>
+                      <SelectItem value="CZK">CZK (Kč) - Czech Koruna</SelectItem>
+                      <SelectItem value="DJF">DJF (Fr) - Djiboutian Franc</SelectItem>
+                      <SelectItem value="DKK">DKK (kr) - Danish Krone</SelectItem>
+                      <SelectItem value="DOP">DOP ($) - Dominican Peso</SelectItem>
+                      <SelectItem value="DZD">DZD (د.ج) - Algerian Dinar</SelectItem>
+                      <SelectItem value="EGP">EGP (£) - Egyptian Pound</SelectItem>
+                      <SelectItem value="ERN">ERN (Nfk) - Eritrean Nakfa</SelectItem>
+                      <SelectItem value="ETB">ETB (Br) - Ethiopian Birr</SelectItem>
+                      <SelectItem value="EUR">EUR (€) - Euro</SelectItem>
+                      <SelectItem value="FJD">FJD ($) - Fijian Dollar</SelectItem>
+                      <SelectItem value="FKP">FKP (£) - Falkland Islands Pound</SelectItem>
+                      <SelectItem value="FOK">FOK (kr) - Faroese Króna</SelectItem>
+                      <SelectItem value="GBP">GBP (£) - British Pound Sterling</SelectItem>
+                      <SelectItem value="GEL">GEL (₾) - Georgian Lari</SelectItem>
+                      <SelectItem value="GGP">GGP (£) - Guernsey Pound</SelectItem>
+                      <SelectItem value="GHS">GHS (₵) - Ghanaian Cedi</SelectItem>
+                      <SelectItem value="GIP">GIP (£) - Gibraltar Pound</SelectItem>
+                      <SelectItem value="GMD">GMD (D) - Gambian Dalasi</SelectItem>
+                      <SelectItem value="GNF">GNF (Fr) - Guinean Franc</SelectItem>
+                      <SelectItem value="GTQ">GTQ (Q) - Guatemalan Quetzal</SelectItem>
+                      <SelectItem value="GYD">GYD ($) - Guyanese Dollar</SelectItem>
+                      <SelectItem value="HKD">HKD ($) - Hong Kong Dollar</SelectItem>
+                      <SelectItem value="HNL">HNL (L) - Honduran Lempira</SelectItem>
+                      <SelectItem value="HRK">HRK (kn) - Croatian Kuna</SelectItem>
+                      <SelectItem value="HTG">HTG (G) - Haitian Gourde</SelectItem>
+                      <SelectItem value="HUF">HUF (Ft) - Hungarian Forint</SelectItem>
+                      <SelectItem value="IDR">IDR (Rp) - Indonesian Rupiah</SelectItem>
+                      <SelectItem value="IMP">IMP (£) - Isle of Man Pound</SelectItem>
+                      <SelectItem value="INR">INR (₹) - Indian Rupee</SelectItem>
+                      <SelectItem value="IQD">IQD (ع.د) - Iraqi Dinar</SelectItem>
+                      <SelectItem value="IRR">IRR (﷼) - Iranian Rial</SelectItem>
+                      <SelectItem value="ISK">ISK (kr) - Icelandic Króna</SelectItem>
+                      <SelectItem value="JEP">JEP (£) - Jersey Pound</SelectItem>
+                      <SelectItem value="JMD">JMD ($) - Jamaican Dollar</SelectItem>
+                      <SelectItem value="JOD">JOD (د.ا) - Jordanian Dinar</SelectItem>
+                      <SelectItem value="JPY">JPY (¥) - Japanese Yen</SelectItem>
+                      <SelectItem value="KES">KES (Sh) - Kenyan Shilling</SelectItem>
+                      <SelectItem value="KGS">KGS (с) - Kyrgyzstani Som</SelectItem>
+                      <SelectItem value="KHR">KHR (៛) - Cambodian Riel</SelectItem>
+                      <SelectItem value="KID">KID ($) - Kiribati Dollar</SelectItem>
+                      <SelectItem value="KMF">KMF (Fr) - Comorian Franc</SelectItem>
+                      <SelectItem value="KRW">KRW (₩) - South Korean Won</SelectItem>
+                      <SelectItem value="KWD">KWD (د.ك) - Kuwaiti Dinar</SelectItem>
+                      <SelectItem value="KYD">KYD ($) - Cayman Islands Dollar</SelectItem>
+                      <SelectItem value="KZT">KZT (₸) - Kazakhstani Tenge</SelectItem>
+                      <SelectItem value="LAK">LAK (₭) - Lao Kip</SelectItem>
+                      <SelectItem value="LBP">LBP (ل.ل) - Lebanese Pound</SelectItem>
+                      <SelectItem value="LKR">LKR (Rs) - Sri Lankan Rupee</SelectItem>
+                      <SelectItem value="LRD">LRD ($) - Liberian Dollar</SelectItem>
+                      <SelectItem value="LSL">LSL (L) - Lesotho Loti</SelectItem>
+                      <SelectItem value="LYD">LYD (ل.د) - Libyan Dinar</SelectItem>
+                      <SelectItem value="MAD">MAD (د.م.) - Moroccan Dirham</SelectItem>
+                      <SelectItem value="MDL">MDL (L) - Moldovan Leu</SelectItem>
+                      <SelectItem value="MGA">MGA (Ar) - Malagasy Ariary</SelectItem>
+                      <SelectItem value="MKD">MKD (ден) - Macedonian Denar</SelectItem>
+                      <SelectItem value="MMK">MMK (K) - Myanmar Kyat</SelectItem>
+                      <SelectItem value="MNT">MNT (₮) - Mongolian Tögrög</SelectItem>
+                      <SelectItem value="MOP">MOP (P) - Macanese Pataca</SelectItem>
+                      <SelectItem value="MRU">MRU (UM) - Mauritanian Ouguiya</SelectItem>
+                      <SelectItem value="MUR">MUR (₨) - Mauritian Rupee</SelectItem>
+                      <SelectItem value="MVR">MVR (ރ.) - Maldivian Rufiyaa</SelectItem>
+                      <SelectItem value="MWK">MWK (MK) - Malawian Kwacha</SelectItem>
+                      <SelectItem value="MXN">MXN ($) - Mexican Peso</SelectItem>
+                      <SelectItem value="MYR">MYR (RM) - Malaysian Ringgit</SelectItem>
+                      <SelectItem value="MZN">MZN (MT) - Mozambican Metical</SelectItem>
+                      <SelectItem value="NAD">NAD ($) - Namibian Dollar</SelectItem>
+                      <SelectItem value="NGN">NGN (₦) - Nigerian Naira</SelectItem>
+                      <SelectItem value="NIO">NIO (C$) - Nicaraguan Córdoba</SelectItem>
+                      <SelectItem value="NOK">NOK (kr) - Norwegian Krone</SelectItem>
+                      <SelectItem value="NPR">NPR (₨) - Nepalese Rupee</SelectItem>
+                      <SelectItem value="NZD">NZD ($) - New Zealand Dollar</SelectItem>
+                      <SelectItem value="OMR">OMR (ر.ع.) - Omani Rial</SelectItem>
+                      <SelectItem value="PAB">PAB (B/.) - Panamanian Balboa</SelectItem>
+                      <SelectItem value="PEN">PEN (S/.) - Peruvian Sol</SelectItem>
+                      <SelectItem value="PGK">PGK (K) - Papua New Guinean Kina</SelectItem>
+                      <SelectItem value="PHP">PHP (₱) - Philippine Peso</SelectItem>
+                      <SelectItem value="PKR">PKR (₨) - Pakistani Rupee</SelectItem>
+                      <SelectItem value="PLN">PLN (zł) - Polish Złoty</SelectItem>
+                      <SelectItem value="PYG">PYG (₲) - Paraguayan Guaraní</SelectItem>
+                      <SelectItem value="QAR">QAR (ر.ق) - Qatari Riyal</SelectItem>
+                      <SelectItem value="RON">RON (lei) - Romanian Leu</SelectItem>
+                      <SelectItem value="RSD">RSD (дин) - Serbian Dinar</SelectItem>
+                      <SelectItem value="RUB">RUB (₽) - Russian Ruble</SelectItem>
+                      <SelectItem value="RWF">RWF (Fr) - Rwandan Franc</SelectItem>
+                      <SelectItem value="SAR">SAR (ر.س) - Saudi Riyal</SelectItem>
+                      <SelectItem value="SBD">SBD ($) - Solomon Islands Dollar</SelectItem>
+                      <SelectItem value="SCR">SCR (₨) - Seychellois Rupee</SelectItem>
+                      <SelectItem value="SDG">SDG (£) - Sudanese Pound</SelectItem>
+                      <SelectItem value="SEK">SEK (kr) - Swedish Krona</SelectItem>
+                      <SelectItem value="SGD">SGD ($) - Singapore Dollar</SelectItem>
+                      <SelectItem value="SHP">SHP (£) - Saint Helena Pound</SelectItem>
+                      <SelectItem value="SLL">SLL (Le) - Sierra Leonean Leone</SelectItem>
+                      <SelectItem value="SOS">SOS (Sh) - Somali Shilling</SelectItem>
+                      <SelectItem value="SRD">SRD ($) - Surinamese Dollar</SelectItem>
+                      <SelectItem value="SSP">SSP (£) - South Sudanese Pound</SelectItem>
+                      <SelectItem value="STN">STN (Db) - São Tomé and Príncipe Dobra</SelectItem>
+                      <SelectItem value="SYP">SYP (£) - Syrian Pound</SelectItem>
+                      <SelectItem value="SZL">SZL (L) - Eswatini Lilangeni</SelectItem>
+                      <SelectItem value="THB">THB (฿) - Thai Baht</SelectItem>
+                      <SelectItem value="TJS">TJS (ЅМ) - Tajikistani Somoni</SelectItem>
+                      <SelectItem value="TMT">TMT (m) - Turkmenistan Manat</SelectItem>
+                      <SelectItem value="TND">TND (د.ت) - Tunisian Dinar</SelectItem>
+                      <SelectItem value="TOP">TOP (T$) - Tongan Paʻanga</SelectItem>
+                      <SelectItem value="TRY">TRY (₺) - Turkish Lira</SelectItem>
+                      <SelectItem value="TTD">TTD ($) - Trinidad and Tobago Dollar</SelectItem>
+                      <SelectItem value="TVD">TVD ($) - Tuvaluan Dollar</SelectItem>
+                      <SelectItem value="TWD">TWD ($) - New Taiwan Dollar</SelectItem>
+                      <SelectItem value="TZS">TZS (Sh) - Tanzanian Shilling</SelectItem>
+                      <SelectItem value="UAH">UAH (₴) - Ukrainian Hryvnia</SelectItem>
+                      <SelectItem value="UGX">UGX (Sh) - Ugandan Shilling</SelectItem>
+                      <SelectItem value="USD">USD ($) - US Dollar</SelectItem>
+                      <SelectItem value="UYU">UYU ($) - Uruguayan Peso</SelectItem>
+                      <SelectItem value="UZS">UZS (so'm) - Uzbekistani Som</SelectItem>
+                      <SelectItem value="VES">VES (Bs.S.) - Venezuelan Bolívar</SelectItem>
+                      <SelectItem value="VND">VND (₫) - Vietnamese Đồng</SelectItem>
+                      <SelectItem value="VUV">VUV (Vt) - Vanuatu Vatu</SelectItem>
+                      <SelectItem value="WST">WST (T) - Samoan Tālā</SelectItem>
+                      <SelectItem value="XAF">XAF (Fr) - Central African CFA Franc</SelectItem>
+                      <SelectItem value="XCD">XCD ($) - East Caribbean Dollar</SelectItem>
+                      <SelectItem value="XOF">XOF (Fr) - West African CFA Franc</SelectItem>
+                      <SelectItem value="XPF">XPF (₣) - CFP Franc</SelectItem>
+                      <SelectItem value="YER">YER (﷼) - Yemeni Rial</SelectItem>
+                      <SelectItem value="ZAR">ZAR (R) - South African Rand</SelectItem>
+                      <SelectItem value="ZMW">ZMW (ZK) - Zambian Kwacha</SelectItem>
+                      <SelectItem value="ZWL">ZWL ($) - Zimbabwean Dollar</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
