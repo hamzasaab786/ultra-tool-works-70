@@ -41,16 +41,25 @@ interface Invoice {
   companyPhone: string;
   companyAddress: string;
   companyLogo?: string;
+  companyTaxId?: string;
+  companyRegNumber?: string;
+  companyWebsite?: string;
+  bankName?: string;
+  bankAccountNumber?: string;
+  bankRoutingNumber?: string;
+  bankSwiftCode?: string;
   clientName: string;
   clientEmail: string;
   clientPhone: string;
   clientAddress: string;
+  clientTaxId?: string;
   items: InvoiceItem[];
   currency: string;
   discountType: "percentage" | "fixed";
   discountValue: number;
   paymentTerms: string;
   notes: string;
+  termsAndConditions?: string;
   subtotal: number;
   totalTax: number;
   totalDiscount: number;
@@ -68,27 +77,36 @@ const InvoiceGenerator = () => {
     companyEmail: "",
     companyPhone: "",
     companyAddress: "",
+    companyTaxId: "",
+    companyRegNumber: "",
+    companyWebsite: "",
+    bankName: "",
+    bankAccountNumber: "",
+    bankRoutingNumber: "",
+    bankSwiftCode: "",
     clientName: "",
     clientEmail: "",
     clientPhone: "",
     clientAddress: "",
+    clientTaxId: "",
     items: [],
     currency: "USD",
     discountType: "percentage",
     discountValue: 0,
-    paymentTerms: "",
+    paymentTerms: "Payment due within 30 days",
     notes: "",
+    termsAndConditions: "",
     subtotal: 0,
     totalTax: 0,
     totalDiscount: 0,
     total: 0,
     theme: {
-      primaryColor: "#6366f1",
-      secondaryColor: "#8b5cf6",
-      accentColor: "#ec4899",
-      fontFamily: "Inter",
+      primaryColor: "#1e40af",
+      secondaryColor: "#3b82f6",
+      accentColor: "#0ea5e9",
+      fontFamily: "Arial",
       fontSize: "medium",
-      borderRadius: "medium",
+      borderRadius: "small",
     },
   });
 
@@ -279,27 +297,36 @@ const InvoiceGenerator = () => {
       companyEmail: "",
       companyPhone: "",
       companyAddress: "",
+      companyTaxId: "",
+      companyRegNumber: "",
+      companyWebsite: "",
+      bankName: "",
+      bankAccountNumber: "",
+      bankRoutingNumber: "",
+      bankSwiftCode: "",
       clientName: "",
       clientEmail: "",
       clientPhone: "",
       clientAddress: "",
+      clientTaxId: "",
       items: [],
       currency: "USD",
       discountType: "percentage",
       discountValue: 0,
-      paymentTerms: "",
+      paymentTerms: "Payment due within 30 days",
       notes: "",
+      termsAndConditions: "",
       subtotal: 0,
       totalTax: 0,
       totalDiscount: 0,
       total: 0,
       theme: {
-        primaryColor: "#6366f1",
-        secondaryColor: "#8b5cf6",
-        accentColor: "#ec4899",
-        fontFamily: "Inter",
+        primaryColor: "#1e40af",
+        secondaryColor: "#3b82f6",
+        accentColor: "#0ea5e9",
+        fontFamily: "Arial",
         fontSize: "medium",
-        borderRadius: "medium",
+        borderRadius: "small",
       },
     });
     toast.success("New invoice created!");
@@ -313,96 +340,89 @@ const InvoiceGenerator = () => {
   };
 
   const InvoicePreview = () => {
-    const borderRadiusMap = { none: "rounded-none", small: "rounded-sm", medium: "rounded-md", large: "rounded-lg" };
-    
     return (
       <div className="space-y-6">
         <div 
           id="invoice-preview"
-          className={`bg-background border-2 shadow-2xl ${borderRadiusMap[invoice.theme.borderRadius as keyof typeof borderRadiusMap]} overflow-hidden max-w-4xl mx-auto`}
+          className="bg-white border shadow-lg overflow-hidden max-w-[210mm] mx-auto"
           style={{ 
             fontFamily: invoice.theme.fontFamily,
-            borderColor: invoice.theme.primaryColor,
+            minHeight: "297mm",
           }}
         >
-        {/* Header */}
-        <div 
-          className="p-8 text-white relative overflow-hidden"
-          style={{ 
-            background: `linear-gradient(135deg, ${invoice.theme.primaryColor} 0%, ${invoice.theme.secondaryColor} 100%)`,
-          }}
-        >
-          <div className="absolute inset-0 bg-black/5"></div>
-          <div className="relative z-10">
+        {/* Professional Header */}
+        <div className="bg-white border-b-4" style={{ borderBottomColor: invoice.theme.primaryColor }}>
+          <div className="p-10">
             <div className="flex justify-between items-start">
-              <div>
+              <div className="flex-1">
                 {invoice.companyLogo && (
-                  <img src={invoice.companyLogo} alt="Logo" className="h-16 w-auto mb-4 bg-white p-2 rounded" />
+                  <img src={invoice.companyLogo} alt="Logo" className="h-20 w-auto mb-4" />
                 )}
-                <h1 className="text-4xl font-bold mb-2">{invoice.companyName || "Your Company"}</h1>
-                <p className="opacity-90">{invoice.companyEmail}</p>
-                <p className="opacity-90">{invoice.companyPhone}</p>
+                <h1 className="text-3xl font-bold mb-3" style={{ color: invoice.theme.primaryColor }}>
+                  {invoice.companyName || "YOUR COMPANY NAME"}
+                </h1>
+                <div className="text-sm space-y-1 text-gray-700">
+                  {invoice.companyAddress && <p>{invoice.companyAddress}</p>}
+                  {invoice.companyPhone && <p>Tel: {invoice.companyPhone}</p>}
+                  {invoice.companyEmail && <p>Email: {invoice.companyEmail}</p>}
+                  {invoice.companyWebsite && <p>Web: {invoice.companyWebsite}</p>}
+                  {invoice.companyTaxId && <p>Tax ID: {invoice.companyTaxId}</p>}
+                  {invoice.companyRegNumber && <p>Reg. No: {invoice.companyRegNumber}</p>}
+                </div>
               </div>
               <div className="text-right">
-                <h2 className="text-5xl font-bold mb-2">INVOICE</h2>
-                <p className="text-xl">#{invoice.invoiceNumber}</p>
+                <h2 className="text-4xl font-bold mb-2" style={{ color: invoice.theme.primaryColor }}>INVOICE</h2>
+                <div className="text-sm space-y-1 text-gray-700">
+                  <p className="font-semibold">Invoice #: {invoice.invoiceNumber}</p>
+                  <p>Date: {new Date(invoice.invoiceDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <p className="font-semibold">Due Date: {new Date(invoice.dueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Body */}
-        <div className="p-8 space-y-8">
-          {/* Dates and Client Info */}
-          <div className="grid grid-cols-2 gap-8">
-            <div>
-              <div className="mb-6">
-                <p className="text-sm text-muted-foreground mb-1">Invoice Date</p>
-                <p className="text-lg font-semibold">{invoice.invoiceDate || "—"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Due Date</p>
-                <p className="text-lg font-semibold" style={{ color: invoice.theme.accentColor }}>
-                  {invoice.dueDate || "—"}
-                </p>
-              </div>
-            </div>
-            <div className="border-l-4 pl-6" style={{ borderColor: invoice.theme.primaryColor }}>
-              <p className="text-sm font-semibold text-muted-foreground mb-2">BILL TO</p>
-              <h3 className="text-2xl font-bold mb-2">{invoice.clientName || "Client Name"}</h3>
-              <p className="text-muted-foreground">{invoice.clientEmail}</p>
-              <p className="text-muted-foreground">{invoice.clientPhone}</p>
-              <p className="text-muted-foreground mt-2">{invoice.clientAddress}</p>
+        <div className="p-10 space-y-8">
+          {/* Bill To Section */}
+          <div className="bg-gray-50 p-6 border-l-4" style={{ borderLeftColor: invoice.theme.primaryColor }}>
+            <p className="text-xs font-bold text-gray-600 mb-3 tracking-wider">BILL TO:</p>
+            <h3 className="text-xl font-bold mb-2 text-gray-900">{invoice.clientName || "Client Name"}</h3>
+            <div className="text-sm space-y-1 text-gray-700">
+              {invoice.clientAddress && <p>{invoice.clientAddress}</p>}
+              {invoice.clientPhone && <p>Tel: {invoice.clientPhone}</p>}
+              {invoice.clientEmail && <p>Email: {invoice.clientEmail}</p>}
+              {invoice.clientTaxId && <p>Tax ID: {invoice.clientTaxId}</p>}
             </div>
           </div>
 
           {/* Items Table */}
-          <div className="overflow-hidden border rounded-lg">
+          <div className="border-2 border-gray-300">
             <table className="w-full">
               <thead>
-                <tr style={{ background: `${invoice.theme.primaryColor}15` }}>
-                  <th className="text-left p-4 font-semibold" style={{ color: invoice.theme.primaryColor }}>Description</th>
-                  <th className="text-center p-4 font-semibold" style={{ color: invoice.theme.primaryColor }}>Qty</th>
-                  <th className="text-right p-4 font-semibold" style={{ color: invoice.theme.primaryColor }}>Rate</th>
-                  <th className="text-right p-4 font-semibold" style={{ color: invoice.theme.primaryColor }}>Tax</th>
-                  <th className="text-right p-4 font-semibold" style={{ color: invoice.theme.primaryColor }}>Amount</th>
+                <tr className="bg-gray-100 border-b-2 border-gray-300">
+                  <th className="text-left p-3 font-bold text-gray-800 text-sm">DESCRIPTION</th>
+                  <th className="text-center p-3 font-bold text-gray-800 text-sm w-20">QTY</th>
+                  <th className="text-right p-3 font-bold text-gray-800 text-sm w-28">RATE</th>
+                  <th className="text-right p-3 font-bold text-gray-800 text-sm w-20">TAX %</th>
+                  <th className="text-right p-3 font-bold text-gray-800 text-sm w-32">AMOUNT</th>
                 </tr>
               </thead>
               <tbody>
                 {invoice.items.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center p-8 text-muted-foreground">
+                    <td colSpan={5} className="text-center p-8 text-gray-500">
                       No items added yet
                     </td>
                   </tr>
                 ) : (
                   invoice.items.map((item, idx) => (
-                    <tr key={item.id} className={idx % 2 === 0 ? "bg-muted/30" : ""}>
-                      <td className="p-4">{item.description || "—"}</td>
-                      <td className="p-4 text-center">{item.quantity}</td>
-                      <td className="p-4 text-right">{invoice.currency} {item.rate.toFixed(2)}</td>
-                      <td className="p-4 text-right">{item.taxRate}%</td>
-                      <td className="p-4 text-right font-semibold">{invoice.currency} {item.amount.toFixed(2)}</td>
+                    <tr key={item.id} className={`border-b border-gray-200 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                      <td className="p-3 text-gray-800">{item.description || "—"}</td>
+                      <td className="p-3 text-center text-gray-800">{item.quantity}</td>
+                      <td className="p-3 text-right text-gray-800">{invoice.currency} {item.rate.toFixed(2)}</td>
+                      <td className="p-3 text-right text-gray-800">{item.taxRate}%</td>
+                      <td className="p-3 text-right font-semibold text-gray-900">{invoice.currency} {item.amount.toFixed(2)}</td>
                     </tr>
                   ))
                 )}
@@ -412,71 +432,95 @@ const InvoiceGenerator = () => {
 
           {/* Summary */}
           <div className="flex justify-end">
-            <div className="w-80 space-y-3">
-              <div className="flex justify-between py-2 border-b">
-                <span className="text-muted-foreground">Subtotal:</span>
-                <span className="font-semibold">{invoice.currency} {invoice.subtotal.toFixed(2)}</span>
+            <div className="w-96 border-2 border-gray-300">
+              <div className="flex justify-between py-3 px-4 border-b border-gray-300 bg-gray-50">
+                <span className="font-semibold text-gray-700">Subtotal:</span>
+                <span className="font-semibold text-gray-900">{invoice.currency} {invoice.subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b">
-                <span className="text-muted-foreground">Tax:</span>
-                <span className="font-semibold">{invoice.currency} {invoice.totalTax.toFixed(2)}</span>
+              <div className="flex justify-between py-3 px-4 border-b border-gray-300 bg-white">
+                <span className="font-semibold text-gray-700">Tax:</span>
+                <span className="font-semibold text-gray-900">{invoice.currency} {invoice.totalTax.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between py-2 border-b">
-                <span className="text-muted-foreground">Discount:</span>
-                <span className="font-semibold text-destructive">
-                  - {invoice.currency} {invoice.totalDiscount.toFixed(2)}
-                </span>
-              </div>
+              {invoice.totalDiscount > 0 && (
+                <div className="flex justify-between py-3 px-4 border-b border-gray-300 bg-gray-50">
+                  <span className="font-semibold text-gray-700">Discount:</span>
+                  <span className="font-semibold text-red-600">
+                    - {invoice.currency} {invoice.totalDiscount.toFixed(2)}
+                  </span>
+                </div>
+              )}
               <div 
-                className="flex justify-between py-4 text-2xl font-bold rounded-lg px-4"
-                style={{ 
-                  background: `linear-gradient(135deg, ${invoice.theme.primaryColor}15 0%, ${invoice.theme.secondaryColor}15 100%)`,
-                }}
+                className="flex justify-between py-4 px-4 text-white font-bold text-xl"
+                style={{ backgroundColor: invoice.theme.primaryColor }}
               >
-                <span>Total:</span>
-                <span style={{ color: invoice.theme.primaryColor }}>
-                  {invoice.currency} {invoice.total.toFixed(2)}
-                </span>
+                <span>TOTAL DUE:</span>
+                <span>{invoice.currency} {invoice.total.toFixed(2)}</span>
               </div>
             </div>
           </div>
 
-          {/* Payment Terms & Notes */}
-          {(invoice.paymentTerms || invoice.notes) && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t">
-              {invoice.paymentTerms && (
-                <div>
-                  <h4 className="font-semibold mb-2" style={{ color: invoice.theme.primaryColor }}>
-                    Payment Terms
-                  </h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                    {invoice.paymentTerms}
-                  </p>
-                </div>
-              )}
-              {invoice.notes && (
-                <div>
-                  <h4 className="font-semibold mb-2" style={{ color: invoice.theme.primaryColor }}>
-                    Notes
-                  </h4>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                    {invoice.notes}
-                  </p>
-                </div>
-              )}
+          {/* Bank Details & Payment Instructions */}
+          {(invoice.bankName || invoice.bankAccountNumber) && (
+            <div className="bg-blue-50 p-6 border-2 border-blue-200">
+              <h4 className="font-bold text-gray-800 mb-3 text-sm tracking-wider">PAYMENT INFORMATION</h4>
+              <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+                {invoice.bankName && (
+                  <div>
+                    <p className="font-semibold text-gray-600">Bank Name:</p>
+                    <p>{invoice.bankName}</p>
+                  </div>
+                )}
+                {invoice.bankAccountNumber && (
+                  <div>
+                    <p className="font-semibold text-gray-600">Account Number:</p>
+                    <p>{invoice.bankAccountNumber}</p>
+                  </div>
+                )}
+                {invoice.bankRoutingNumber && (
+                  <div>
+                    <p className="font-semibold text-gray-600">Routing Number:</p>
+                    <p>{invoice.bankRoutingNumber}</p>
+                  </div>
+                )}
+                {invoice.bankSwiftCode && (
+                  <div>
+                    <p className="font-semibold text-gray-600">SWIFT Code:</p>
+                    <p>{invoice.bankSwiftCode}</p>
+                  </div>
+                )}
+              </div>
             </div>
           )}
+
+          {/* Payment Terms, Notes, and Terms & Conditions */}
+          <div className="space-y-6">
+            {invoice.paymentTerms && (
+              <div className="border-l-4 pl-4" style={{ borderLeftColor: invoice.theme.primaryColor }}>
+                <h4 className="font-bold text-gray-800 mb-2 text-sm tracking-wider">PAYMENT TERMS</h4>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{invoice.paymentTerms}</p>
+              </div>
+            )}
+            
+            {invoice.notes && (
+              <div className="border-l-4 pl-4" style={{ borderLeftColor: invoice.theme.accentColor }}>
+                <h4 className="font-bold text-gray-800 mb-2 text-sm tracking-wider">NOTES</h4>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">{invoice.notes}</p>
+              </div>
+            )}
+
+            {invoice.termsAndConditions && (
+              <div className="border-t-2 border-gray-300 pt-6">
+                <h4 className="font-bold text-gray-800 mb-3 text-sm tracking-wider">TERMS & CONDITIONS</h4>
+                <p className="text-xs text-gray-600 whitespace-pre-wrap leading-relaxed">{invoice.termsAndConditions}</p>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Footer */}
-        <div 
-          className="p-6 text-center text-white"
-          style={{ 
-            background: `linear-gradient(135deg, ${invoice.theme.primaryColor} 0%, ${invoice.theme.secondaryColor} 100%)`,
-          }}
-        >
-          <p className="opacity-90">{invoice.companyAddress}</p>
-          <p className="text-sm opacity-75 mt-2">Thank you for your business!</p>
+        {/* Professional Footer */}
+        <div className="border-t-4 p-6 text-center text-sm text-gray-600" style={{ borderTopColor: invoice.theme.primaryColor }}>
+          <p className="font-semibold mb-1">Thank you for your business!</p>
+          <p className="text-xs">This is a computer-generated invoice and does not require a signature.</p>
         </div>
         </div>
         
@@ -746,6 +790,35 @@ const InvoiceGenerator = () => {
                     rows={3}
                   />
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Tax ID / VAT Number</Label>
+                    <Input
+                      value={invoice.companyTaxId || ""}
+                      onChange={(e) => setInvoice({ ...invoice, companyTaxId: e.target.value })}
+                      placeholder="TX-123456789"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Registration Number</Label>
+                    <Input
+                      value={invoice.companyRegNumber || ""}
+                      onChange={(e) => setInvoice({ ...invoice, companyRegNumber: e.target.value })}
+                      placeholder="REG-123456"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Website</Label>
+                  <Input
+                    value={invoice.companyWebsite || ""}
+                    onChange={(e) => setInvoice({ ...invoice, companyWebsite: e.target.value })}
+                    placeholder="www.yourcompany.com"
+                  />
+                </div>
               </Card>
 
               {/* Client Information */}
@@ -789,8 +862,60 @@ const InvoiceGenerator = () => {
                     rows={3}
                   />
                 </div>
+
+                <div>
+                  <Label>Client Tax ID / VAT Number</Label>
+                  <Input
+                    value={invoice.clientTaxId || ""}
+                    onChange={(e) => setInvoice({ ...invoice, clientTaxId: e.target.value })}
+                    placeholder="TX-987654321"
+                  />
+                </div>
               </Card>
             </div>
+
+            {/* Bank Details */}
+            <Card className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Payment & Bank Details</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Bank Name</Label>
+                  <Input
+                    value={invoice.bankName || ""}
+                    onChange={(e) => setInvoice({ ...invoice, bankName: e.target.value })}
+                    placeholder="Bank Name"
+                  />
+                </div>
+
+                <div>
+                  <Label>Account Number</Label>
+                  <Input
+                    value={invoice.bankAccountNumber || ""}
+                    onChange={(e) => setInvoice({ ...invoice, bankAccountNumber: e.target.value })}
+                    placeholder="XXXX-XXXX-XXXX-1234"
+                  />
+                </div>
+
+                <div>
+                  <Label>Routing / Sort Code</Label>
+                  <Input
+                    value={invoice.bankRoutingNumber || ""}
+                    onChange={(e) => setInvoice({ ...invoice, bankRoutingNumber: e.target.value })}
+                    placeholder="123456789"
+                  />
+                </div>
+
+                <div>
+                  <Label>SWIFT / BIC Code</Label>
+                  <Input
+                    value={invoice.bankSwiftCode || ""}
+                    onChange={(e) => setInvoice({ ...invoice, bankSwiftCode: e.target.value })}
+                    placeholder="ABCDUS33XXX"
+                  />
+                </div>
+              </div>
+            </Card>
 
             {/* Invoice Details */}
             <Card className="p-6 space-y-4">
@@ -1181,7 +1306,7 @@ const InvoiceGenerator = () => {
                 <Textarea
                   value={invoice.paymentTerms}
                   onChange={(e) => setInvoice({ ...invoice, paymentTerms: e.target.value })}
-                  placeholder="Payment terms and conditions..."
+                  placeholder="e.g., Payment due within 30 days. Late payments subject to 2% monthly interest."
                   rows={5}
                 />
               </Card>
@@ -1196,6 +1321,17 @@ const InvoiceGenerator = () => {
                 />
               </Card>
             </div>
+
+            {/* Terms and Conditions */}
+            <Card className="p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Terms & Conditions</h3>
+              <Textarea
+                value={invoice.termsAndConditions || ""}
+                onChange={(e) => setInvoice({ ...invoice, termsAndConditions: e.target.value })}
+                placeholder="e.g., All work performed and materials supplied are subject to our standard terms and conditions. Payment is non-refundable. We reserve the right to charge interest on overdue accounts."
+                rows={4}
+              />
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
