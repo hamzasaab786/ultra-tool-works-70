@@ -35,6 +35,14 @@ import PdfMetadataExtractor from "@/pages/tools/PdfMetadataExtractor";
 import AddPageNumbers from "@/pages/tools/AddPageNumbers";
 import ComparePdf from "@/pages/tools/ComparePdf";
 import AddWatermark from "@/pages/tools/AddWatermark";
+import WordToPdf from "@/pages/tools/WordToPdf";
+import PdfToWord from "@/pages/tools/PdfToWord";
+import ProtectPdf from "@/pages/tools/ProtectPdf";
+import ExtractTextPdf from "@/pages/tools/ExtractTextPdf";
+import OrganizePdf from "@/pages/tools/OrganizePdf";
+import HtmlToPdf from "@/pages/tools/HtmlToPdf";
+import ExcelToPdf from "@/pages/tools/ExcelToPdf";
+import PowerPointToPdf from "@/pages/tools/PowerPointToPdf";
 
 // Calculator Tools
 import PercentageCalculator from "@/pages/tools/PercentageCalculator";
@@ -118,6 +126,14 @@ const App = () => {
             <Route path="/tools/add-page-numbers" element={<AddPageNumbers />} />
             <Route path="/tools/compare-pdf" element={<ComparePdf />} />
             <Route path="/tools/add-watermark" element={<AddWatermark />} />
+            <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
+            <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
+            <Route path="/tools/protect-pdf" element={<ProtectPdf />} />
+            <Route path="/tools/extract-text-pdf" element={<ExtractTextPdf />} />
+            <Route path="/tools/organize-pdf" element={<OrganizePdf />} />
+            <Route path="/tools/html-to-pdf" element={<HtmlToPdf />} />
+            <Route path="/tools/excel-to-pdf" element={<ExcelToPdf />} />
+            <Route path="/tools/powerpoint-to-pdf" element={<PowerPointToPdf />} />
 
             {/* Calculator Tools */}
             <Route path="/tools/percentage-calculator" element={<PercentageCalculator />} />
