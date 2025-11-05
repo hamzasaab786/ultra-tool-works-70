@@ -517,11 +517,6 @@ const InvoiceGenerator = () => {
           </div>
         </div>
 
-        {/* Professional Footer */}
-        <div className="border-t-4 p-6 text-center text-sm text-gray-600" style={{ borderTopColor: invoice.theme.primaryColor }}>
-          <p className="font-semibold mb-1">Thank you for your business!</p>
-          <p className="text-xs">This is a computer-generated invoice and does not require a signature.</p>
-        </div>
         </div>
         
         {/* Download Button below invoice */}
