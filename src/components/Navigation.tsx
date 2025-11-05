@@ -188,7 +188,18 @@ const Navigation = () => {
           <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">🖼️ Image Tools</h3>
+                <Link 
+                  to="/#category-0"
+                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('category-0')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                >
+                  🖼️ Image Tools
+                </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
                   {imageTools.slice(0, 5).map((tool) => (
                     <Link
@@ -204,7 +215,18 @@ const Navigation = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">📄 PDF Tools</h3>
+                <Link 
+                  to="/#category-1"
+                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('category-1')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                >
+                  📄 PDF Tools
+                </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
                   {pdfTools.slice(0, 5).map((tool) => (
                     <Link
@@ -220,7 +242,18 @@ const Navigation = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">🧮 Calculators</h3>
+                <Link 
+                  to="/#category-2"
+                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('category-2')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                >
+                  🧮 Calculators
+                </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
                   {calculatorTools.slice(0, 5).map((tool) => (
                     <Link
@@ -236,7 +269,18 @@ const Navigation = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">📝 Text Tools</h3>
+                <Link 
+                  to="/#category-3"
+                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('category-3')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                >
+                  📝 Text Tools
+                </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
                   {textTools.slice(0, 5).map((tool) => (
                     <Link
@@ -252,7 +296,18 @@ const Navigation = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">🛠️ Utilities</h3>
+                <Link 
+                  to="/#category-4"
+                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('category-4')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }}
+                >
+                  🛠️ Utilities
+                </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
                   {utilityTools.slice(0, 5).map((tool) => (
                     <Link

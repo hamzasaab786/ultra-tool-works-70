@@ -386,7 +386,7 @@ const Index = () => {
 
           <div className="space-y-16">
             {toolCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex} className="space-y-8">
+              <div key={categoryIndex} id={`category-${categoryIndex}`} className="space-y-8 scroll-mt-20">
                 <div className="text-center">
                   <h3 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
                     {category.title}
