@@ -6,14 +6,9 @@ import { toast } from "sonner";
 import { FileText, Download, Loader2, Upload, CheckCircle } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import mammoth from "mammoth";
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import htmlToPdfmake from "html-to-pdfmake";
-
-// Set up fonts for pdfMake
-if (pdfMake && pdfFonts) {
-  (pdfMake as any).vfs = (pdfFonts as any).pdfMake?.vfs || pdfFonts;
-}
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 const WordToPdf = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -54,37 +49,54 @@ const WordToPdf = () => {
       const html = result.value;
       setProgress(60);
 
-      // Convert HTML to pdfMake format
-      const pdfContent = htmlToPdfmake(html);
-      setProgress(80);
+      // Render HTML in a hidden container
+      const container = document.createElement("div");
+      container.style.position = "absolute";
+      container.style.left = "-9999px";
+      container.style.width = "800px";
+      container.style.padding = "40px";
+      container.style.backgroundColor = "white";
+      container.style.fontFamily = "Arial, sans-serif";
+      container.innerHTML = html;
+      document.body.appendChild(container);
 
-      // Create PDF document
-      const docDefinition: any = {
-        content: [
-          {
-            text: file.name.replace(/\.(docx?|DOCX?)$/, ""),
-            style: "header",
-            margin: [0, 0, 0, 20],
-          },
-          ...pdfContent,
-        ],
-        styles: {
-          header: {
-            fontSize: 22,
-            bold: true,
-            color: "#4f46e5",
-          },
-        },
-        defaultStyle: {
-          fontSize: 12,
-          lineHeight: 1.5,
-        },
-      };
+      setProgress(70);
 
-      // Generate and download PDF
-      pdfMake.createPdf(docDefinition).download(
-        file.name.replace(/\.(docx?|DOCX?)$/, ".pdf")
-      );
+      // Convert to canvas
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
+
+      document.body.removeChild(container);
+      setProgress(85);
+
+      // Create PDF from canvas
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const pdfWidth = 210; // A4 width in mm
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      const pdf = new jsPDF({
+        orientation: pdfHeight > 297 ? "portrait" : "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const pageHeight = 297; // A4 height in mm
+      let position = 0;
+      let remainingHeight = pdfHeight;
+
+      // Handle multi-page
+      while (remainingHeight > 0) {
+        if (position > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, -position, pdfWidth, pdfHeight);
+        position += pageHeight;
+        remainingHeight -= pageHeight;
+      }
+
+      pdf.save(file.name.replace(/\.(docx?|DOCX?)$/, ".pdf"));
 
       setProgress(100);
       toast.success("Word file converted to PDF successfully!");
