@@ -6,13 +6,8 @@ import { toast } from "sonner";
 import { FileSpreadsheet, Download, Loader2, Upload, CheckCircle } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import * as XLSX from 'xlsx';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
-
-// Set up fonts for pdfMake
-if (pdfMake && pdfFonts) {
-  (pdfMake as any).vfs = (pdfFonts as any).pdfMake?.vfs || pdfFonts;
-}
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const ExcelToPdf = () => {
   const [file, setFile] = useState<File | null>(null);

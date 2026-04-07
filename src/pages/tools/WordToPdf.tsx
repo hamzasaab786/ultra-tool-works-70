@@ -6,14 +6,9 @@ import { toast } from "sonner";
 import { FileText, Download, Loader2, Upload, CheckCircle } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import mammoth from "mammoth";
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
 import htmlToPdfmake from "html-to-pdfmake";
-
-// Set up fonts for pdfMake
-if (pdfMake && pdfFonts) {
-  (pdfMake as any).vfs = (pdfFonts as any).pdfMake?.vfs || pdfFonts;
-}
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 const WordToPdf = () => {
   const [file, setFile] = useState<File | null>(null);
