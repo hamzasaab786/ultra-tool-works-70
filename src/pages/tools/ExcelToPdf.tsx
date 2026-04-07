@@ -48,97 +48,50 @@ const ExcelToPdf = () => {
       const workbook = XLSX.read(arrayBuffer, { type: 'array' });
       setProgress(50);
 
-      const content: any[] = [
-        {
-          text: file.name.replace(/\.(xlsx?|csv)$/i, ""),
-          style: "header",
-          margin: [0, 0, 0, 20],
-        },
-        {
-          text: `Converted from Excel - ${new Date().toLocaleString()}`,
-          style: "subheader",
-          margin: [0, 0, 0, 20],
-        }
-      ];
+      // Create PDF
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4',
+      });
 
+      const title = file.name.replace(/\.(xlsx?|csv)$/i, "");
+      
       // Process each sheet
       workbook.SheetNames.forEach((sheetName, index) => {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
 
         if (jsonData.length > 0) {
+          if (index > 0) pdf.addPage();
+          
           // Add sheet title
-          content.push({
-            text: `Sheet: ${sheetName}`,
-            style: "sheetTitle",
-            margin: [0, index > 0 ? 20 : 0, 0, 10],
-          });
+          pdf.setFontSize(16);
+          pdf.setTextColor(79, 70, 229);
+          pdf.text(`${title} - ${sheetName}`, 14, 15);
+          pdf.setTextColor(0, 0, 0);
 
-          // Convert to table format
-          const tableBody: any[][] = [];
-          jsonData.forEach((row: any[]) => {
-            const rowData = row.map(cell => ({
-              text: cell !== null && cell !== undefined ? String(cell) : '',
-              fontSize: 9,
-            }));
-            tableBody.push(rowData);
-          });
+          // Normalize rows to strings
+          const head = jsonData[0]?.map(cell => cell !== null && cell !== undefined ? String(cell) : '') || [];
+          const body = jsonData.slice(1).map(row => 
+            row.map(cell => cell !== null && cell !== undefined ? String(cell) : '')
+          );
 
-          if (tableBody.length > 0) {
-            content.push({
-              table: {
-                headerRows: 1,
-                widths: Array(tableBody[0].length).fill('auto'),
-                body: tableBody,
-              },
-              layout: {
-                fillColor: (rowIndex: number) => (rowIndex === 0 ? '#4f46e5' : null),
-                hLineWidth: () => 0.5,
-                vLineWidth: () => 0.5,
-                hLineColor: () => '#e5e7eb',
-                vLineColor: () => '#e5e7eb',
-              },
-              margin: [0, 0, 0, 10],
-            });
-          }
+          // Use autoTable for proper table rendering
+          autoTable(pdf, {
+            head: [head],
+            body: body,
+            startY: 20,
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [79, 70, 229], textColor: 255 },
+            alternateRowStyles: { fillColor: [245, 245, 255] },
+          });
         }
 
-        setProgress(50 + ((index + 1) / workbook.SheetNames.length) * 35);
+        setProgress(50 + ((index + 1) / workbook.SheetNames.length) * 40);
       });
 
-      // Create PDF document
-      const docDefinition: any = {
-        content,
-        styles: {
-          header: {
-            fontSize: 22,
-            bold: true,
-            color: '#4f46e5',
-          },
-          subheader: {
-            fontSize: 10,
-            italics: true,
-            color: '#6b7280',
-          },
-          sheetTitle: {
-            fontSize: 16,
-            bold: true,
-            color: '#1f2937',
-          },
-        },
-        defaultStyle: {
-          fontSize: 10,
-        },
-        pageOrientation: 'landscape',
-        pageMargins: [20, 20, 20, 20],
-      };
-
-      setProgress(90);
-
-      // Generate and download
-      (pdfMake as any).createPdf(docDefinition).download(
-        file.name.replace(/\.(xlsx?|csv)$/i, ".pdf")
-      );
+      pdf.save(file.name.replace(/\.(xlsx?|csv)$/i, ".pdf"));
 
       setProgress(100);
       toast.success("Excel file converted to PDF successfully!");
