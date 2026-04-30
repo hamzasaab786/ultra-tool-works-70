@@ -88,6 +88,13 @@ import IpGeolocation from "@/pages/tools/IpGeolocation";
 import CreditCardValidator from "@/pages/tools/CreditCardValidator";
 import EmojiPicker from "@/pages/tools/EmojiPicker";
 import InvoiceGenerator from "@/pages/tools/InvoiceGenerator";
+import ReceiptGenerator from "@/pages/tools/ReceiptGenerator";
+import ResumeBuilder from "@/pages/tools/ResumeBuilder";
+import BusinessCardGenerator from "@/pages/tools/BusinessCardGenerator";
+import PdfOcr from "@/pages/tools/PdfOcr";
+import SignPdfTool from "@/pages/tools/SignPdfTool";
+import EditPdfText from "@/pages/tools/EditPdfText";
+import TestCardGenerator from "@/pages/tools/TestCardGenerator";
 
 const App = () => {
   return (
@@ -179,6 +186,13 @@ const App = () => {
             <Route path="/tools/credit-card-validator" element={<CreditCardValidator />} />
             <Route path="/tools/emoji-picker" element={<EmojiPicker />} />
             <Route path="/tools/invoice-generator" element={<InvoiceGenerator />} />
+            <Route path="/tools/receipt-generator" element={<ReceiptGenerator />} />
+            <Route path="/tools/resume-builder" element={<ResumeBuilder />} />
+            <Route path="/tools/business-card-generator" element={<BusinessCardGenerator />} />
+            <Route path="/tools/pdf-ocr" element={<PdfOcr />} />
+            <Route path="/tools/sign-pdf" element={<SignPdfTool />} />
+            <Route path="/tools/edit-pdf-text" element={<EditPdfText />} />
+            <Route path="/tools/test-card-generator" element={<TestCardGenerator />} />
 
             {/* Redirect removed tools to homepage */}
             <Route path="/tools/website-screenshot" element={<NotFound />} />

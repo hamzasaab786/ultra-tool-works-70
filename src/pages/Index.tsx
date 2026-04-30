@@ -267,6 +267,41 @@ const Index = () => {
       description: "Create professional invoices with AI-powered features and automatic calculations",
       icon: <FileText />,
       path: "/tools/invoice-generator"
+    }, {
+      title: "Receipt Generator",
+      description: "Create professional thermal-style POS receipts with tax & multi-currency, download as PDF",
+      icon: <FileText />,
+      path: "/tools/receipt-generator"
+    }, {
+      title: "Resume Builder Pro",
+      description: "Build ATS-optimized FAANG-grade resumes with multiple templates, accepted by top companies",
+      icon: <FileText />,
+      path: "/tools/resume-builder"
+    }, {
+      title: "Business Card Generator",
+      description: "Design professional business cards with 4 templates, export as standard 3.5×2 in PDF or PNG",
+      icon: <CreditCard />,
+      path: "/tools/business-card-generator"
+    }, {
+      title: "PDF OCR (Scanned to Text)",
+      description: "Extract text from scanned PDFs using AI-powered OCR. Supports 12+ languages including Urdu, Arabic, Hindi",
+      icon: <Scan />,
+      path: "/tools/pdf-ocr"
+    }, {
+      title: "Sign PDF",
+      description: "Add handwritten or typed signatures to PDFs. Draw, type, place, and download signed PDF",
+      icon: <FileText />,
+      path: "/tools/sign-pdf"
+    }, {
+      title: "Edit PDF Text",
+      description: "Add and edit text on existing PDFs. Cover original text with white background overlay",
+      icon: <FileText />,
+      path: "/tools/edit-pdf-text"
+    }, {
+      title: "Test Card Generator (Dev Only)",
+      description: "Luhn-valid sandbox test cards for Stripe/PayPal developer testing. Not for real payments",
+      icon: <CreditCard />,
+      path: "/tools/test-card-generator"
     }]
   }];
 
