@@ -11,7 +11,7 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import * as pdfjsLib from "pdfjs-dist";
 import Tesseract from "tesseract.js";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 const LANGS = [
   { code: "eng", name: "English" }, { code: "spa", name: "Spanish" }, { code: "fra", name: "French" },
