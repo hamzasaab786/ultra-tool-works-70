@@ -32,8 +32,8 @@ const EditPdfText = () => {
 
   const onPageClick = (e: React.MouseEvent<HTMLDivElement>, idx: number) => {
     const rect = (e.currentTarget.querySelector("img") as HTMLImageElement | null)?.getBoundingClientRect() || e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
     const id = Date.now().toString();
     setBoxes([...boxes, { id, page: idx, x, y, text: "New text", size: 16, color: "#000000", bg: false }]);
     setSelected(id);
@@ -53,11 +53,9 @@ const EditPdfText = () => {
       for (const b of boxes) {
         const page = allPages[b.page];
         const { width: pw, height: ph } = page.getSize();
-        const scaleX = pw / pages[b.page].w;
-        const scaleY = ph / pages[b.page].h;
-        const fontSize = b.size * scaleY;
-        const x = b.x * scaleX;
-        const y = ph - (b.y * scaleY) - fontSize;
+        const fontSize = b.size * (ph / pages[b.page].h);
+        const x = b.x * pw;
+        const y = ph - (b.y * ph) - fontSize;
 
         const r = parseInt(b.color.slice(1, 3), 16) / 255;
         const g = parseInt(b.color.slice(3, 5), 16) / 255;
@@ -132,7 +130,7 @@ const EditPdfText = () => {
                 {boxes.filter(b => b.page === idx).map(b => (
                   <div key={b.id} onClick={ev => { ev.stopPropagation(); setSelected(b.id); }}
                     className={`absolute cursor-pointer ${selected === b.id ? "ring-2 ring-blue-500" : "ring-1 ring-blue-300"}`}
-                    style={{ left: b.x, top: b.y, fontSize: b.size, color: b.color, background: b.bg ? "#fff" : "transparent", padding: "0 2px", whiteSpace: "nowrap" }}>
+                    style={{ left: `${b.x * 100}%`, top: `${b.y * 100}%`, fontSize: b.size, color: b.color, background: b.bg ? "#fff" : "transparent", padding: "0 2px", whiteSpace: "nowrap" }}>
                     {b.text}
                   </div>
                 ))}
