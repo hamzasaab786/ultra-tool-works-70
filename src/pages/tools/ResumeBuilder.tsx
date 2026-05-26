@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Trash2, Download, Briefcase, GraduationCap, FileText, Sparkles, Award, Code2, CheckCircle2, Star } from "lucide-react";
+import { Plus, Trash2, Download, Sparkles, CheckCircle2, Star } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
