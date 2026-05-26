@@ -4,12 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Upload, Download, Plus, Trash2, Type } from "lucide-react";
+import { Upload, Download, Trash2, Move } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import * as pdfjsLib from "pdfjs-dist";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import { renderPdfPreviewPages } from "@/utils/pdfClient";
 
 interface TextBox { id: string; page: number; x: number; y: number; text: string; size: number; color: string; bg: boolean; }
 
@@ -23,24 +21,17 @@ const EditPdfText = () => {
     if (!file) return;
     (async () => {
       setBoxes([]);
-      const buf = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-      const out: { url: string; w: number; h: number }[] = [];
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement("canvas");
-        canvas.width = viewport.width; canvas.height = viewport.height;
-        const ctx = canvas.getContext("2d")!;
-        await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
-        out.push({ url: canvas.toDataURL(), w: viewport.width, h: viewport.height });
+      try {
+        const out = await renderPdfPreviewPages(file, 1.25);
+        setPages(out);
+      } catch (error: any) {
+        toast.error(error?.message || "Unable to render PDF preview");
       }
-      setPages(out);
     })();
   }, [file]);
 
   const onPageClick = (e: React.MouseEvent<HTMLDivElement>, idx: number) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+    const rect = (e.currentTarget.querySelector("img") as HTMLImageElement | null)?.getBoundingClientRect() || e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const id = Date.now().toString();
@@ -121,6 +112,7 @@ const EditPdfText = () => {
                 <input type="checkbox" checked={sel.bg} onChange={e => update(sel.id, "bg", e.target.checked)} />
                 White background (cover existing text)
               </label>
+              <div className="text-xs text-muted-foreground flex items-center gap-1"><Move className="h-3.5 w-3.5" />Click elsewhere on the page to add another overlay.</div>
             </div>
           )}
 
@@ -136,7 +128,7 @@ const EditPdfText = () => {
           {pages.map((p, idx) => (
             <div key={idx} className="flex justify-center">
               <div className="relative cursor-text shadow-lg" onClick={e => onPageClick(e, idx)}>
-                <img src={p.url} alt={`p${idx + 1}`} className="block" style={{ width: p.w, height: p.h }} />
+                <img src={p.url} alt={`p${idx + 1}`} className="block h-auto max-w-full" style={{ width: p.w, maxWidth: "100%" }} />
                 {boxes.filter(b => b.page === idx).map(b => (
                   <div key={b.id} onClick={ev => { ev.stopPropagation(); setSelected(b.id); }}
                     className={`absolute cursor-pointer ${selected === b.id ? "ring-2 ring-blue-500" : "ring-1 ring-blue-300"}`}
