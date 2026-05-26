@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Upload, Download, ScanText, Copy, Zap } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import { createWorker, type Worker } from "tesseract.js";
+import { createWorker } from "tesseract.js";
 import { loadPdfDocument, renderPdfPageToCanvas } from "@/utils/pdfClient";
 
 const LANGS = [
@@ -25,14 +25,14 @@ const PdfOcr = () => {
   const [progress, setProgress] = useState(0);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
-  const workerRef = useRef<Worker | null>(null);
+  const workerRef = useRef<any>(null);
 
   const getWorker = async () => {
     if (workerRef.current) return workerRef.current;
     const worker = await createWorker(lang, 1, {
       logger: (m) => {
         if (m.status === "recognizing text") {
-          setProgress((prev) => Math.max(prev, Math.round(prev)));
+          setProgress((prev) => Math.max(prev, Math.round(m.progress * 100)));
         }
       },
     });
@@ -73,6 +73,15 @@ const PdfOcr = () => {
       workerRef.current = null;
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate();
+        workerRef.current = null;
+      }
+    };
+  }, []);
 
   const download = () => {
     const blob = new Blob([text], { type: "text/plain" });
