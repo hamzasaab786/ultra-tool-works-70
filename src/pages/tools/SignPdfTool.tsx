@@ -57,9 +57,11 @@ const SignPdfTool = () => {
   const onPageClick = (e: React.MouseEvent<HTMLDivElement>, pageIdx: number) => {
     if (!signatureData) { toast.error("Create a signature first"); return; }
     const rect = (e.currentTarget.querySelector("img") as HTMLImageElement | null)?.getBoundingClientRect() || e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    setPlacement({ page: pageIdx, x, y, w: sigSize[0], h: sigSize[0] / 3 });
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const w = Math.min(sigSize[0] / rect.width, 0.9);
+    const h = w / 3;
+    setPlacement({ page: pageIdx, x, y, w, h });
   };
 
   const exportPdf = async () => {
@@ -69,16 +71,12 @@ const SignPdfTool = () => {
       const pdfDoc = await PDFDocument.load(buf);
       const page = pdfDoc.getPages()[placement.page];
       const { width: pw, height: ph } = page.getSize();
-      const previewW = pages[placement.page].w;
-      const previewH = pages[placement.page].h;
-      const scaleX = pw / previewW;
-      const scaleY = ph / previewH;
       const pngBytes = await fetch(signatureData).then(r => r.arrayBuffer());
       const png = await pdfDoc.embedPng(pngBytes);
-      const w = placement.w * scaleX;
-      const h = placement.h * scaleY;
-      const x = placement.x * scaleX;
-      const y = ph - (placement.y * scaleY) - h;
+      const w = placement.w * pw;
+      const h = placement.h * ph;
+      const x = placement.x * pw;
+      const y = ph - (placement.y * ph) - h;
       page.drawImage(png, { x, y, width: w, height: h });
       const out = await pdfDoc.save();
       const blob = new Blob([out as unknown as ArrayBuffer], { type: "application/pdf" });
@@ -147,7 +145,7 @@ const SignPdfTool = () => {
                 <img src={p.url} alt={`p${idx + 1}`} className="block h-auto max-w-full" style={{ width: p.w, maxWidth: "100%" }} />
                 {placement?.page === idx && signatureData && (
                   <img src={signatureData} alt="placed" className="absolute pointer-events-none border border-blue-500"
-                    style={{ left: placement.x, top: placement.y, width: placement.w, height: placement.h }} />
+                    style={{ left: `${placement.x * 100}%`, top: `${placement.y * 100}%`, width: `${placement.w * 100}%`, height: `${placement.h * 100}%` }} />
                 )}
                 <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">Page {idx + 1}</div>
               </div>
