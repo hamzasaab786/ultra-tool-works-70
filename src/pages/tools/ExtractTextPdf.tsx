@@ -5,9 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FileText, Copy, Download, Loader2 } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import * as pdfjsLib from "pdfjs-dist";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import { loadPdfDocument } from "@/utils/pdfClient";
 
 const ExtractTextPdf = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -33,8 +31,7 @@ const ExtractTextPdf = () => {
 
     setIsExtracting(true);
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await loadPdfDocument(file);
       
       let fullText = "";
       

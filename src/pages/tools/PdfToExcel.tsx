@@ -5,10 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { FileSpreadsheet, Download, Upload, Loader2, CheckCircle } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import * as pdfjsLib from "pdfjs-dist";
 import * as XLSX from "xlsx";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import { loadPdfDocument } from "@/utils/pdfClient";
 
 const PdfToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -35,8 +33,7 @@ const PdfToExcel = () => {
     setIsConverting(true);
     setProgress(10);
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await loadPdfDocument(file);
       setProgress(25);
 
       const workbook = XLSX.utils.book_new();

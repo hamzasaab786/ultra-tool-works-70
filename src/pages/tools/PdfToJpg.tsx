@@ -10,12 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { FileText, Download, Settings, Zap, Image, AlertCircle } from 'lucide-react';
 import ToolPageTemplate from './ToolPageTemplate';
-import * as pdfjsLib from 'pdfjs-dist';
-
-// Configure PDF.js worker with a more reliable URL
-if (typeof window !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-}
+import { loadPdfDocument, pdfjsLib } from '@/utils/pdfClient';
 
 interface ConversionSettings {
   format: 'jpg' | 'png';
@@ -82,15 +77,7 @@ const PdfToJpg = () => {
 
     for (const file of validFiles) {
       try {
-        const arrayBuffer = await file.arrayBuffer();
-        const loadingTask = pdfjsLib.getDocument({ 
-          data: arrayBuffer,
-          verbosity: 0,
-          cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
-          cMapPacked: true,
-        });
-        
-        const pdf = await loadingTask.promise;
+        const pdf = await loadPdfDocument(file);
 
         // Generate previews for first 3 pages
         const previews: string[] = [];

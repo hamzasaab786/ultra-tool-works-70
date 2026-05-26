@@ -6,11 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FileText, Download, Loader2, Upload, CheckCircle, Copy } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import * as pdfjsLib from "pdfjs-dist";
 import { Document, Packer, Paragraph, TextRun } from "docx";
-
-// Set up the worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import { loadPdfDocument } from "@/utils/pdfClient";
 
 const PdfToWord = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -38,8 +35,7 @@ const PdfToWord = () => {
     setProgress(10);
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await loadPdfDocument(file);
       setProgress(30);
       
       let fullText = "";

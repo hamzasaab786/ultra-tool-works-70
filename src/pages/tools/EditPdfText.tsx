@@ -4,12 +4,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Upload, Download, Plus, Trash2, Type } from "lucide-react";
+import { Upload, Download, Trash2, Move } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import * as pdfjsLib from "pdfjs-dist";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import { renderPdfPreviewPages } from "@/utils/pdfClient";
 
 interface TextBox { id: string; page: number; x: number; y: number; text: string; size: number; color: string; bg: boolean; }
 
@@ -23,26 +21,19 @@ const EditPdfText = () => {
     if (!file) return;
     (async () => {
       setBoxes([]);
-      const buf = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-      const out: { url: string; w: number; h: number }[] = [];
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement("canvas");
-        canvas.width = viewport.width; canvas.height = viewport.height;
-        const ctx = canvas.getContext("2d")!;
-        await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
-        out.push({ url: canvas.toDataURL(), w: viewport.width, h: viewport.height });
+      try {
+        const out = await renderPdfPreviewPages(file, 1.25);
+        setPages(out);
+      } catch (error: any) {
+        toast.error(error?.message || "Unable to render PDF preview");
       }
-      setPages(out);
     })();
   }, [file]);
 
   const onPageClick = (e: React.MouseEvent<HTMLDivElement>, idx: number) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const rect = (e.currentTarget.querySelector("img") as HTMLImageElement | null)?.getBoundingClientRect() || e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
     const id = Date.now().toString();
     setBoxes([...boxes, { id, page: idx, x, y, text: "New text", size: 16, color: "#000000", bg: false }]);
     setSelected(id);
@@ -62,11 +53,9 @@ const EditPdfText = () => {
       for (const b of boxes) {
         const page = allPages[b.page];
         const { width: pw, height: ph } = page.getSize();
-        const scaleX = pw / pages[b.page].w;
-        const scaleY = ph / pages[b.page].h;
-        const fontSize = b.size * scaleY;
-        const x = b.x * scaleX;
-        const y = ph - (b.y * scaleY) - fontSize;
+        const fontSize = b.size * (ph / pages[b.page].h);
+        const x = b.x * pw;
+        const y = ph - (b.y * ph) - fontSize;
 
         const r = parseInt(b.color.slice(1, 3), 16) / 255;
         const g = parseInt(b.color.slice(3, 5), 16) / 255;
@@ -121,6 +110,7 @@ const EditPdfText = () => {
                 <input type="checkbox" checked={sel.bg} onChange={e => update(sel.id, "bg", e.target.checked)} />
                 White background (cover existing text)
               </label>
+              <div className="text-xs text-muted-foreground flex items-center gap-1"><Move className="h-3.5 w-3.5" />Click elsewhere on the page to add another overlay.</div>
             </div>
           )}
 
@@ -136,11 +126,11 @@ const EditPdfText = () => {
           {pages.map((p, idx) => (
             <div key={idx} className="flex justify-center">
               <div className="relative cursor-text shadow-lg" onClick={e => onPageClick(e, idx)}>
-                <img src={p.url} alt={`p${idx + 1}`} className="block" style={{ width: p.w, height: p.h }} />
+                <img src={p.url} alt={`p${idx + 1}`} className="block h-auto max-w-full" style={{ width: p.w, maxWidth: "100%" }} />
                 {boxes.filter(b => b.page === idx).map(b => (
                   <div key={b.id} onClick={ev => { ev.stopPropagation(); setSelected(b.id); }}
                     className={`absolute cursor-pointer ${selected === b.id ? "ring-2 ring-blue-500" : "ring-1 ring-blue-300"}`}
-                    style={{ left: b.x, top: b.y, fontSize: b.size, color: b.color, background: b.bg ? "#fff" : "transparent", padding: "0 2px", whiteSpace: "nowrap" }}>
+                    style={{ left: `${b.x * 100}%`, top: `${b.y * 100}%`, fontSize: b.size, color: b.color, background: b.bg ? "#fff" : "transparent", padding: "0 2px", whiteSpace: "nowrap" }}>
                     {b.text}
                   </div>
                 ))}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -6,12 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Upload, Download, ScanText, Copy } from "lucide-react";
+import { Upload, Download, ScanText, Copy, Zap } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import * as pdfjsLib from "pdfjs-dist";
-import Tesseract from "tesseract.js";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import { createWorker } from "tesseract.js";
+import { loadPdfDocument, renderPdfPageToCanvas } from "@/utils/pdfClient";
 
 const LANGS = [
   { code: "eng", name: "English" }, { code: "spa", name: "Spanish" }, { code: "fra", name: "French" },
@@ -27,32 +25,36 @@ const PdfOcr = () => {
   const [progress, setProgress] = useState(0);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
+  const workerRef = useRef<any>(null);
+
+  const getWorker = async () => {
+    if (workerRef.current) return workerRef.current;
+    const worker = await createWorker(lang, 1, {
+      logger: (m) => {
+        if (m.status === "recognizing text") {
+          setProgress((prev) => Math.max(prev, Math.round(m.progress * 100)));
+        }
+      },
+    });
+    workerRef.current = worker;
+    return worker;
+  };
 
   const run = async () => {
     if (!file) return;
     setBusy(true); setText(""); setProgress(0);
     try {
-      const buf = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      const pdf = await loadPdfDocument(file);
+      const worker = await getWorker();
       let result = "";
       for (let p = 1; p <= pdf.numPages; p++) {
         setStatus(`Page ${p}/${pdf.numPages}: rendering...`);
         const page = await pdf.getPage(p);
-        const viewport = page.getViewport({ scale: 2.5 });
-        const canvas = document.createElement("canvas");
-        canvas.width = viewport.width; canvas.height = viewport.height;
-        const ctx = canvas.getContext("2d")!;
-        await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
+        const { canvas } = await renderPdfPageToCanvas(page, 2);
 
         setStatus(`Page ${p}/${pdf.numPages}: OCR...`);
-        const { data } = await Tesseract.recognize(canvas, lang, {
-          logger: (m: any) => {
-            if (m.status === "recognizing text") {
-              const overall = ((p - 1) + m.progress) / pdf.numPages;
-              setProgress(Math.round(overall * 100));
-            }
-          }
-        });
+        const { data } = await worker.recognize(canvas, undefined, undefined, `page-${p}`);
+        setProgress(Math.round((p / pdf.numPages) * 100));
         result += `\n\n===== PAGE ${p} =====\n\n${data.text.trim()}`;
       }
       setText(result.trim());
@@ -63,6 +65,23 @@ const PdfOcr = () => {
       toast.error(e.message || "OCR failed");
     } finally { setBusy(false); }
   };
+
+  const onLanguageChange = async (value: string) => {
+    setLang(value);
+    if (workerRef.current) {
+      await workerRef.current.terminate();
+      workerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate();
+        workerRef.current = null;
+      }
+    };
+  }, []);
 
   const download = () => {
     const blob = new Blob([text], { type: "text/plain" });
@@ -87,13 +106,17 @@ const PdfOcr = () => {
             </div>
             <div>
               <Label>OCR Language</Label>
-              <Select value={lang} onValueChange={setLang}>
+              <Select value={lang} onValueChange={onLanguageChange}>
                 <SelectTrigger className="mt-2"><SelectValue /></SelectTrigger>
                 <SelectContent>{LANGS.map(l => <SelectItem key={l.code} value={l.code}>{l.name}</SelectItem>)}</SelectContent>
               </Select>
               <Button onClick={run} disabled={!file || busy} className="w-full mt-3" size="lg">
                 <ScanText className="w-4 h-4 mr-2" />{busy ? "Processing..." : "Run OCR"}
               </Button>
+              <div className="mt-3 rounded-lg border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+                <div className="mb-1 flex items-center gap-2 font-medium text-foreground"><Zap className="h-3.5 w-3.5" /> Faster flow</div>
+                Native PDF pages render first, then OCR runs with a reused worker for better speed on multi-page files.
+              </div>
             </div>
           </div>
           {busy && (
