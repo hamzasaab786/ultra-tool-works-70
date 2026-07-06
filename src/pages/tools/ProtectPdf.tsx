@@ -177,15 +177,22 @@ const ProtectPdf = () => {
           </div>
 
           <div className="pt-6 border-t space-y-3">
-            <h3 className="font-semibold">Security Features:</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>✓ AES encryption for maximum security</li>
-              <li>✓ Password-protected opening</li>
-              <li>✓ Prevents copying and editing</li>
+            <h3 className="font-semibold text-destructive">⚠️ Important Limitation</h3>
+            <p className="text-sm text-muted-foreground">
+              True PDF encryption (AES / password-protected opening) cannot be performed
+              reliably in the browser. This tool only <strong>marks</strong> the document
+              metadata as restricted — it does <strong>not</strong> encrypt the file and
+              anyone can still open it. For real encryption, use a desktop tool such as
+              Adobe Acrobat or a server-side workflow.
+            </p>
+            <ul className="space-y-2 text-sm text-muted-foreground pt-2">
               <li>✓ All processing done locally in your browser</li>
               <li>✓ Your files never leave your device</li>
+              <li>✗ No AES encryption is applied</li>
+              <li>✗ Password is not enforced when opening the file</li>
             </ul>
           </div>
+
         </div>
       </Card>
     </ToolPageTemplate>
