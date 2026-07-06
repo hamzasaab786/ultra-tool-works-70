@@ -306,7 +306,6 @@ const Index = () => {
     "/tools/percentage-calculator",
     "/tools/qr-code-generator",
     "/tools/image-crop-tool",
-    "/tools/background-remover",
     "/tools/markdown-to-html",
     "/tools/age-calculator",
     "/tools/bmi-calculator",
