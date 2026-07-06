@@ -335,7 +335,7 @@ const Index = () => {
   }];
 
   return <>
-      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, background remover, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, background-remover, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
+      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
