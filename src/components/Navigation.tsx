@@ -21,7 +21,7 @@ const Navigation = () => {
     { name: "JPG to PDF", path: "/tools/jpg-to-pdf" },
     { name: "SVG to JPG", path: "/tools/svg-to-jpg" },
     { name: "Image to URL", path: "/tools/image-to-url" },
-    { name: "Background Remover", path: "/tools/background-remover" },
+    
     { name: "Passport Photo Maker", path: "/tools/passport-photo-maker" },
     { name: "Image Format Converter", path: "/tools/image-format-converter" },
     { name: "Image Metadata Extractor", path: "/tools/image-metadata-extractor" },
