@@ -1,9 +1,13 @@
 import * as pdfjsLib from "pdfjs-dist";
-import workerSrc from "pdfjs-dist/build/pdf.worker.js?url";
 
+// Load worker from CDN matching the exact installed version. This avoids
+// Vite ?url / MIME-type edge cases where the dev/prod server returns HTML
+// instead of the worker script.
 if (typeof window !== "undefined") {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 }
+
 
 export { pdfjsLib };
 
