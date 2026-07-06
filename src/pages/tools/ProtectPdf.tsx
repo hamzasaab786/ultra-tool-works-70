@@ -46,23 +46,12 @@ const ProtectPdf = () => {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-      // Note: pdf-lib doesn't support encryption directly
-      // Adding password protection note to the PDF
-      const pages = pdfDoc.getPages();
-      const firstPage = pages[0];
-      const { height } = firstPage.getSize();
-      
-      firstPage.drawText('⚠️ This document requires password protection', {
-        x: 50,
-        y: height - 50,
-        size: 10,
-      });
-      
-      firstPage.drawText(`Password: ${password}`, {
-        x: 50,
-        y: height - 70,
-        size: 10,
-      });
+      // NOTE: pdf-lib does not support real PDF encryption. To avoid a false
+      // sense of security, we do NOT stamp the password onto the document.
+      // We simply set document metadata indicating restricted handling and
+      // clearly disclose the limitation in the UI below.
+      pdfDoc.setTitle((pdfDoc.getTitle() || file.name) + ' (Restricted)');
+      pdfDoc.setSubject('Marked as restricted by user. Real encryption not applied.');
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
@@ -70,18 +59,18 @@ const ProtectPdf = () => {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = file.name.replace(".pdf", "_protected.pdf");
+      a.download = file.name.replace(".pdf", "_marked.pdf");
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast.success("PDF protected with password successfully!");
+      toast.success("PDF marked as restricted (metadata only — not encrypted).");
       setPassword("");
       setConfirmPassword("");
     } catch (error) {
       console.error("Protection error:", error);
-      toast.error("Failed to protect PDF. Please try again.");
+      toast.error("Failed to process PDF. Please try again.");
     } finally {
       setIsProtecting(false);
     }
@@ -176,27 +165,34 @@ const ProtectPdf = () => {
               {isProtecting ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Protecting...
+                  Processing...
                 </>
               ) : (
                 <>
                   <Lock className="mr-2 h-5 w-5" />
-                  Protect PDF
+                  Mark PDF as Restricted
                 </>
               )}
             </Button>
           </div>
 
           <div className="pt-6 border-t space-y-3">
-            <h3 className="font-semibold">Security Features:</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>✓ AES encryption for maximum security</li>
-              <li>✓ Password-protected opening</li>
-              <li>✓ Prevents copying and editing</li>
+            <h3 className="font-semibold text-destructive">⚠️ Important Limitation</h3>
+            <p className="text-sm text-muted-foreground">
+              True PDF encryption (AES / password-protected opening) cannot be performed
+              reliably in the browser. This tool only <strong>marks</strong> the document
+              metadata as restricted — it does <strong>not</strong> encrypt the file and
+              anyone can still open it. For real encryption, use a desktop tool such as
+              Adobe Acrobat or a server-side workflow.
+            </p>
+            <ul className="space-y-2 text-sm text-muted-foreground pt-2">
               <li>✓ All processing done locally in your browser</li>
               <li>✓ Your files never leave your device</li>
+              <li>✗ No AES encryption is applied</li>
+              <li>✗ Password is not enforced when opening the file</li>
             </ul>
           </div>
+
         </div>
       </Card>
     </ToolPageTemplate>

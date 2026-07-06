@@ -39,44 +39,32 @@ export const removeBackground = async (
     // Set background color
     let bgColor = '(255,255,255,0)'; // transparent by default
     if (backgroundColor && backgroundColor !== 'transparent') {
-      if (isGradient && gradientStart) {
-        // For gradient, use start color
-        const hex = gradientStart.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        bgColor = `(${r},${g},${b},255)`;
-      } else {
-        // Convert hex to RGB
-        const hex = backgroundColor.replace('#', '');
-        const r = parseInt(hex.substr(0, 2), 16);
-        const g = parseInt(hex.substr(2, 2), 16);
-        const b = parseInt(hex.substr(4, 2), 16);
-        bgColor = `(${r},${g},${b},255)`;
-      }
+      const source = (isGradient && gradientStart) ? gradientStart : backgroundColor;
+      const hex = source.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      bgColor = `(${r},${g},${b},255)`;
     }
-    
+
     formData.append('bgcolor', bgColor);
-    
+
     onProgress?.(50);
-    
-    // Make API request
-    const response = await fetch('https://ai-background-remover.p.rapidapi.com/image/color/v1', {
-      method: 'POST',
-      headers: {
-        'x-rapidapi-host': 'ai-background-remover.p.rapidapi.com',
-        'x-rapidapi-key': 'e57b8a99f0msh88da9f978c852c2p1df7e3jsn8ebc5e0837d9'
-      },
-      body: formData
+
+    // Route through secure edge function (no API key in client bundle)
+    const { supabase } = await import('@/integrations/supabase/client');
+    const { data: fnData, error: fnError } = await supabase.functions.invoke('remove-background', {
+      body: formData,
     });
-    
+
     onProgress?.(80);
-    
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
-    }
-    
-    const resultBlob = await response.blob();
+
+    if (fnError) throw new Error(fnError.message || 'Background removal failed');
+
+    // supabase.functions.invoke returns Blob for binary responses
+    const resultBlob: Blob = fnData instanceof Blob
+      ? fnData
+      : new Blob([fnData as ArrayBuffer], { type: 'image/png' });
     
     onProgress?.(95);
     

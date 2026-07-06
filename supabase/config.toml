@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.ai-invoice-helper]
 verify_jwt = false
+
+[functions.remove-background]
+verify_jwt = false
