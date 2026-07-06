@@ -1,0 +1,226 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "toolifyconvert-mcp",
+      "version": "0.1.0",
+      "title": "ToolifyConvert Tools"
+    },
+    "tools": [
+      {
+        "name": "word_count",
+        "title": "Word count",
+        "description": "Count words, characters, sentences, and paragraphs in the given text.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Text to analyze."
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "case_convert",
+        "title": "Case converter",
+        "description": "Convert text between upper, lower, title, sentence, camel, pascal, snake, and kebab case.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Text to convert."
+            },
+            "to": {
+              "type": "string",
+              "enum": [
+                "upper",
+                "lower",
+                "title",
+                "sentence",
+                "camel",
+                "pascal",
+                "snake",
+                "kebab"
+              ],
+              "description": "Target case."
+            }
+          },
+          "required": [
+            "text",
+            "to"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "base64",
+        "title": "Base64 encode/decode",
+        "description": "Encode text to Base64 or decode a Base64 string back to text (UTF-8).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "string",
+              "description": "Text or Base64 string."
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "encode",
+                "decode"
+              ],
+              "description": "Operation to perform."
+            }
+          },
+          "required": [
+            "input",
+            "mode"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "hash_text",
+        "title": "Hash text",
+        "description": "Compute a cryptographic hash (MD5, SHA-1, SHA-256, SHA-512) of the given text.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Text to hash."
+            },
+            "algorithm": {
+              "default": "sha256",
+              "description": "Hash algorithm.",
+              "type": "string",
+              "enum": [
+                "md5",
+                "sha1",
+                "sha256",
+                "sha512"
+              ]
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "generate_password",
+        "title": "Generate password",
+        "description": "Generate a strong random password with configurable length and character classes.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "length": {
+              "default": 16,
+              "description": "Password length (4-128).",
+              "type": "integer",
+              "minimum": 4,
+              "maximum": 128
+            },
+            "uppercase": {
+              "default": true,
+              "description": "Include uppercase letters.",
+              "type": "boolean"
+            },
+            "lowercase": {
+              "default": true,
+              "description": "Include lowercase letters.",
+              "type": "boolean"
+            },
+            "numbers": {
+              "default": true,
+              "description": "Include digits.",
+              "type": "boolean"
+            },
+            "symbols": {
+              "default": true,
+              "description": "Include punctuation symbols.",
+              "type": "boolean"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "lorem_ipsum",
+        "title": "Lorem ipsum generator",
+        "description": "Generate placeholder lorem ipsum text as paragraphs, sentences, or words.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "count": {
+              "default": 3,
+              "description": "How many units to produce.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "unit": {
+              "default": "paragraphs",
+              "description": "Unit type.",
+              "type": "string",
+              "enum": [
+                "paragraphs",
+                "sentences",
+                "words"
+              ]
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
