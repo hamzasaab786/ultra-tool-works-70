@@ -17,7 +17,7 @@ import ImageEnhancer from "@/pages/tools/ImageEnhancer";
 import JpgToPdf from "@/pages/tools/JpgToPdf";
 import SvgToJpg from "@/pages/tools/SvgToJpg";
 import ImageToUrl from "@/pages/tools/ImageToUrl";
-import BackgroundRemover from "@/pages/tools/BackgroundRemover";
+
 import PassportPhotoMaker from "@/pages/tools/PassportPhotoMaker";
 import ImageFormatConverter from "@/pages/tools/ImageFormatConverter";
 import ImageMetadataExtractor from "@/pages/tools/ImageMetadataExtractor";
