@@ -1,14 +1,12 @@
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjs from 'pdfjs-dist';
 
-// For Vite, using `?url` is the correct way to get asset URLs.
-// This ensures the worker script is loaded correctly in the browser.
-import workerSrc from 'pdfjs-dist/build/pdf.worker.js?url';
-
-// Run this configuration only in the browser
+// Load worker from CDN matching the installed version for reliable MIME handling.
 if (typeof window !== 'undefined') {
-  pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+  pdfjs.GlobalWorkerOptions.workerSrc =
+    `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 }
+
 
 export interface CompressionSettings {
   level: 'low' | 'medium' | 'high' | 'maximum';
