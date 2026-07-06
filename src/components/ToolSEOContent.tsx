@@ -68,18 +68,6 @@ const ToolSEOContent: React.FC<ToolSEOContentProps> = ({ toolName }) => {
         ],
         techSpecs: "Real-time counting, supports multiple languages, calculates average reading speed, tracks various text metrics"
       },
-      "Background Remover": {
-        title: "AI-Powered Background Remover - Remove Image Backgrounds Instantly",
-        description: "Remove backgrounds from images automatically using advanced AI technology. Perfect for product photos, profile pictures, and graphic design. Get professional results without complex software or design skills.",
-        benefits: [
-          "Automatically detect and remove backgrounds",
-          "Create transparent PNG images",
-          "Perfect for e-commerce product photos",
-          "Professional results without design skills",
-          "Save time on manual editing"
-        ],
-        techSpecs: "AI-powered background detection, supports JPG and PNG formats, automatic edge refinement, transparent PNG output"
-      },
       "Password Generator": {
         title: "Secure Password Generator - Create Strong, Unbreakable Passwords",
         description: "Generate strong, secure passwords with customizable length and character sets. Include uppercase, lowercase, numbers, and special characters to create unbreakable passwords for maximum security.",
