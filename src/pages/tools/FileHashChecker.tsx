@@ -17,22 +17,15 @@ const FileHashChecker = () => {
       .join('');
   };
   
-  const calculateMD5 = async (data: Uint8Array) => {
-    // Simple MD5-like hash for demonstration (not cryptographically secure)
-    let hash = '';
-    const characters = 'abcdef0123456789';
-    let seed = 0;
-    
-    for (let i = 0; i < data.length; i++) {
-      seed += data[i];
+  const calculateMD5 = async (data: Uint8Array): Promise<string> => {
+    const SparkMD5 = (await import("spark-md5")).default;
+    const spark = new SparkMD5.ArrayBuffer();
+    // Hash in chunks to avoid stalling on large files
+    const chunkSize = 2 * 1024 * 1024;
+    for (let i = 0; i < data.length; i += chunkSize) {
+      spark.append(data.buffer.slice(i, Math.min(i + chunkSize, data.length)));
     }
-    
-    for (let i = 0; i < 32; i++) {
-      const randomIndex = ((seed * (i + 1)) % characters.length);
-      hash += characters.charAt(randomIndex);
-    }
-    
-    return hash;
+    return spark.end();
   };
   
   const copyToClipboard = (text: string, type: string) => {
