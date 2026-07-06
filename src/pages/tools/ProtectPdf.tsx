@@ -165,12 +165,12 @@ const ProtectPdf = () => {
               {isProtecting ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Protecting...
+                  Processing...
                 </>
               ) : (
                 <>
                   <Lock className="mr-2 h-5 w-5" />
-                  Protect PDF
+                  Mark PDF as Restricted
                 </>
               )}
             </Button>
