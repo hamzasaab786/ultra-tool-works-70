@@ -46,23 +46,12 @@ const ProtectPdf = () => {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-      // Note: pdf-lib doesn't support encryption directly
-      // Adding password protection note to the PDF
-      const pages = pdfDoc.getPages();
-      const firstPage = pages[0];
-      const { height } = firstPage.getSize();
-      
-      firstPage.drawText('⚠️ This document requires password protection', {
-        x: 50,
-        y: height - 50,
-        size: 10,
-      });
-      
-      firstPage.drawText(`Password: ${password}`, {
-        x: 50,
-        y: height - 70,
-        size: 10,
-      });
+      // NOTE: pdf-lib does not support real PDF encryption. To avoid a false
+      // sense of security, we do NOT stamp the password onto the document.
+      // We simply set document metadata indicating restricted handling and
+      // clearly disclose the limitation in the UI below.
+      pdfDoc.setTitle((pdfDoc.getTitle() || file.name) + ' (Restricted)');
+      pdfDoc.setSubject('Marked as restricted by user. Real encryption not applied.');
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
@@ -70,18 +59,18 @@ const ProtectPdf = () => {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = file.name.replace(".pdf", "_protected.pdf");
+      a.download = file.name.replace(".pdf", "_marked.pdf");
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast.success("PDF protected with password successfully!");
+      toast.success("PDF marked as restricted (metadata only — not encrypted).");
       setPassword("");
       setConfirmPassword("");
     } catch (error) {
       console.error("Protection error:", error);
-      toast.error("Failed to protect PDF. Please try again.");
+      toast.error("Failed to process PDF. Please try again.");
     } finally {
       setIsProtecting(false);
     }
