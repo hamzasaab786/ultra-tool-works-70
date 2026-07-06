@@ -161,51 +161,22 @@ const CurrencyConverter = () => {
 
   const fetchExchangeRate = useCallback(async () => {
     if (!fromCurrency || !toCurrency) return;
-    
+
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `https://currency-converter241.p.rapidapi.com/conversion_rate?from=${fromCurrency}&to=${toCurrency}`,
-        {
-          method: 'GET',
-          headers: {
-            'x-rapidapi-host': 'currency-converter241.p.rapidapi.com',
-            'x-rapidapi-key': 'e57b8a99f0msh88da9f978c852c2p1df7e3jsn8ebc5e0837d9'
-          }
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
+      // Free, keyless public API — no credentials in client bundle
+      const response = await fetch(`https://open.er-api.com/v6/latest/${fromCurrency}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      console.log('API Response:', data);
-      
-      // Handle the correct API response format
-      let rate = 0;
-      if (data && typeof data.rate === 'number') {
-        rate = data.rate;
-      } else if (data && data.conversion_rate) {
-        rate = data.conversion_rate;
-      } else {
-        throw new Error('Invalid response format');
-      }
-      
+      const rate = data?.rates?.[toCurrency];
+      if (typeof rate !== 'number') throw new Error('Rate unavailable');
+
       setExchangeRate(rate);
-      
       if (inputValue) {
         const value = parseFloat(inputValue);
-        if (!isNaN(value)) {
-          const convertedValue = value * rate;
-          setResult(convertedValue.toFixed(4));
-        }
+        if (!isNaN(value)) setResult((value * rate).toFixed(4));
       }
-      
-      toast({
-        title: "Success",
-        description: "Exchange rate updated successfully!",
-      });
+      toast({ title: "Success", description: "Exchange rate updated successfully!" });
     } catch (error) {
       console.error('Error fetching exchange rate:', error);
       toast({
