@@ -49,8 +49,10 @@ const PasswordGenerator = () => {
     }
     
     let newPassword = '';
+    const randoms = new Uint32Array(length);
+    crypto.getRandomValues(randoms);
     for (let i = 0; i < length; i++) {
-      newPassword += charset.charAt(Math.floor(Math.random() * charset.length));
+      newPassword += charset.charAt(randoms[i] % charset.length);
     }
     
     setPassword(newPassword);
