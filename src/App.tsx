@@ -17,7 +17,7 @@ import ImageEnhancer from "@/pages/tools/ImageEnhancer";
 import JpgToPdf from "@/pages/tools/JpgToPdf";
 import SvgToJpg from "@/pages/tools/SvgToJpg";
 import ImageToUrl from "@/pages/tools/ImageToUrl";
-import BackgroundRemover from "@/pages/tools/BackgroundRemover";
+
 import PassportPhotoMaker from "@/pages/tools/PassportPhotoMaker";
 import ImageFormatConverter from "@/pages/tools/ImageFormatConverter";
 import ImageMetadataExtractor from "@/pages/tools/ImageMetadataExtractor";
@@ -115,7 +115,7 @@ const App = () => {
             <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
             <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
             <Route path="/tools/image-to-url" element={<ImageToUrl />} />
-            <Route path="/tools/background-remover" element={<BackgroundRemover />} />
+            
             <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
             <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
             <Route path="/tools/image-metadata-extractor" element={<ImageMetadataExtractor />} />
