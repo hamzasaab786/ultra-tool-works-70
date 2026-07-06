@@ -57,11 +57,6 @@ const Index = () => {
       icon: <ImageIcon />,
       path: "/tools/svg-to-jpg"
     }, {
-      title: "Background Remover",
-      description: "Remove backgrounds from images with AI-powered precision and professional results",
-      icon: <Eraser />,
-      path: "/tools/background-remover"
-    }, {
       title: "Passport Photo Maker",
       description: "Create professional passport photos with correct dimensions and quality standards",
       icon: <Camera />,
