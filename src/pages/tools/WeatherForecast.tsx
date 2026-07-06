@@ -33,94 +33,98 @@ const WeatherForecast = () => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  // Mock weather data generator
-  const generateMockWeather = (locationName: string): WeatherData => {
-    const conditions = ['Sunny', 'Partly Cloudy', 'Cloudy', 'Light Rain', 'Heavy Rain', 'Snow'];
-    const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
-    
-    const forecast: ForecastDay[] = [];
-    for (let i = 1; i <= 5; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      forecast.push({
-        date: date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
-        high: Math.floor(Math.random() * 30) + 60,
-        low: Math.floor(Math.random() * 20) + 40,
-        condition: conditions[Math.floor(Math.random() * conditions.length)],
-        humidity: Math.floor(Math.random() * 40) + 40
-      });
-    }
+  // Open-Meteo weather codes → human labels
+  const codeToCondition = (code: number): string => {
+    if (code === 0) return "Sunny";
+    if ([1, 2].includes(code)) return "Partly Cloudy";
+    if (code === 3) return "Cloudy";
+    if ([45, 48].includes(code)) return "Cloudy";
+    if ([51, 53, 55, 56, 57, 61, 63, 80, 81].includes(code)) return "Light Rain";
+    if ([65, 82, 95, 96, 99].includes(code)) return "Heavy Rain";
+    if ([66, 67, 71, 73, 75, 77, 85, 86].includes(code)) return "Snow";
+    return "Cloudy";
+  };
 
+  const fetchWeatherByCoords = async (lat: number, lon: number, label: string) => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+      `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,surface_pressure,uv_index` +
+      `&daily=temperature_2m_max,temperature_2m_min,weather_code,relative_humidity_2m_mean` +
+      `&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=6`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`Weather API returned ${r.status}`);
+    const j = await r.json();
+    const forecast: ForecastDay[] = (j.daily?.time || []).slice(1, 6).map((iso: string, i: number) => {
+      const d = new Date(iso);
+      return {
+        date: d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+        high: Math.round(j.daily.temperature_2m_max[i + 1]),
+        low: Math.round(j.daily.temperature_2m_min[i + 1]),
+        condition: codeToCondition(j.daily.weather_code[i + 1]),
+        humidity: Math.round(j.daily.relative_humidity_2m_mean?.[i + 1] ?? 0),
+      };
+    });
     return {
-      location: locationName,
-      temperature: Math.floor(Math.random() * 40) + 50,
-      condition: randomCondition,
-      humidity: Math.floor(Math.random() * 40) + 40,
-      windSpeed: Math.floor(Math.random() * 20) + 5,
-      pressure: Math.floor(Math.random() * 100) + 1000,
-      visibility: Math.floor(Math.random() * 10) + 5,
-      uvIndex: Math.floor(Math.random() * 10) + 1,
-      forecast
-    };
+      location: label,
+      temperature: Math.round(j.current.temperature_2m),
+      condition: codeToCondition(j.current.weather_code),
+      humidity: Math.round(j.current.relative_humidity_2m),
+      windSpeed: Math.round(j.current.wind_speed_10m),
+      pressure: Math.round(j.current.surface_pressure),
+      visibility: 10,
+      uvIndex: Math.round(j.current.uv_index ?? 0),
+      forecast,
+    } as WeatherData;
+  };
+
+  const geocode = async (query: string): Promise<{ lat: number; lon: number; label: string }> => {
+    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`);
+    if (!r.ok) throw new Error("Geocoding failed");
+    const j = await r.json();
+    const hit = j?.results?.[0];
+    if (!hit) throw new Error("Location not found");
+    return { lat: hit.latitude, lon: hit.longitude, label: `${hit.name}${hit.country ? ", " + hit.country : ""}` };
   };
 
   const getCurrentLocationWeather = () => {
     setLoading(true);
-    
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // In a real app, you'd use the coordinates to fetch weather
-          const mockLocation = 'Current Location';
-          setWeatherData(generateMockWeather(mockLocation));
-          setLoading(false);
-          
-          toast({
-            title: "Location Found",
-            description: "Weather data for your current location loaded"
-          });
-        },
-        (error) => {
-          setLoading(false);
-          toast({
-            title: "Location Error",
-            description: "Unable to get your location. Please enter manually.",
-            variant: "destructive"
-          });
-        }
-      );
-    } else {
+    if (!navigator.geolocation) {
       setLoading(false);
-      toast({
-        title: "Geolocation Not Supported",
-        description: "Please enter a location manually",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const searchWeather = () => {
-    if (!location.trim()) {
-      toast({
-        title: "Location Required",
-        description: "Please enter a city name",
-        variant: "destructive"
-      });
+      toast({ title: "Geolocation Not Supported", description: "Please enter a location manually", variant: "destructive" });
       return;
     }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const data = await fetchWeatherByCoords(position.coords.latitude, position.coords.longitude, "Current Location");
+          setWeatherData(data);
+          toast({ title: "Location found", description: "Weather loaded." });
+        } catch (e) {
+          toast({ title: "Weather Error", description: (e as Error).message, variant: "destructive" });
+        } finally { setLoading(false); }
+      },
+      () => {
+        setLoading(false);
+        toast({ title: "Location Error", description: "Unable to get your location. Please enter manually.", variant: "destructive" });
+      }
+    );
+  };
 
+  const searchWeather = async () => {
+    if (!location.trim()) {
+      toast({ title: "Location Required", description: "Please enter a city name", variant: "destructive" });
+      return;
+    }
     setLoading(true);
-    
-    // Simulate API call delay
-    setTimeout(() => {
-      setWeatherData(generateMockWeather(location));
+    try {
+      const { lat, lon, label } = await geocode(location.trim());
+      const data = await fetchWeatherByCoords(lat, lon, label);
+      setWeatherData(data);
+      toast({ title: "Weather Updated", description: `Loaded weather for ${label}.` });
+    } catch (e) {
+      toast({ title: "Weather Error", description: (e as Error).message, variant: "destructive" });
+    } finally {
       setLoading(false);
-      
-      toast({
-        title: "Weather Updated",
-        description: `Weather data for ${location} loaded successfully`
-      });
-    }, 1000);
+    }
   };
 
   const getWeatherIcon = (condition: string) => {
