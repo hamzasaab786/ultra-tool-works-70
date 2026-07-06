@@ -115,7 +115,7 @@ const App = () => {
             <Route path="/tools/jpg-to-pdf" element={<JpgToPdf />} />
             <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
             <Route path="/tools/image-to-url" element={<ImageToUrl />} />
-            <Route path="/tools/background-remover" element={<BackgroundRemover />} />
+            
             <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
             <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
             <Route path="/tools/image-metadata-extractor" element={<ImageMetadataExtractor />} />
