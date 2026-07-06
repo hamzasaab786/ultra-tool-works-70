@@ -31,25 +31,30 @@ const RepairPdf = () => {
 
   const repairPdf = async () => {
     if (!file) return;
-
     setIsRepairing(true);
     try {
-      toast({
-        title: "Repair in progress",
-        description: "PDF repair requires backend processing with advanced algorithms.",
+      const { PDFDocument } = await import("pdf-lib");
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      // Load with tolerant options and re-serialize to rebuild xref tables
+      // and drop malformed objects — this fixes many "damaged" PDFs.
+      const doc = await PDFDocument.load(bytes, {
+        ignoreEncryption: true,
+        throwOnInvalidObject: false,
+        updateMetadata: false,
       });
-      
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      toast({
-        title: "Feature coming soon",
-        description: "PDF repair will be available with backend integration",
-      });
+      const out = await doc.save({ useObjectStreams: false });
+      const blob = new Blob([out as unknown as ArrayBuffer], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = file.name.replace(/\.pdf$/i, "") + "_repaired.pdf";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      toast({ title: "PDF repaired", description: "Rebuilt PDF structure and downloaded." });
     } catch (error) {
-      console.error('Repair error:', error);
+      console.error(error);
       toast({
         title: "Repair failed",
-        description: "There was an error repairing your PDF",
+        description: "This PDF is too corrupted to recover in the browser. Try a desktop tool.",
         variant: "destructive",
       });
     } finally {

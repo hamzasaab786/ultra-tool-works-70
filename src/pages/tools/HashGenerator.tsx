@@ -118,53 +118,27 @@ const HashGenerator = () => {
   };
   
   const calculateHashes = async (data: Uint8Array) => {
-    await simulateHashing();
-    
-    // Calculate MD5-like hash (simplified for client-side)
-    setMd5Hash(generateSimpleHash(data, 32));
-    
+    const SparkMD5 = (await import("spark-md5")).default;
+    const spark = new SparkMD5.ArrayBuffer();
+    const chunk = 2 * 1024 * 1024;
+    for (let i = 0; i < data.length; i += chunk) {
+      spark.append(data.buffer.slice(i, Math.min(i + chunk, data.length)));
+    }
+    setMd5Hash(spark.end());
+
     const sha1Buffer = await crypto.subtle.digest('SHA-1', new Uint8Array(data));
     setSha1Hash(bufferToHex(sha1Buffer));
-    
+
     const sha256Buffer = await crypto.subtle.digest('SHA-256', new Uint8Array(data));
     setSha256Hash(bufferToHex(sha256Buffer));
   };
-  
+
   const bufferToHex = (buffer: ArrayBuffer) => {
     return [...new Uint8Array(buffer)]
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
   };
-  
-  const simulateHashing = () => {
-    return new Promise(resolve => setTimeout(resolve, 500));
-  };
-  
-  const generateSimpleHash = (data: Uint8Array, length: number) => {
-    // Simple hash algorithm for demonstration
-    let hash = '';
-    const characters = '0123456789abcdef';
-    
-    let h1 = 0xdeadbeef;
-    let h2 = 0x41c6ce57;
-    
-    for (let i = 0; i < data.length; i++) {
-      h1 = Math.imul(h1 ^ data[i], 2654435761);
-      h2 = Math.imul(h2 ^ data[i], 1597334677);
-    }
-    
-    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-    
-    const fullHash = (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16);
-    
-    for (let i = 0; i < length; i++) {
-      const index = (parseInt(fullHash.charAt(i % fullHash.length), 16) + i) % 16;
-      hash += characters.charAt(index);
-    }
-    
-    return hash;
-  };
+
   
   const copyToClipboard = (hash: string, type: string) => {
     navigator.clipboard.writeText(hash);

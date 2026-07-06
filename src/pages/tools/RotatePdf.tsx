@@ -32,27 +32,26 @@ const RotatePdf = () => {
 
   const rotatePdf = async () => {
     if (!file) return;
-
     setIsRotating(true);
     try {
-      toast({
-        title: "Rotating PDF",
-        description: `Rotating pages by ${rotation} degrees...`,
-      });
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Feature coming soon",
-        description: "PDF rotation will be available with backend integration",
-      });
+      const { PDFDocument, degrees } = await import("pdf-lib");
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      for (const page of doc.getPages()) {
+        const current = page.getRotation().angle || 0;
+        page.setRotation(degrees((current + rotation) % 360));
+      }
+      const out = await doc.save();
+      const blob = new Blob([out as unknown as ArrayBuffer], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = file.name.replace(/\.pdf$/i, "") + `_rotated.pdf`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      toast({ title: "Success", description: `PDF rotated by ${rotation}° and downloaded.` });
     } catch (error) {
-      console.error('Rotation error:', error);
-      toast({
-        title: "Rotation failed",
-        description: "There was an error rotating your PDF",
-        variant: "destructive",
-      });
+      console.error("Rotation error:", error);
+      toast({ title: "Rotation failed", description: (error as Error).message, variant: "destructive" });
     } finally {
       setIsRotating(false);
     }

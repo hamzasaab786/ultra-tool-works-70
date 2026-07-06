@@ -20,67 +20,39 @@ const UrlShortener = () => {
   const [isShortening, setIsShortening] = useState(false);
   const { toast } = useToast();
 
-  const generateShortCode = () => {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 6; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-
   const isValidUrl = (string: string) => {
-    try {
-      new URL(string);
-      return true;
-    } catch (_) {
-      return false;
-    }
+    try { new URL(string); return true; } catch { return false; }
   };
 
   const shortenUrl = async () => {
     if (!url.trim()) {
-      toast({
-        title: "URL required",
-        description: "Please enter a URL to shorten.",
-        variant: "destructive",
-      });
+      toast({ title: "URL required", description: "Please enter a URL to shorten.", variant: "destructive" });
       return;
     }
-
     if (!isValidUrl(url)) {
-      toast({
-        title: "Invalid URL",
-        description: "Please enter a valid URL (including http:// or https://).",
-        variant: "destructive",
-      });
+      toast({ title: "Invalid URL", description: "Include http:// or https://.", variant: "destructive" });
       return;
     }
-
     setIsShortening(true);
-
     try {
-      const shortCode = generateShortCode();
-      const shortened = `https://short.ly/${shortCode}`;
-      
+      // is.gd is a free, keyless URL shortener returning a real working short link
+      const api = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(url)}`;
+      const r = await fetch(api);
+      const text = (await r.text()).trim();
+      if (!r.ok || !text.startsWith("http")) throw new Error(text || `HTTP ${r.status}`);
       const newShortenedUrl: ShortenedUrl = {
         original: url,
-        shortened,
+        shortened: text,
         clicks: 0,
-        created: new Date()
+        created: new Date(),
       };
-
       setShortenedUrls(prev => [newShortenedUrl, ...prev]);
       setUrl("");
-
-      toast({
-        title: "URL shortened successfully",
-        description: "Your shortened URL is ready to use!",
-      });
+      toast({ title: "URL shortened", description: "Your short link is ready." });
     } catch (error) {
       toast({
         title: "Shortening failed",
-        description: "There was an error shortening your URL.",
+        description: (error as Error).message || "The shortener rejected this URL.",
         variant: "destructive",
       });
     } finally {

@@ -36,30 +36,39 @@ const AddPageNumbers = () => {
 
   const addPageNumbers = async () => {
     if (!file) {
-      toast({
-        title: "No file selected",
-        description: "Please select a PDF file first",
-        variant: "destructive",
-      });
+      toast({ title: "No file selected", description: "Please select a PDF file first", variant: "destructive" });
       return;
     }
-
     setIsProcessing(true);
     try {
-      // Simulate page number addition
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      toast({
-        title: "Page numbers added successfully",
-        description: "Your PDF now has page numbers and is ready for download",
+      const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const font = await doc.embedFont(StandardFonts.Helvetica);
+      const pages = doc.getPages();
+      const margin = 24;
+      const size = 11;
+      pages.forEach((page, idx) => {
+        const text = `${startNumber + idx}`;
+        const { width, height } = page.getSize();
+        const tw = font.widthOfTextAtSize(text, size);
+        let x = margin, y = margin;
+        if (position.startsWith("top")) y = height - margin - size;
+        if (position.endsWith("center")) x = (width - tw) / 2;
+        if (position.endsWith("right")) x = width - margin - tw;
+        page.drawText(text, { x, y, size, font, color: rgb(0.15, 0.15, 0.15) });
       });
+      const out = await doc.save();
+      const blob = new Blob([out as unknown as ArrayBuffer], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = file.name.replace(/\.pdf$/i, "") + "_numbered.pdf";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      toast({ title: "Page numbers added", description: "Numbered PDF downloaded." });
     } catch (error) {
-      console.error('Page numbering error:', error);
-      toast({
-        title: "Process failed",
-        description: "There was an error adding page numbers to your PDF",
-        variant: "destructive",
-      });
+      console.error(error);
+      toast({ title: "Process failed", description: (error as Error).message, variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }

@@ -6,9 +6,11 @@ import { Label } from "@/components/ui/label";
 import { FileArchive, Upload, Download, Eye, AlertCircle, Info } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+interface ExtractedEntry { name: string; size: number; blob: Blob; }
+
 const ZipExtractor = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [extractedFiles, setExtractedFiles] = useState<any[]>([]);
+  const [extractedFiles, setExtractedFiles] = useState<ExtractedEntry[]>([]);
   const [isExtracting, setIsExtracting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,44 +57,45 @@ const ZipExtractor = () => {
 
   const extractZip = useCallback(async () => {
     if (!selectedFile) return;
-
     setIsExtracting(true);
-    
     try {
-      // For demonstration - in a real implementation you'd use a library like JSZip
-      // This shows the concept of what would happen
-      const mockFiles = [
-        { name: 'document.pdf', size: 1024000, type: 'application/pdf' },
-        { name: 'image.jpg', size: 512000, type: 'image/jpeg' },
-        { name: 'data.txt', size: 2048, type: 'text/plain' }
-      ];
-      
-      // Simulate extraction time
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setExtractedFiles(mockFiles);
-      
+      const JSZip = (await import("jszip")).default;
+      const zip = await JSZip.loadAsync(selectedFile);
+      const entries: ExtractedEntry[] = [];
+      const promises: Promise<void>[] = [];
+      zip.forEach((path, entry) => {
+        if (entry.dir) return;
+        promises.push(
+          entry.async("blob").then((blob) => {
+            entries.push({ name: path, size: blob.size, blob });
+          })
+        );
+      });
+      await Promise.all(promises);
+      setExtractedFiles(entries);
       toast({
-        title: "Success",
-        description: `Extracted ${mockFiles.length} files from the archive`,
+        title: entries.length ? "Success" : "Empty archive",
+        description: `Extracted ${entries.length} file${entries.length === 1 ? "" : "s"}.`,
       });
     } catch (error) {
-      console.error('Error extracting ZIP:', error);
+      console.error("ZIP extraction failed:", error);
       toast({
         title: "Error",
-        description: "Failed to extract ZIP file. The file might be corrupted or password-protected.",
-        variant: "destructive"
+        description: "Failed to extract ZIP. The file may be corrupted or password-protected.",
+        variant: "destructive",
       });
     } finally {
       setIsExtracting(false);
     }
   }, [selectedFile]);
 
-  const downloadFile = (fileName: string) => {
-    toast({
-      title: "Download",
-      description: `Downloading ${fileName} - Feature requires backend implementation`,
-    });
+  const downloadFile = (entry: ExtractedEntry) => {
+    const url = URL.createObjectURL(entry.blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = entry.name.split("/").pop() || entry.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
   };
 
   const resetTool = () => {
@@ -210,7 +213,7 @@ const ZipExtractor = () => {
                     </div>
                   </div>
                   <Button 
-                    onClick={() => downloadFile(file.name)}
+                    onClick={() => downloadFile(file)}
                     size="sm"
                     className="bg-green-600 hover:bg-green-700"
                   >

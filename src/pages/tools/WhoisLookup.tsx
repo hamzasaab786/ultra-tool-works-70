@@ -26,43 +26,43 @@ const WhoisLookup = () => {
     setIsLoading(true);
     
     try {
-      // Real WHOIS lookup using a free API
-      const cleanDomain = domain.trim();
-      const response = await fetch(`https://api.whoisfreaks.com/v1.0/whois?apiKey=demo&whois=live&domainName=${cleanDomain}`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch WHOIS data');
-      }
-      
+      // rdap.org proxies to the authoritative RDAP server for each TLD.
+      // It's free, no API key, and returns real registration data.
+      const cleanDomain = domain.trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "").toLowerCase();
+      const response = await fetch(`https://rdap.org/domain/${encodeURIComponent(cleanDomain)}`);
+      if (response.status === 404) throw new Error("Domain not found in RDAP registry.");
+      if (!response.ok) throw new Error(`RDAP returned ${response.status}`);
       const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error);
-      }
-      
+
+      const events: any[] = data.events || [];
+      const findEvent = (action: string) => events.find((e) => e.eventAction === action)?.eventDate || "N/A";
+      const registrarEntity = (data.entities || []).find((e: any) => (e.roles || []).includes("registrar"));
+      const registrarName =
+        registrarEntity?.vcardArray?.[1]?.find((f: any) => f[0] === "fn")?.[3] || "N/A";
+      const registrantEntity = (data.entities || []).find((e: any) => (e.roles || []).includes("registrant"));
+      const registrantVcard = registrantEntity?.vcardArray?.[1] || [];
+      const getV = (key: string) => registrantVcard.find((f: any) => f[0] === key)?.[3] || "N/A";
+      const adr = registrantVcard.find((f: any) => f[0] === "adr")?.[3] || [];
+
       setResult({
         domain: cleanDomain,
-        registrar: data.registrar_info?.registrar_name || 'N/A',
-        registrationDate: data.create_date || 'N/A',
-        expirationDate: data.expire_date || 'N/A',
-        nameservers: data.name_servers || [],
-        status: data.domain_status?.[0] || 'N/A',
-        owner: data.registrant_info?.name || 'Private/Protected',
-        organization: data.registrant_info?.organization || 'N/A',
-        country: data.registrant_info?.country || 'N/A',
-        updatedDate: data.update_date || 'N/A'
+        registrar: registrarName,
+        registrationDate: findEvent("registration"),
+        expirationDate: findEvent("expiration"),
+        updatedDate: findEvent("last changed"),
+        nameservers: (data.nameservers || []).map((n: any) => n.ldhName),
+        status: (data.status || []).join(", ") || "N/A",
+        owner: getV("fn"),
+        organization: getV("org"),
+        country: Array.isArray(adr) ? adr[adr.length - 1] || "N/A" : "N/A",
       });
-
-      toast({
-        title: "Success",
-        description: "WHOIS lookup completed successfully!",
-      });
+      toast({ title: "Success", description: "WHOIS/RDAP lookup completed." });
     } catch (error) {
-      console.error('WHOIS lookup error:', error);
+      console.error("WHOIS lookup error:", error);
       toast({
         title: "Error",
-        description: "Failed to perform WHOIS lookup. The domain may not exist or WHOIS data is not available.",
-        variant: "destructive"
+        description: (error as Error).message || "Failed to perform WHOIS lookup.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);

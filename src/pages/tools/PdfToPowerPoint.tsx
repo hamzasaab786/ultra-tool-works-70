@@ -31,27 +31,38 @@ const PdfToPowerPoint = () => {
 
   const convertToPowerPoint = async () => {
     if (!file) return;
-
     setIsConverting(true);
     try {
-      toast({
-        title: "Conversion in progress",
-        description: "PDF to PowerPoint conversion requires backend processing with slide extraction.",
-      });
-      
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      
-      toast({
-        title: "Feature coming soon",
-        description: "PDF to PowerPoint conversion will be available with backend integration",
-      });
+      const { loadPdfDocument, renderPdfPageToCanvas } = await import("@/utils/pdfClient");
+      const PptxGenJS = (await import("pptxgenjs")).default;
+      const pdf = await loadPdfDocument(file);
+      const pptx = new PptxGenJS();
+      pptx.layout = "LAYOUT_WIDE";
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const { canvas } = await renderPdfPageToCanvas(page, 2);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+        const slide = pptx.addSlide();
+        // Fit image into slide (LAYOUT_WIDE = 13.333 x 7.5 inches)
+        const slideW = 13.333, slideH = 7.5;
+        const ratio = canvas.width / canvas.height;
+        let w = slideW, h = slideW / ratio;
+        if (h > slideH) { h = slideH; w = slideH * ratio; }
+        slide.addImage({ data: dataUrl, x: (slideW - w) / 2, y: (slideH - h) / 2, w, h });
+      }
+
+      const out = await pptx.write({ outputType: "blob" });
+      const blob = out as Blob;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = file.name.replace(/\.pdf$/i, "") + ".pptx";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      toast({ title: "Converted", description: `Generated .pptx with ${pdf.numPages} slide(s).` });
     } catch (error) {
-      console.error('Conversion error:', error);
-      toast({
-        title: "Conversion failed",
-        description: "There was an error converting your PDF",
-        variant: "destructive",
-      });
+      console.error(error);
+      toast({ title: "Conversion failed", description: (error as Error).message, variant: "destructive" });
     } finally {
       setIsConverting(false);
     }

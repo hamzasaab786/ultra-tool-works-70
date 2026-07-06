@@ -32,28 +32,41 @@ const UnlockPdf = () => {
 
   const unlockPdf = async () => {
     if (!file || !password) {
-      toast({
-        title: "Missing information",
-        description: "Please select a PDF file and enter the password",
-        variant: "destructive",
-      });
+      toast({ title: "Missing information", description: "Select a PDF and enter the password", variant: "destructive" });
       return;
     }
-
     setIsUnlocking(true);
     try {
-      // Simulate PDF unlocking process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "PDF Unlocked Successfully",
-        description: "Your PDF has been unlocked and is ready for download",
-      });
-    } catch (error) {
-      console.error('Unlock error:', error);
+      // Use pdfjs to open the encrypted PDF with the password, then re-pack
+      // pages as images into a fresh unencrypted PDF via pdf-lib.
+      const { pdfjsLib, renderPdfPageToCanvas } = await import("@/utils/pdfClient");
+      const { PDFDocument } = await import("pdf-lib");
+      const data = new Uint8Array(await file.arrayBuffer());
+      const src = await pdfjsLib.getDocument({ data, password }).promise;
+
+      const out = await PDFDocument.create();
+      for (let i = 1; i <= src.numPages; i++) {
+        const page = await src.getPage(i);
+        const { canvas } = await renderPdfPageToCanvas(page, 2);
+        const png = await new Promise<Blob>((r) => canvas.toBlob((b) => r(b!), "image/png"));
+        const embed = await out.embedPng(new Uint8Array(await png.arrayBuffer()));
+        const p = out.addPage([embed.width, embed.height]);
+        p.drawImage(embed, { x: 0, y: 0, width: embed.width, height: embed.height });
+      }
+      const bytes = await out.save();
+      const blob = new Blob([bytes as unknown as ArrayBuffer], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = file.name.replace(/\.pdf$/i, "") + "_unlocked.pdf";
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      toast({ title: "PDF unlocked", description: "Downloaded the password-free copy." });
+    } catch (error: any) {
+      console.error(error);
+      const msg = String(error?.message || error);
       toast({
         title: "Unlock failed",
-        description: "Invalid password or corrupted PDF file",
+        description: msg.toLowerCase().includes("password") ? "Incorrect password." : msg,
         variant: "destructive",
       });
     } finally {
