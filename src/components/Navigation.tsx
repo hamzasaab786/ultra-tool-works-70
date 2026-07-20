@@ -90,15 +90,15 @@ const Navigation = () => {
   ];
 
   const ToolSection = ({ title, tools }: { title: string; tools: { name: string; path: string }[] }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 w-[600px]">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 w-[600px] bg-popover text-popover-foreground">
       <div className="col-span-full">
-        <h3 className="font-semibold text-gray-900 mb-3">{title}</h3>
+        <h3 className="font-semibold text-foreground mb-3">{title}</h3>
       </div>
       {tools.map((tool) => (
         <Link
           key={tool.path}
           to={tool.path}
-          className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors"
+          className="block px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
         >
           {tool.name}
         </Link>
