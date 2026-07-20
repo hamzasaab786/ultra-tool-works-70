@@ -100,10 +100,11 @@ import TestCardGenerator from "@/pages/tools/TestCardGenerator";
 const App = () => {
   return (
     <HelmetProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Index />} />
+      <ThemeProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Index />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
