@@ -107,7 +107,7 @@ const Navigation = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-white/95 border-b border-gray-200/60 shadow-sm">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/95 border-b border-border/60 shadow-sm transition-colors duration-300">
       <div className="container mx-auto px-4 py-3 lg:py-4 flex items-center relative z-10">
         <div className="mr-4 flex items-center">
           <Link to="/" className="flex items-center group">
@@ -118,13 +118,13 @@ const Navigation = () => {
             </div>
           </Link>
         </div>
-        
+
         {/* Desktop Navigation */}
-        <div className="hidden md:block flex-1">
+        <div className="hidden md:flex flex-1 items-center justify-between">
           <NavigationMenu>
             <NavigationMenuList className="space-x-1">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   🖼️ Image Tools
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -133,7 +133,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   📄 PDF Tools
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -142,7 +142,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   🧮 Calculators
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -151,7 +151,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   📝 Text Tools
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -160,7 +160,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   🛠️ Utilities
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -169,10 +169,13 @@ const Navigation = () => {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
+
+          <ThemeToggle />
         </div>
 
-        {/* Mobile menu button */}
-        <div className="md:hidden">
+        {/* Mobile controls */}
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
           <Button
             variant="ghost"
             size="sm"
