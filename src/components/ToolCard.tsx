@@ -31,31 +31,31 @@ const ToolCard = ({
 
   return (
     <ThreeDEffects type="card" intensity="low">
-      <Card 
+      <Card
         className={cn(
           "group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer h-full",
-          "bg-white/95 backdrop-blur-sm border border-gray-200/60 shadow-sm",
-          "hover:border-indigo-200/80 hover:bg-white hover:shadow-lg",
+          "bg-card/95 backdrop-blur-sm border border-border/60 shadow-sm",
+          "hover:border-indigo-200/80 dark:hover:border-indigo-400/30 hover:bg-card hover:shadow-lg",
           "card-modern",
           className
-        )} 
-        style={style} 
+        )}
+        style={style}
         onClick={handleNavigate}
       >
         <CardHeader className="relative z-10 pb-3">
           <div className="flex items-center justify-between mb-4">
             <div className="relative">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50/50 text-indigo-600 group-hover:from-indigo-100 group-hover:to-purple-100/70 group-hover:scale-105 transition-all duration-300">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50/50 dark:from-indigo-950/50 dark:to-purple-950/50 text-indigo-600 dark:text-indigo-400 group-hover:from-indigo-100 group-hover:to-purple-100/70 dark:group-hover:from-indigo-900 dark:group-hover:to-purple-900/70 group-hover:scale-105 transition-all duration-300">
                 <div className="relative z-10 w-6 h-6">
                   {icon}
                 </div>
               </div>
             </div>
           </div>
-          <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors duration-300 leading-tight">
+          <CardTitle className="text-lg font-semibold text-card-foreground group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors duration-300 leading-tight">
             {title}
           </CardTitle>
-          <CardDescription className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300 leading-relaxed text-sm">
+          <CardDescription className="text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300 leading-relaxed text-sm">
             {description}
           </CardDescription>
         </CardHeader>
