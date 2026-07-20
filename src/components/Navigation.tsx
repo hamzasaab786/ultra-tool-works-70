@@ -188,13 +188,13 @@ const Navigation = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden py-4 border-t bg-white/95 backdrop-blur-xl">
+        <div className="md:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
-                <Link 
+                <Link
                   to="/#category-0"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -209,7 +209,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -219,9 +219,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-1"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -236,7 +236,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -246,9 +246,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-2"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -263,7 +263,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -273,9 +273,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-3"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -290,7 +290,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -300,9 +300,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-4"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -317,7 +317,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
