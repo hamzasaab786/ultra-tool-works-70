@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import Layout from "@/components/Layout";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 import AboutUs from "@/pages/AboutUs";
@@ -99,10 +100,11 @@ import TestCardGenerator from "@/pages/tools/TestCardGenerator";
 const App = () => {
   return (
     <HelmetProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Index />} />
+      <ThemeProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Index />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
@@ -204,6 +206,7 @@ const App = () => {
         </Layout>
         <Toaster />
       </Router>
+      </ThemeProvider>
     </HelmetProvider>
   );
 };

@@ -9,6 +9,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Menu, X } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -89,15 +90,15 @@ const Navigation = () => {
   ];
 
   const ToolSection = ({ title, tools }: { title: string; tools: { name: string; path: string }[] }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 w-[600px]">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-4 w-[600px] bg-popover text-popover-foreground">
       <div className="col-span-full">
-        <h3 className="font-semibold text-gray-900 mb-3">{title}</h3>
+        <h3 className="font-semibold text-foreground mb-3">{title}</h3>
       </div>
       {tools.map((tool) => (
         <Link
           key={tool.path}
           to={tool.path}
-          className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-md transition-colors"
+          className="block px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
         >
           {tool.name}
         </Link>
@@ -106,7 +107,7 @@ const Navigation = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-white/95 border-b border-gray-200/60 shadow-sm">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/95 border-b border-border/60 shadow-sm transition-colors duration-300">
       <div className="container mx-auto px-4 py-3 lg:py-4 flex items-center relative z-10">
         <div className="mr-4 flex items-center">
           <Link to="/" className="flex items-center group">
@@ -117,13 +118,13 @@ const Navigation = () => {
             </div>
           </Link>
         </div>
-        
+
         {/* Desktop Navigation */}
-        <div className="hidden md:block flex-1">
+        <div className="hidden md:flex flex-1 items-center justify-between">
           <NavigationMenu>
             <NavigationMenuList className="space-x-1">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   🖼️ Image Tools
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -132,7 +133,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   📄 PDF Tools
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -141,7 +142,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   🧮 Calculators
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -150,7 +151,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   📝 Text Tools
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -159,7 +160,7 @@ const Navigation = () => {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-sm font-medium">
+                <NavigationMenuTrigger className="text-sm font-medium bg-transparent">
                   🛠️ Utilities
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -168,10 +169,13 @@ const Navigation = () => {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
+
+          <ThemeToggle />
         </div>
 
-        {/* Mobile menu button */}
-        <div className="md:hidden">
+        {/* Mobile controls */}
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
           <Button
             variant="ghost"
             size="sm"
@@ -184,13 +188,13 @@ const Navigation = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden py-4 border-t bg-white/95 backdrop-blur-xl">
+        <div className="md:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300">
           <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
-                <Link 
+                <Link
                   to="/#category-0"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -205,7 +209,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -215,9 +219,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-1"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -232,7 +236,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -242,9 +246,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-2"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -259,7 +263,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -269,9 +273,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-3"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -286,7 +290,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
@@ -296,9 +300,9 @@ const Navigation = () => {
               </div>
 
               <div>
-                <Link 
+                <Link
                   to="/#category-4"
-                  className="font-semibold text-gray-900 mb-2 block hover:text-indigo-600 transition-colors"
+                  className="font-semibold text-foreground mb-2 block hover:text-indigo-600 transition-colors"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setTimeout(() => {
@@ -313,7 +317,7 @@ const Navigation = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className="block px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                      className="block px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {tool.name}
