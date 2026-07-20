@@ -1,37 +1,32 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Moon, Sun, Monitor } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 const ThemeToggle = () => {
-  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <div className="flex items-center gap-1">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleTheme}
-        className="relative rounded-full w-9 h-9"
-        aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
-        title={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+    <button
+      onClick={toggleTheme}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      className="relative inline-flex h-7 w-12 items-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      style={{ backgroundColor: isDark ? "hsl(217 19% 27%)" : "hsl(214 32% 91%)" }}
+    >
+      <span
+        className={`absolute left-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm transition-transform duration-200 ${
+          isDark ? "translate-x-5" : "translate-x-0"
+        }`}
       >
-        <Sun className={`h-5 w-5 transition-all ${resolvedTheme === "dark" ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"}`} />
-        <Moon className={`absolute h-5 w-5 transition-all ${resolvedTheme === "dark" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`} />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
-
-      <select
-        value={theme}
-        onChange={(e) => setTheme(e.target.value as "light" | "dark" | "system")}
-        className="text-xs bg-transparent border-none outline-none cursor-pointer text-foreground/80 hover:text-foreground focus:ring-0"
-        aria-label="Theme preference"
-      >
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-        <option value="system">System</option>
-      </select>
-    </div>
+        {isDark ? (
+          <Moon className="h-3.5 w-3.5 text-slate-700" />
+        ) : (
+          <Sun className="h-3.5 w-3.5 text-amber-500" />
+        )}
+      </span>
+      <span className="sr-only">Toggle theme</span>
+    </button>
   );
 };
 
