@@ -341,28 +341,28 @@ const Index = () => {
       <section className="relative overflow-hidden min-h-screen flex items-center">
         <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
           <div className="max-w-5xl mx-auto text-center">
-            <div className="inline-flex items-center px-4 py-2 glassmorphism rounded-full border border-indigo-200/50 mb-8 animate-fade-in">
-              <Sparkles className="w-4 h-4 text-indigo-600 mr-2" />
-              <span className="text-indigo-700 font-medium">✨ All Tools Are 100% Free Forever</span>
+            <div className="inline-flex items-center px-4 py-2 glassmorphism rounded-full border border-indigo-200/50 dark:border-indigo-400/30 mb-8 animate-fade-in">
+              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mr-2" />
+              <span className="text-indigo-700 dark:text-indigo-300 font-medium">✨ All Tools Are 100% Free Forever</span>
             </div>
-            
+
             <h1 className="text-4xl md:text-6xl font-bold mb-6 gradient-text animate-slide-up">
               ToolifyConvert
             </h1>
-            
-            <p className="text-xl md:text-2xl mb-8 text-gray-700 animate-slide-up delay-200">The Ultimate Collection of 100% Free Online Tools</p>
-            
-            <p className="text-lg mb-12 text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Convert, compress, resize, calculate, and more - all powered by cutting-edge technology. 
+
+            <p className="text-xl md:text-2xl mb-8 text-foreground/90 animate-slide-up delay-200">The Ultimate Collection of 100% Free Online Tools</p>
+
+            <p className="text-lg mb-12 text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Convert, compress, resize, calculate, and more - all powered by cutting-edge technology.
               No sign-up required, lightning-fast processing, and completely secure.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 animate-slide-up delay-400">
               <Button size="lg" className="text-lg px-8 py-3 btn-modern bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white" onClick={scrollToTools}>
                 <Zap className="mr-2 h-5 w-5" />
                 Explore All Tools
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-3 btn-modern border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50" onClick={() => document.getElementById('features')?.scrollIntoView({
+              <Button size="lg" variant="outline" className="text-lg px-8 py-3 btn-modern border-2 border-indigo-200 dark:border-indigo-400/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30" onClick={() => document.getElementById('features')?.scrollIntoView({
               behavior: 'smooth'
             })}>
                 Learn More
