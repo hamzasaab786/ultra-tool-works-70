@@ -382,10 +382,10 @@ const Index = () => {
       <section id="popular-tools" className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               🔥 Most Popular Tools
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               These are our most loved and frequently used tools by millions of users worldwide for image processing, document management, and productivity enhancement.
             </p>
           </div>
@@ -402,13 +402,13 @@ const Index = () => {
       </section>
 
       {/* All Tools Categories Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-indigo-50/30">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-indigo-50/30 dark:from-slate-900 dark:to-indigo-950/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               🚀 All Tools by Category
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Explore our complete collection of professional-grade tools, organized by category for easy discovery
             </p>
           </div>
@@ -417,10 +417,10 @@ const Index = () => {
             {toolCategories.map((category, categoryIndex) => (
               <div key={categoryIndex} id={`category-${categoryIndex}`} className="space-y-8 scroll-mt-20">
                 <div className="text-center">
-                  <h3 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 text-foreground">
                     {category.title}
                   </h3>
-                  <p className="text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                  <p className="text-muted-foreground max-w-4xl mx-auto leading-relaxed">
                     {category.description}
                   </p>
                 </div>
@@ -447,48 +447,48 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50/50">
+      <section id="features" className="py-20 bg-gradient-to-br from-indigo-50 to-purple-50/50 dark:from-indigo-950 dark:to-purple-950/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               Why Choose ToolifyConvert?
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               We've built the most comprehensive suite of online tools with cutting-edge technology and user experience in mind
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="glassmorphism p-6 rounded-2xl border border-white/50 card-modern text-center">
+            <div className="glassmorphism p-6 rounded-2xl border border-white/50 dark:border-white/10 card-modern text-center">
               <div className="text-green-600 mb-4 flex justify-center">
                 <Zap className="h-12 w-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Lightning Fast</h3>
-              <p className="text-gray-600 leading-relaxed">Advanced algorithms ensure blazing-fast processing, even for large files. No more waiting around!</p>
+              <h3 className="text-xl font-semibold mb-3 text-foreground">Lightning Fast</h3>
+              <p className="text-muted-foreground leading-relaxed">Advanced algorithms ensure blazing-fast processing, even for large files. No more waiting around!</p>
             </div>
             
-            <div className="glassmorphism p-6 rounded-2xl border border-white/50 card-modern text-center">
+            <div className="glassmorphism p-6 rounded-2xl border border-white/50 dark:border-white/10 card-modern text-center">
               <div className="text-blue-600 mb-4 flex justify-center">
                 <Shield className="h-12 w-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">100% Secure</h3>
-              <p className="text-gray-600 leading-relaxed">Your files are processed securely and never stored on our servers. Complete privacy guaranteed.</p>
+              <h3 className="text-xl font-semibold mb-3 text-foreground">100% Secure</h3>
+              <p className="text-muted-foreground leading-relaxed">Your files are processed securely and never stored on our servers. Complete privacy guaranteed.</p>
             </div>
             
-            <div className="glassmorphism p-6 rounded-2xl border border-white/50 card-modern text-center">
+            <div className="glassmorphism p-6 rounded-2xl border border-white/50 dark:border-white/10 card-modern text-center">
               <div className="text-purple-600 mb-4 flex justify-center">
                 <Sparkles className="h-12 w-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">100% Completely Free</h3>
-              <p className="text-gray-600 leading-relaxed">Every single tool is completely free with no limitations, or hidden costs. Forever.</p>
+              <h3 className="text-xl font-semibold mb-3 text-foreground">100% Completely Free</h3>
+              <p className="text-muted-foreground leading-relaxed">Every single tool is completely free with no limitations, or hidden costs. Forever.</p>
             </div>
             
-            <div className="glassmorphism p-6 rounded-2xl border border-white/50 card-modern text-center">
+            <div className="glassmorphism p-6 rounded-2xl border border-white/50 dark:border-white/10 card-modern text-center">
               <div className="text-indigo-600 mb-4 flex justify-center">
                 <Clock className="h-12 w-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">No Sign-Up</h3>
-              <p className="text-gray-600 leading-relaxed">Start using any tool instantly. No accounts, no forms, no personal information required.</p>
+              <h3 className="text-xl font-semibold mb-3 text-foreground">No Sign-Up</h3>
+              <p className="text-muted-foreground leading-relaxed">Start using any tool instantly. No accounts, no forms, no personal information required.</p>
             </div>
           </div>
         </div>
@@ -498,21 +498,21 @@ const Index = () => {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               ❓ Frequently Asked Questions
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Got questions? We've got answers! Here are the most common questions about our tools and services.
             </p>
           </div>
           
           <div className="max-w-4xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
-              {faqs.map((faq, index) => <AccordionItem key={index} value={`item-${index}`} className="glassmorphism rounded-xl border border-gray-200/50 px-6">
-                  <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-indigo-600 transition-colors py-4">
+              {faqs.map((faq, index) => <AccordionItem key={index} value={`item-${index}`} className="glassmorphism rounded-xl border border-border/50 px-6">
+                  <AccordionTrigger className="text-left font-semibold text-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors py-4">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-gray-600 leading-relaxed pb-4">
+                  <AccordionContent className="text-muted-foreground leading-relaxed pb-4">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>)}
