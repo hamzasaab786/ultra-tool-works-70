@@ -206,6 +206,7 @@ const App = () => {
         </Layout>
         <Toaster />
       </Router>
+      </ThemeProvider>
     </HelmetProvider>
   );
 };
