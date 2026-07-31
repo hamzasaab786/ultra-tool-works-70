@@ -181,7 +181,12 @@ const JpgToPdf = () => {
         const x = (pdfWidth - width) / 2;
         const y = (pdfHeight - height) / 2;
 
-        pdf.addImage(image.preview, 'JPEG', x, y, width, height);
+        // Derive the real format from the data URL so PNG/WEBP uploads embed correctly
+        const mimeMatch = /^data:image\/([a-z+]+);/i.exec(image.preview);
+        const detected = (mimeMatch?.[1] || 'jpeg').toUpperCase();
+        const format = detected === 'JPG' ? 'JPEG' : detected;
+
+        pdf.addImage(image.preview, format, x, y, width, height);
       }
 
       // Save the PDF

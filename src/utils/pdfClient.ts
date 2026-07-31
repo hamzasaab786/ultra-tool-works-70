@@ -1,13 +1,17 @@
 import * as pdfjsLib from "pdfjs-dist";
+// Bundle the worker with the app (Vite resolves this to a hashed asset URL).
+// This removes the hard runtime dependency on a third-party CDN.
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.js?url";
 
-// Load worker from CDN matching the exact installed version. This avoids
-// Vite ?url / MIME-type edge cases where the dev/prod server returns HTML
-// instead of the worker script.
 if (typeof window !== "undefined") {
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  try {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+  } catch {
+    // Fallback to a CDN copy that matches the installed version exactly.
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  }
 }
-
 
 export { pdfjsLib };
 
