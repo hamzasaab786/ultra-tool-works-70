@@ -335,7 +335,7 @@ const Index = () => {
   }];
 
   return <>
-      <SEO title="Klipza - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, text tools, productivity tools" canonicalUrl="https://klipza.live" />
+      <SEO title="Klipza — 80+ Free Online Tools: PDF, Image, QR & Text" description="Use 80+ free online tools in one place: merge and compress PDFs, OCR scans, convert and compress images, generate QR codes, build an ATS resume and more. No signup — files stay on your device." keywords="free online tools, pdf tools online, image compressor, qr code generator with logo, ats resume builder, pdf ocr, word counter, unit converter, klipza" canonicalUrl="https://klipza.live/" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
