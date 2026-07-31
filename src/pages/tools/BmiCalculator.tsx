@@ -112,7 +112,7 @@ const BmiCalculator = () => {
         title="BMI Calculator - Calculate Body Mass Index Online Free | Klipza"
         description="Calculate your BMI (Body Mass Index) and check if you're in a healthy weight range. Support for metric and imperial units."
         keywords="bmi calculator, body mass index, weight calculator, health calculator"
-        canonicalUrl="https://klipza.com/tools/bmi-calculator"
+        canonicalUrl="https://klipza.live/tools/bmi-calculator"
       />
       
       <ToolPageTemplate

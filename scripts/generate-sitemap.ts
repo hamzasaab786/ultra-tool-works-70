@@ -3,7 +3,7 @@
 import { writeFileSync } from "fs"
 import { resolve } from "path"
 
-const BASE_URL = "https://klipza.com"
+const BASE_URL = "https://klipza.live"
 
 interface SitemapEntry {
   path: string

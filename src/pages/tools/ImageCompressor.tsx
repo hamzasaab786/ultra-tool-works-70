@@ -185,7 +185,7 @@ const ImageCompressor = () => {
         title="Image Compressor - Reduce Image File Size Online Free | Klipza"
         description="Compress images online for free. Reduce image file size while maintaining quality. Support for JPG, PNG, WebP formats."
         keywords="image compressor, reduce image size, compress image online, image optimization"
-        canonicalUrl="https://klipza.com/tools/image-compressor"
+        canonicalUrl="https://klipza.live/tools/image-compressor"
       />
       
       <ToolPageTemplate

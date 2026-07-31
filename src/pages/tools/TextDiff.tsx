@@ -132,7 +132,7 @@ ${diffResult.unchanged.map(line => `  ${line}`).join('\n')}
         title="Text Diff Checker - Compare Two Texts Online Free | Klipza"
         description="Compare two texts and highlight differences online for free. Find added, removed, and changed lines instantly."
         keywords="text diff, text compare, difference checker, text comparison tool"
-        canonicalUrl="https://klipza.com/tools/text-diff"
+        canonicalUrl="https://klipza.live/tools/text-diff"
       />
       
       <ToolPageTemplate
