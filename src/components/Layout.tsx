@@ -3,6 +3,8 @@ import React from "react";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 import ScrollAnimation from "./ScrollAnimation";
+import ToolSeoHead from "./ToolSeoHead";
+import ToolFaqSection from "./ToolFaqSection";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -35,7 +37,11 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Main content with optimized spacing */}
       <main className="flex-1 relative z-10 w-full overflow-hidden">
         {children}
+        <ToolFaqSection />
       </main>
+
+      {/* Route-aware SEO head; rendered last so it overrides page-level tags */}
+      <ToolSeoHead />
       
       {/* Footer */}
       <Footer />
