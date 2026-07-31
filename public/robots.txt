@@ -1,14 +1,17 @@
-
 User-agent: *
 Allow: /
+Crawl-delay: 1
+Disallow: /admin/
+Disallow: /private/
 
-# Specific crawlers
+# Search crawlers
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
+# Social preview crawlers
 User-agent: Twitterbot
 Allow: /
 
@@ -21,24 +24,26 @@ Allow: /
 User-agent: WhatsApp
 Allow: /
 
-# Sitemap location
+# AI / answer-engine crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://klipza.com/sitemap.xml
-
-# Crawl-delay for non-major search engines
-User-agent: *
-Crawl-delay: 1
-
-# Block access to admin areas (if any exist in future)
-Disallow: /admin/
-Disallow: /private/
-Disallow: /*.json$
-
-# Allow all image and media files
-Allow: /images/
-Allow: /icons/
-Allow: /*.jpg$
-Allow: /*.jpeg$
-Allow: /*.png$
-Allow: /*.svg$
-Allow: /*.gif$
-Allow: /*.webp$
