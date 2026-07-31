@@ -35,7 +35,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
 
-    <!-- Structured data: Organization, WebSite, WebApplication, FAQ -->
+    <!-- Sitewide structured data: Organization + WebSite only. Page-level FAQ/Breadcrumb schema is emitted per route via react-helmet-async. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -54,44 +54,6 @@
           "url": "https://klipza.live/",
           "publisher": { "@id": "https://klipza.live/#organization" },
           "inLanguage": "en"
-        },
-        {
-          "@type": "WebApplication",
-          "name": "Klipza Online Tools",
-          "url": "https://klipza.live/",
-          "applicationCategory": "UtilitiesApplication",
-          "operatingSystem": "Any (web browser)",
-          "browserRequirements": "Requires JavaScript",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-          "featureList": [
-            "Merge, split, compress and OCR PDF files",
-            "Convert and compress images (JPG, PNG, WebP, SVG)",
-            "QR code generator with logo and full customization",
-            "ATS-friendly resume builder",
-            "Invoice and receipt generator",
-            "Unit, currency and percentage calculators",
-            "Text tools: word counter, case converter, JSON formatter"
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Is Klipza free to use?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every tool on Klipza is free, with no signup, subscription or usage limit." }
-            },
-            {
-              "@type": "Question",
-              "name": "Are my files uploaded to a server?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Most Klipza tools run entirely in your browser, so your files stay on your device and are never uploaded." }
-            },
-            {
-              "@type": "Question",
-              "name": "What can I do with Klipza?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Klipza offers 80+ tools including PDF merge, split, compress and OCR, image conversion and compression, QR code generation, resume and invoice building, and everyday calculators." }
-            }
-          ]
         }
       ]
     }
