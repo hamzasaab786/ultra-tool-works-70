@@ -38,6 +38,7 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Main content with optimized spacing */}
       <main className="flex-1 relative z-10 w-full overflow-hidden">
         {children}
+        <ToolSeoArticle />
         <ToolFaqSection />
       </main>
 
