@@ -125,7 +125,7 @@ const LoremIpsum = () => {
         title="Lorem Ipsum Generator - Generate Placeholder Text Online Free | Klipza"
         description="Generate Lorem Ipsum placeholder text for your design projects. Create words, sentences, or paragraphs instantly."
         keywords="lorem ipsum generator, placeholder text, dummy text, filler text"
-        canonicalUrl="https://klipza.com/tools/lorem-ipsum"
+        canonicalUrl="https://klipza.live/tools/lorem-ipsum"
       />
       
       <ToolPageTemplate

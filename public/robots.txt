@@ -46,4 +46,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://klipza.com/sitemap.xml
+Sitemap: https://klipza.live/sitemap.xml

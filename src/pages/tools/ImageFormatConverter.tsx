@@ -313,7 +313,7 @@ const ImageFormatConverter = () => {
         title="Image Format Converter - Convert PNG, JPG, WebP, TIFF, ICO, AVIF, SVG, GIF, BMP Online Free"
         description="Convert images between all formats online for free. JPG, PNG, WebP, BMP, GIF, TIFF, ICO, AVIF, SVG conversions with quality control."
         keywords="image format converter, convert png to jpg, jpg to png, webp converter, tiff converter, ico converter, avif converter, svg converter"
-        canonicalUrl="https://klipza.com/tools/image-format-converter"
+        canonicalUrl="https://klipza.live/tools/image-format-converter"
       />
 
       <ToolPageTemplate
