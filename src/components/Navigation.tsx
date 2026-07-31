@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import klipzaLogo from "@/assets/klipza-logo.png";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
