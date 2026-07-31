@@ -92,12 +92,12 @@ const toolPaths = [
 ]
 
 const entries: SitemapEntry[] = [
-  { path: "/", changefreq: "weekly", priority: "1.0" },
-  { path: "/about", changefreq: "yearly", priority: "0.5" },
-  { path: "/privacy", changefreq: "yearly", priority: "0.3" },
-  { path: "/terms", changefreq: "yearly", priority: "0.3" },
-  { path: "/disclaimer", changefreq: "yearly", priority: "0.3" },
-  ...toolPaths.map((path): SitemapEntry => ({ path, changefreq: "monthly", priority: "0.8" })),
+  { path: "/", changefreq: "weekly", priority: "1.0", lastmod: TODAY },
+  { path: "/about", changefreq: "yearly", priority: "0.5", lastmod: TODAY },
+  { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
+  { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
+  { path: "/disclaimer", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
+  ...toolPaths.map((path): SitemapEntry => ({ path, changefreq: "monthly", priority: "0.8", lastmod: TODAY })),
 ]
 
 function generateSitemap(entries: SitemapEntry[]) {
