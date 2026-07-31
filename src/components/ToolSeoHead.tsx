@@ -79,7 +79,7 @@ const ToolSeoHead = () => {
       <meta name="twitter:description" content={entry.description} />
 
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(appSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
     </Helmet>
   );
