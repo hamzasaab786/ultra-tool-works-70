@@ -21,5 +21,25 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    target: "esnext",
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        // Keep the framework in its own long-lived cache chunk so tool pages
+        // (all lazy-loaded) only ship their own code.
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (/[\\/]node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom)[\\/]/.test(id)) {
+            return "react-vendor";
+          }
+          if (id.includes("@radix-ui") || id.includes("lucide-react")) {
+            return "ui-vendor";
+          }
+        },
+      },
+    },
+  },
 }));
 
