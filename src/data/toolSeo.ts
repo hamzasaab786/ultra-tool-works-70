@@ -40,7 +40,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Compress JPG, PNG, WebP and GIF images up to 80% smaller without visible quality loss. Batch compression runs in your browser — no upload, no signup.",
     keywords:
-      "image compressor, compress jpg online, reduce image size, png compressor, compress photo without losing quality, bulk image compression",
+      "image compressor, compress jpg online, reduce image size, png compressor, compress photo without losing quality, bulk image compression, image compressor to 100kb, compress image to 50kb online, reduce jpg file size in kb, compress png without losing quality free",
     faqs: [
       {
         q: "How much can I compress an image without losing quality?",
@@ -60,7 +60,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Resize images online to exact pixel dimensions or a percentage, with aspect-ratio lock and social-media presets. Fast, private and completely free.",
     keywords:
-      "image resizer, resize image online, change image dimensions, resize photo pixels, social media image size, bulk image resize",
+      "image resizer, resize image online, change image dimensions, resize photo pixels, social media image size, bulk image resize, resize image to passport size online, resize image in cm online, resize image to 4x6 inches, change photo size in kb online",
     faqs: [
       {
         q: "Will resizing make my image blurry?",
@@ -80,7 +80,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Enhance photo quality online: adjust sharpness, brightness, contrast and saturation with a live preview, then export a high-quality image in one click.",
     keywords:
-      "image enhancer, photo quality improver, sharpen image online, brighten photo, increase image clarity, fix blurry picture",
+      "image enhancer, photo quality improver, sharpen image online, brighten photo, increase image clarity, fix blurry picture, enhance blurry photo online free, increase image quality online free, sharpen low resolution image online",
     faqs: [
       {
         q: "Can this fix a very blurry photo?",
@@ -100,7 +100,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Crop photos online with drag handles and fixed ratios (1:1, 4:3, 16:9, passport). Trim, straighten and export instantly in your browser.",
     keywords:
-      "crop image online, photo cropper, crop picture free, square crop, 16:9 crop tool, trim image",
+      "crop image online, photo cropper, crop picture free, square crop, 16:9 crop tool, trim image, crop image to circle online free, crop photo to 1x1 ratio online, crop image without losing quality online",
     faqs: [
       {
         q: "Which crop ratio should I use for social media?",
@@ -120,7 +120,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert JPG and PNG images to PDF online. Drag to reorder pages, choose page size and margins, and merge many photos into a single clean PDF file.",
     keywords:
-      "jpg to pdf, convert image to pdf, photo to pdf converter, png to pdf, combine jpg into pdf, images to pdf online",
+      "jpg to pdf, convert image to pdf, photo to pdf converter, png to pdf, combine jpg into pdf, images to pdf online, convert multiple jpg to one pdf online, jpg to pdf converter free no watermark, photo to pdf converter online free",
     faqs: [
       {
         q: "Can I put several photos into one PDF?",
@@ -140,7 +140,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert SVG vector files to high-resolution JPG or PNG. Pick output width, background colour and quality — rendering happens locally in your browser.",
     keywords:
-      "svg to jpg, convert svg to png, svg converter online, rasterize svg, export svg as image, vector to jpg",
+      "svg to jpg, convert svg to png, svg converter online, rasterize svg, export svg as image, vector to jpg, svg to jpg converter high resolution, convert svg to jpg with transparent background, svg to jpg online free no signup",
     faqs: [
       {
         q: "What resolution should I export an SVG at?",
@@ -160,7 +160,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Create passport and visa photos online in official sizes (35x45mm, 2x2in and more) with correct head positioning, white background and print-ready sheets.",
     keywords:
-      "passport photo maker, passport size photo online, visa photo tool, id photo generator, 2x2 passport photo, 35x45mm photo",
+      "passport photo maker, passport size photo online, visa photo tool, id photo generator, 2x2 passport photo, 35x45mm photo, passport size photo maker online free, 2x2 passport photo online, visa photo size converter online",
     faqs: [
       {
         q: "What size should a passport photo be?",
@@ -180,7 +180,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Turn any image into a shareable data URL or Base64 string for HTML, CSS and email templates. Instant conversion with copy-ready output.",
     keywords:
-      "image to url, image to base64, data url generator, convert png to base64, embed image in css, base64 image encoder",
+      "image to url, image to base64, data url generator, convert png to base64, embed image in css, base64 image encoder, convert image to url link online free, image to link generator free, host image get url instantly",
     faqs: [
       {
         q: "When should I use a Base64 data URL instead of a file?",
@@ -200,7 +200,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert between JPG, PNG, WebP, AVIF, BMP, GIF and more with quality control and live previews. Batch convert images free in your browser.",
     keywords:
-      "image format converter, png to jpg, jpg to webp, convert to avif, webp converter online, change image format",
+      "image format converter, png to jpg, jpg to webp, convert to avif, webp converter online, change image format, png to webp converter online free, webp to jpg converter bulk, heic to jpg converter online free",
     faqs: [
       {
         q: "Which image format is best for websites?",
@@ -220,7 +220,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "View EXIF data from any photo: camera model, lens, ISO, shutter speed, GPS location, timestamps and more. Read metadata privately in your browser.",
     keywords:
-      "exif viewer, image metadata extractor, photo exif data online, read gps from photo, camera info from image, exif reader",
+      "exif viewer, image metadata extractor, photo exif data online, read gps from photo, camera info from image, exif reader, view exif data online free, check photo metadata online, image gps location viewer online",
     faqs: [
       {
         q: "What information does EXIF data contain?",
@@ -240,7 +240,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Clean unwanted watermarks, logos and text from your own images with brush and clone retouching. Works locally in your browser, free and unlimited.",
     keywords:
-      "remove watermark from image, watermark remover online, erase logo from photo, clean image text, photo retouch tool",
+      "remove watermark from image, watermark remover online, erase logo from photo, clean image text, photo retouch tool, remove watermark from photo online free, delete watermark from image ai free",
     faqs: [
       {
         q: "Is it legal to remove a watermark?",
@@ -262,7 +262,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Combine multiple PDF files into one document. Drag to reorder, keep original quality and formatting, and download instantly — no upload, no watermark.",
     keywords:
-      "merge pdf, combine pdf files, pdf merger online free, join pdf documents, merge pdf without watermark",
+      "merge pdf, combine pdf files, pdf merger online free, join pdf documents, merge pdf without watermark, merge pdf files free online, combine 2 pdf into one online free, merge pdf without watermark free",
     faqs: [
       {
         q: "How many PDF files can I merge at once?",
@@ -282,7 +282,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Split a PDF into separate files, extract selected pages or break a document at chosen intervals. Fast, private, free and completely browser-based.",
     keywords:
-      "split pdf, extract pages from pdf, separate pdf pages, pdf splitter online, divide pdf file, save one page of pdf",
+      "split pdf, extract pages from pdf, separate pdf pages, pdf splitter online, divide pdf file, save one page of pdf, split pdf pages online free, extract single page from pdf online, separate pdf pages free no signup",
     faqs: [
       {
         q: "How do I extract just a few pages from a PDF?",
@@ -302,7 +302,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert every PDF page to a high-resolution JPG or PNG image. Choose DPI, convert multiple files at once and download all pages in seconds.",
     keywords:
-      "pdf to jpg, convert pdf to image, pdf to png, pdf page to picture, high resolution pdf to jpg, batch pdf to image",
+      "pdf to jpg, convert pdf to image, pdf to png, pdf page to picture, high resolution pdf to jpg, batch pdf to image, convert pdf to jpg high resolution online, pdf to image converter free no limit, pdf page to jpg online free",
     faqs: [
       {
         q: "What DPI should I choose when converting a PDF to JPG?",
@@ -322,7 +322,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Shrink large PDF files for email and uploads. Choose a compression level, keep text sharp and download a smaller PDF without watermarks or signup.",
     keywords:
-      "compress pdf, reduce pdf file size, pdf compressor online free, shrink pdf for email, make pdf smaller",
+      "compress pdf, reduce pdf file size, pdf compressor online free, shrink pdf for email, make pdf smaller, compress pdf online free without losing quality, reduce pdf size to 100kb online, compress pdf to 200kb free",
     faqs: [
       {
         q: "How much smaller will my PDF get?",
@@ -342,7 +342,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Extract tables from PDF into an editable Excel spreadsheet. Rows and columns are detected automatically and exported as a clean XLSX file.",
     keywords:
-      "pdf to excel, convert pdf table to spreadsheet, pdf to xlsx, extract table from pdf, pdf to csv converter",
+      "pdf to excel, convert pdf table to spreadsheet, pdf to xlsx, extract table from pdf, pdf to csv converter, pdf table to excel converter free, convert pdf bank statement to excel free, pdf to xlsx online no email",
     faqs: [
       {
         q: "Will my table structure be preserved?",
@@ -362,7 +362,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Remove open passwords and printing or copying restrictions from PDFs you own. Unlocked files download instantly and stay private on your device.",
     keywords:
-      "unlock pdf, remove pdf password, pdf password remover, decrypt pdf online, remove pdf restrictions, enable pdf printing",
+      "unlock pdf, remove pdf password, pdf password remover, decrypt pdf online, remove pdf restrictions, enable pdf printing, remove pdf password online free, unlock pdf without password online, decrypt pdf file free online",
     faqs: [
       {
         q: "Do I need to know the password to unlock a PDF?",
@@ -382,7 +382,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Inspect PDF metadata online: title, author, subject, keywords, producer, creation and modification dates, page count, page size and encryption status.",
     keywords:
-      "pdf metadata viewer, read pdf properties, pdf author info, pdf document info, check pdf creation date",
+      "pdf metadata viewer, read pdf properties, pdf author info, pdf document info, check pdf creation date, view pdf properties online, check pdf author and title online, pdf metadata viewer free",
     faqs: [
       {
         q: "What metadata is stored inside a PDF?",
@@ -402,7 +402,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Insert page numbers into any PDF with control over position, starting number, font size and format such as 1, Page 1 or 1 of 20. Instant download.",
     keywords:
-      "add page numbers to pdf, pdf page numbering online, number pdf pages, insert page numbers free, pdf footer numbers",
+      "add page numbers to pdf, pdf page numbering online, number pdf pages, insert page numbers free, pdf footer numbers, add page numbers to pdf online free, insert bates numbering pdf free, number pdf pages without acrobat",
     faqs: [
       {
         q: "Can I start numbering from a page other than the first?",
@@ -422,7 +422,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Compare two PDF documents side by side and highlight added, removed and changed text so you can review contract or draft revisions in seconds.",
     keywords:
-      "compare pdf files, pdf diff tool, find differences between pdfs, document comparison online, contract version compare",
+      "compare pdf files, pdf diff tool, find differences between pdfs, document comparison online, contract version compare, compare two pdf files for differences online free, pdf diff checker online",
     faqs: [
       {
         q: "How does PDF comparison work?",
@@ -442,7 +442,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Stamp a text or image watermark across every PDF page with control over opacity, rotation, size and position. Protect drafts and confidential files.",
     keywords:
-      "add watermark to pdf, pdf watermark online, stamp confidential on pdf, draft watermark, logo watermark pdf",
+      "add watermark to pdf, pdf watermark online, stamp confidential on pdf, draft watermark, logo watermark pdf, add watermark to pdf online free, add text watermark to pdf free, stamp confidential on pdf online",
     faqs: [
       {
         q: "What opacity works best for a watermark?",
@@ -462,7 +462,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert DOC and DOCX files to PDF with headings, lists, tables and images preserved. Runs entirely in your browser — documents never leave your device.",
     keywords:
-      "word to pdf, docx to pdf converter, convert doc to pdf online, free word pdf converter, doc to pdf no upload",
+      "word to pdf, docx to pdf converter, convert doc to pdf online, free word pdf converter, doc to pdf no upload, convert docx to pdf online free, word to pdf converter without losing formatting",
     faqs: [
       {
         q: "Are my fonts and layout preserved?",
@@ -482,7 +482,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Turn PDFs into editable Word documents with paragraphs and formatting kept intact. Download a clean DOCX file instantly, free and without signup.",
     keywords:
-      "pdf to word, convert pdf to docx, editable word from pdf, pdf to doc converter free, pdf into word online",
+      "pdf to word, convert pdf to docx, editable word from pdf, pdf to doc converter free, pdf into word online, pdf to word converter free online, convert pdf to editable word document free, pdf to docx no email required",
     faqs: [
       {
         q: "Will the converted Word file be fully editable?",
@@ -502,7 +502,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Mark a PDF as restricted, set permission metadata and control how the document is presented before sharing it. Free, private and browser-based.",
     keywords:
-      "protect pdf, pdf permissions, restrict pdf editing, secure pdf document, pdf protection tool online",
+      "protect pdf, pdf permissions, restrict pdf editing, secure pdf document, pdf protection tool online, add password to pdf online free, lock pdf file free online",
     faqs: [
       {
         q: "Does this apply real AES encryption?",
@@ -522,7 +522,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Pull all selectable text out of a PDF and copy or download it as plain text. Perfect for quoting reports, reusing content and feeding AI tools.",
     keywords:
-      "extract text from pdf, copy text from pdf, pdf text extractor online, pdf to txt, get text out of pdf",
+      "extract text from pdf, copy text from pdf, pdf text extractor online, pdf to txt, get text out of pdf, extract text from pdf online free, copy text from pdf online, pdf to text converter free",
     faqs: [
       {
         q: "Why can't I copy text from some PDFs?",
@@ -542,7 +542,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Rearrange, rotate and delete PDF pages visually with drag-and-drop thumbnails, then export the reorganised document in one click.",
     keywords:
-      "organize pdf, reorder pdf pages, delete pages from pdf, rotate pdf pages, rearrange pdf online free",
+      "organize pdf, reorder pdf pages, delete pages from pdf, rotate pdf pages, rearrange pdf online free, rearrange pdf pages online free, delete pages from pdf free online, reorder pdf pages without acrobat",
     faqs: [
       {
         q: "Can I delete and reorder pages in the same session?",
@@ -562,7 +562,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert HTML markup or a full web page into a paginated PDF with your choice of page size, orientation and margins. Free and instant.",
     keywords:
-      "html to pdf, convert web page to pdf, html file to pdf online, save html as pdf, code to pdf converter",
+      "html to pdf, convert web page to pdf, html file to pdf online, save html as pdf, code to pdf converter, convert html code to pdf online free, html to pdf converter with css",
     faqs: [
       {
         q: "Is CSS styling applied in the PDF?",
@@ -582,7 +582,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert XLSX, XLS and CSV spreadsheets to clean, printable PDF tables with sheet selection and landscape support. Free and browser-based.",
     keywords:
-      "excel to pdf, xlsx to pdf converter, spreadsheet to pdf, csv to pdf, convert excel sheet to pdf online",
+      "excel to pdf, xlsx to pdf converter, spreadsheet to pdf, csv to pdf, convert excel sheet to pdf online, convert excel to pdf online free, xlsx to pdf without losing formatting",
     faqs: [
       {
         q: "Can I convert a workbook with several sheets?",
@@ -602,7 +602,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert PPT and PPTX presentations to PDF with one slide per page, ready to email, print as handouts or share without PowerPoint installed.",
     keywords:
-      "powerpoint to pdf, pptx to pdf converter, convert slides to pdf, presentation to pdf online free",
+      "powerpoint to pdf, pptx to pdf converter, convert slides to pdf, presentation to pdf online free, convert ppt to pdf online free, pptx to pdf handout converter free",
     faqs: [
       {
         q: "Are animations and transitions kept?",
@@ -622,7 +622,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Run OCR on scanned PDFs and images in 12+ languages to turn pictures of text into searchable, copyable content. Recognition runs in your browser.",
     keywords:
-      "pdf ocr, scanned pdf to text, ocr online free, extract text from scan, image to text converter, searchable pdf",
+      "pdf ocr, scanned pdf to text, ocr online free, extract text from scan, image to text converter, searchable pdf, pdf ocr online free, scanned pdf to text converter free, extract text from scanned document online",
     faqs: [
       {
         q: "Which languages does the OCR support?",
@@ -642,7 +642,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Add a signature to any PDF: draw it, type it in a handwriting font or upload an image, then position, resize and export the signed document.",
     keywords:
-      "sign pdf online, electronic signature pdf, esign document free, add signature to pdf, digital signature tool",
+      "sign pdf online, electronic signature pdf, esign document free, add signature to pdf, digital signature tool, sign pdf online free, add signature to pdf free no signup, draw signature on pdf online",
     faqs: [
       {
         q: "Is an electronic signature legally valid?",
@@ -662,7 +662,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Edit text in a PDF: add new text boxes, choose font, size, bold and italic, mask old content with a white background and drag lines into exact position.",
     keywords:
-      "edit pdf text, pdf text editor online free, change text in pdf, add text to pdf, modify pdf document",
+      "edit pdf text, pdf text editor online free, change text in pdf, add text to pdf, modify pdf document, edit pdf text online free, change text in pdf without acrobat, add text to pdf online free",
     faqs: [
       {
         q: "How do I replace existing text in a PDF?",
@@ -684,7 +684,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Calculate percentages, percentage increase and decrease, and what percent one number is of another — with the formula shown for every result.",
     keywords:
-      "percentage calculator, percent increase calculator, percentage decrease, what percent of, discount calculator, percentage change formula",
+      "percentage calculator, percent increase calculator, percentage decrease, what percent of, discount calculator, percentage change formula, percentage increase calculator online, what percent is x of y calculator, percentage decrease calculator free",
     faqs: [
       {
         q: "How do I calculate a percentage increase?",
@@ -704,7 +704,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert between metric and imperial units for length, weight, volume, area, speed, temperature, data and time with instant, accurate results.",
     keywords:
-      "unit converter, metric to imperial, cm to inches, kg to lbs, celsius to fahrenheit, measurement converter online",
+      "unit converter, metric to imperial, cm to inches, kg to lbs, celsius to fahrenheit, measurement converter online, unit converter online free, cm to inches converter online, kg to lbs converter tool",
     faqs: [
       {
         q: "Which unit categories are supported?",
@@ -724,7 +724,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert between 150+ world currencies using up-to-date exchange rates. Fast, free, ad-free and no account required.",
     keywords:
-      "currency converter, exchange rate calculator, usd to eur, live forex rates, money converter online, foreign exchange",
+      "currency converter, exchange rate calculator, usd to eur, live forex rates, money converter online, foreign exchange, currency converter live rates, usd to pkr converter today, exchange rate calculator online free",
     faqs: [
       {
         q: "How often are the exchange rates updated?",
@@ -744,7 +744,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Work out your exact age from a date of birth in years, months, days, hours and total days, plus the countdown to your next birthday.",
     keywords:
-      "age calculator, calculate age from date of birth, exact age in days, birthday countdown, how old am i",
+      "age calculator, calculate age from date of birth, exact age in days, birthday countdown, how old am i, age calculator by date of birth, exact age calculator in years months days, how old am i calculator online",
     faqs: [
       {
         q: "How is exact age calculated?",
@@ -764,7 +764,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Calculate your BMI from height and weight in metric or imperial units, see your WHO weight category and the healthy weight range for your height.",
     keywords:
-      "bmi calculator, body mass index, healthy weight range, bmi chart, calculate bmi metric imperial",
+      "bmi calculator, body mass index, healthy weight range, bmi chart, calculate bmi metric imperial, bmi calculator online, bmi calculator kg and cm, body mass index calculator for women",
     faqs: [
       {
         q: "What is a healthy BMI range?",
@@ -784,7 +784,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Calculate monthly loan repayments, total interest and the full amortisation schedule for mortgages, car loans and personal finance.",
     keywords:
-      "loan calculator, monthly payment calculator, mortgage repayment, emi calculator, amortization schedule, interest calculator",
+      "loan calculator, monthly payment calculator, mortgage repayment, emi calculator, amortization schedule, interest calculator, loan emi calculator online, monthly mortgage payment calculator free, car loan interest calculator online",
     faqs: [
       {
         q: "How is a monthly loan payment calculated?",
@@ -804,7 +804,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Calculate the tip and total instantly, split a restaurant bill between any number of people and round to a convenient amount per person.",
     keywords:
-      "tip calculator, split bill calculator, gratuity calculator, tip per person, restaurant bill splitter",
+      "tip calculator, split bill calculator, gratuity calculator, tip per person, restaurant bill splitter, tip calculator online, split bill tip calculator, 20 percent tip calculator",
     faqs: [
       {
         q: "How much should I tip?",
@@ -824,7 +824,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert colours between HEX, RGB, RGBA, HSL and CSS formats with a live swatch preview. Copy production-ready values for design and code.",
     keywords:
-      "hex to rgb, rgb to hex converter, color code converter, hsl converter, css color values, hex color picker",
+      "hex to rgb, rgb to hex converter, color code converter, hsl converter, css color values, hex color picker, hex to rgb converter, rgb to hex color code converter, hex color to hsl converter online",
     faqs: [
       {
         q: "How does HEX to RGB conversion work?",
@@ -844,7 +844,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert numbers between binary, octal, decimal, hexadecimal and any base from 2 to 36 instantly, with all representations shown side by side.",
     keywords:
-      "number base converter, binary to decimal, decimal to hex, octal converter, hex to binary, radix converter",
+      "number base converter, binary to decimal, decimal to hex, octal converter, hex to binary, radix converter, binary to decimal converter online, hex to binary converter free",
     faqs: [
       {
         q: "How do I convert decimal to binary by hand?",
@@ -866,7 +866,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Count words, characters with and without spaces, sentences and paragraphs in real time, plus reading and speaking time estimates and keyword density.",
     keywords:
-      "word counter, character count tool, count words online, reading time calculator, essay word count, keyword density",
+      "word counter, character count tool, count words online, reading time calculator, essay word count, keyword density, word counter tool online, character count with spaces online, essay word count checker free",
     faqs: [
       {
         q: "How is reading time estimated?",
@@ -886,7 +886,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert text between UPPERCASE, lowercase, Sentence case, Title Case, camelCase, snake_case and kebab-case instantly, then copy the result.",
     keywords:
-      "case converter, uppercase to lowercase, title case generator, camelcase converter, snake case, text capitalization tool",
+      "case converter, uppercase to lowercase, title case generator, camelcase converter, snake case, text capitalization tool, case converter online, uppercase to lowercase converter online, title case converter free tool",
     faqs: [
       {
         q: "What is the difference between Title Case and Sentence case?",
@@ -906,7 +906,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Encode text to Base64 or decode Base64 back to plain text instantly, with full Unicode support. Everything runs locally in your browser.",
     keywords:
-      "base64 encoder, base64 decoder online, encode text base64, decode base64 string, base64 converter free",
+      "base64 encoder, base64 decoder online, encode text base64, decode base64 string, base64 converter free, base64 encode decode online, base64 to image converter online, decode base64 string free",
     faqs: [
       {
         q: "Is Base64 a form of encryption?",
@@ -926,7 +926,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert Markdown to clean, semantic HTML with a live side-by-side preview. Supports headings, lists, tables, links, images and code blocks.",
     keywords:
-      "markdown to html, md to html converter, markdown preview online, convert readme to html, markdown editor",
+      "markdown to html, md to html converter, markdown preview online, convert readme to html, markdown editor, markdown to html converter, md to html online free, convert readme markdown to html",
     faqs: [
       {
         q: "Which Markdown syntax is supported?",
@@ -946,7 +946,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Compare two blocks of text or code and highlight every addition, deletion and change line by line. Ideal for drafts, contracts and code review.",
     keywords:
-      "text diff checker, compare two texts, difference between two files, online diff tool, text comparison free",
+      "text diff checker, compare two texts, difference between two files, online diff tool, text comparison free, text diff checker online, compare two texts for differences free, find difference between two paragraphs",
     faqs: [
       {
         q: "Does the diff work for source code?",
@@ -966,7 +966,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Generate Lorem Ipsum placeholder text by words, sentences or paragraphs for mockups, wireframes and layout testing. Copy with one click.",
     keywords:
-      "lorem ipsum generator, placeholder text, dummy text generator, filler text for design, lipsum online",
+      "lorem ipsum generator, placeholder text, dummy text generator, filler text for design, lipsum online, dummy text generator paragraphs, placeholder text generator words",
     faqs: [
       {
         q: "Why do designers use Lorem Ipsum?",
@@ -986,7 +986,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Encode or decode URLs and query strings with correct percent-encoding for special characters, spaces and Unicode. Instant and free.",
     keywords:
-      "url encoder, url decoder online, percent encoding, encode query string, decode url parameters, uri encode",
+      "url encoder, url decoder online, percent encoding, encode query string, decode url parameters, uri encode, url encoder decoder online, decode url percent encoding free, encode query string online",
     faqs: [
       {
         q: "Why do URLs contain %20 and similar codes?",
@@ -1006,7 +1006,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Format, validate and minify JSON with syntax highlighting and clear error messages that point to the exact line. Free developer tool, no upload.",
     keywords:
-      "json formatter, json validator, beautify json online, minify json, pretty print json, fix json syntax error",
+      "json formatter, json validator, beautify json online, minify json, pretty print json, fix json syntax error, json formatter online, json beautifier and validator free, minify json online free",
     faqs: [
       {
         q: "What are the most common JSON syntax errors?",
@@ -1026,7 +1026,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Convert CSV data into structured JSON with automatic header detection, custom delimiters and pretty-printed output ready for any API.",
     keywords:
-      "csv to json, convert csv to json online, spreadsheet to json, csv parser, json from excel data",
+      "csv to json, convert csv to json online, spreadsheet to json, csv parser, json from excel data, csv to json converter online, convert excel csv to json array free",
     faqs: [
       {
         q: "How are CSV headers handled?",
@@ -1046,7 +1046,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Encrypt and decrypt text with a passphrase directly in your browser. Nothing is transmitted or stored, so private notes stay on your device.",
     keywords:
-      "text encryption online, encrypt message with password, decrypt text tool, secure note encryption, cipher tool",
+      "text encryption online, encrypt message with password, decrypt text tool, secure note encryption, cipher tool, encrypt text with password online, aes text encryption online free, decrypt message online tool",
     faqs: [
       {
         q: "Where is my encryption key stored?",
@@ -1066,7 +1066,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Translate text to Morse code and Morse back to text, with audio playback and adjustable speed. Free, instant and works offline in your browser.",
     keywords:
-      "morse code translator, text to morse, morse to english, morse code audio, learn morse code online",
+      "morse code translator, text to morse, morse to english, morse code audio, learn morse code online, morse code to english converter, text to morse code with sound",
     faqs: [
       {
         q: "What is SOS in Morse code?",
@@ -1086,7 +1086,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Test and debug regular expressions with live match highlighting, capture groups, flags and a quick reference. Free tool for developers.",
     keywords:
-      "regex tester, regular expression tester online, regex debugger, test regex pattern, javascript regex tool",
+      "regex tester, regular expression tester online, regex debugger, test regex pattern, javascript regex tool, regex tester online, test regular expression javascript online, regex match highlighter free",
     faqs: [
       {
         q: "Which regex flavour does this use?",
@@ -1106,7 +1106,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Translate documents and text between dozens of languages while keeping paragraph structure intact. Fast, free and no account needed.",
     keywords:
-      "document translator, translate pdf text, online translation tool, translate docx, multilingual document converter",
+      "document translator, translate pdf text, online translation tool, translate docx, multilingual document converter, translate document online free, translate pdf to english free, docx translator keep formatting",
     faqs: [
       {
         q: "Which languages are supported?",
@@ -1128,7 +1128,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Create custom QR codes with your logo, colours, gradients and dot styles for URLs, WiFi, vCard, email and SMS. Download as PNG, JPG or SVG.",
     keywords:
-      "qr code generator, qr code with logo, custom qr code free, wifi qr code, vcard qr code, svg qr code download",
+      "qr code generator, qr code with logo, custom qr code free, wifi qr code, vcard qr code, svg qr code download, qr code generator with logo free, custom qr code generator with colors, wifi qr code generator free, vcard qr code generator online",
     faqs: [
       {
         q: "Will adding a logo stop my QR code from scanning?",
@@ -1152,7 +1152,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Generate strong random passwords using cryptographically secure randomness. Control length, symbols, numbers and ambiguous characters.",
     keywords:
-      "password generator, strong random password, secure password creator, 16 character password, passphrase generator",
+      "password generator, strong random password, secure password creator, 16 character password, passphrase generator, password generator strong free, random password generator 16 characters, secure passphrase generator online",
     faqs: [
       {
         q: "How long should a secure password be?",
@@ -1172,7 +1172,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Check password strength instantly with an entropy score, estimated crack time and specific advice for making it harder to guess. Nothing is sent anywhere.",
     keywords:
-      "password strength checker, test password security, how strong is my password, password entropy calculator",
+      "password strength checker, test password security, how strong is my password, password entropy calculator, password strength checker online, how strong is my password test, check password crack time",
     faqs: [
       {
         q: "Is it safe to type my real password here?",
@@ -1192,7 +1192,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Generate MD5, SHA-1, SHA-256 and SHA-512 hashes from any text instantly. Useful for checksums, integrity checks and development work.",
     keywords:
-      "hash generator, sha256 online, md5 generator, sha512 hash, checksum calculator, text hash tool",
+      "hash generator, sha256 online, md5 generator, sha512 hash, checksum calculator, text hash tool, hash generator online, sha256 hash generator free, md5 hash generator online text",
     faqs: [
       {
         q: "Which hash algorithm should I use?",
@@ -1212,7 +1212,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Calculate MD5, SHA-1 and SHA-256 checksums for any file and compare them against a published value to verify a download has not been tampered with.",
     keywords:
-      "file hash checker, verify checksum, md5 of file, sha256 file hash, check download integrity",
+      "file hash checker, verify checksum, md5 of file, sha256 file hash, check download integrity, file hash checker online, verify sha256 checksum of file, md5 checksum calculator online",
     faqs: [
       {
         q: "Why should I verify a download's checksum?",
@@ -1232,7 +1232,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "A free online countdown timer and stopwatch with lap times, alarm sound and Pomodoro presets. Runs in your browser, nothing to install.",
     keywords:
-      "online timer, countdown timer with alarm, stopwatch online, pomodoro timer, lap timer free",
+      "online timer, countdown timer with alarm, stopwatch online, pomodoro timer, lap timer free, online stopwatch with laps, countdown timer online free, pomodoro timer online free",
     faqs: [
       {
         q: "Does the timer keep running in a background tab?",
@@ -1252,7 +1252,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Pick colours visually and copy HEX, RGB and HSL values, then build harmonious palettes with tints, shades and complementary suggestions.",
     keywords:
-      "color picker online, hex color picker, rgb picker, palette generator, color scheme tool, css colors",
+      "color picker online, hex color picker, rgb picker, palette generator, color scheme tool, css colors, color picker from image online, hex color picker online free, eyedropper color tool online",
     faqs: [
       {
         q: "How do I build an accessible colour palette?",
@@ -1272,7 +1272,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Track income and expenses by category, see where your money goes with visual summaries and manage a monthly budget privately in your browser.",
     keywords:
-      "budget tracker, expense tracker online, monthly budget planner, income and expense manager, personal finance tool free",
+      "budget tracker, expense tracker online, monthly budget planner, income and expense manager, personal finance tool free, monthly budget tracker online free, simple expense tracker no signup, 50 30 20 budget calculator",
     faqs: [
       {
         q: "Where is my financial data stored?",
@@ -1292,7 +1292,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Create scannable barcodes in Code 128, EAN-13, UPC-A, Code 39 and more. Customise size and labels, then download print-ready PNG or SVG.",
     keywords:
-      "barcode generator, ean 13 barcode, upc barcode maker, code 128 generator, printable barcode free, svg barcode",
+      "barcode generator, ean 13 barcode, upc barcode maker, code 128 generator, printable barcode free, svg barcode, barcode generator online free, ean 13 barcode generator free, code 128 barcode maker online",
     faqs: [
       {
         q: "Which barcode format should I use?",
@@ -1312,7 +1312,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Shorten long URLs into clean, shareable links in one click. No account, no expiry games — ideal for social posts, messages and printed material.",
     keywords:
-      "url shortener, short link generator, shorten url free, link shortener no signup, tiny url alternative",
+      "url shortener, short link generator, shorten url free, link shortener no signup, tiny url alternative, url shortener free, shorten link online no signup, short link generator free",
     faqs: [
       {
         q: "Do the short links expire?",
@@ -1332,7 +1332,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Validate email addresses for correct syntax, domain records and disposable providers before you add them to a mailing list. Free and instant.",
     keywords:
-      "email validator, verify email address, check email format, disposable email checker, email syntax validation",
+      "email validator, verify email address, check email format, disposable email checker, email syntax validation, email validator online, check if email address is valid free, bulk email verifier free tool",
     faqs: [
       {
         q: "Can this confirm an inbox actually exists?",
@@ -1352,7 +1352,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Look up domain registration details: registrar, creation and expiry dates, name servers and status codes, using live RDAP data.",
     keywords:
-      "whois lookup, domain registration info, check domain owner, domain expiry date, rdap lookup online",
+      "whois lookup, domain registration info, check domain owner, domain expiry date, rdap lookup online, whois lookup domain owner, check domain registration details free, domain expiry date checker",
     faqs: [
       {
         q: "Why is the owner's name hidden?",
@@ -1372,7 +1372,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Query DNS records for any domain: A, AAAA, MX, TXT, CNAME, NS and SOA. Diagnose email, hosting and propagation issues in seconds.",
     keywords:
-      "dns lookup, check dns records, mx record lookup, txt record checker, cname lookup online, nslookup web",
+      "dns lookup, check dns records, mx record lookup, txt record checker, cname lookup online, nslookup web, dns lookup online, check mx records of domain, a record lookup tool free",
     faqs: [
       {
         q: "What do the main DNS record types do?",
@@ -1392,7 +1392,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Look up any IP address to see its approximate country, region, city, ISP, ASN and timezone. Fast, free and no registration required.",
     keywords:
-      "ip geolocation, ip address lookup, find location of ip, what is my ip, isp lookup tool, asn lookup",
+      "ip geolocation, ip address lookup, find location of ip, what is my ip, isp lookup tool, asn lookup, ip geolocation lookup, find location of ip address free, what is my ip location checker",
     faqs: [
       {
         q: "How accurate is IP geolocation?",
@@ -1412,7 +1412,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Validate a card number's format with the Luhn algorithm and identify the issuing network. Runs locally — no card data is transmitted or stored.",
     keywords:
-      "credit card validator, luhn algorithm check, card number validation, bin checker, verify card format",
+      "credit card validator, luhn algorithm check, card number validation, bin checker, verify card format, credit card validator luhn check, card number bin checker online free",
     faqs: [
       {
         q: "Does this check whether a card has funds?",
@@ -1432,7 +1432,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Search thousands of emojis by name or category and copy them with one click for social posts, documents, code and messages.",
     keywords:
-      "emoji picker, copy paste emoji, emoji search online, emoji keyboard web, find emoji by name",
+      "emoji picker, copy paste emoji, emoji search online, emoji keyboard web, find emoji by name, emoji picker copy and paste, emoji keyboard online copy paste, aesthetic symbols copy paste",
     faqs: [
       {
         q: "Why do emojis look different on other devices?",
@@ -1452,7 +1452,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Create professional A4 invoices with your logo, itemised lines, tax, discounts and totals, then download a print-ready PDF. Free, no signup.",
     keywords:
-      "invoice generator, free invoice maker, create invoice pdf, billing template online, freelance invoice tool",
+      "invoice generator, free invoice maker, create invoice pdf, billing template online, freelance invoice tool, invoice generator free online, create invoice pdf free no signup, freelance invoice template generator",
     faqs: [
       {
         q: "What must a professional invoice include?",
@@ -1472,7 +1472,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Generate clean, professional payment receipts with itemised lines, tax and totals, then download or print them as PDF. Free and instant.",
     keywords:
-      "receipt generator, create receipt online, printable receipt pdf, payment receipt maker, cash receipt template",
+      "receipt generator, create receipt online, printable receipt pdf, payment receipt maker, cash receipt template, receipt generator online, make a receipt pdf free, cash receipt maker online free",
     faqs: [
       {
         q: "What is the difference between an invoice and a receipt?",
@@ -1492,7 +1492,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Build an ATS-friendly resume with recruiter-tested templates, achievement-focused bullet guidance and a high-resolution PDF export. Free, no signup.",
     keywords:
-      "resume builder, ats resume template, free cv maker, professional resume pdf, faang resume format, cv builder online",
+      "resume builder, ats resume template, free cv maker, professional resume pdf, faang resume format, cv builder online, ats resume builder free, free resume maker pdf download no signup, professional cv builder online free",
     faqs: [
       {
         q: "What makes a resume ATS-friendly?",
@@ -1516,7 +1516,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Design professional business cards online with custom colours, fonts and logo, then export print-ready PDF or PNG at standard card size.",
     keywords:
-      "business card generator, free business card maker, print ready card design, visiting card online, custom business card pdf",
+      "business card generator, free business card maker, print ready card design, visiting card online, custom business card pdf, business card maker online free, create business card pdf print ready, digital visiting card maker free",
     faqs: [
       {
         q: "What size is a standard business card?",
@@ -1536,7 +1536,7 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     description:
       "Generate Luhn-valid test card numbers for Visa, Mastercard, Amex and Discover to exercise payment forms in sandbox environments. Developer testing only.",
     keywords:
-      "test card generator, sandbox card numbers, luhn valid test cards, payment testing developer, dummy card numbers for testing",
+      "test card generator, sandbox card numbers, luhn valid test cards, payment testing developer, dummy card numbers for testing, test credit card numbers for sandbox testing, luhn valid test card generator developers",
     faqs: [
       {
         q: "Can these cards be used for real purchases?",
