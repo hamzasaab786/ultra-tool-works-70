@@ -1,6 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import klipzaLogo from "@/assets/klipza-logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -10,7 +11,10 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold text-xl mb-4 text-white">Klipza</h3>
+            <div className="flex items-center gap-2 mb-4">
+              <img src={klipzaLogo} alt="Klipza logo" width={36} height={36} loading="lazy" className="h-9 w-9" />
+              <h3 className="font-bold text-xl text-white">Klipza</h3>
+            </div>
             <p className="text-gray-300 leading-relaxed">
               Free online tools to make your digital tasks easier.
               No sign-up required. Always free.
