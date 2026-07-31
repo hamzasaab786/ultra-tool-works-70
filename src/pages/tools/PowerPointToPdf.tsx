@@ -26,17 +26,100 @@ const PowerPointToPdf = () => {
     }
   };
 
-  const extractTextFromXml = (xml: string): string[] => {
-    const texts: string[] = [];
-    // Extract text from <a:t> tags (PowerPoint text runs)
-    const matches = xml.match(/<a:t[^>]*>([^<]*)<\/a:t>/g);
-    if (matches) {
-      matches.forEach(match => {
-        const text = match.replace(/<[^>]+>/g, "").trim();
-        if (text) texts.push(text);
+  // EMU (English Metric Units) -> millimetres
+  const emuToMm = (emu: number) => (emu / 914400) * 25.4;
+
+  type Block =
+    | { kind: "text"; x?: number; y?: number; w?: number; h?: number; runs: { text: string; size: number; bold: boolean }[] }
+    | { kind: "image"; x: number; y: number; w: number; h: number; data: string; fmt: string };
+
+  const getTransform = (el: Element) => {
+    const off = el.querySelector("xfrm > off");
+    const ext = el.querySelector("xfrm > ext");
+    if (!off || !ext) return undefined;
+    return {
+      x: emuToMm(Number(off.getAttribute("x") || 0)),
+      y: emuToMm(Number(off.getAttribute("y") || 0)),
+      w: emuToMm(Number(ext.getAttribute("cx") || 0)),
+      h: emuToMm(Number(ext.getAttribute("cy") || 0)),
+    };
+  };
+
+  const parseSlide = async (
+    zip: JSZip,
+    slidePath: string
+  ): Promise<{ blocks: Block[] }> => {
+    const xml = await zip.file(slidePath)?.async("string");
+    if (!xml) return { blocks: [] };
+
+    const doc = new DOMParser().parseFromString(xml, "application/xml");
+    const relsPath = slidePath.replace(/slides\/(slide\d+)\.xml$/, "slides/_rels/$1.xml.rels");
+    const relsXml = await zip.file(relsPath)?.async("string");
+    const rels = new Map<string, string>();
+    if (relsXml) {
+      const relDoc = new DOMParser().parseFromString(relsXml, "application/xml");
+      relDoc.querySelectorAll("Relationship").forEach((r) => {
+        const id = r.getAttribute("Id");
+        const target = r.getAttribute("Target");
+        if (id && target) rels.set(id, target.replace(/^\.\.\//, "ppt/"));
       });
     }
-    return texts;
+
+    const blocks: Block[] = [];
+
+    // Text shapes
+    doc.querySelectorAll("sp").forEach((sp) => {
+      const runs: { text: string; size: number; bold: boolean }[] = [];
+      sp.querySelectorAll("p").forEach((para) => {
+        const parts: string[] = [];
+        let size = 0;
+        let bold = false;
+        para.querySelectorAll("r").forEach((r) => {
+          const t = r.querySelector("t")?.textContent || "";
+          if (!t.trim()) return;
+          parts.push(t);
+          const rPr = r.querySelector("rPr");
+          const sz = Number(rPr?.getAttribute("sz") || 0);
+          if (sz) size = Math.max(size, sz / 100);
+          if (rPr?.getAttribute("b") === "1") bold = true;
+        });
+        const text = parts.join("").trim();
+        if (text) runs.push({ text, size: size || 0, bold });
+      });
+      if (runs.length === 0) return;
+      const tf = getTransform(sp);
+      blocks.push({ kind: "text", ...(tf || {}), runs });
+    });
+
+    // Pictures
+    const picPromises: Promise<void>[] = [];
+    doc.querySelectorAll("pic").forEach((pic) => {
+      const embed =
+        pic.querySelector("blip")?.getAttribute("r:embed") ||
+        pic.querySelector("blip")?.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships", "embed");
+      const tf = getTransform(pic);
+      if (!embed || !tf) return;
+      const target = rels.get(embed);
+      if (!target) return;
+      const ext = target.split(".").pop()?.toLowerCase();
+      if (!ext || !["png", "jpg", "jpeg"].includes(ext)) return;
+      picPromises.push(
+        (async () => {
+          const b64 = await zip.file(target)?.async("base64");
+          if (!b64) return;
+          const mime = ext === "png" ? "image/png" : "image/jpeg";
+          blocks.push({
+            kind: "image",
+            ...tf,
+            data: `data:${mime};base64,${b64}`,
+            fmt: ext === "png" ? "PNG" : "JPEG",
+          });
+        })()
+      );
+    });
+    await Promise.all(picPromises);
+
+    return { blocks };
   };
 
   const convertToPdf = async () => {
@@ -56,22 +139,30 @@ const PowerPointToPdf = () => {
     try {
       const arrayBuffer = await file.arrayBuffer();
       const zip = await JSZip.loadAsync(arrayBuffer);
-      setProgress(30);
+      setProgress(25);
 
-      // Find all slide XML files
+      // Real slide size from presentation.xml (defaults to 10 x 7.5in)
+      let slideWmm = 254;
+      let slideHmm = 190.5;
+      const presXml = await zip.file("ppt/presentation.xml")?.async("string");
+      if (presXml) {
+        const sz = new DOMParser()
+          .parseFromString(presXml, "application/xml")
+          .querySelector("sldSz");
+        if (sz) {
+          slideWmm = emuToMm(Number(sz.getAttribute("cx") || 0)) || slideWmm;
+          slideHmm = emuToMm(Number(sz.getAttribute("cy") || 0)) || slideHmm;
+        }
+      }
+
       const slideFiles: string[] = [];
       zip.forEach((path) => {
-        if (path.match(/^ppt\/slides\/slide\d+\.xml$/)) {
-          slideFiles.push(path);
-        }
+        if (path.match(/^ppt\/slides\/slide\d+\.xml$/)) slideFiles.push(path);
       });
-
-      // Sort slides numerically
-      slideFiles.sort((a, b) => {
-        const numA = parseInt(a.match(/slide(\d+)/)?.[1] || "0");
-        const numB = parseInt(b.match(/slide(\d+)/)?.[1] || "0");
-        return numA - numB;
-      });
+      slideFiles.sort(
+        (a, b) =>
+          parseInt(a.match(/slide(\d+)/)?.[1] || "0") - parseInt(b.match(/slide(\d+)/)?.[1] || "0")
+      );
 
       if (slideFiles.length === 0) {
         toast.error("No slides found in the PowerPoint file");
@@ -79,63 +170,60 @@ const PowerPointToPdf = () => {
       }
 
       const pdf = new jsPDF({
-        orientation: "landscape",
+        orientation: slideWmm >= slideHmm ? "landscape" : "portrait",
         unit: "mm",
-        format: [254, 190.5], // Standard 10x7.5 inches slide
+        format: [slideWmm, slideHmm],
       });
 
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-
       for (let i = 0; i < slideFiles.length; i++) {
-        if (i > 0) pdf.addPage();
+        if (i > 0) pdf.addPage([slideWmm, slideHmm], slideWmm >= slideHmm ? "landscape" : "portrait");
 
-        const slideXml = await zip.file(slideFiles[i])?.async("string");
-        if (!slideXml) continue;
-
-        const texts = extractTextFromXml(slideXml);
-        
-        // Draw slide background
         pdf.setFillColor(255, 255, 255);
-        pdf.rect(0, 0, pageWidth, pageHeight, "F");
-        
-        // Draw slide border
-        pdf.setDrawColor(200, 200, 200);
-        pdf.rect(2, 2, pageWidth - 4, pageHeight - 4);
+        pdf.rect(0, 0, slideWmm, slideHmm, "F");
 
-        // Slide number
-        pdf.setFontSize(8);
-        pdf.setTextColor(150, 150, 150);
-        pdf.text(`Slide ${i + 1}`, pageWidth - 15, pageHeight - 5);
+        const { blocks } = await parseSlide(zip, slideFiles[i]);
 
-        if (texts.length > 0) {
-          let yPos = 25;
-          const margin = 20;
-          const maxWidth = pageWidth - margin * 2;
-
-          // First text is usually the title
-          pdf.setFontSize(22);
-          pdf.setTextColor(30, 30, 30);
-          const titleLines = pdf.splitTextToSize(texts[0], maxWidth);
-          pdf.text(titleLines, margin, yPos);
-          yPos += titleLines.length * 10 + 10;
-
-          // Rest is body text
-          pdf.setFontSize(14);
-          pdf.setTextColor(60, 60, 60);
-          for (let t = 1; t < texts.length; t++) {
-            if (yPos > pageHeight - 20) break;
-            const bodyLines = pdf.splitTextToSize(`• ${texts[t]}`, maxWidth);
-            pdf.text(bodyLines, margin, yPos);
-            yPos += bodyLines.length * 7 + 4;
+        // Images first so text stays on top
+        for (const b of blocks) {
+          if (b.kind !== "image") continue;
+          try {
+            pdf.addImage(b.data, b.fmt, b.x, b.y, b.w, b.h);
+          } catch (e) {
+            console.warn("Skipped slide image", e);
           }
-        } else {
-          pdf.setFontSize(14);
-          pdf.setTextColor(150, 150, 150);
-          pdf.text("(Empty slide)", pageWidth / 2, pageHeight / 2, { align: "center" });
         }
 
-        setProgress(30 + ((i + 1) / slideFiles.length) * 60);
+        const textBlocks = blocks.filter((b): b is Extract<Block, { kind: "text" }> => b.kind === "text");
+        let flowY = 25;
+
+        textBlocks.forEach((block, idx) => {
+          const positioned = block.x !== undefined && block.y !== undefined;
+          const boxX = positioned ? block.x! : 20;
+          const boxW = positioned ? Math.max(block.w || 0, 20) : slideWmm - 40;
+          let y = positioned ? block.y! : flowY;
+
+          block.runs.forEach((run, r) => {
+            // Point size -> mm (1pt = 0.3528mm); fall back to title/body defaults
+            const ptSize = run.size || (idx === 0 && r === 0 ? 28 : 16);
+            pdf.setFontSize(ptSize);
+            pdf.setFont("helvetica", run.bold || (idx === 0 && r === 0) ? "bold" : "normal");
+            pdf.setTextColor(run.bold ? 20 : 45, run.bold ? 20 : 45, run.bold ? 20 : 45);
+
+            const lineH = ptSize * 0.3528 * 1.25;
+            const lines = pdf.splitTextToSize(run.text, boxW);
+            if (y + lineH > slideHmm - 8) return;
+            pdf.text(lines, boxX, y + lineH * 0.8);
+            y += lines.length * lineH + lineH * 0.25;
+          });
+
+          if (!positioned) flowY = y + 4;
+        });
+
+        pdf.setFontSize(8);
+        pdf.setTextColor(150, 150, 150);
+        pdf.text(`${i + 1}`, slideWmm - 10, slideHmm - 5);
+
+        setProgress(25 + ((i + 1) / slideFiles.length) * 70);
       }
 
       pdf.save(file.name.replace(/\.(pptx?|PPTX?)$/, ".pdf"));
@@ -148,9 +236,10 @@ const PowerPointToPdf = () => {
       setTimeout(() => {
         setIsConverting(false);
         setProgress(0);
-      }, 1000);
+      }, 800);
     }
   };
+
 
   return (
     <ToolPageTemplate

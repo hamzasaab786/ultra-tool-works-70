@@ -1,11 +1,8 @@
 import { PDFDocument } from 'pdf-lib';
-import * as pdfjs from 'pdfjs-dist';
+// Reuse the single shared pdf.js setup (bundled worker) instead of configuring
+// a second, CDN-dependent worker here.
+import { pdfjsLib as pdfjs } from './pdfClient';
 
-// Load worker from CDN matching the installed version for reliable MIME handling.
-if (typeof window !== 'undefined') {
-  pdfjs.GlobalWorkerOptions.workerSrc =
-    `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-}
 
 
 export interface CompressionSettings {

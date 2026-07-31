@@ -13,6 +13,7 @@
     "prebuild": "bunx tsx scripts/generate-sitemap.ts"
   },
   "dependencies": {
+    "@cantoo/pdf-lib": "^2.8.1",
     "@hookform/resolvers": "^3.9.0",
     "@lovable.dev/mcp-js": "^0.20.0",
     "@radix-ui/react-accordion": "^1.2.0",
