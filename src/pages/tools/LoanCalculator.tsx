@@ -97,10 +97,10 @@ const LoanCalculator = () => {
   return (
     <>
       <SEO
-        title="Loan Calculator - Calculate Monthly Payments Online Free | ToolifyConvert"
+        title="Loan Calculator - Calculate Monthly Payments Online Free | Klipza"
         description="Calculate loan payments, total interest, and payment schedules. Perfect for mortgages, car loans, and personal loans."
         keywords="loan calculator, mortgage calculator, payment calculator, interest calculator"
-        canonicalUrl="https://toolifyconvert.com/tools/loan-calculator"
+        canonicalUrl="https://klipza.com/tools/loan-calculator"
       />
       
       <ToolPageTemplate

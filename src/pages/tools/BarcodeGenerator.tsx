@@ -172,10 +172,10 @@ const BarcodeGenerator = () => {
   return (
     <>
       <SEO
-        title="Barcode Generator - Create Barcodes Online Free | ToolifyConvert"
+        title="Barcode Generator - Create Barcodes Online Free | Klipza"
         description="Generate various types of barcodes online for free. Support for Code 128, Code 39, EAN-13, UPC-A and more."
         keywords="barcode generator, create barcode, code 128, ean-13, upc barcode"
-        canonicalUrl="https://toolifyconvert.com/tools/barcode-generator"
+        canonicalUrl="https://klipza.com/tools/barcode-generator"
       />
       
       <ToolPageTemplate

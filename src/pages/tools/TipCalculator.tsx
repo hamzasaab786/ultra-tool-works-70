@@ -73,10 +73,10 @@ const TipCalculator = () => {
   return (
     <>
       <SEO
-        title="Tip Calculator - Calculate Tips and Split Bills Online Free | ToolifyConvert"
+        title="Tip Calculator - Calculate Tips and Split Bills Online Free | Klipza"
         description="Calculate tips and split restaurant bills easily. Perfect for dining out with friends and family."
         keywords="tip calculator, bill splitter, restaurant calculator, tip percentage"
-        canonicalUrl="https://toolifyconvert.com/tools/tip-calculator"
+        canonicalUrl="https://klipza.com/tools/tip-calculator"
       />
       
       <ToolPageTemplate

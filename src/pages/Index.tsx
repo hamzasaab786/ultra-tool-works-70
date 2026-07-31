@@ -335,7 +335,7 @@ const Index = () => {
   }];
 
   return <>
-      <SEO title="ToolifyConvert - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, text tools, productivity tools" canonicalUrl="https://toolifyconvert.com" />
+      <SEO title="Klipza - Free Online Tools for Digital Productivity | Image, PDF, Text & More" description="Discover 40+ free online tools including image compressor, PDF merger, QR generator, currency converter, password generator, unit converter, text tools, productivity tools" keywords="free online tools, image compressor, PDF merger, QR code generator, currency converter, password generator, unit converter, text tools, productivity tools" canonicalUrl="https://klipza.com" />
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
@@ -347,7 +347,7 @@ const Index = () => {
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold mb-6 gradient-text animate-slide-up">
-              ToolifyConvert
+              Klipza
             </h1>
 
             <p className="text-xl md:text-2xl mb-8 text-foreground/90 animate-slide-up delay-200">The Ultimate Collection of 100% Free Online Tools</p>
@@ -451,7 +451,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-              Why Choose ToolifyConvert?
+              Why Choose Klipza?
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               We've built the most comprehensive suite of online tools with cutting-edge technology and user experience in mind
@@ -526,7 +526,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-xl mb-8 text-indigo-100 max-w-3xl mx-auto leading-relaxed">
-            Join millions of users who trust ToolifyConvert for their daily digital tasks
+            Join millions of users who trust Klipza for their daily digital tasks
           </p>
           <Button size="lg" className="text-lg px-8 py-3 btn-modern bg-white text-indigo-600 hover:bg-gray-100" onClick={scrollToTools}>
             Start Using Tools Now →
