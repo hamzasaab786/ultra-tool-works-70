@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import klipzaLogo from "@/assets/klipza-logo.png";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -110,12 +111,17 @@ const Navigation = () => {
     <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/95 border-b border-border/60 shadow-sm transition-colors duration-300">
       <div className="container mx-auto px-4 py-3 lg:py-4 flex items-center relative z-10">
         <div className="mr-4 flex items-center">
-          <Link to="/" className="flex items-center group">
-            <div className="relative transform transition-transform duration-200 group-hover:scale-105">
-              <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Klipza
-              </span>
-            </div>
+          <Link to="/" className="flex items-center gap-2 group">
+            <img
+              src={klipzaLogo}
+              alt="Klipza logo"
+              width={40}
+              height={40}
+              className="h-8 w-8 sm:h-9 sm:w-9 transform transition-transform duration-200 group-hover:scale-105"
+            />
+            <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Klipza
+            </span>
           </Link>
         </div>
 
