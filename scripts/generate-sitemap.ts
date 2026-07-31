@@ -4,11 +4,13 @@ import { writeFileSync } from "fs"
 import { resolve } from "path"
 
 const BASE_URL = "https://klipza.live"
+const TODAY = new Date().toISOString().split("T")[0]
 
 interface SitemapEntry {
   path: string
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never"
   priority?: string
+  lastmod?: string
 }
 
 const toolPaths = [
@@ -90,23 +92,24 @@ const toolPaths = [
 ]
 
 const entries: SitemapEntry[] = [
-  { path: "/", changefreq: "weekly", priority: "1.0" },
-  { path: "/about", changefreq: "yearly", priority: "0.5" },
-  { path: "/privacy", changefreq: "yearly", priority: "0.3" },
-  { path: "/terms", changefreq: "yearly", priority: "0.3" },
-  { path: "/disclaimer", changefreq: "yearly", priority: "0.3" },
-  ...toolPaths.map((path): SitemapEntry => ({ path, changefreq: "monthly", priority: "0.8" })),
+  { path: "/", changefreq: "weekly", priority: "1.0", lastmod: TODAY },
+  { path: "/about", changefreq: "yearly", priority: "0.5", lastmod: TODAY },
+  { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
+  { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
+  { path: "/disclaimer", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
+  ...toolPaths.map((path): SitemapEntry => ({ path, changefreq: "monthly", priority: "0.8", lastmod: TODAY })),
 ]
 
 function generateSitemap(entries: SitemapEntry[]) {
   const urls = entries.map((e) =>
-    [
-      `  <url>`,
-      `    <loc>${BASE_URL}${e.path}</loc>`,
-      e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
-      e.priority ? `    <priority>${e.priority}</priority>` : null,
-      `  </url>`,
-    ]
+      [
+        `  <url>`,
+        `    <loc>${BASE_URL}${e.path}</loc>`,
+        e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
+        e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
+        e.priority ? `    <priority>${e.priority}</priority>` : null,
+        `  </url>`,
+      ]
       .filter(Boolean)
       .join("\n"),
   )
