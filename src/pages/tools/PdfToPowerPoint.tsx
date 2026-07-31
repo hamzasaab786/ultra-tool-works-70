@@ -38,18 +38,58 @@ const PdfToPowerPoint = () => {
       const pdf = await loadPdfDocument(file);
       const pptx = new PptxGenJS();
       pptx.layout = "LAYOUT_WIDE";
+      const slideW = 13.333;
+      const slideH = 7.5;
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1 });
         const { canvas } = await renderPdfPageToCanvas(page, 2);
         const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
         const slide = pptx.addSlide();
-        // Fit image into slide (LAYOUT_WIDE = 13.333 x 7.5 inches)
-        const slideW = 13.333, slideH = 7.5;
+
+        // Fit the rendered page into the slide
         const ratio = canvas.width / canvas.height;
-        let w = slideW, h = slideW / ratio;
-        if (h > slideH) { h = slideH; w = slideH * ratio; }
-        slide.addImage({ data: dataUrl, x: (slideW - w) / 2, y: (slideH - h) / 2, w, h });
+        let w = slideW;
+        let h = slideW / ratio;
+        if (h > slideH) {
+          h = slideH;
+          w = slideH * ratio;
+        }
+        const offX = (slideW - w) / 2;
+        const offY = (slideH - h) / 2;
+
+        slide.addImage({ data: dataUrl, x: offX, y: offY, w, h });
+
+        // Overlay real, editable text boxes on top of the rendered page so the
+        // resulting .pptx can actually be edited in PowerPoint.
+        const content = await page.getTextContent();
+        const scaleX = w / viewport.width;
+        const scaleY = h / viewport.height;
+
+        for (const item of content.items as any[]) {
+          const text = (item.str || "").trim();
+          if (!text) continue;
+          const tx = item.transform;
+          const fontPx = Math.hypot(tx[2], tx[3]) || 12;
+          const xIn = offX + tx[4] * scaleX;
+          const yIn = offY + (viewport.height - tx[5] - fontPx) * scaleY;
+          const wIn = Math.min((item.width || text.length * fontPx * 0.5) * scaleX * 1.25, slideW - xIn);
+          const hIn = Math.max(fontPx * scaleY * 1.6, 0.2);
+          if (xIn < 0 || yIn < 0 || wIn <= 0) continue;
+
+          slide.addText(text, {
+            x: xIn,
+            y: yIn,
+            w: wIn,
+            h: hIn,
+            fontSize: Math.max(6, Math.round(fontPx * scaleY * 72)),
+            color: "000000",
+            margin: 0,
+            fill: { color: "FFFFFF", transparency: 100 },
+            valign: "top",
+          });
+        }
       }
 
       const out = await pptx.write({ outputType: "blob" });
@@ -59,7 +99,7 @@ const PdfToPowerPoint = () => {
       a.href = url; a.download = file.name.replace(/\.pdf$/i, "") + ".pptx";
       document.body.appendChild(a); a.click(); a.remove();
       URL.revokeObjectURL(url);
-      toast({ title: "Converted", description: `Generated .pptx with ${pdf.numPages} slide(s).` });
+      toast({ title: "Converted", description: `Generated editable .pptx with ${pdf.numPages} slide(s).` });
     } catch (error) {
       console.error(error);
       toast({ title: "Conversion failed", description: (error as Error).message, variant: "destructive" });
@@ -67,6 +107,7 @@ const PdfToPowerPoint = () => {
       setIsConverting(false);
     }
   };
+
 
   return (
     <ToolPageTemplate

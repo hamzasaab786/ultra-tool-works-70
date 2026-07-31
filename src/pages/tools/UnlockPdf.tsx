@@ -37,24 +37,45 @@ const UnlockPdf = () => {
     }
     setIsUnlocking(true);
     try {
-      // Use pdfjs to open the encrypted PDF with the password, then re-pack
-      // pages as images into a fresh unencrypted PDF via pdf-lib.
       const { pdfjsLib, renderPdfPageToCanvas } = await import("@/utils/pdfClient");
       const { PDFDocument } = await import("pdf-lib");
       const data = new Uint8Array(await file.arrayBuffer());
-      const src = await pdfjsLib.getDocument({ data, password }).promise;
 
-      const out = await PDFDocument.create();
-      for (let i = 1; i <= src.numPages; i++) {
-        const page = await src.getPage(i);
-        const { canvas } = await renderPdfPageToCanvas(page, 2);
-        const png = await new Promise<Blob>((r) => canvas.toBlob((b) => r(b!), "image/png"));
-        const embed = await out.embedPng(new Uint8Array(await png.arrayBuffer()));
-        const p = out.addPage([embed.width, embed.height]);
-        p.drawImage(embed, { x: 0, y: 0, width: embed.width, height: embed.height });
+      // Verify the password first (also throws early on a wrong password).
+      const src = await pdfjsLib.getDocument({ data: data.slice(), password }).promise;
+
+      let bytes: Uint8Array | null = null;
+
+      // Preferred path: strip encryption while keeping real text, fonts and
+      // vectors intact. Works for permission-only / owner-password PDFs.
+      try {
+        const lossless = await PDFDocument.load(data.slice(), { ignoreEncryption: true });
+        if (lossless.getPageCount() === src.numPages) {
+          const clean = await PDFDocument.create();
+          const pages = await clean.copyPages(lossless, lossless.getPageIndices());
+          pages.forEach((p) => clean.addPage(p));
+          bytes = await clean.save();
+        }
+      } catch {
+        bytes = null;
       }
-      const bytes = await out.save();
-      const blob = new Blob([bytes as unknown as ArrayBuffer], { type: "application/pdf" });
+
+      // Fallback for strongly encrypted files: rebuild from rendered pages.
+      if (!bytes) {
+        const out = await PDFDocument.create();
+        for (let i = 1; i <= src.numPages; i++) {
+          const page = await src.getPage(i);
+          const { canvas } = await renderPdfPageToCanvas(page, 2);
+          const png = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/png"));
+          if (!png) throw new Error("Page could not be rendered. Try a smaller PDF.");
+          const embed = await out.embedPng(new Uint8Array(await png.arrayBuffer()));
+          const p = out.addPage([embed.width, embed.height]);
+          p.drawImage(embed, { x: 0, y: 0, width: embed.width, height: embed.height });
+        }
+        bytes = await out.save();
+      }
+
+      const blob = new Blob([new Uint8Array(bytes)], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url; a.download = file.name.replace(/\.pdf$/i, "") + "_unlocked.pdf";
@@ -73,6 +94,7 @@ const UnlockPdf = () => {
       setIsUnlocking(false);
     }
   };
+
 
   return (
     <ToolPageTemplate
