@@ -45,7 +45,7 @@ const EditPdf = () => {
       const firstPage = pages[0];
       const { width, height } = firstPage.getSize();
       
-      firstPage.drawText('Edited with ToolifyConvert', {
+      firstPage.drawText('Edited with Klipza', {
         x: 50,
         y: height - 50,
         size: 12,

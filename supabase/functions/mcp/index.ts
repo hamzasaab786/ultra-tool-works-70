@@ -187,10 +187,10 @@ var lorem_ipsum_default = defineTool6({
 
 // src/lib/mcp/index.ts
 var mcp_default = defineMcp({
-  name: "toolifyconvert-mcp",
-  title: "ToolifyConvert Tools",
+  name: "klipza-mcp",
+  title: "Klipza Tools",
   version: "0.1.0",
-  instructions: "Utility tools from ToolifyConvert. Use `word_count` for text stats, `case_convert` to change casing, `base64` to encode/decode, `hash_text` for cryptographic hashes, `generate_password` for random passwords, and `lorem_ipsum` for placeholder text.",
+  instructions: "Utility tools from Klipza. Use `word_count` for text stats, `case_convert` to change casing, `base64` to encode/decode, `hash_text` for cryptographic hashes, `generate_password` for random passwords, and `lorem_ipsum` for placeholder text.",
   tools: [word_count_default, case_convert_default, base64_default, hash_text_default, generate_password_default, lorem_ipsum_default]
 });
 

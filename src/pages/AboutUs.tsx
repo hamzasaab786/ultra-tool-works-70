@@ -7,13 +7,13 @@ const AboutUs = () => {
     <Layout>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-8">About QuickConvert</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-8">About Klipza</h1>
           
           <div className="space-y-6">
             <section>
               <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
               <p className="text-muted-foreground">
-                At QuickConvert, our mission is to provide free, accessible, and easy-to-use online tools for everyone.
+                At Klipza, our mission is to provide free, accessible, and easy-to-use online tools for everyone.
                 We believe that essential digital tools should be available to all users without barriers such as 
                 sign-ups, subscriptions, or complex interfaces.
               </p>
@@ -22,7 +22,7 @@ const AboutUs = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">What We Offer</h2>
               <p className="text-muted-foreground">
-                QuickConvert provides a comprehensive suite of online utilities designed to help you with everyday
+                Klipza provides a comprehensive suite of online utilities designed to help you with everyday
                 digital tasks. From image and PDF manipulation to text tools, unit converters, and more — all our 
                 tools are developed with simplicity and efficiency in mind.
               </p>
@@ -32,7 +32,7 @@ const AboutUs = () => {
               <h2 className="text-2xl font-bold mb-4">Our Principles</h2>
               <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                 <li>
-                  <span className="font-medium">Free Access</span>: All tools on QuickConvert are completely free to use.
+                  <span className="font-medium">Free Access</span>: All tools on Klipza are completely free to use.
                   We don't believe in putting essential utilities behind paywalls.
                 </li>
                 <li>
@@ -58,7 +58,7 @@ const AboutUs = () => {
               <h2 className="text-2xl font-bold mb-4">How We Help</h2>
               <p className="text-muted-foreground">
                 Whether you're a student working on a project, a professional preparing documents, or simply someone who
-                needs to perform a quick calculation or conversion, QuickConvert is here to help. Our tools streamline
+                needs to perform a quick calculation or conversion, Klipza is here to help. Our tools streamline
                 common tasks, saving you time and effort in your daily digital activities.
               </p>
             </section>
@@ -67,7 +67,7 @@ const AboutUs = () => {
               <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
               <p className="text-muted-foreground">
                 We envision a web where essential digital tools are freely available to everyone, regardless of their
-                location, financial situation, or technical expertise. QuickConvert is our contribution to that vision —
+                location, financial situation, or technical expertise. Klipza is our contribution to that vision —
                 a platform that democratizes access to useful utilities and helps make the internet more useful for all.
               </p>
             </section>

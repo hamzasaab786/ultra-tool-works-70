@@ -84,10 +84,10 @@ const FileSizeConverter = () => {
   return (
     <>
       <SEO
-        title="File Size Converter - Convert Bytes, KB, MB, GB, TB Online Free | ToolifyConvert"
+        title="File Size Converter - Convert Bytes, KB, MB, GB, TB Online Free | Klipza"
         description="Convert between file size units easily. Convert bytes, kilobytes, megabytes, gigabytes, terabytes and more."
         keywords="file size converter, bytes converter, KB to MB, GB to TB, file size calculator"
-        canonicalUrl="https://toolifyconvert.com/tools/file-size-converter"
+        canonicalUrl="https://klipza.com/tools/file-size-converter"
       />
       
       <ToolPageTemplate

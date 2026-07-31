@@ -17,7 +17,7 @@ const Disclaimer = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">Website Disclaimer</h2>
               <p className="text-muted-foreground">
-                The information provided by QuickConvert ("we," "us," or "our") on our website is for general informational and tool usage purposes only. All information on the site is provided in good faith, however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information or tools on the site.
+                The information provided by Klipza ("we," "us," or "our") on our website is for general informational and tool usage purposes only. All information on the site is provided in good faith, however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information or tools on the site.
               </p>
             </section>
             

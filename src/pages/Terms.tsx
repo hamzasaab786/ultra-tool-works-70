@@ -17,7 +17,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">1. Introduction</h2>
               <p className="text-muted-foreground">
-                These Terms of Service ("Terms") govern your access to and use of the QuickConvert website and all related services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms.
+                These Terms of Service ("Terms") govern your access to and use of the Klipza website and all related services (collectively, the "Service"). By accessing or using the Service, you agree to be bound by these Terms.
               </p>
               <p className="text-muted-foreground mt-4">
                 Please read these Terms carefully. If you do not agree with these Terms, you may not access or use the Service.
@@ -32,8 +32,8 @@ const Terms = () => {
               <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                 <li>In any way that violates any applicable federal, state, local, or international law or regulation</li>
                 <li>To transmit, or procure the sending of, any advertising or promotional material, including any "junk mail," "chain letter," "spam," or any other similar solicitation</li>
-                <li>To impersonate or attempt to impersonate QuickConvert, a QuickConvert employee, another user, or any other person or entity</li>
-                <li>To engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the Service, or which may harm QuickConvert or users of the Service</li>
+                <li>To impersonate or attempt to impersonate Klipza, a Klipza employee, another user, or any other person or entity</li>
+                <li>To engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the Service, or which may harm Klipza or users of the Service</li>
                 <li>For any purpose that is unlawful or prohibited by these Terms</li>
               </ul>
             </section>
@@ -41,7 +41,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">3. Intellectual Property Rights</h2>
               <p className="text-muted-foreground">
-                The Service and its entire contents, features, and functionality (including but not limited to all information, software, text, displays, images, video, and audio, and the design, selection, and arrangement thereof), are owned by QuickConvert, its licensors, or other providers of such material and are protected by copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
+                The Service and its entire contents, features, and functionality (including but not limited to all information, software, text, displays, images, video, and audio, and the design, selection, and arrangement thereof), are owned by Klipza, its licensors, or other providers of such material and are protected by copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
               </p>
               <p className="text-muted-foreground mt-4">
                 These Terms do not grant you any right, title, or interest in the Service, its content, or our trademarks, logos, or other brand features.

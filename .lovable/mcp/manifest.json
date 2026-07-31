@@ -7,9 +7,9 @@
   },
   "mcp": {
     "server": {
-      "name": "toolifyconvert-mcp",
+      "name": "klipza-mcp",
       "version": "0.1.0",
-      "title": "ToolifyConvert Tools"
+      "title": "Klipza Tools"
     },
     "tools": [
       {

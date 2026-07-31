@@ -129,10 +129,10 @@ ${diffResult.unchanged.map(line => `  ${line}`).join('\n')}
   return (
     <>
       <SEO
-        title="Text Diff Checker - Compare Two Texts Online Free | ToolifyConvert"
+        title="Text Diff Checker - Compare Two Texts Online Free | Klipza"
         description="Compare two texts and highlight differences online for free. Find added, removed, and changed lines instantly."
         keywords="text diff, text compare, difference checker, text comparison tool"
-        canonicalUrl="https://toolifyconvert.com/tools/text-diff"
+        canonicalUrl="https://klipza.com/tools/text-diff"
       />
       
       <ToolPageTemplate

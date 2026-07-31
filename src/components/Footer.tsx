@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold text-xl mb-4 text-white">ToolifyConvert</h3>
+            <h3 className="font-bold text-xl mb-4 text-white">Klipza</h3>
             <p className="text-gray-300 leading-relaxed">
               Free online tools to make your digital tasks easier.
               No sign-up required. Always free.
@@ -44,7 +44,7 @@ const Footer = () => {
             <h3 className="font-bold text-lg mb-4 text-white">About</h3>
             <div className="space-y-2">
               <p className="text-gray-300 text-sm">
-                ToolifyConvert provides essential online tools that work entirely in your browser. 
+                Klipza provides essential online tools that work entirely in your browser. 
                 Your files are processed locally for maximum privacy and security.
               </p>
             </div>
@@ -52,7 +52,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-8 border-t border-gray-700 pt-6 text-center">
-          <p className="text-gray-300">© {currentYear} ToolifyConvert. All rights reserved.</p>
+          <p className="text-gray-300">© {currentYear} Klipza. All rights reserved.</p>
         </div>
       </div>
     </footer>

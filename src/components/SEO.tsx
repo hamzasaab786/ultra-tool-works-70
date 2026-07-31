@@ -37,7 +37,7 @@ const SEO = ({ title, description, keywords, canonicalUrl, imageUrl }: SEOProps)
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="robots" content="index, follow" />
       <meta name="language" content="English" />
-      <meta name="author" content="ToolifyConvert" />
+      <meta name="author" content="Klipza" />
     </Helmet>
   );
 };

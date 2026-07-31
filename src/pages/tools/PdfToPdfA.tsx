@@ -42,8 +42,8 @@ const PdfToPdfA = () => {
       // audits, color-profile checks) requires a server tool; this produces
       // a compliant metadata + XMP block suitable for most archival flows.
       doc.setTitle(doc.getTitle() || file.name.replace(/\.pdf$/i, ""));
-      doc.setProducer("ToolifyConvert PDF/A");
-      doc.setCreator("ToolifyConvert");
+      doc.setProducer("Klipza PDF/A");
+      doc.setCreator("Klipza");
       doc.setCreationDate(new Date());
       doc.setModificationDate(new Date());
 

@@ -154,10 +154,10 @@ const SvgToJpg = () => {
   return (
     <>
       <SEO
-        title="SVG to JPG Converter - Convert Vector Graphics Online Free | ToolifyConvert"
+        title="SVG to JPG Converter - Convert Vector Graphics Online Free | Klipza"
         description="Convert SVG files to high-quality JPG images online. Configurable quality settings, multiple resolutions, and instant conversion. Free SVG to JPEG converter."
         keywords="SVG to JPG converter, vector to raster, SVG converter, image conversion, graphics converter, vector graphics, JPEG converter"
-        canonicalUrl="https://toolifyconvert.com/tools/svg-to-jpg"
+        canonicalUrl="https://klipza.com/tools/svg-to-jpg"
       />
       
       <ToolPageTemplate

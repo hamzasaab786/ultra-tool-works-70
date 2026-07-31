@@ -113,7 +113,7 @@ const Navigation = () => {
           <Link to="/" className="flex items-center group">
             <div className="relative transform transition-transform duration-200 group-hover:scale-105">
               <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-                ToolifyConvert
+                Klipza
               </span>
             </div>
           </Link>

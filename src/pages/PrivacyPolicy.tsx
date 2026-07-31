@@ -17,7 +17,7 @@ const PrivacyPolicy = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">Introduction</h2>
               <p className="text-muted-foreground">
-                QuickConvert ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our online tools.
+                Klipza ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our online tools.
               </p>
               <p className="text-muted-foreground mt-4">
                 Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the site.

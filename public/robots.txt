@@ -22,7 +22,7 @@ User-agent: WhatsApp
 Allow: /
 
 # Sitemap location
-Sitemap: https://toolifyconvert.com/sitemap.xml
+Sitemap: https://klipza.com/sitemap.xml
 
 # Crawl-delay for non-major search engines
 User-agent: *
