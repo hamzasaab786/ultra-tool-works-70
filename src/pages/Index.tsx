@@ -294,6 +294,41 @@ const Index = () => {
       icon: <FileText />,
       path: "/tools/edit-pdf-text"
     }, {
+      title: "Edit PDF",
+      description: "Add text, images and shapes anywhere on a PDF page with a visual click-to-place editor",
+      icon: <FileText />,
+      path: "/tools/edit-pdf"
+    }, {
+      title: "Crop PDF",
+      description: "Trim margins and unwanted areas from every PDF page with precise millimetre control",
+      icon: <FileText />,
+      path: "/tools/crop-pdf"
+    }, {
+      title: "Rotate PDF",
+      description: "Rotate PDF pages 90, 180 or 270 degrees and save the corrected document",
+      icon: <FileText />,
+      path: "/tools/rotate-pdf"
+    }, {
+      title: "Redact PDF",
+      description: "Black out sensitive words and phrases in your PDF before sharing it",
+      icon: <FileText />,
+      path: "/tools/redact-pdf"
+    }, {
+      title: "Repair PDF",
+      description: "Rebuild damaged or corrupted PDF files and recover readable documents",
+      icon: <FileText />,
+      path: "/tools/repair-pdf"
+    }, {
+      title: "PDF to PDF/A",
+      description: "Convert PDFs to archival PDF/A-2b format with proper metadata for long-term storage",
+      icon: <FileText />,
+      path: "/tools/pdf-to-pdfa"
+    }, {
+      title: "PDF to PowerPoint",
+      description: "Convert PDF pages into an editable .pptx presentation with real text boxes",
+      icon: <FileText />,
+      path: "/tools/pdf-to-powerpoint"
+    }, {
       title: "Test Card Generator (Dev Only)",
       description: "Luhn-valid sandbox test cards for Stripe/PayPal developer testing. Not for real payments",
       icon: <CreditCard />,

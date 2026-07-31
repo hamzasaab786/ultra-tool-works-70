@@ -201,6 +201,15 @@ const App = () => {
             <Route path="/tools/pdf-ocr" element={<PdfOcr />} />
             <Route path="/tools/sign-pdf" element={<SignPdfTool />} />
             <Route path="/tools/edit-pdf-text" element={<EditPdfText />} />
+            <Route path="/tools/edit-pdf" element={<EditPdf />} />
+            <Route path="/tools/crop-pdf" element={<CropPdf />} />
+            <Route path="/tools/rotate-pdf" element={<RotatePdf />} />
+            <Route path="/tools/redact-pdf" element={<RedactPdf />} />
+            <Route path="/tools/repair-pdf" element={<RepairPdf />} />
+            <Route path="/tools/pdf-to-pdfa" element={<PdfToPdfA />} />
+            <Route path="/tools/pdf-to-powerpoint" element={<PdfToPowerPoint />} />
+            <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
+            <Route path="/tools/pdf-to-excel" element={<PdfToExcel />} />
             <Route path="/tools/test-card-generator" element={<TestCardGenerator />} />
 
             {/* Redirect removed tools to homepage */}
