@@ -11,27 +11,27 @@ interface SEOProps {
 }
 
 const SEO = ({ title, description, keywords, canonicalUrl, imageUrl }: SEOProps) => {
-  const defaultImageUrl = imageUrl || "/og-image.jpg";
-  
   return (
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-      
+
       {/* Open Graph / Facebook */}
+      <meta property="og:site_name" content="Klipza" />
       <meta property="og:type" content="website" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={defaultImageUrl} />
+      {imageUrl && <meta property="og:image" content={imageUrl} />}
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
-      
+
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={defaultImageUrl} />
+      {imageUrl && <meta name="twitter:image" content={imageUrl} />}
+
       
       {/* Additional SEO tags */}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
