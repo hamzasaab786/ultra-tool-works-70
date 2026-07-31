@@ -52,7 +52,7 @@ const ToolFaqSection = () => {
             id="tool-faq-heading"
             className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
           >
-            Frequently asked questions about the {entry.name}
+            Frequently asked questions — {entry.name}
           </h2>
           <p className="mt-3 max-w-2xl text-muted-foreground">{entry.description}</p>
         </div>

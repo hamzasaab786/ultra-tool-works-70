@@ -1564,15 +1564,15 @@ export const getToolSeo = (pathname: string): ToolSeoEntry | undefined =>
 /** Generic FAQs appended to every tool page, personalised with the tool name. */
 export const buildCommonFaqs = (entry: ToolSeoEntry): ToolFaq[] => [
   {
-    q: `Is the ${entry.name} free to use?`,
-    a: `Yes. Klipza's ${entry.name} is completely free with no account, no subscription and no watermark on your files, and there is no daily usage limit.`,
+    q: `Is ${entry.name} free to use?`,
+    a: `Yes. ${entry.name} on Klipza is completely free with no account, no subscription and no watermark on your files, and there is no daily usage limit.`,
   },
   {
-    q: `Are my files safe when I use the ${entry.name}?`,
+    q: `Are my files safe when using ${entry.name}?`,
     a: `Processing happens locally in your browser wherever technically possible, so your files are not uploaded to a server, stored or shared with third parties.`,
   },
   {
-    q: `Does the ${entry.name} work on mobile?`,
+    q: `Does ${entry.name} work on mobile phones?`,
     a: `Yes. It is fully responsive and runs in any modern browser on Android, iPhone, iPad, Windows and macOS — nothing to install.`,
   },
 ];
