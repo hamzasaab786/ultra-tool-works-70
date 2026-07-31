@@ -32,23 +32,27 @@ const ToolSeoHead = () => {
     })),
   };
 
-  const appSchema = {
+  // WebPage (not SoftwareApplication): Google's Software App rich result requires a
+  // genuine aggregateRating/review, which we don't have — an unrated SoftwareApplication
+  // item is reported as an invalid item in the Rich Results Test.
+  const pageSchema = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: `${entry.name} — Klipza`,
+    "@type": "WebPage",
+    "@id": `${url}#webpage`,
     url,
-    applicationCategory: "UtilitiesApplication",
-    operatingSystem: "Any (web browser)",
+    name: `${entry.title} | Klipza`,
     description: entry.description,
-    browserRequirements: "Requires JavaScript. Works in Chrome, Safari, Firefox and Edge.",
-    isAccessibleForFree: true,
-    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    publisher: { "@type": "Organization", name: "Klipza", url: SITE_URL },
+    inLanguage: "en",
+    isPartOf: { "@type": "WebSite", "@id": `${SITE_URL}/#website` },
+    about: { "@type": "Thing", name: entry.name },
+    publisher: { "@type": "Organization", "@id": `${SITE_URL}/#organization` },
+    breadcrumb: { "@id": `${url}#breadcrumb` },
   };
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    "@id": `${url}#breadcrumb`,
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
       { "@type": "ListItem", position: 2, name: entry.category, item: `${SITE_URL}/#tools` },
@@ -75,7 +79,7 @@ const ToolSeoHead = () => {
       <meta name="twitter:description" content={entry.description} />
 
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(appSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
     </Helmet>
   );
