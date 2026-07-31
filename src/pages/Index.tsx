@@ -334,8 +334,22 @@ const Index = () => {
     answer: "We have reasonable limits to ensure good performance for all users. Most tools support files up to 10MB, which covers the vast majority of use cases."
   }];
 
+  const homeFaqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": "https://klipza.live/#faq",
+    mainEntity: faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer }
+    }))
+  };
+
   return <>
       <SEO title="Klipza — 80+ Free Online Tools: PDF, Image, QR & Text" description="Use 80+ free online tools in one place: merge and compress PDFs, OCR scans, convert and compress images, generate QR codes, build an ATS resume and more. No signup — files stay on your device." keywords="free online tools, pdf tools online, image compressor, qr code generator with logo, ats resume builder, pdf ocr, word counter, unit converter, klipza" canonicalUrl="https://klipza.live/" />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>
+      </Helmet>
       
       {/* Modern Hero Section */}
       <section className="relative overflow-hidden min-h-screen flex items-center">
