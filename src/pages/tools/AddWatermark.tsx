@@ -48,43 +48,56 @@ const AddWatermark = () => {
 
     setIsProcessing(true);
     try {
-      const { PDFDocument, rgb, degrees } = await import('pdf-lib');
+      const { PDFDocument, rgb, degrees, StandardFonts } = await import('pdf-lib');
       
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const pages = pdfDoc.getPages();
-      
+      const fontSize = 48;
+      const textWidth = font.widthOfTextAtSize(watermarkText, fontSize);
+      const textHeight = font.heightAtSize(fontSize);
+      const angle = ((rotation[0] % 360) * Math.PI) / 180;
+
       // Add watermark to each page
       for (const page of pages) {
         const { width, height } = page.getSize();
-        
-        // Calculate position
-        let x = width / 2;
-        let y = height / 2;
-        
+        const margin = 40;
+
+        // Anchor point (where the text block should be centered)
+        let cx = width / 2;
+        let cy = height / 2;
+
         if (position === 'top-left') {
-          x = 50;
-          y = height - 50;
+          cx = margin + textWidth / 2;
+          cy = height - margin - textHeight / 2;
         } else if (position === 'top-right') {
-          x = width - 50;
-          y = height - 50;
+          cx = width - margin - textWidth / 2;
+          cy = height - margin - textHeight / 2;
         } else if (position === 'bottom-left') {
-          x = 50;
-          y = 50;
+          cx = margin + textWidth / 2;
+          cy = margin + textHeight / 2;
         } else if (position === 'bottom-right') {
-          x = width - 50;
-          y = 50;
+          cx = width - margin - textWidth / 2;
+          cy = margin + textHeight / 2;
         }
-        
+
+        // pdf-lib rotates around the (x, y) draw origin, so offset the origin
+        // by the rotated half-extents to keep the text visually centered.
+        const dx = (textWidth / 2) * Math.cos(angle) - (textHeight / 2) * Math.sin(angle);
+        const dy = (textWidth / 2) * Math.sin(angle) + (textHeight / 2) * Math.cos(angle);
+
         page.drawText(watermarkText, {
-          x,
-          y,
-          size: 48,
+          x: cx - dx,
+          y: cy - dy,
+          size: fontSize,
+          font,
           color: rgb(0.5, 0.5, 0.5),
           opacity: opacity[0] / 100,
           rotate: degrees(rotation[0]),
         });
       }
+
       
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });

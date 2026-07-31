@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Lock, Download, Loader2, Eye, EyeOff } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument } from "@cantoo/pdf-lib";
 
 const ProtectPdf = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -44,14 +44,22 @@ const ProtectPdf = () => {
     setIsProtecting(true);
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
-      // NOTE: pdf-lib does not support real PDF encryption. To avoid a false
-      // sense of security, we do NOT stamp the password onto the document.
-      // We simply set document metadata indicating restricted handling and
-      // clearly disclose the limitation in the UI below.
-      pdfDoc.setTitle((pdfDoc.getTitle() || file.name) + ' (Restricted)');
-      pdfDoc.setSubject('Marked as restricted by user. Real encryption not applied.');
+      // Real PDF encryption (AES) — the file cannot be opened without the password.
+      pdfDoc.encrypt({
+        userPassword: password,
+        ownerPassword: password,
+        permissions: {
+          printing: "highResolution",
+          modifying: false,
+          copying: false,
+          annotating: false,
+          fillingForms: true,
+          contentAccessibility: true,
+          documentAssembly: false,
+        },
+      });
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
@@ -59,18 +67,18 @@ const ProtectPdf = () => {
 
       const a = document.createElement("a");
       a.href = url;
-      a.download = file.name.replace(".pdf", "_marked.pdf");
+      a.download = file.name.replace(/\.pdf$/i, "") + "_protected.pdf";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      toast.success("PDF marked as restricted (metadata only — not encrypted).");
+      toast.success("PDF encrypted — the password is now required to open it.");
       setPassword("");
       setConfirmPassword("");
     } catch (error) {
       console.error("Protection error:", error);
-      toast.error("Failed to process PDF. Please try again.");
+      toast.error("Failed to encrypt PDF. The file may already be password protected.");
     } finally {
       setIsProtecting(false);
     }
@@ -165,33 +173,28 @@ const ProtectPdf = () => {
               {isProtecting ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Processing...
+                  Encrypting...
                 </>
               ) : (
                 <>
                   <Lock className="mr-2 h-5 w-5" />
-                  Mark PDF as Restricted
+                  Encrypt PDF with Password
                 </>
               )}
             </Button>
           </div>
 
           <div className="pt-6 border-t space-y-3">
-            <h3 className="font-semibold text-destructive">⚠️ Important Limitation</h3>
-            <p className="text-sm text-muted-foreground">
-              True PDF encryption (AES / password-protected opening) cannot be performed
-              reliably in the browser. This tool only <strong>marks</strong> the document
-              metadata as restricted — it does <strong>not</strong> encrypt the file and
-              anyone can still open it. For real encryption, use a desktop tool such as
-              Adobe Acrobat or a server-side workflow.
-            </p>
-            <ul className="space-y-2 text-sm text-muted-foreground pt-2">
-              <li>✓ All processing done locally in your browser</li>
+            <h3 className="font-semibold">How it works</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>✓ Real PDF encryption — the password is required to open the file</li>
+              <li>✓ Copying, editing and assembly permissions are restricted</li>
+              <li>✓ All processing happens locally in your browser</li>
               <li>✓ Your files never leave your device</li>
-              <li>✗ No AES encryption is applied</li>
-              <li>✗ Password is not enforced when opening the file</li>
+              <li>⚠️ Keep your password safe — it cannot be recovered</li>
             </ul>
           </div>
+
 
         </div>
       </Card>

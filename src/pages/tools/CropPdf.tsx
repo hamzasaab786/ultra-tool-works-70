@@ -47,20 +47,25 @@ const CropPdf = () => {
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
       
-      // Crop each page
+      // Crop each page — respect the existing MediaBox origin so pages that do
+      // not start at (0,0) are cropped correctly, and update both boxes so the
+      // trimmed area is gone in every viewer.
       for (const page of pages) {
-        const { width, height } = page.getSize();
-        
-        const newWidth = width - cropSettings.left - cropSettings.right;
-        const newHeight = height - cropSettings.top - cropSettings.bottom;
-        
-        page.setCropBox(
-          cropSettings.left,
-          cropSettings.bottom,
-          newWidth,
-          newHeight
-        );
+        const box = page.getMediaBox();
+
+        const left = box.x + cropSettings.left;
+        const bottom = box.y + cropSettings.bottom;
+        const newWidth = box.width - cropSettings.left - cropSettings.right;
+        const newHeight = box.height - cropSettings.top - cropSettings.bottom;
+
+        if (newWidth <= 0 || newHeight <= 0) {
+          throw new Error('Crop values are larger than the page size');
+        }
+
+        page.setCropBox(left, bottom, newWidth, newHeight);
+        page.setMediaBox(left, bottom, newWidth, newHeight);
       }
+
       
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
@@ -80,7 +85,7 @@ const CropPdf = () => {
       console.error('Cropping error:', error);
       toast({
         title: "Cropping failed",
-        description: "There was an error cropping your PDF",
+        description: (error as Error).message || "There was an error cropping your PDF",
         variant: "destructive",
       });
     } finally {
