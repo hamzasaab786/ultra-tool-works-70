@@ -95,6 +95,13 @@ import BusinessCardGenerator from "@/pages/tools/BusinessCardGenerator";
 import PdfOcr from "@/pages/tools/PdfOcr";
 import SignPdfTool from "@/pages/tools/SignPdfTool";
 import EditPdfText from "@/pages/tools/EditPdfText";
+import EditPdf from "@/pages/tools/EditPdf";
+import CropPdf from "@/pages/tools/CropPdf";
+import RotatePdf from "@/pages/tools/RotatePdf";
+import RedactPdf from "@/pages/tools/RedactPdf";
+import RepairPdf from "@/pages/tools/RepairPdf";
+import PdfToPdfA from "@/pages/tools/PdfToPdfA";
+import PdfToPowerPoint from "@/pages/tools/PdfToPowerPoint";
 import TestCardGenerator from "@/pages/tools/TestCardGenerator";
 
 const App = () => {
