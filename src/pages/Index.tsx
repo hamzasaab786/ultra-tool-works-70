@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
 import SEO from "@/components/SEO";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
