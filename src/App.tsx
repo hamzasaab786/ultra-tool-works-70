@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
@@ -6,103 +6,110 @@ import Layout from "@/components/Layout";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
-import AboutUs from "@/pages/AboutUs";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import Terms from "@/pages/Terms";
-import Disclaimer from "@/pages/Disclaimer";
 
 // Image Tools
-import ImageCompressor from "@/pages/tools/ImageCompressor";
-import ImageResizer from "@/pages/tools/ImageResizer";
-import ImageEnhancer from "@/pages/tools/ImageEnhancer";
-import JpgToPdf from "@/pages/tools/JpgToPdf";
-import SvgToJpg from "@/pages/tools/SvgToJpg";
-import ImageToUrl from "@/pages/tools/ImageToUrl";
 
-import PassportPhotoMaker from "@/pages/tools/PassportPhotoMaker";
-import ImageFormatConverter from "@/pages/tools/ImageFormatConverter";
-import ImageMetadataExtractor from "@/pages/tools/ImageMetadataExtractor";
-import RemoveWatermark from "@/pages/tools/RemoveWatermark";
-import ImageCropTool from "@/pages/tools/ImageCropTool";
 
 // PDF Tools
-import MergePDF from "@/pages/tools/MergePDF";
-import SplitPdf from "@/pages/tools/SplitPdf";
-import PdfToJpg from "@/pages/tools/PdfToJpg";
-import PdfCompressor from "@/pages/tools/PdfCompressor";
-import PdfToExcel from "@/pages/tools/PdfToExcel";
-import UnlockPdf from "@/pages/tools/UnlockPdf";
-import PdfMetadataExtractor from "@/pages/tools/PdfMetadataExtractor";
-import AddPageNumbers from "@/pages/tools/AddPageNumbers";
-import ComparePdf from "@/pages/tools/ComparePdf";
-import AddWatermark from "@/pages/tools/AddWatermark";
-import WordToPdf from "@/pages/tools/WordToPdf";
-import PdfToWord from "@/pages/tools/PdfToWord";
-import ProtectPdf from "@/pages/tools/ProtectPdf";
-import ExtractTextPdf from "@/pages/tools/ExtractTextPdf";
-import OrganizePdf from "@/pages/tools/OrganizePdf";
-import HtmlToPdf from "@/pages/tools/HtmlToPdf";
-import ExcelToPdf from "@/pages/tools/ExcelToPdf";
-import PowerPointToPdf from "@/pages/tools/PowerPointToPdf";
 
 // Calculator Tools
-import PercentageCalculator from "@/pages/tools/PercentageCalculator";
-import UnitConverter from "@/pages/tools/UnitConverter";
-import CurrencyConverter from "@/pages/tools/CurrencyConverter";
-import AgeCalculator from "@/pages/tools/AgeCalculator";
-import BmiCalculator from "@/pages/tools/BmiCalculator";
-import LoanCalculator from "@/pages/tools/LoanCalculator";
-import TipCalculator from "@/pages/tools/TipCalculator";
-import HexToRgb from "@/pages/tools/HexToRgb";
-import NumberBaseConverter from "@/pages/tools/NumberBaseConverter";
 
 // Text Tools
-import WordCounter from "@/pages/tools/WordCounter";
-import CaseConverter from "@/pages/tools/CaseConverter";
-import Base64Tool from "@/pages/tools/Base64Tool";
-import MarkdownToHtml from "@/pages/tools/MarkdownToHtml";
-import TextDiff from "@/pages/tools/TextDiff";
-import LoremIpsum from "@/pages/tools/LoremIpsum";
-import UrlDecoder from "@/pages/tools/UrlDecoder";
-import JsonFormatter from "@/pages/tools/JsonFormatter";
-import CsvToJson from "@/pages/tools/CsvToJson";
-import TextEncryption from "@/pages/tools/TextEncryption";
-import MorseCodeTranslator from "@/pages/tools/MorseCodeTranslator";
-import RegexTester from "@/pages/tools/RegexTester";
-import DocumentTranslator from "@/pages/tools/DocumentTranslator";
 
 // Utility Tools
-import QRCodeGenerator from "@/pages/tools/QRCodeGenerator";
-import PasswordGenerator from "@/pages/tools/PasswordGenerator";
-import HashGenerator from "@/pages/tools/HashGenerator";
-import TimerStopwatch from "@/pages/tools/TimerStopwatch";
-import ColorPicker from "@/pages/tools/ColorPicker";
-import BudgetTracker from "@/pages/tools/BudgetTracker";
-import BarcodeGenerator from "@/pages/tools/BarcodeGenerator";
-import UrlShortener from "@/pages/tools/UrlShortener";
-import EmailValidator from "@/pages/tools/EmailValidator";
-import PasswordStrength from "@/pages/tools/PasswordStrength";
-import FileHashChecker from "@/pages/tools/FileHashChecker";
-import WhoisLookup from "@/pages/tools/WhoisLookup";
-import DnsLookup from "@/pages/tools/DnsLookup";
-import IpGeolocation from "@/pages/tools/IpGeolocation";
-import CreditCardValidator from "@/pages/tools/CreditCardValidator";
-import EmojiPicker from "@/pages/tools/EmojiPicker";
-import InvoiceGenerator from "@/pages/tools/InvoiceGenerator";
-import ReceiptGenerator from "@/pages/tools/ReceiptGenerator";
-import ResumeBuilder from "@/pages/tools/ResumeBuilder";
-import BusinessCardGenerator from "@/pages/tools/BusinessCardGenerator";
-import PdfOcr from "@/pages/tools/PdfOcr";
-import SignPdfTool from "@/pages/tools/SignPdfTool";
-import EditPdfText from "@/pages/tools/EditPdfText";
-import EditPdf from "@/pages/tools/EditPdf";
-import CropPdf from "@/pages/tools/CropPdf";
-import RotatePdf from "@/pages/tools/RotatePdf";
-import RedactPdf from "@/pages/tools/RedactPdf";
-import RepairPdf from "@/pages/tools/RepairPdf";
-import PdfToPdfA from "@/pages/tools/PdfToPdfA";
-import PdfToPowerPoint from "@/pages/tools/PdfToPowerPoint";
-import TestCardGenerator from "@/pages/tools/TestCardGenerator";
+
+const AboutUs = lazy(() => import("@/pages/AboutUs"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const Terms = lazy(() => import("@/pages/Terms"));
+const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
+const ImageCompressor = lazy(() => import("@/pages/tools/ImageCompressor"));
+const ImageResizer = lazy(() => import("@/pages/tools/ImageResizer"));
+const ImageEnhancer = lazy(() => import("@/pages/tools/ImageEnhancer"));
+const JpgToPdf = lazy(() => import("@/pages/tools/JpgToPdf"));
+const SvgToJpg = lazy(() => import("@/pages/tools/SvgToJpg"));
+const ImageToUrl = lazy(() => import("@/pages/tools/ImageToUrl"));
+const PassportPhotoMaker = lazy(() => import("@/pages/tools/PassportPhotoMaker"));
+const ImageFormatConverter = lazy(() => import("@/pages/tools/ImageFormatConverter"));
+const ImageMetadataExtractor = lazy(() => import("@/pages/tools/ImageMetadataExtractor"));
+const RemoveWatermark = lazy(() => import("@/pages/tools/RemoveWatermark"));
+const ImageCropTool = lazy(() => import("@/pages/tools/ImageCropTool"));
+const MergePDF = lazy(() => import("@/pages/tools/MergePDF"));
+const SplitPdf = lazy(() => import("@/pages/tools/SplitPdf"));
+const PdfToJpg = lazy(() => import("@/pages/tools/PdfToJpg"));
+const PdfCompressor = lazy(() => import("@/pages/tools/PdfCompressor"));
+const PdfToExcel = lazy(() => import("@/pages/tools/PdfToExcel"));
+const UnlockPdf = lazy(() => import("@/pages/tools/UnlockPdf"));
+const PdfMetadataExtractor = lazy(() => import("@/pages/tools/PdfMetadataExtractor"));
+const AddPageNumbers = lazy(() => import("@/pages/tools/AddPageNumbers"));
+const ComparePdf = lazy(() => import("@/pages/tools/ComparePdf"));
+const AddWatermark = lazy(() => import("@/pages/tools/AddWatermark"));
+const WordToPdf = lazy(() => import("@/pages/tools/WordToPdf"));
+const PdfToWord = lazy(() => import("@/pages/tools/PdfToWord"));
+const ProtectPdf = lazy(() => import("@/pages/tools/ProtectPdf"));
+const ExtractTextPdf = lazy(() => import("@/pages/tools/ExtractTextPdf"));
+const OrganizePdf = lazy(() => import("@/pages/tools/OrganizePdf"));
+const HtmlToPdf = lazy(() => import("@/pages/tools/HtmlToPdf"));
+const ExcelToPdf = lazy(() => import("@/pages/tools/ExcelToPdf"));
+const PowerPointToPdf = lazy(() => import("@/pages/tools/PowerPointToPdf"));
+const PercentageCalculator = lazy(() => import("@/pages/tools/PercentageCalculator"));
+const UnitConverter = lazy(() => import("@/pages/tools/UnitConverter"));
+const CurrencyConverter = lazy(() => import("@/pages/tools/CurrencyConverter"));
+const AgeCalculator = lazy(() => import("@/pages/tools/AgeCalculator"));
+const BmiCalculator = lazy(() => import("@/pages/tools/BmiCalculator"));
+const LoanCalculator = lazy(() => import("@/pages/tools/LoanCalculator"));
+const TipCalculator = lazy(() => import("@/pages/tools/TipCalculator"));
+const HexToRgb = lazy(() => import("@/pages/tools/HexToRgb"));
+const NumberBaseConverter = lazy(() => import("@/pages/tools/NumberBaseConverter"));
+const WordCounter = lazy(() => import("@/pages/tools/WordCounter"));
+const CaseConverter = lazy(() => import("@/pages/tools/CaseConverter"));
+const Base64Tool = lazy(() => import("@/pages/tools/Base64Tool"));
+const MarkdownToHtml = lazy(() => import("@/pages/tools/MarkdownToHtml"));
+const TextDiff = lazy(() => import("@/pages/tools/TextDiff"));
+const LoremIpsum = lazy(() => import("@/pages/tools/LoremIpsum"));
+const UrlDecoder = lazy(() => import("@/pages/tools/UrlDecoder"));
+const JsonFormatter = lazy(() => import("@/pages/tools/JsonFormatter"));
+const CsvToJson = lazy(() => import("@/pages/tools/CsvToJson"));
+const TextEncryption = lazy(() => import("@/pages/tools/TextEncryption"));
+const MorseCodeTranslator = lazy(() => import("@/pages/tools/MorseCodeTranslator"));
+const RegexTester = lazy(() => import("@/pages/tools/RegexTester"));
+const DocumentTranslator = lazy(() => import("@/pages/tools/DocumentTranslator"));
+const QRCodeGenerator = lazy(() => import("@/pages/tools/QRCodeGenerator"));
+const PasswordGenerator = lazy(() => import("@/pages/tools/PasswordGenerator"));
+const HashGenerator = lazy(() => import("@/pages/tools/HashGenerator"));
+const TimerStopwatch = lazy(() => import("@/pages/tools/TimerStopwatch"));
+const ColorPicker = lazy(() => import("@/pages/tools/ColorPicker"));
+const BudgetTracker = lazy(() => import("@/pages/tools/BudgetTracker"));
+const BarcodeGenerator = lazy(() => import("@/pages/tools/BarcodeGenerator"));
+const UrlShortener = lazy(() => import("@/pages/tools/UrlShortener"));
+const EmailValidator = lazy(() => import("@/pages/tools/EmailValidator"));
+const PasswordStrength = lazy(() => import("@/pages/tools/PasswordStrength"));
+const FileHashChecker = lazy(() => import("@/pages/tools/FileHashChecker"));
+const WhoisLookup = lazy(() => import("@/pages/tools/WhoisLookup"));
+const DnsLookup = lazy(() => import("@/pages/tools/DnsLookup"));
+const IpGeolocation = lazy(() => import("@/pages/tools/IpGeolocation"));
+const CreditCardValidator = lazy(() => import("@/pages/tools/CreditCardValidator"));
+const EmojiPicker = lazy(() => import("@/pages/tools/EmojiPicker"));
+const InvoiceGenerator = lazy(() => import("@/pages/tools/InvoiceGenerator"));
+const ReceiptGenerator = lazy(() => import("@/pages/tools/ReceiptGenerator"));
+const ResumeBuilder = lazy(() => import("@/pages/tools/ResumeBuilder"));
+const BusinessCardGenerator = lazy(() => import("@/pages/tools/BusinessCardGenerator"));
+const PdfOcr = lazy(() => import("@/pages/tools/PdfOcr"));
+const SignPdfTool = lazy(() => import("@/pages/tools/SignPdfTool"));
+const EditPdfText = lazy(() => import("@/pages/tools/EditPdfText"));
+const EditPdf = lazy(() => import("@/pages/tools/EditPdf"));
+const CropPdf = lazy(() => import("@/pages/tools/CropPdf"));
+const RotatePdf = lazy(() => import("@/pages/tools/RotatePdf"));
+const RedactPdf = lazy(() => import("@/pages/tools/RedactPdf"));
+const RepairPdf = lazy(() => import("@/pages/tools/RepairPdf"));
+const PdfToPdfA = lazy(() => import("@/pages/tools/PdfToPdfA"));
+const PdfToPowerPoint = lazy(() => import("@/pages/tools/PdfToPowerPoint"));
+const TestCardGenerator = lazy(() => import("@/pages/tools/TestCardGenerator"));
+
+const RouteFallback = () => (
+  <div className="flex min-h-[60vh] items-center justify-center">
+    <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+  </div>
+);
 
 const App = () => {
   return (
@@ -110,6 +117,7 @@ const App = () => {
       <ThemeProvider>
         <Router>
           <Layout>
+            <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
             <Route path="/about" element={<AboutUs />} />
@@ -219,6 +227,7 @@ const App = () => {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+            </Suspense>
         </Layout>
         <Toaster />
       </Router>
