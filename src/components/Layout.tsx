@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import ScrollAnimation from "./ScrollAnimation";
 import ToolSeoHead from "./ToolSeoHead";
 import ToolFaqSection from "./ToolFaqSection";
+import ToolSeoArticle from "./ToolSeoArticle";
 
 interface LayoutProps {
   children: React.ReactNode;
