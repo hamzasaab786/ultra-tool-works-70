@@ -664,44 +664,20 @@ const Index = () => {
     [],
   );
 
-  const recentToolCards = recentTools
-    .map(recent => flatTools.find(tool => tool.path === recent.path))
-    .filter(Boolean)
-    .slice(0, 8);
-
-  const isFiltering = query.trim().length > 0 || activeCategory !== "all" || sortBy !== "popular";
+  const isFiltering = query.trim().length > 0 || activeCategory !== "all";
 
   const filteredTools = useMemo(() => {
     // Every whitespace-separated word must appear somewhere in the tool entry,
     // so "pdf compress" also finds "Compress PDF"-style tools.
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    let list = flatTools.filter(tool => {
+    return flatTools.filter(tool => {
       const matchesCategory =
         activeCategory === "all" || String(tool.categoryIndex) === activeCategory;
       const haystack = `${tool.title} ${tool.description} ${tool.path} ${tool.categoryTitle}`.toLowerCase();
       const matchesQuery = terms.every(term => haystack.includes(term));
       return matchesCategory && matchesQuery;
     });
-
-    if (sortBy === "az") {
-      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "newest") {
-      const rank = (path: string) => {
-        const index = newToolPaths.indexOf(path);
-        return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-      };
-      list = [...list].sort((a, b) => rank(a.path) - rank(b.path));
-    } else {
-      const rank = (path: string) => {
-        const index = popularToolPaths.indexOf(path);
-        return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-      };
-      list = [...list].sort((a, b) => rank(a.path) - rank(b.path));
-    }
-
-    return list;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, activeCategory, sortBy, flatTools]);
+  }, [query, activeCategory, flatTools]);
 
   const faqs = [{
     question: "Are all tools completely free to use?",
