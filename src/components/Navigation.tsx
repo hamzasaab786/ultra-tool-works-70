@@ -194,7 +194,7 @@ const Navigation = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300">
+        <div className="md:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
           <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
