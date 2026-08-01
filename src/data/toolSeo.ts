@@ -1674,6 +1674,166 @@ export const toolSeoEntries: ToolSeoEntry[] = [
       { q: "How do I get the most accurate result?", a: "Use a sharp, well-lit, straight-on image with good contrast between text and background. Blurry, skewed or low-resolution photos reduce OCR accuracy." },
     ],
   },
+  {
+    path: "/tools/delete-pdf-pages",
+    name: "Delete PDF Pages",
+    category: PDF,
+    title: "Delete Pages from PDF — Remove PDF Pages Free",
+    description:
+      "Remove unwanted pages from any PDF in seconds. Pick single pages or ranges, keep the rest untouched, and download instantly — no upload, no signup.",
+    keywords:
+      "delete pages from pdf, remove pdf pages, pdf page remover online free, how to delete a page from a pdf, erase blank pages from pdf",
+    faqs: [
+      {
+        q: "Can I delete several pages at once?",
+        a: "Yes. Type a mix of single pages and ranges such as 1, 4-6, 12 and every listed page is removed in one pass.",
+      },
+      {
+        q: "Will deleting pages reduce quality?",
+        a: "No. The remaining pages are copied byte-for-byte, so text, fonts and images stay exactly as they were.",
+      },
+    ],
+  },
+  {
+    path: "/tools/extract-pdf-pages",
+    name: "Extract PDF Pages",
+    category: PDF,
+    title: "Extract Pages from PDF — Save Selected Pages",
+    description:
+      "Pull chosen pages out of a PDF into a new document. Select ranges like 1-3, 7 and download a clean file — free, instant and processed in your browser.",
+    keywords:
+      "extract pages from pdf, pdf page extractor, save selected pdf pages, separate pdf pages online, pull one page out of a pdf",
+    faqs: [
+      {
+        q: "What is the difference between extracting and splitting?",
+        a: "Splitting breaks the whole file into parts; extracting keeps only the pages you list and puts them into a single new PDF.",
+      },
+      {
+        q: "Does the original file change?",
+        a: "Never. Your source PDF stays untouched — the tool only creates a new document for download.",
+      },
+    ],
+  },
+  {
+    path: "/tools/extract-pdf-images",
+    name: "Extract Images from PDF",
+    category: PDF,
+    title: "Extract Images from PDF — Save Photos as PNG",
+    description:
+      "Find every embedded photo and graphic inside a PDF and download them as PNG files at original resolution. Fully offline in your browser.",
+    keywords:
+      "extract images from pdf, pdf image extractor, save pictures from pdf, get photos out of pdf free, pdf to png images",
+    faqs: [
+      {
+        q: "Are images saved at full resolution?",
+        a: "Yes. The tool reads the embedded image objects, so you get the original pixel dimensions rather than a screenshot of the page.",
+      },
+      {
+        q: "Nothing was found in my PDF — why?",
+        a: "Vector-drawn or text-only pages contain no bitmap images. Use the PDF to JPG tool to export whole pages instead.",
+      },
+    ],
+  },
+  {
+    path: "/tools/flatten-pdf",
+    name: "Flatten PDF",
+    category: PDF,
+    title: "Flatten PDF Online — Lock Forms & Annotations",
+    description:
+      "Flatten PDF form fields, annotations and layers so the file looks identical everywhere and can no longer be edited or re-filled. Free and private.",
+    keywords:
+      "flatten pdf, flatten pdf form fields, make pdf non editable, lock pdf annotations online, flatten filled pdf form free",
+    faqs: [
+      {
+        q: "What does flattening a PDF do?",
+        a: "It merges interactive form fields, comments and layers into the static page content, so viewers see fixed text instead of editable widgets.",
+      },
+      {
+        q: "Which mode should I choose?",
+        a: "Use forms mode to keep text selectable and searchable. Use full flatten when you want every page converted to a fixed image.",
+      },
+    ],
+  },
+  {
+    path: "/tools/text-to-pdf",
+    name: "Text to PDF",
+    category: PDF,
+    title: "Text to PDF Converter — TXT to PDF Online Free",
+    description:
+      "Convert plain text or .txt notes into a clean, paginated PDF with your choice of page size, font and margins. Text stays selectable and searchable.",
+    keywords:
+      "text to pdf, txt to pdf converter, convert notes to pdf online free, plain text pdf generator, paste text and download pdf",
+    faqs: [
+      {
+        q: "Is the text searchable in the finished PDF?",
+        a: "Yes. Real fonts are embedded, so you can select, copy and search every word — it is not an image.",
+      },
+      {
+        q: "How is long text paginated?",
+        a: "Lines wrap to the page width and new pages are added automatically when the margin is reached.",
+      },
+    ],
+  },
+  {
+    path: "/tools/pdf-page-resizer",
+    name: "PDF Page Resizer",
+    category: PDF,
+    title: "Resize PDF Page Size — A4, Letter, Legal & A3",
+    description:
+      "Change a PDF to A4, A3, A5, Letter, Legal or Tabloid. Pages are scaled and centred without stretching so everything prints correctly.",
+    keywords:
+      "resize pdf page size, change pdf to a4, pdf letter to a4 converter, scale pdf pages online free, a4 to a3 pdf resize",
+    faqs: [
+      {
+        q: "Will my content be stretched?",
+        a: "No. The tool scales each page proportionally and centres it on the new sheet, so the aspect ratio is always preserved.",
+      },
+      {
+        q: "Can I mix portrait and landscape pages?",
+        a: "Yes. Choose Keep original and each page is placed on a sheet matching its own orientation.",
+      },
+    ],
+  },
+  {
+    path: "/tools/pdf-header-footer",
+    name: "PDF Header & Footer",
+    category: PDF,
+    title: "Add Header & Footer to PDF — Free Online Tool",
+    description:
+      "Stamp custom header and footer text on every PDF page with automatic page numbers, totals and dates. Instant, free and browser-based.",
+    keywords:
+      "add header footer to pdf, pdf header text online, stamp footer on pdf pages, pdf header footer tool free, add page x of y to pdf",
+    faqs: [
+      {
+        q: "Can I add automatic page numbers?",
+        a: "Yes. Use the {page} and {total} placeholders — for example Page {page} of {total} — and each sheet is numbered automatically.",
+      },
+      {
+        q: "Does it work on every page?",
+        a: "Yes, the header and footer are applied to all pages, with left, centre or right alignment and an adjustable text size.",
+      },
+    ],
+  },
+  {
+    path: "/tools/n-up-pdf",
+    name: "Pages Per Sheet (N-up)",
+    category: PDF,
+    title: "Multiple PDF Pages Per Sheet — 2, 4, 6 or 9 Up",
+    description:
+      "Fit 2, 4, 6 or 9 PDF pages onto one A4 sheet to save paper and ink. Pages are scaled, centred and optionally bordered for easy cutting.",
+    keywords:
+      "multiple pages per sheet pdf, n-up pdf, 4 pages on one pdf page, combine pdf pages onto one sheet, print 2 pdf pages per page",
+    faqs: [
+      {
+        q: "Why put several pages on one sheet?",
+        a: "It halves or quarters your printing cost and is ideal for handouts, flashcards and proofreading drafts.",
+      },
+      {
+        q: "Are the pages still readable?",
+        a: "At 2-up and 4-up on A4 most documents stay comfortably readable; 6-up and 9-up suit slides and short pages best.",
+      },
+    ],
+  },
 ];
 
 export const toolSeoByPath: Record<string, ToolSeoEntry> = toolSeoEntries.reduce(

@@ -42,6 +42,14 @@ const Navigation = () => {
     { name: "Add Page Numbers", path: "/tools/add-page-numbers" },
     { name: "Compare PDF", path: "/tools/compare-pdf" },
     { name: "Add Watermark", path: "/tools/add-watermark" },
+    { name: "Delete PDF Pages", path: "/tools/delete-pdf-pages" },
+    { name: "Extract PDF Pages", path: "/tools/extract-pdf-pages" },
+    { name: "Extract Images from PDF", path: "/tools/extract-pdf-images" },
+    { name: "Flatten PDF", path: "/tools/flatten-pdf" },
+    { name: "Text to PDF", path: "/tools/text-to-pdf" },
+    { name: "Resize PDF Page Size", path: "/tools/pdf-page-resizer" },
+    { name: "Header & Footer", path: "/tools/pdf-header-footer" },
+    { name: "Pages Per Sheet (N-up)", path: "/tools/n-up-pdf" },
   ];
 
   const calculatorTools = [
