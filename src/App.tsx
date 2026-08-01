@@ -128,6 +128,9 @@ const App = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+
             
             {/* Image Tools */}
             <Route path="/tools/image-compressor" element={<ImageCompressor />} />
