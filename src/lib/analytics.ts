@@ -4,8 +4,19 @@ declare global {
   }
 }
 
-const MEASUREMENT_ID = import.meta.env
+const RAW_ID = import.meta.env
   .VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY as string | undefined;
+
+// A valid GA4 measurement ID looks like G-XXXXXXXXXX (10 chars after "G-").
+const isValidGa4Id = (id?: string) => !!id && /^G-[A-Z0-9]{10}$/.test(id.trim());
+
+const MEASUREMENT_ID = isValidGa4Id(RAW_ID) ? (RAW_ID as string).trim() : undefined;
+
+if (RAW_ID && !MEASUREMENT_ID) {
+  console.warn(
+    "Google Analytics measurement ID looks invalid — expected format G-XXXXXXXXXX. Analytics disabled.",
+  );
+}
 
 let initialized = false;
 
