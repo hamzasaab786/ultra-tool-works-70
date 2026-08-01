@@ -23,6 +23,8 @@ const AboutUs = lazy(() => import("@/pages/AboutUs"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Terms = lazy(() => import("@/pages/Terms"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
+const AuthPage = lazy(() => import("@/pages/Auth"));
+const OAuthConsent = lazy(() => import("@/pages/OAuthConsent"));
 const ImageCompressor = lazy(() => import("@/pages/tools/ImageCompressor"));
 const ImageResizer = lazy(() => import("@/pages/tools/ImageResizer"));
 const ImageEnhancer = lazy(() => import("@/pages/tools/ImageEnhancer"));
