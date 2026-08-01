@@ -106,6 +106,14 @@ const RedactPdf = lazy(() => import("@/pages/tools/RedactPdf"));
 const RepairPdf = lazy(() => import("@/pages/tools/RepairPdf"));
 const PdfToPdfA = lazy(() => import("@/pages/tools/PdfToPdfA"));
 const PdfToPowerPoint = lazy(() => import("@/pages/tools/PdfToPowerPoint"));
+const DeletePdfPages = lazy(() => import("@/pages/tools/DeletePdfPages"));
+const ExtractPdfPages = lazy(() => import("@/pages/tools/ExtractPdfPages"));
+const ExtractPdfImages = lazy(() => import("@/pages/tools/ExtractPdfImages"));
+const FlattenPdf = lazy(() => import("@/pages/tools/FlattenPdf"));
+const TextToPdf = lazy(() => import("@/pages/tools/TextToPdf"));
+const PdfPageResizer = lazy(() => import("@/pages/tools/PdfPageResizer"));
+const PdfHeaderFooter = lazy(() => import("@/pages/tools/PdfHeaderFooter"));
+const NUpPdf = lazy(() => import("@/pages/tools/NUpPdf"));
 const TestCardGenerator = lazy(() => import("@/pages/tools/TestCardGenerator"));
 const GpaCalculator = lazy(() => import("@/pages/tools/GpaCalculator"));
 const DateDifferenceCalculator = lazy(() => import("@/pages/tools/DateDifferenceCalculator"));
@@ -234,6 +242,14 @@ const App = () => {
             <Route path="/tools/pdf-to-powerpoint" element={<PdfToPowerPoint />} />
             <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
             <Route path="/tools/pdf-to-excel" element={<PdfToExcel />} />
+            <Route path="/tools/delete-pdf-pages" element={<DeletePdfPages />} />
+            <Route path="/tools/extract-pdf-pages" element={<ExtractPdfPages />} />
+            <Route path="/tools/extract-pdf-images" element={<ExtractPdfImages />} />
+            <Route path="/tools/flatten-pdf" element={<FlattenPdf />} />
+            <Route path="/tools/text-to-pdf" element={<TextToPdf />} />
+            <Route path="/tools/pdf-page-resizer" element={<PdfPageResizer />} />
+            <Route path="/tools/pdf-header-footer" element={<PdfHeaderFooter />} />
+            <Route path="/tools/n-up-pdf" element={<NUpPdf />} />
             <Route path="/tools/test-card-generator" element={<TestCardGenerator />} />
             <Route path="/tools/gpa-calculator" element={<GpaCalculator />} />
             <Route path="/tools/date-difference-calculator" element={<DateDifferenceCalculator />} />
