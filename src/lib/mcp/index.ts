@@ -1,4 +1,4 @@
-import { defineMcp } from "@lovable.dev/mcp-js";
+import { auth, defineMcp } from "@lovable.dev/mcp-js";
 import wordCount from "./tools/word-count";
 import caseConvert from "./tools/case-convert";
 import base64 from "./tools/base64";
