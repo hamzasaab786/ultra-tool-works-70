@@ -44,8 +44,10 @@ const Layout = ({ children }: LayoutProps) => {
         {children}
         <AdsterraNative />
         <ToolSeoArticle />
+        <AdsterraBanner160x300 />
         <ToolFaqSection />
       </main>
+
 
 
       {/* Route-aware SEO head; rendered last so it overrides page-level tags */}
