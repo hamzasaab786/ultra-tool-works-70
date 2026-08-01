@@ -194,7 +194,7 @@ const Navigation = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300">
+        <div className="md:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
           <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
@@ -211,7 +211,7 @@ const Navigation = () => {
                   🖼️ Image Tools
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {imageTools.slice(0, 5).map((tool) => (
+                  {imageTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -238,7 +238,7 @@ const Navigation = () => {
                   📄 PDF Tools
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {pdfTools.slice(0, 5).map((tool) => (
+                  {pdfTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -265,7 +265,7 @@ const Navigation = () => {
                   🧮 Calculators
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {calculatorTools.slice(0, 5).map((tool) => (
+                  {calculatorTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -292,7 +292,7 @@ const Navigation = () => {
                   📝 Text Tools
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {textTools.slice(0, 5).map((tool) => (
+                  {textTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -319,7 +319,7 @@ const Navigation = () => {
                   🛠️ Utilities
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {utilityTools.slice(0, 5).map((tool) => (
+                  {utilityTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
