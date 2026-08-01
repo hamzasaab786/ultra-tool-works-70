@@ -824,36 +824,159 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="space-y-16">
-            {toolCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex} id={`category-${categoryIndex}`} className="space-y-8 scroll-mt-20">
-                <div className="text-center">
-                  <h3 className="text-2xl md:text-3xl font-bold mb-3 text-foreground">
-                    {category.title}
-                  </h3>
-                  <p className="text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-                    {category.description}
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {category.tools.map((tool, toolIndex) => (
-                    <div key={toolIndex} className="animate-fade-in" style={{
-                      animationDelay: `${toolIndex * 50}ms`
-                    }}>
-                      <ToolCard 
-                        title={tool.title} 
-                        description={tool.description} 
-                        icon={tool.icon} 
-                        path={tool.path} 
-                        className="h-full"
-                      />
-                    </div>
+          {/* Search, category filters and sorting */}
+          <div className="max-w-5xl mx-auto mb-12 space-y-5">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search tools… e.g. merge pdf, compress image, salary"
+                aria-label="Search tools"
+                className="h-14 pl-12 pr-4 text-base rounded-xl bg-card/90 border-border/70 shadow-sm"
+              />
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveCategory("all")}
+                className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                  activeCategory === "all"
+                    ? "bg-indigo-600 text-primary-foreground border-transparent"
+                    : "bg-card/80 text-muted-foreground border-border/70 hover:bg-accent hover:text-accent-foreground"
+                }`}
+              >
+                All tools ({flatTools.length})
+              </button>
+              {toolCategories.map((category, categoryIndex) => (
+                <button
+                  key={categoryIndex}
+                  type="button"
+                  onClick={() => setActiveCategory(String(categoryIndex))}
+                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                    activeCategory === String(categoryIndex)
+                      ? "bg-indigo-600 text-primary-foreground border-transparent"
+                      : "bg-card/80 text-muted-foreground border-border/70 hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                >
+                  {category.title}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <span className="text-sm text-muted-foreground">Sort by:</span>
+              {([
+                { id: "popular", label: "Most popular" },
+                { id: "newest", label: "Newest" },
+                { id: "az", label: "A–Z" },
+              ] as const).map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setSortBy(option.id)}
+                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
+                    sortBy === option.id
+                      ? "border-indigo-500 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40"
+                      : "border-border/70 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+              {isFiltering && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setActiveCategory("all");
+                    setSortBy("popular");
+                  }}
+                  className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+
+            {recentToolCards.length > 0 && !isFiltering && (
+              <div className="pt-2">
+                <p className="text-sm font-medium text-muted-foreground mb-2 text-center">
+                  ⏱️ Recently used
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {recentToolCards.map((tool) => tool && (
+                    <Link
+                      key={tool.path}
+                      to={tool.path}
+                      className="px-3 py-1.5 rounded-full text-sm border border-border/70 bg-card/80 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                    >
+                      {tool.title}
+                    </Link>
                   ))}
                 </div>
               </div>
-            ))}
+            )}
           </div>
+
+          {isFiltering ? (
+            <div className="space-y-8">
+              <p className="text-center text-muted-foreground">
+                {filteredTools.length} tool{filteredTools.length === 1 ? "" : "s"} found
+              </p>
+              {filteredTools.length === 0 ? (
+                <p className="text-center text-muted-foreground">
+                  No tool matches “{query}”. Try a different keyword or reset the filters.
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {filteredTools.map((tool) => (
+                    <ToolCard
+                      key={tool.path}
+                      title={tool.title}
+                      description={tool.description}
+                      icon={tool.icon}
+                      path={tool.path}
+                      className="h-full"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-16">
+              {toolCategories.map((category, categoryIndex) => (
+                <div key={categoryIndex} id={`category-${categoryIndex}`} className="space-y-8 scroll-mt-20">
+                  <div className="text-center">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-3 text-foreground">
+                      {category.title}
+                    </h3>
+                    <p className="text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                      {category.description}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {category.tools.map((tool, toolIndex) => (
+                      <div key={toolIndex} className="animate-fade-in" style={{
+                        animationDelay: `${toolIndex * 50}ms`
+                      }}>
+                        <ToolCard 
+                          title={tool.title} 
+                          description={tool.description} 
+                          icon={tool.icon} 
+                          path={tool.path} 
+                          className="h-full"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
