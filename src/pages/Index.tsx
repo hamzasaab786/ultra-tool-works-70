@@ -785,16 +785,51 @@ const Index = () => {
         <div className="container mx-auto px-4 pb-8 relative z-10">
           <div className="max-w-4xl mx-auto mb-10 space-y-5">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
               <Input
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    document.getElementById("tool-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
                 placeholder="Search tools… e.g. merge pdf, compress image, salary"
                 aria-label="Search tools"
                 className="h-14 pl-12 pr-4 text-base rounded-xl bg-card/90 border-border/70 shadow-sm"
               />
+              {query.trim().length > 0 && (
+                <div className="absolute left-0 right-0 top-16 z-30 rounded-xl border border-border/70 bg-popover shadow-xl overflow-hidden text-left">
+                  {filteredTools.length === 0 ? (
+                    <p className="px-4 py-3 text-sm text-muted-foreground">No tool matches “{query}”.</p>
+                  ) : (
+                    <>
+                      {filteredTools.slice(0, 8).map((tool) => (
+                        <Link
+                          key={tool.path}
+                          to={tool.path}
+                          className="block px-4 py-3 hover:bg-accent hover:text-accent-foreground transition-colors"
+                        >
+                          <span className="text-sm font-medium">{tool.title}</span>
+                          <span className="block text-xs text-muted-foreground truncate">{tool.categoryTitle}</span>
+                        </Link>
+                      ))}
+                      {filteredTools.length > 8 && (
+                        <button
+                          type="button"
+                          onClick={() => document.getElementById("tool-results")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                          className="w-full px-4 py-3 text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:bg-accent"
+                        >
+                          View all {filteredTools.length} results
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
+
 
             <div className="flex flex-wrap justify-center gap-2">
               <button
@@ -906,7 +941,7 @@ const Index = () => {
       </section>
 
       {/* All Tools Categories Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-indigo-50/30 dark:from-slate-900 dark:to-indigo-950/30">
+      <section id="tool-results" className="py-20 scroll-mt-20 bg-gradient-to-br from-gray-50 to-indigo-50/30 dark:from-slate-900 dark:to-indigo-950/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
