@@ -825,57 +825,18 @@ const Index = () => {
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <span className="text-sm text-muted-foreground">Sort by:</span>
-              {([
-                { id: "popular", label: "Most popular" },
-                { id: "newest", label: "Newest" },
-                { id: "az", label: "A–Z" },
-              ] as const).map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setSortBy(option.id)}
-                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
-                    sortBy === option.id
-                      ? "border-indigo-500 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40"
-                      : "border-border/70 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-              {isFiltering && (
+            {isFiltering && (
+              <div className="flex justify-center">
                 <button
                   type="button"
                   onClick={() => {
                     setQuery("");
                     setActiveCategory("all");
-                    setSortBy("popular");
                   }}
                   className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
                 >
                   Reset
                 </button>
-              )}
-            </div>
-
-            {recentToolCards.length > 0 && !isFiltering && (
-              <div className="pt-2">
-                <p className="text-sm font-medium text-muted-foreground mb-2 text-center">
-                  ⏱️ Recently used
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {recentToolCards.map((tool) => tool && (
-                    <Link
-                      key={tool.path}
-                      to={tool.path}
-                      className="px-3 py-1.5 rounded-full text-sm border border-border/70 bg-card/80 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                    >
-                      {tool.title}
-                    </Link>
-                  ))}
-                </div>
               </div>
             )}
           </div>
