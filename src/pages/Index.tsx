@@ -479,6 +479,51 @@ const Index = () => {
       icon: <CreditCard />,
       path: "/tools/test-card-generator"
     }, {
+      title: "Email Validator",
+      description: "Check if an email address is valid, disposable or has a working domain",
+      icon: <MessageSquare />,
+      path: "/tools/email-validator"
+    }, {
+      title: "Password Strength Checker",
+      description: "Test how strong your password is and how long it takes to crack",
+      icon: <ShieldIcon />,
+      path: "/tools/password-strength"
+    }, {
+      title: "File Hash Checker",
+      description: "Verify downloads by comparing MD5, SHA-1 and SHA-256 checksums",
+      icon: <Fingerprint />,
+      path: "/tools/file-hash-checker"
+    }, {
+      title: "Whois Lookup",
+      description: "Look up domain owner, registrar and expiry details instantly",
+      icon: <Search />,
+      path: "/tools/whois-lookup"
+    }, {
+      title: "DNS Lookup",
+      description: "Check A, AAAA, MX, TXT and CNAME records for any domain",
+      icon: <Wifi />,
+      path: "/tools/dns-lookup"
+    }, {
+      title: "IP Geolocation",
+      description: "Find the country, city, ISP and timezone behind any IP address",
+      icon: <Target />,
+      path: "/tools/ip-geolocation"
+    }, {
+      title: "Credit Card Validator",
+      description: "Validate card numbers with the Luhn algorithm and detect the card brand",
+      icon: <CreditCard />,
+      path: "/tools/credit-card-validator"
+    }, {
+      title: "Emoji Picker",
+      description: "Search and copy thousands of emojis for posts, chats and documents",
+      icon: <MessageSquare />,
+      path: "/tools/emoji-picker"
+    }, {
+      title: "URL Shortener",
+      description: "Shorten long links into clean, shareable short URLs",
+      icon: <Link2 />,
+      path: "/tools/url-shortener"
+    }, {
       title: "GPA & CGPA Calculator",
       description: "Calculate semester GPA and cumulative CGPA on the 4.0 scale from credits and grades",
       icon: <Calculator />,
