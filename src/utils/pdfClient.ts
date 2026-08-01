@@ -23,7 +23,7 @@ export async function loadPdfDocument(file: File | ArrayBuffer | Uint8Array) {
 export async function renderPdfPageToCanvas(page: any, scale = 1.5) {
   const viewport = page.getViewport({ scale });
   const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", { willReadFrequently: true });
 
   if (!context) {
     throw new Error("Canvas context could not be created");
