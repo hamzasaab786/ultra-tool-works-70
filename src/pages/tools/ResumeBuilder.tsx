@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,217 +6,217 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus, Trash2, Download, Sparkles, CheckCircle2, Star } from "lucide-react";
+import {
+  Plus, Trash2, Download, Sparkles, CheckCircle2, AlertCircle, ChevronUp, ChevronDown,
+  FileJson, Upload, RotateCcw, ZoomIn, ZoomOut, FileText, Image as ImageIcon, Star,
+} from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { RESUME_TEMPLATES } from "@/components/resume/templates";
+import { generateAtsResumePdf } from "@/utils/resume/atsPdf";
+import { scoreResume } from "@/utils/resume/score";
+import {
+  DEFAULT_RESUME, DEFAULT_SETTINGS, TEMPLATE_META, newId,
+  type Density, type Education, type Experience, type FontKey, type Project,
+  type ResumeData, type ResumeSettings, type TemplateKey,
+} from "@/utils/resume/types";
 
-interface Experience {
-  id: string;
-  role: string;
-  company: string;
-  location: string;
-  start: string;
-  end: string;
-  bullets: string;
-}
-
-interface Education {
-  id: string;
-  degree: string;
-  school: string;
-  location: string;
-  start: string;
-  end: string;
-  details: string;
-}
-
-interface Project {
-  id: string;
-  name: string;
-  tech: string;
-  bullets: string;
-  link: string;
-}
-
-type TemplateKey = "ats" | "executive" | "signature";
-
-const TEMPLATE_META: Record<TemplateKey, { name: string; tag: string; accent: string; pitch: string }> = {
-  ats: {
-    name: "ATS Prime",
-    tag: "FAANG / product / engineering",
-    accent: "hsl(var(--primary))",
-    pitch: "Tight hierarchy, recruiter-friendly spacing, high scannability.",
-  },
-  executive: {
-    name: "Boardroom",
-    tag: "Leadership / consulting / finance",
-    accent: "hsl(214 61% 24%)",
-    pitch: "Calm authority, premium structure, strong summary-led layout.",
-  },
-  signature: {
-    name: "Signature Modern",
-    tag: "Design / product / growth",
-    accent: "hsl(347 77% 50%)",
-    pitch: "Modern visual polish without sacrificing professionalism.",
-  },
-};
-
-const INITIAL_EXPERIENCE: Experience[] = [
-  {
-    id: crypto.randomUUID(),
-    role: "Senior Software Engineer",
-    company: "Northstar Cloud",
-    location: "San Francisco, CA",
-    start: "Jan 2023",
-    end: "Present",
-    bullets:
-      "Led platform modernization across 18 services, cutting release lead time by 68% and improving deployment reliability to 99.95%.\nBuilt an event processing pipeline handling 1.8B monthly events while reducing infrastructure spend by $420K annually.\nMentored 5 engineers and introduced senior-level interview rubrics adopted across the org.",
-  },
-  {
-    id: crypto.randomUUID(),
-    role: "Software Engineer",
-    company: "Atlas Pay",
-    location: "Remote",
-    start: "Jun 2020",
-    end: "Dec 2022",
-    bullets:
-      "Owned payment reliability initiatives that improved approval rates by 11% and protected $48M in annual GMV.\nShipped 10+ high-impact customer features, increasing conversion by 19% across web and mobile funnels.\nReduced p95 API latency from 780ms to 140ms through caching and database query redesign.",
-  },
-];
-
-const INITIAL_EDUCATION: Education[] = [
-  {
-    id: crypto.randomUUID(),
-    degree: "B.S. Computer Science",
-    school: "University of California, Berkeley",
-    location: "Berkeley, CA",
-    start: "2016",
-    end: "2020",
-    details: "GPA 3.8/4.0 · Coursework: Distributed Systems, Machine Learning, Algorithms",
-  },
-];
-
-const INITIAL_PROJECTS: Project[] = [
-  {
-    id: crypto.randomUUID(),
-    name: "OpenAPI Mock Server",
-    tech: "Go, Docker, Kubernetes",
-    link: "github.com/alexj/openapi-mock",
-    bullets:
-      "Created an open-source developer tool with 3.2k+ GitHub stars and strong adoption in internal platform teams.\nReduced local environment setup time from 2 days to 15 minutes for 200+ engineers.",
-  },
-];
+const STORAGE_KEY = "klipza-resume-draft";
 
 const ResumeBuilder = () => {
-  const [template, setTemplate] = useState<TemplateKey>("ats");
-  const [name, setName] = useState("Alex Johnson");
-  const [title, setTitle] = useState("Senior Software Engineer");
-  const [email, setEmail] = useState("alex@email.com");
-  const [phone, setPhone] = useState("+1 555 0100");
-  const [location, setLocation] = useState("San Francisco, CA");
-  const [linkedin, setLinkedin] = useState("linkedin.com/in/alexj");
-  const [github, setGithub] = useState("github.com/alexj");
-  const [website, setWebsite] = useState("alexj.dev");
-  const [summary, setSummary] = useState("Senior engineer with 7+ years building high-scale products, performance-critical systems, and cross-functional execution engines. Known for translating complex technical work into measurable business results, elevating engineering quality, and shipping with speed.");
-  const [skills, setSkills] = useState("Programming: TypeScript, Python, Go, Java, SQL\nFrontend: React, Next.js, Tailwind, Design Systems\nBackend: Node.js, gRPC, REST APIs, Event-Driven Systems\nInfrastructure: AWS, Docker, Kubernetes, Terraform, CI/CD\nData: PostgreSQL, Redis, Kafka, BigQuery");
-  const [awards, setAwards] = useState("AWS Certified Solutions Architect – Professional\nDean's List – UC Berkeley\nTop Performer Award – Northstar Cloud");
-  const [experience, setExperience] = useState<Experience[]>(INITIAL_EXPERIENCE);
-  const [education, setEducation] = useState<Education[]>(INITIAL_EDUCATION);
-  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const [data, setData] = useState<ResumeData>(DEFAULT_RESUME);
+  const [settings, setSettings] = useState<ResumeSettings>(DEFAULT_SETTINGS);
+  const [zoom, setZoom] = useState(0.62);
+  const [exporting, setExporting] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const loaded = useRef(false);
 
-  const checklist = useMemo(() => {
-    const score = [summary.trim(), skills.trim(), experience.some((item) => item.bullets.trim()), education.some((item) => item.degree.trim())].filter(Boolean).length;
-    return [
-      { ok: !!summary.trim(), label: "Strong professional summary" },
-      { ok: experience.some((item) => /\d/.test(item.bullets)), label: "Quantified achievements" },
-      { ok: !!skills.trim(), label: "Keyword-rich skills section" },
-      { ok: !!email.trim() && !!phone.trim(), label: "Complete contact details" },
-      { ok: score >= 3, label: "Recruiter-ready structure" },
-    ];
-  }, [summary, skills, experience, education, email, phone]);
-
-  const addExperience = () => setExperience((prev) => [...prev, { id: crypto.randomUUID(), role: "", company: "", location: "", start: "", end: "", bullets: "" }]);
-  const addEducation = () => setEducation((prev) => [...prev, { id: crypto.randomUUID(), degree: "", school: "", location: "", start: "", end: "", details: "" }]);
-  const addProject = () => setProjects((prev) => [...prev, { id: crypto.randomUUID(), name: "", tech: "", bullets: "", link: "" }]);
-
-  const updateExperience = (id: string, key: keyof Experience, value: string) => setExperience((prev) => prev.map((item) => item.id === id ? { ...item, [key]: value } : item));
-  const updateEducation = (id: string, key: keyof Education, value: string) => setEducation((prev) => prev.map((item) => item.id === id ? { ...item, [key]: value } : item));
-  const updateProject = (id: string, key: keyof Project, value: string) => setProjects((prev) => prev.map((item) => item.id === id ? { ...item, [key]: value } : item));
-
-  const downloadPDF = async () => {
-    const target = previewRef.current?.querySelector("[data-resume]") as HTMLElement | null;
-    if (!target) return;
+  // Restore any previous draft, then autosave on every change.
+  useEffect(() => {
     try {
-      toast.info("Generating premium resume PDF...");
-      const canvas = await html2canvas(target, { scale: 3, backgroundColor: "#ffffff", useCORS: true, logging: false });
-      const image = canvas.toDataURL("image/jpeg", 0.98);
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const pageWidth = 210;
-      const pageHeight = 297;
-      const imageHeight = (canvas.height * pageWidth) / canvas.width;
-      let heightLeft = imageHeight;
-      let position = 0;
-
-      pdf.addImage(image, "JPEG", 0, position, pageWidth, imageHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 0) {
-        position = heightLeft - imageHeight;
-        pdf.addPage();
-        pdf.addImage(image, "JPEG", 0, position, pageWidth, imageHeight);
-        heightLeft -= pageHeight;
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.data) setData({ ...DEFAULT_RESUME, ...parsed.data });
+        if (parsed.settings) setSettings({ ...DEFAULT_SETTINGS, ...parsed.settings });
+        toast.success("Restored your saved draft");
       }
-
-      pdf.save(`${name.replace(/\s+/g, "_")}_Resume.pdf`);
-      toast.success("Resume PDF downloaded");
     } catch {
-      toast.error("Failed to generate resume PDF");
+      /* corrupted draft — start fresh */
+    }
+    loaded.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!loaded.current) return;
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ data, settings }));
+      } catch {
+        /* storage full or blocked */
+      }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [data, settings]);
+
+  const review = useMemo(() => scoreResume(data), [data]);
+  const set = <K extends keyof ResumeData>(key: K, value: ResumeData[K]) =>
+    setData((prev) => ({ ...prev, [key]: value }));
+
+  const updateList = <T extends { id: string }>(key: "experience" | "education" | "projects", id: string, patch: Partial<T>) =>
+    setData((prev) => ({
+      ...prev,
+      [key]: (prev[key] as T[]).map((item) => (item.id === id ? { ...item, ...patch } : item)),
+    }));
+
+  const removeItem = (key: "experience" | "education" | "projects", id: string) =>
+    setData((prev) => ({ ...prev, [key]: (prev[key] as { id: string }[]).filter((i) => i.id !== id) as never }));
+
+  const move = (key: "experience" | "education" | "projects", index: number, dir: -1 | 1) =>
+    setData((prev) => {
+      const list = [...(prev[key] as { id: string }[])];
+      const next = index + dir;
+      if (next < 0 || next >= list.length) return prev;
+      [list[index], list[next]] = [list[next], list[index]];
+      return { ...prev, [key]: list as never };
+    });
+
+  const applyTemplate = (key: TemplateKey) =>
+    setSettings((prev) => ({ ...prev, template: key, accent: TEMPLATE_META[key].defaultAccent }));
+
+  /* ------------------------------- exports ------------------------------- */
+  const downloadAtsPdf = () => {
+    try {
+      const doc = generateAtsResumePdf(data, settings);
+      doc.save(`${(data.name || "resume").replace(/\s+/g, "_")}_ATS_Resume.pdf`);
+      toast.success("ATS-ready PDF downloaded (real selectable text)");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not generate the PDF");
     }
   };
 
-  const resumeData = { name, title, email, phone, location, linkedin, github, website, summary, skills, awards, experience, education, projects };
+  const downloadDesignPdf = async () => {
+    const target = previewRef.current?.querySelector("[data-resume]") as HTMLElement | null;
+    if (!target) return;
+    setExporting(true);
+    try {
+      const canvas = await html2canvas(target, { scale: 3, backgroundColor: "#ffffff", useCORS: true, logging: false });
+      const image = canvas.toDataURL("image/jpeg", 0.96);
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pageW = 210;
+      const pageH = 297;
+      const imgH = (canvas.height * pageW) / canvas.width;
+      let left = imgH;
+      let position = 0;
+      pdf.addImage(image, "JPEG", 0, position, pageW, imgH);
+      left -= pageH;
+      while (left > 0) {
+        position = left - imgH;
+        pdf.addPage();
+        pdf.addImage(image, "JPEG", 0, position, pageW, imgH);
+        left -= pageH;
+      }
+      pdf.save(`${(data.name || "resume").replace(/\s+/g, "_")}_Design_Resume.pdf`);
+      toast.success("Designer PDF downloaded");
+    } catch {
+      toast.error("Failed to generate the designer PDF");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const exportJson = () => {
+    const blob = new Blob([JSON.stringify({ data, settings }, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(data.name || "resume").replace(/\s+/g, "_")}_resume.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Resume data exported");
+  };
+
+  const importJson = async (file: File) => {
+    try {
+      const parsed = JSON.parse(await file.text());
+      if (parsed.data) setData({ ...DEFAULT_RESUME, ...parsed.data });
+      if (parsed.settings) setSettings({ ...DEFAULT_SETTINGS, ...parsed.settings });
+      toast.success("Resume data imported");
+    } catch {
+      toast.error("That file is not a valid resume export");
+    }
+  };
+
+  const resetAll = () => {
+    setData(DEFAULT_RESUME);
+    setSettings(DEFAULT_SETTINGS);
+    toast.info("Reset to the sample resume");
+  };
+
+  const Template = RESUME_TEMPLATES[settings.template];
+  const scoreTone = review.score >= 85 ? "text-emerald-600" : review.score >= 60 ? "text-amber-600" : "text-destructive";
 
   return (
     <ToolPageTemplate
       title="Resume Builder Pro"
-      description="Create recruiter-ready, high-end resumes with premium layouts, ATS-safe structure, and crisp PDF export."
-      keywords="professional resume builder, ATS resume, executive CV, FAANG resume, premium resume maker"
+      description="Build a recruiter-ready resume with four professional templates, a live ATS score, and a true text-based PDF export that applicant tracking systems can actually read."
+      keywords="professional resume builder, ATS resume checker, free cv maker, FAANG resume template, executive cv builder"
     >
       <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+        {/* ------------------------------ Editor ------------------------------ */}
         <div className="space-y-6">
           <Card className="overflow-hidden border-border/70">
-            <div className="border-b border-border bg-card p-5">
+            <div className="border-b border-border p-5">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground"><Sparkles className="h-4 w-4 text-primary" /> Premium editor</div>
-                  <h2 className="text-2xl font-semibold text-foreground">Build a polished, company-ready resume</h2>
-                  <p className="mt-2 max-w-2xl text-sm text-muted-foreground">Optimized for hiring managers, internal recruiters, and ATS scans — with modern visuals that still feel senior and professional.</p>
+                  <div className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                    <Sparkles className="h-4 w-4 text-primary" /> Premium editor
+                  </div>
+                  <h2 className="text-2xl font-semibold text-foreground">Build a company-ready resume</h2>
+                  <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                    Live ATS scoring, four hiring-manager templates and a real text PDF — not a screenshot.
+                  </p>
                 </div>
-                <Button onClick={downloadPDF} className="gap-2"><Download className="h-4 w-4" />Download PDF</Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={downloadAtsPdf} className="gap-2">
+                    <FileText className="h-4 w-4" />ATS PDF
+                  </Button>
+                  <Button onClick={downloadDesignPdf} variant="outline" disabled={exporting} className="gap-2">
+                    <ImageIcon className="h-4 w-4" />{exporting ? "Rendering…" : "Designer PDF"}
+                  </Button>
+                </div>
               </div>
+              <p className="mt-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+                <strong className="text-foreground">Which one?</strong> Use the <strong>ATS PDF</strong> for online
+                applications — every word stays selectable and machine-readable. Use the <strong>Designer PDF</strong>
+                {" "}for the exact styled layout when emailing a human or printing.
+              </p>
             </div>
 
-            <div className="grid gap-3 border-b border-border bg-muted/20 p-5 md:grid-cols-3">
+            {/* Templates */}
+            <div className="grid gap-3 border-b border-border bg-muted/20 p-5 sm:grid-cols-2 lg:grid-cols-4">
               {(Object.keys(TEMPLATE_META) as TemplateKey[]).map((key) => {
                 const item = TEMPLATE_META[key];
-                const active = template === key;
+                const active = settings.template === key;
                 return (
                   <button
                     key={key}
                     type="button"
-                    onClick={() => setTemplate(key)}
+                    onClick={() => applyTemplate(key)}
                     className={`rounded-lg border p-4 text-left transition-all ${active ? "border-primary bg-card shadow-md" : "border-border bg-background hover:border-primary/40"}`}
                   >
-                    <div className="mb-3 h-2 rounded-full" style={{ background: item.accent }} />
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="mb-3 h-2 rounded-full" style={{ background: item.defaultAccent }} />
+                    <div className="flex items-start justify-between gap-2">
                       <div>
-                        <div className="font-semibold text-foreground">{item.name}</div>
+                        <div className="text-sm font-semibold text-foreground">{item.name}</div>
                         <div className="text-xs text-muted-foreground">{item.tag}</div>
                       </div>
-                      {active && <Star className="h-4 w-4 text-primary" />}
+                      {active && <Star className="h-4 w-4 shrink-0 text-primary" />}
                     </div>
                     <p className="mt-2 text-xs leading-5 text-muted-foreground">{item.pitch}</p>
                   </button>
@@ -224,6 +224,42 @@ const ResumeBuilder = () => {
               })}
             </div>
 
+            {/* Style controls */}
+            <div className="grid gap-4 border-b border-border p-5 sm:grid-cols-3">
+              <div className="space-y-2">
+                <Label className="text-xs">Accent colour</Label>
+                <Input
+                  type="color"
+                  value={settings.accent}
+                  onChange={(e) => setSettings((p) => ({ ...p, accent: e.target.value }))}
+                  className="h-9 p-1"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Typeface</Label>
+                <Select value={settings.font} onValueChange={(v: FontKey) => setSettings((p) => ({ ...p, font: v }))}>
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sans">Arial / Helvetica (safest)</SelectItem>
+                    <SelectItem value="serif">Georgia / Times (classic)</SelectItem>
+                    <SelectItem value="mono">Courier (technical)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Density</Label>
+                <Select value={settings.density} onValueChange={(v: Density) => setSettings((p) => ({ ...p, density: v }))}>
+                  <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="compact">Compact (fit more)</SelectItem>
+                    <SelectItem value="balanced">Balanced</SelectItem>
+                    <SelectItem value="airy">Airy (more breathing room)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Content tabs */}
             <div className="p-5">
               <Tabs defaultValue="profile" className="space-y-5">
                 <TabsList className="grid h-auto grid-cols-3 gap-2 rounded-lg bg-muted p-1 md:grid-cols-6">
@@ -237,131 +273,230 @@ const ResumeBuilder = () => {
 
                 <TabsContent value="profile" className="space-y-4">
                   <div className="grid gap-4 md:grid-cols-2">
-                    <Field label="Full name" value={name} onChange={setName} />
-                    <Field label="Target role" value={title} onChange={setTitle} />
-                    <Field label="Email" value={email} onChange={setEmail} />
-                    <Field label="Phone" value={phone} onChange={setPhone} />
-                    <Field label="Location" value={location} onChange={setLocation} />
-                    <Field label="LinkedIn" value={linkedin} onChange={setLinkedin} />
-                    <Field label="GitHub" value={github} onChange={setGithub} />
-                    <Field label="Website / Portfolio" value={website} onChange={setWebsite} />
+                    <Field label="Full name" value={data.name} onChange={(v) => set("name", v)} />
+                    <Field label="Target role" value={data.title} onChange={(v) => set("title", v)} />
+                    <Field label="Email" value={data.email} onChange={(v) => set("email", v)} />
+                    <Field label="Phone" value={data.phone} onChange={(v) => set("phone", v)} />
+                    <Field label="Location" value={data.location} onChange={(v) => set("location", v)} />
+                    <Field label="LinkedIn" value={data.linkedin} onChange={(v) => set("linkedin", v)} />
+                    <Field label="GitHub" value={data.github} onChange={(v) => set("github", v)} />
+                    <Field label="Website / Portfolio" value={data.website} onChange={(v) => set("website", v)} />
                   </div>
                 </TabsContent>
 
                 <TabsContent value="summary" className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Professional summary</Label>
-                    <Textarea rows={5} value={summary} onChange={(e) => setSummary(e.target.value)} />
+                    <div className="flex items-center justify-between">
+                      <Label>Professional summary</Label>
+                      <span className="text-xs text-muted-foreground">
+                        {data.summary.trim().split(/\s+/).filter(Boolean).length} words · aim for 30-70
+                      </span>
+                    </div>
+                    <Textarea rows={5} value={data.summary} onChange={(e) => set("summary", e.target.value)} />
                   </div>
                   <div className="space-y-2">
-                    <Label>Skills</Label>
-                    <Textarea rows={6} value={skills} onChange={(e) => setSkills(e.target.value)} />
+                    <Label>Skills — one category per line, e.g. "Backend: Node.js, Go"</Label>
+                    <Textarea rows={6} value={data.skills} onChange={(e) => set("skills", e.target.value)} />
                   </div>
                 </TabsContent>
 
                 <TabsContent value="experience" className="space-y-4">
-                  {experience.map((item) => (
-                    <EditorCard key={item.id} title={item.role || "Experience entry"} onDelete={() => setExperience((prev) => prev.filter((entry) => entry.id !== item.id))}>
+                  {data.experience.map((item: Experience, index) => (
+                    <EditorCard
+                      key={item.id}
+                      title={item.role || "Experience entry"}
+                      onDelete={() => removeItem("experience", item.id)}
+                      onUp={() => move("experience", index, -1)}
+                      onDown={() => move("experience", index, 1)}
+                    >
                       <div className="grid gap-3 md:grid-cols-2">
-                        <Input placeholder="Role" value={item.role} onChange={(e) => updateExperience(item.id, "role", e.target.value)} />
-                        <Input placeholder="Company" value={item.company} onChange={(e) => updateExperience(item.id, "company", e.target.value)} />
-                        <Input placeholder="Location" value={item.location} onChange={(e) => updateExperience(item.id, "location", e.target.value)} />
+                        <Input placeholder="Role" value={item.role} onChange={(e) => updateList<Experience>("experience", item.id, { role: e.target.value })} />
+                        <Input placeholder="Company" value={item.company} onChange={(e) => updateList<Experience>("experience", item.id, { company: e.target.value })} />
+                        <Input placeholder="Location" value={item.location} onChange={(e) => updateList<Experience>("experience", item.id, { location: e.target.value })} />
                         <div className="grid grid-cols-2 gap-3">
-                          <Input placeholder="Start" value={item.start} onChange={(e) => updateExperience(item.id, "start", e.target.value)} />
-                          <Input placeholder="End" value={item.end} onChange={(e) => updateExperience(item.id, "end", e.target.value)} />
+                          <Input placeholder="Start" value={item.start} onChange={(e) => updateList<Experience>("experience", item.id, { start: e.target.value })} />
+                          <Input placeholder="End" value={item.end} onChange={(e) => updateList<Experience>("experience", item.id, { end: e.target.value })} />
                         </div>
                       </div>
-                      <Textarea rows={5} placeholder="One impact bullet per line. Start with action verbs and include metrics." value={item.bullets} onChange={(e) => updateExperience(item.id, "bullets", e.target.value)} />
+                      <Textarea
+                        rows={5}
+                        placeholder="One impact bullet per line. Start with an action verb and include a metric."
+                        value={item.bullets}
+                        onChange={(e) => updateList<Experience>("experience", item.id, { bullets: e.target.value })}
+                      />
                     </EditorCard>
                   ))}
-                  <Button variant="outline" onClick={addExperience} className="w-full gap-2"><Plus className="h-4 w-4" />Add experience</Button>
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={() => set("experience", [...data.experience, { id: newId(), role: "", company: "", location: "", start: "", end: "", bullets: "" }])}
+                  >
+                    <Plus className="h-4 w-4" />Add experience
+                  </Button>
                 </TabsContent>
 
                 <TabsContent value="education" className="space-y-4">
-                  {education.map((item) => (
-                    <EditorCard key={item.id} title={item.degree || "Education entry"} onDelete={() => setEducation((prev) => prev.filter((entry) => entry.id !== item.id))}>
+                  {data.education.map((item: Education, index) => (
+                    <EditorCard
+                      key={item.id}
+                      title={item.degree || "Education entry"}
+                      onDelete={() => removeItem("education", item.id)}
+                      onUp={() => move("education", index, -1)}
+                      onDown={() => move("education", index, 1)}
+                    >
                       <div className="grid gap-3 md:grid-cols-2">
-                        <Input placeholder="Degree" value={item.degree} onChange={(e) => updateEducation(item.id, "degree", e.target.value)} />
-                        <Input placeholder="Institution" value={item.school} onChange={(e) => updateEducation(item.id, "school", e.target.value)} />
-                        <Input placeholder="Location" value={item.location} onChange={(e) => updateEducation(item.id, "location", e.target.value)} />
+                        <Input placeholder="Degree" value={item.degree} onChange={(e) => updateList<Education>("education", item.id, { degree: e.target.value })} />
+                        <Input placeholder="Institution" value={item.school} onChange={(e) => updateList<Education>("education", item.id, { school: e.target.value })} />
+                        <Input placeholder="Location" value={item.location} onChange={(e) => updateList<Education>("education", item.id, { location: e.target.value })} />
                         <div className="grid grid-cols-2 gap-3">
-                          <Input placeholder="Start" value={item.start} onChange={(e) => updateEducation(item.id, "start", e.target.value)} />
-                          <Input placeholder="End" value={item.end} onChange={(e) => updateEducation(item.id, "end", e.target.value)} />
+                          <Input placeholder="Start" value={item.start} onChange={(e) => updateList<Education>("education", item.id, { start: e.target.value })} />
+                          <Input placeholder="End" value={item.end} onChange={(e) => updateList<Education>("education", item.id, { end: e.target.value })} />
                         </div>
                       </div>
-                      <Input placeholder="GPA, honors, coursework" value={item.details} onChange={(e) => updateEducation(item.id, "details", e.target.value)} />
+                      <Input placeholder="GPA, honours, relevant coursework" value={item.details} onChange={(e) => updateList<Education>("education", item.id, { details: e.target.value })} />
                     </EditorCard>
                   ))}
-                  <Button variant="outline" onClick={addEducation} className="w-full gap-2"><Plus className="h-4 w-4" />Add education</Button>
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={() => set("education", [...data.education, { id: newId(), degree: "", school: "", location: "", start: "", end: "", details: "" }])}
+                  >
+                    <Plus className="h-4 w-4" />Add education
+                  </Button>
                 </TabsContent>
 
                 <TabsContent value="projects" className="space-y-4">
-                  {projects.map((item) => (
-                    <EditorCard key={item.id} title={item.name || "Project entry"} onDelete={() => setProjects((prev) => prev.filter((entry) => entry.id !== item.id))}>
+                  {data.projects.map((item: Project, index) => (
+                    <EditorCard
+                      key={item.id}
+                      title={item.name || "Project entry"}
+                      onDelete={() => removeItem("projects", item.id)}
+                      onUp={() => move("projects", index, -1)}
+                      onDown={() => move("projects", index, 1)}
+                    >
                       <div className="grid gap-3 md:grid-cols-2">
-                        <Input placeholder="Project name" value={item.name} onChange={(e) => updateProject(item.id, "name", e.target.value)} />
-                        <Input placeholder="Tech stack" value={item.tech} onChange={(e) => updateProject(item.id, "tech", e.target.value)} />
+                        <Input placeholder="Project name" value={item.name} onChange={(e) => updateList<Project>("projects", item.id, { name: e.target.value })} />
+                        <Input placeholder="Tech stack" value={item.tech} onChange={(e) => updateList<Project>("projects", item.id, { tech: e.target.value })} />
                       </div>
-                      <Input placeholder="Project link" value={item.link} onChange={(e) => updateProject(item.id, "link", e.target.value)} />
-                      <Textarea rows={4} placeholder="One project outcome per line" value={item.bullets} onChange={(e) => updateProject(item.id, "bullets", e.target.value)} />
+                      <Input placeholder="Project link" value={item.link} onChange={(e) => updateList<Project>("projects", item.id, { link: e.target.value })} />
+                      <Textarea rows={4} placeholder="One outcome per line" value={item.bullets} onChange={(e) => updateList<Project>("projects", item.id, { bullets: e.target.value })} />
                     </EditorCard>
                   ))}
-                  <Button variant="outline" onClick={addProject} className="w-full gap-2"><Plus className="h-4 w-4" />Add project</Button>
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={() => set("projects", [...data.projects, { id: newId(), name: "", tech: "", bullets: "", link: "" }])}
+                  >
+                    <Plus className="h-4 w-4" />Add project
+                  </Button>
                 </TabsContent>
 
                 <TabsContent value="extras" className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Awards, certifications, honors</Label>
-                    <Textarea rows={6} value={awards} onChange={(e) => setAwards(e.target.value)} />
+                    <Label>Certifications, awards & honours — one per line</Label>
+                    <Textarea rows={5} value={data.awards} onChange={(e) => set("awards", e.target.value)} />
                   </div>
+                  <div className="space-y-2">
+                    <Label>Languages</Label>
+                    <Input value={data.languages} onChange={(e) => set("languages", e.target.value)} />
+                  </div>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <Button variant="outline" size="sm" className="gap-2" onClick={exportJson}>
+                      <FileJson className="h-4 w-4" />Export data
+                    </Button>
+                    <Button variant="outline" size="sm" className="gap-2" onClick={() => fileRef.current?.click()}>
+                      <Upload className="h-4 w-4" />Import data
+                    </Button>
+                    <Button variant="ghost" size="sm" className="gap-2" onClick={resetAll}>
+                      <RotateCcw className="h-4 w-4" />Reset
+                    </Button>
+                    <input
+                      ref={fileRef}
+                      type="file"
+                      accept="application/json"
+                      hidden
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) importJson(f);
+                        e.target.value = "";
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Your draft is saved automatically in this browser — nothing is uploaded anywhere.
+                  </p>
                 </TabsContent>
               </Tabs>
             </div>
           </Card>
 
+          {/* Score */}
           <Card className="p-5">
-            <div className="mb-4 flex items-center gap-2 text-sm font-medium text-foreground"><CheckCircle2 className="h-4 w-4 text-primary" /> Recruiter readiness</div>
-            <div className="grid gap-3 md:grid-cols-2">
-              {checklist.map((item) => (
-                <div key={item.label} className="flex items-center gap-3 rounded-lg border border-border bg-muted/20 px-4 py-3 text-sm">
-                  <CheckCircle2 className={`h-4 w-4 ${item.ok ? "text-primary" : "text-muted-foreground"}`} />
-                  <span className="text-foreground">{item.label}</span>
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <CheckCircle2 className="h-4 w-4 text-primary" />Recruiter &amp; ATS score
+              </div>
+              <div className={`text-2xl font-bold ${scoreTone}`}>{review.score}<span className="text-sm text-muted-foreground">/100</span></div>
+            </div>
+            <Progress value={review.score} className="mb-4 h-2" />
+            <div className="grid gap-2 md:grid-cols-2">
+              {review.checks.map((check) => (
+                <div
+                  key={check.id}
+                  className="flex items-start gap-3 rounded-lg border border-border bg-muted/20 px-3 py-2 text-sm"
+                  title={check.hint}
+                >
+                  {check.pass ? (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  ) : (
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                  )}
+                  <div>
+                    <div className="text-foreground">{check.label}</div>
+                    {!check.pass && <div className="text-xs text-muted-foreground">{check.hint}</div>}
+                  </div>
                 </div>
               ))}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+              <Badge variant="secondary">{review.stats.bullets} bullets</Badge>
+              <Badge variant="secondary">{review.stats.quantified} quantified</Badge>
+              <Badge variant="secondary">~{review.stats.estimatedPages} page{review.stats.estimatedPages > 1 ? "s" : ""}</Badge>
+              <Badge variant="secondary">{review.stats.totalWords} words</Badge>
             </div>
           </Card>
         </div>
 
+        {/* ------------------------------ Preview ------------------------------ */}
         <div className="space-y-6">
-          <Card className="overflow-hidden border-border/70">
-            <div className="flex items-center justify-between border-b border-border bg-muted/20 px-5 py-4">
+          <Card className="overflow-hidden border-border/70 xl:sticky xl:top-4">
+            <div className="flex items-center justify-between gap-3 border-b border-border bg-muted/20 px-5 py-4">
               <div>
-                <div className="text-sm font-medium text-foreground">Live resume preview</div>
-                <div className="text-xs text-muted-foreground">A4 output · crisp PDF export</div>
+                <div className="text-sm font-medium text-foreground">Live preview</div>
+                <div className="text-xs text-muted-foreground">A4 · {TEMPLATE_META[settings.template].name}</div>
               </div>
-              <Badge variant="secondary">{TEMPLATE_META[template].name}</Badge>
+              <div className="flex items-center gap-1">
+                <Button size="icon" variant="ghost" onClick={() => setZoom((z) => Math.max(0.35, +(z - 0.08).toFixed(2)))}>
+                  <ZoomOut className="h-4 w-4" />
+                </Button>
+                <span className="w-12 text-center text-xs text-muted-foreground">{Math.round(zoom * 100)}%</span>
+                <Button size="icon" variant="ghost" onClick={() => setZoom((z) => Math.min(1.2, +(z + 0.08).toFixed(2)))}>
+                  <ZoomIn className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
-            <div className="overflow-auto bg-muted/30 p-4">
+            <div className="max-h-[78vh] overflow-auto bg-muted/30 p-4">
               <div ref={previewRef} className="flex justify-center">
-                <div className="origin-top scale-[0.62] shadow-2xl lg:scale-[0.68]" style={{ marginBottom: "-32%" }}>
+                <div
+                  className="origin-top shadow-2xl"
+                  style={{ transform: `scale(${zoom})`, marginBottom: `${-(1 - zoom) * 297}mm` }}
+                >
                   <div data-resume>
-                    {template === "ats" && <ATSPrimeTemplate {...resumeData} />}
-                    {template === "executive" && <BoardroomTemplate {...resumeData} />}
-                    {template === "signature" && <SignatureModernTemplate {...resumeData} />}
+                    <Template data={data} settings={settings} />
                   </div>
                 </div>
               </div>
             </div>
-          </Card>
-
-          <Card className="p-5">
-            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground"><Sparkles className="h-4 w-4 text-primary" /> What makes this stronger</div>
-            <ul className="space-y-3 text-sm text-muted-foreground">
-              <li>• Executive-level spacing and hierarchy instead of cluttered builder UI.</li>
-              <li>• ATS-safe structure with modern visual polish.</li>
-              <li>• Better PDF sharpness for actual applications and recruiter sharing.</li>
-              <li>• Templates designed for tech, consulting, finance, and modern product roles.</li>
-            </ul>
           </Card>
         </div>
       </div>
@@ -376,176 +511,26 @@ const Field = ({ label, value, onChange }: { label: string; value: string; onCha
   </div>
 );
 
-const EditorCard = ({ title, onDelete, children }: { title: string; onDelete: () => void; children: React.ReactNode }) => (
+const EditorCard = ({
+  title, onDelete, onUp, onDown, children,
+}: {
+  title: string;
+  onDelete: () => void;
+  onUp: () => void;
+  onDown: () => void;
+  children: React.ReactNode;
+}) => (
   <Card className="space-y-3 border-border/70 bg-muted/20 p-4">
     <div className="flex items-center justify-between gap-3">
-      <div className="text-sm font-semibold text-foreground">{title}</div>
-      <Button size="icon" variant="ghost" onClick={onDelete}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+      <div className="truncate text-sm font-semibold text-foreground">{title}</div>
+      <div className="flex shrink-0 items-center gap-1">
+        <Button size="icon" variant="ghost" onClick={onUp} title="Move up"><ChevronUp className="h-4 w-4" /></Button>
+        <Button size="icon" variant="ghost" onClick={onDown} title="Move down"><ChevronDown className="h-4 w-4" /></Button>
+        <Button size="icon" variant="ghost" onClick={onDelete} title="Delete"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+      </div>
     </div>
     {children}
   </Card>
 );
-
-const ResumeSection = ({ title, accent, children }: { title: string; accent: string; children: React.ReactNode }) => (
-  <section className="mb-5">
-    <div className="mb-2 flex items-center gap-3">
-      <div className="h-[2px] w-8" style={{ background: accent }} />
-      <h3 className="text-[10pt] font-bold uppercase tracking-[0.24em]" style={{ color: accent }}>{title}</h3>
-    </div>
-    {children}
-  </section>
-);
-
-const BulletList = ({ value }: { value: string }) => (
-  <ul className="ml-4 list-disc space-y-1 text-[10pt] leading-6">
-    {value.split("\n").filter(Boolean).map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}
-  </ul>
-);
-
-const ATSPrimeTemplate = (p: any) => {
-  const accent = TEMPLATE_META.ats.accent;
-  return (
-    <div className="min-h-[297mm] w-[210mm] bg-white px-10 py-9 text-black" style={{ fontFamily: "Arial, Helvetica, sans-serif", lineHeight: 1.45 }}>
-      <header className="border-b pb-4" style={{ borderColor: "#111" }}>
-        <div className="text-[26pt] font-bold leading-none">{p.name}</div>
-        <div className="mt-1 text-[12pt] text-neutral-700">{p.title}</div>
-        <div className="mt-3 text-[9.5pt] text-neutral-700">{[p.location, p.phone, p.email, p.linkedin, p.github, p.website].filter(Boolean).join(" • ")}</div>
-      </header>
-      <div className="mt-5">
-        <ResumeSection title="Summary" accent={accent}><p className="text-[10.5pt] leading-6">{p.summary}</p></ResumeSection>
-        <ResumeSection title="Experience" accent={accent}>
-          {p.experience.map((item: Experience) => (
-            <div key={item.id} className="mb-4">
-              <div className="flex items-baseline justify-between gap-4 text-[11pt] font-bold"><span>{item.role} · {item.company}</span><span className="text-[9.5pt] font-medium text-neutral-600">{item.start} – {item.end}</span></div>
-              <div className="mb-1 text-[9.5pt] italic text-neutral-600">{item.location}</div>
-              <BulletList value={item.bullets} />
-            </div>
-          ))}
-        </ResumeSection>
-        <ResumeSection title="Projects" accent={accent}>
-          {p.projects.map((item: Project) => (
-            <div key={item.id} className="mb-3">
-              <div className="text-[10.5pt] font-bold">{item.name} <span className="font-medium text-neutral-600">— {item.tech}</span></div>
-              {item.link && <div className="text-[9pt] text-neutral-600">{item.link}</div>}
-              <BulletList value={item.bullets} />
-            </div>
-          ))}
-        </ResumeSection>
-        <ResumeSection title="Education" accent={accent}>
-          {p.education.map((item: Education) => (
-            <div key={item.id} className="mb-3 text-[10pt]">
-              <div className="flex items-baseline justify-between gap-4"><span className="font-bold">{item.degree}</span><span className="text-[9pt] text-neutral-600">{item.start} – {item.end}</span></div>
-              <div>{item.school} · {item.location}</div>
-              {item.details && <div className="text-[9pt] text-neutral-600">{item.details}</div>}
-            </div>
-          ))}
-        </ResumeSection>
-        <ResumeSection title="Skills" accent={accent}><div className="whitespace-pre-line text-[10pt] leading-6">{p.skills}</div></ResumeSection>
-        {p.awards && <ResumeSection title="Awards & Certifications" accent={accent}><div className="whitespace-pre-line text-[10pt] leading-6">{p.awards}</div></ResumeSection>}
-      </div>
-    </div>
-  );
-};
-
-const BoardroomTemplate = (p: any) => {
-  const accent = TEMPLATE_META.executive.accent;
-  return (
-    <div className="min-h-[297mm] w-[210mm] bg-white px-12 py-11 text-black" style={{ fontFamily: "Georgia, 'Times New Roman', serif", lineHeight: 1.5 }}>
-      <header className="mb-6 border-b-4 pb-4" style={{ borderColor: accent }}>
-        <div className="text-[30pt] font-bold" style={{ color: accent }}>{p.name}</div>
-        <div className="mt-2 text-[11pt] uppercase tracking-[0.22em] text-neutral-600">{p.title}</div>
-        <div className="mt-4 text-[9pt] text-neutral-600">{[p.email, p.phone, p.location, p.linkedin, p.website].filter(Boolean).join("   |   ")}</div>
-      </header>
-      <ResumeSection title="Executive Summary" accent={accent}><p className="text-[10.5pt] leading-7">{p.summary}</p></ResumeSection>
-      <ResumeSection title="Professional Experience" accent={accent}>
-        {p.experience.map((item: Experience) => (
-          <div key={item.id} className="mb-4">
-            <div className="text-[12pt] font-bold" style={{ color: accent }}>{item.role}</div>
-            <div className="text-[10pt] italic text-neutral-700">{item.company} · {item.location} · {item.start} – {item.end}</div>
-            <BulletList value={item.bullets} />
-          </div>
-        ))}
-      </ResumeSection>
-      <div className="grid grid-cols-[1.25fr_0.75fr] gap-8">
-        <div>
-          <ResumeSection title="Projects" accent={accent}>
-            {p.projects.map((item: Project) => (
-              <div key={item.id} className="mb-3">
-                <div className="text-[10.5pt] font-bold">{item.name}</div>
-                <div className="text-[9pt] text-neutral-600">{item.tech}</div>
-                <BulletList value={item.bullets} />
-              </div>
-            ))}
-          </ResumeSection>
-        </div>
-        <div>
-          <ResumeSection title="Education" accent={accent}>
-            {p.education.map((item: Education) => (
-              <div key={item.id} className="mb-3 text-[9.5pt] leading-6">
-                <div className="font-bold">{item.degree}</div>
-                <div>{item.school}</div>
-                <div className="text-neutral-600">{item.location} · {item.start} – {item.end}</div>
-                {item.details && <div className="text-neutral-600">{item.details}</div>}
-              </div>
-            ))}
-          </ResumeSection>
-          <ResumeSection title="Core Competencies" accent={accent}><div className="whitespace-pre-line text-[9.5pt] leading-6">{p.skills}</div></ResumeSection>
-          {p.awards && <ResumeSection title="Honors" accent={accent}><div className="whitespace-pre-line text-[9.5pt] leading-6">{p.awards}</div></ResumeSection>}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const SignatureModernTemplate = (p: any) => {
-  const accent = TEMPLATE_META.signature.accent;
-  return (
-    <div className="min-h-[297mm] w-[210mm] bg-white text-black" style={{ fontFamily: "Helvetica, Arial, sans-serif", lineHeight: 1.48 }}>
-      <div className="px-10 py-8 text-white" style={{ background: `linear-gradient(135deg, ${accent} 0%, hsl(12 88% 58%) 100%)` }}>
-        <div className="text-[30pt] font-bold leading-none">{p.name}</div>
-        <div className="mt-2 text-[12pt] opacity-95">{p.title}</div>
-        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-[9.5pt] opacity-90">
-          {[p.email, p.phone, p.location, p.linkedin, p.github, p.website].filter(Boolean).map((item: string) => <span key={item}>{item}</span>)}
-        </div>
-      </div>
-      <div className="grid grid-cols-[0.64fr_0.36fr] gap-8 px-10 py-8">
-        <div>
-          <ResumeSection title="Profile" accent={accent}><p className="text-[10.5pt] leading-7">{p.summary}</p></ResumeSection>
-          <ResumeSection title="Experience" accent={accent}>
-            {p.experience.map((item: Experience) => (
-              <div key={item.id} className="mb-4 border-l-2 pl-4" style={{ borderColor: accent }}>
-                <div className="text-[11pt] font-bold">{item.role}</div>
-                <div className="text-[9.5pt] text-neutral-600">{item.company} · {item.location} · {item.start} – {item.end}</div>
-                <BulletList value={item.bullets} />
-              </div>
-            ))}
-          </ResumeSection>
-          <ResumeSection title="Projects" accent={accent}>
-            {p.projects.map((item: Project) => (
-              <div key={item.id} className="mb-3">
-                <div className="text-[10.5pt] font-bold">{item.name} <span className="font-medium text-neutral-600">— {item.tech}</span></div>
-                <BulletList value={item.bullets} />
-              </div>
-            ))}
-          </ResumeSection>
-        </div>
-        <div>
-          <ResumeSection title="Skills" accent={accent}><div className="whitespace-pre-line text-[9.5pt] leading-6">{p.skills}</div></ResumeSection>
-          <ResumeSection title="Education" accent={accent}>
-            {p.education.map((item: Education) => (
-              <div key={item.id} className="mb-3 text-[9.5pt] leading-6">
-                <div className="font-bold">{item.degree}</div>
-                <div>{item.school}</div>
-                <div className="text-neutral-600">{item.start} – {item.end}</div>
-                {item.details && <div className="text-neutral-600">{item.details}</div>}
-              </div>
-            ))}
-          </ResumeSection>
-          {p.awards && <ResumeSection title="Recognition" accent={accent}><div className="whitespace-pre-line text-[9.5pt] leading-6">{p.awards}</div></ResumeSection>}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default ResumeBuilder;
