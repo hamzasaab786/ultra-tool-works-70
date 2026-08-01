@@ -1675,6 +1675,146 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     ],
   },
   {
+    path: "/tools/pdf-viewer",
+    name: "PDF Viewer",
+    category: PDF,
+    title: "PDF Viewer Online — Read & Search Any PDF Free",
+    description:
+      "Open, read and search PDFs in your browser with zoom, rotation, thumbnails and full-text search. No Adobe Reader, no upload, no signup required.",
+    keywords:
+      "pdf viewer online, read pdf in browser, pdf reader free, search text in pdf online, open pdf without adobe",
+    faqs: [
+      {
+        q: "Is my file uploaded to a server?",
+        a: "No. The PDF is rendered locally in your browser, so confidential documents never leave your device.",
+      },
+      {
+        q: "Can I search inside the PDF?",
+        a: "Yes. Type a word and the viewer lists every page containing it so you can jump straight to the match.",
+      },
+    ],
+  },
+  {
+    path: "/tools/pdf-form-filler",
+    name: "PDF Form Filler",
+    category: PDF,
+    title: "PDF Form Filler — Fill Fillable PDF Forms Online",
+    description:
+      "Complete interactive PDF forms online: text boxes, checkboxes, radio buttons and dropdowns. Flatten your answers and download — free and private.",
+    keywords:
+      "pdf form filler, fill pdf form online free, fillable pdf editor, complete pdf form in browser, flatten filled pdf",
+    faqs: [
+      {
+        q: "What if my PDF has no fillable fields?",
+        a: "Then it is a flat document. Use Edit PDF Text or Sign PDF to place text and signatures anywhere on the page.",
+      },
+      {
+        q: "Should I flatten the form?",
+        a: "Flatten it when sending the final version so nobody can alter your answers. Leave it unflattened if you still need to edit later.",
+      },
+    ],
+  },
+  {
+    path: "/tools/annotate-pdf",
+    name: "Annotate PDF",
+    category: PDF,
+    title: "Annotate PDF — Highlight, Draw & Comment Free",
+    description:
+      "Highlight passages, draw freehand, add boxes and sticky notes on any PDF page, then export a real annotated PDF. Runs entirely in your browser.",
+    keywords:
+      "annotate pdf online, highlight pdf free, draw on pdf, add comments to pdf, markup pdf in browser",
+    faqs: [
+      {
+        q: "Are the annotations permanent?",
+        a: "They are drawn into the page content on export, so they display identically in every PDF reader.",
+      },
+      {
+        q: "Can I annotate more than one page?",
+        a: "Yes. Move between pages with the arrows and every mark is kept until you export the finished file.",
+      },
+    ],
+  },
+  {
+    path: "/tools/grayscale-pdf",
+    name: "Grayscale PDF",
+    category: PDF,
+    title: "Convert PDF to Grayscale or Black & White Free",
+    description:
+      "Turn a colour PDF into grayscale, pure black and white, or inverted dark mode. Saves colour ink and makes scanned pages far cleaner to read.",
+    keywords:
+      "grayscale pdf converter, convert pdf to black and white, remove colour from pdf, invert pdf colours, pdf dark mode converter",
+    faqs: [
+      {
+        q: "Why convert a PDF to grayscale?",
+        a: "Grayscale files print without colour ink, are usually smaller, and are often required for coursework or legal submissions.",
+      },
+      {
+        q: "What does the black and white threshold do?",
+        a: "It decides which greys become white and which become black — lower keeps more detail, higher gives a cleaner page.",
+      },
+    ],
+  },
+  {
+    path: "/tools/bates-numbering",
+    name: "Bates Numbering",
+    category: PDF,
+    title: "Bates Numbering for PDF — Legal Page Stamping",
+    description:
+      "Apply sequential Bates numbers with a custom prefix, suffix and digit count to every PDF page — the standard way to index legal discovery documents.",
+    keywords:
+      "bates numbering pdf, bates stamp online free, legal pdf numbering, sequential pdf page stamping, add bates numbers to pdf",
+    faqs: [
+      {
+        q: "What is Bates numbering?",
+        a: "It is a sequential identifier such as ABC000123 stamped on every page so legal teams can cite an exact page across a discovery set.",
+      },
+      {
+        q: "Can I control the number format?",
+        a: "Yes. Set the prefix, suffix, starting number, digit padding, position and text size before stamping.",
+      },
+    ],
+  },
+  {
+    path: "/tools/insert-pdf-pages",
+    name: "Insert PDF Pages",
+    category: PDF,
+    title: "Insert Pages into PDF — Add One PDF into Another",
+    description:
+      "Add a PDF into another document at the start, at the end, or before/after any page you choose. Original quality is preserved and nothing is uploaded.",
+    keywords:
+      "insert pages into pdf, add pdf into another pdf, combine pdf at specific page, insert page in pdf online free",
+    faqs: [
+      {
+        q: "How is this different from merging?",
+        a: "Merging appends whole files in order; inserting drops the second PDF at an exact position inside the first one.",
+      },
+      {
+        q: "Does inserting recompress my pages?",
+        a: "No. Pages are copied object-for-object, so text, fonts and images stay pixel-identical.",
+      },
+    ],
+  },
+  {
+    path: "/tools/scan-to-pdf",
+    name: "Scan to PDF",
+    category: PDF,
+    title: "Scan to PDF — Free Camera Document Scanner",
+    description:
+      "Scan documents with your phone camera or webcam into a clean multi-page PDF, with automatic paper-whitening enhancement. Fully offline and private.",
+    keywords:
+      "scan to pdf, document scanner online, camera to pdf, scan documents with phone to pdf free, photo to pdf scanner",
+    faqs: [
+      {
+        q: "Do I need to install a scanner app?",
+        a: "No. The tool uses your device camera directly in the browser and builds the PDF locally.",
+      },
+      {
+        q: "What does scanner enhancement do?",
+        a: "It converts the shot to high-contrast grayscale so paper looks white and printed text stays crisp, just like a dedicated scanner.",
+      },
+    ],
+  },
+  {
     path: "/tools/delete-pdf-pages",
     name: "Delete PDF Pages",
     category: PDF,
