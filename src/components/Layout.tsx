@@ -7,6 +7,8 @@ import ToolSeoHead from "./ToolSeoHead";
 import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
 import AdsterraNative from "./ads/AdsterraNative";
+import AdsterraSocialBar from "./ads/AdsterraSocialBar";
+
 
 
 interface LayoutProps {
@@ -48,9 +50,12 @@ const Layout = ({ children }: LayoutProps) => {
 
       {/* Route-aware SEO head; rendered last so it overrides page-level tags */}
       <ToolSeoHead />
-      
+
+      <AdsterraSocialBar />
+
       {/* Footer */}
       <Footer />
+
     </div>
   );
 };
