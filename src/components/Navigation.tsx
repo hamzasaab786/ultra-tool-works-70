@@ -75,6 +75,13 @@ const Navigation = () => {
     { name: "Roman Numeral Converter", path: "/tools/roman-numeral-converter" },
     { name: "Hex to RGB", path: "/tools/hex-to-rgb" },
     { name: "Number Base Converter", path: "/tools/number-base-converter" },
+    { name: "Calorie Calculator", path: "/tools/calorie-calculator" },
+    { name: "Fuel Cost Calculator", path: "/tools/fuel-cost-calculator" },
+    { name: "Electricity Bill Calculator", path: "/tools/electricity-bill-calculator" },
+    { name: "Pregnancy Due Date Calculator", path: "/tools/pregnancy-due-date-calculator" },
+    { name: "Sleep Calculator", path: "/tools/sleep-calculator" },
+    { name: "Split Bill Calculator", path: "/tools/split-bill-calculator" },
+    { name: "Typing Speed Test", path: "/tools/typing-speed-test" },
   ];
 
   const textTools = [

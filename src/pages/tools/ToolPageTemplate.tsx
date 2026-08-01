@@ -1,7 +1,9 @@
 
 import React from "react";
+import { useLocation } from "react-router-dom";
 import SEO from "@/components/SEO";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { getToolSeo } from "@/data/toolSeo";
 
 interface ToolPageTemplateProps {
   title: string;
@@ -11,14 +13,22 @@ interface ToolPageTemplateProps {
 }
 
 const ToolPageTemplate = ({ title, description, keywords, children }: ToolPageTemplateProps) => {
+  const { pathname } = useLocation();
+  // When the route has a curated entry in the SEO catalog, ToolSeoHead owns the
+  // <head> (unique title, description, canonical + JSON-LD). Rendering a second
+  // SEO block here would override it with the generic page heading.
+  const hasCuratedSeo = Boolean(getToolSeo(pathname));
+
   return (
     <>
-      <SEO
-        title={title}
-        description={description}
-        keywords={keywords || "online tools, free tools, productivity"}
-      />
-      
+      {!hasCuratedSeo && (
+        <SEO
+          title={title}
+          description={description}
+          keywords={keywords || "online tools, free tools, productivity"}
+        />
+      )}
+
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">

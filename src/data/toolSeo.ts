@@ -1974,6 +1974,147 @@ export const toolSeoEntries: ToolSeoEntry[] = [
       },
     ],
   },
+  /* ------------------------------------------------------ DAILY LIFE */
+  {
+    path: "/tools/calorie-calculator",
+    name: "Calorie Calculator",
+    category: CALC,
+    title: "Calorie Calculator — Daily BMR & TDEE Needs",
+    description:
+      "Calculate your BMR, TDEE and daily calorie target for weight loss, maintenance or muscle gain using the Mifflin-St Jeor formula. Free, instant, no signup.",
+    keywords:
+      "calorie calculator, tdee calculator, bmr calculator, daily calorie intake calculator, how many calories should i eat to lose weight, maintenance calories calculator, calorie deficit calculator free",
+    faqs: [
+      {
+        q: "Which formula does this calorie calculator use?",
+        a: "It uses the Mifflin-St Jeor equation, the formula most dietitians consider the most accurate for healthy adults, then multiplies your BMR by an activity factor from 1.2 to 1.9 to get your TDEE.",
+      },
+      {
+        q: "How big should a calorie deficit be to lose weight?",
+        a: "A deficit of roughly 500 kcal a day gives about 0.5 kg of fat loss per week, which is sustainable for most people. Larger deficits cost muscle and are harder to maintain.",
+      },
+    ],
+  },
+  {
+    path: "/tools/fuel-cost-calculator",
+    name: "Fuel Cost Calculator",
+    category: CALC,
+    title: "Fuel Cost Calculator — Trip Petrol Cost & Split",
+    description:
+      "Calculate the fuel needed and total petrol or diesel cost of any trip from distance, mileage and fuel price, then split the cost between passengers.",
+    keywords:
+      "fuel cost calculator, petrol cost calculator, trip fuel calculator, calculate fuel cost per km, diesel cost calculator for journey, road trip gas cost calculator",
+    faqs: [
+      {
+        q: "How is trip fuel cost calculated?",
+        a: "Fuel needed = distance ÷ kilometres per litre, and total cost = fuel needed × price per litre. Turn on round trip to double the distance automatically.",
+      },
+      {
+        q: "Where do I find my car's km per litre?",
+        a: "Check the odometer trip method: fill the tank, drive, refill and divide the kilometres driven by the litres added. City mileage is usually 15–25% lower than highway mileage.",
+      },
+    ],
+  },
+  {
+    path: "/tools/electricity-bill-calculator",
+    name: "Electricity Bill Calculator",
+    category: CALC,
+    title: "Electricity Bill Calculator — Units & Monthly Cost",
+    description:
+      "Estimate your monthly electricity bill appliance by appliance. Enter watts, hours per day and your unit rate to see kWh used and the exact cost.",
+    keywords:
+      "electricity bill calculator, kwh calculator, appliance power consumption calculator, electricity units calculator, how to calculate electricity bill from meter reading, ac electricity cost per hour",
+    faqs: [
+      {
+        q: "How do I convert watts into units (kWh)?",
+        a: "Units per day = watts × hours used per day ÷ 1000. Multiply by 30 for a monthly figure and by your tariff per kWh to get the cost.",
+      },
+      {
+        q: "Which appliances use the most electricity?",
+        a: "Air conditioners, water heaters, irons and electric ovens dominate most bills because they combine high wattage with long run times. Add each one separately to see its share.",
+      },
+    ],
+  },
+  {
+    path: "/tools/pregnancy-due-date-calculator",
+    name: "Pregnancy Due Date Calculator",
+    category: CALC,
+    title: "Pregnancy Due Date Calculator — Week by Week",
+    description:
+      "Estimate your baby's due date, current pregnancy week and trimester dates from your last period and cycle length. Free and private, nothing is stored.",
+    keywords:
+      "pregnancy due date calculator, due date calculator by lmp, how many weeks pregnant am i, conception date calculator, trimester calculator, edd calculator online free",
+    faqs: [
+      {
+        q: "How is the due date calculated?",
+        a: "It uses Naegele's rule: 280 days from the first day of your last menstrual period, adjusted for cycles that are longer or shorter than 28 days.",
+      },
+      {
+        q: "How accurate is an estimated due date?",
+        a: "Only about 4% of babies arrive exactly on the estimated date; most births happen within two weeks either side. An early ultrasound gives the most accurate dating.",
+      },
+    ],
+  },
+  {
+    path: "/tools/sleep-calculator",
+    name: "Sleep Calculator",
+    category: CALC,
+    title: "Sleep Calculator — Best Bedtime & Wake Up Time",
+    description:
+      "Work out the best time to sleep or wake up using 90-minute sleep cycles, so you wake between cycles feeling refreshed instead of groggy.",
+    keywords:
+      "sleep calculator, bedtime calculator, sleep cycle calculator, what time should i go to bed to wake up at 6am, best time to wake up calculator, 90 minute sleep cycle chart",
+    faqs: [
+      {
+        q: "Why does the calculator use 90-minute cycles?",
+        a: "A full sleep cycle averages about 90 minutes. Waking at the end of a cycle, rather than in deep sleep, is what makes you feel alert instead of groggy.",
+      },
+      {
+        q: "How many sleep cycles do adults need?",
+        a: "Most adults do best on 5–6 cycles, which is roughly 7.5 to 9 hours of sleep, plus about 15 minutes to fall asleep.",
+      },
+    ],
+  },
+  {
+    path: "/tools/split-bill-calculator",
+    name: "Split Bill Calculator",
+    category: CALC,
+    title: "Split Bill Calculator — Who Owes Whom, Instantly",
+    description:
+      "Split a shared bill between any number of friends, add a tip and get the smallest set of payments needed to settle up. Works for trips, dinners and rent.",
+    keywords:
+      "split bill calculator, share expenses calculator, who owes who calculator, split expenses between friends, group trip cost splitter, dinner bill split calculator with tip",
+    faqs: [
+      {
+        q: "Can it handle people who paid different amounts?",
+        a: "Yes. Enter what each person actually paid and the tool works out each balance, then lists the minimum transfers needed so everyone ends up even.",
+      },
+      {
+        q: "Does it work for trips and shared rent too?",
+        a: "Absolutely — add one row per person with everything they paid for the group, and the settle-up list shows who transfers what to whom.",
+      },
+    ],
+  },
+  {
+    path: "/tools/typing-speed-test",
+    name: "Typing Speed Test",
+    category: UTIL,
+    title: "Typing Speed Test — Check Your WPM & Accuracy",
+    description:
+      "Free typing speed test with live WPM, raw speed and accuracy tracking. Choose a 15, 30, 60 or 120 second run and beat your personal best.",
+    keywords:
+      "typing speed test, wpm test, typing test online free, check typing speed, average typing speed test, 1 minute typing test with accuracy",
+    faqs: [
+      {
+        q: "How is WPM calculated?",
+        a: "One word counts as five characters. Net WPM counts only correctly typed characters divided by five, divided by the minutes elapsed — the same standard used by professional typing tests.",
+      },
+      {
+        q: "What is a good typing speed?",
+        a: "Around 40 WPM is average, 60–80 WPM is considered fast, and professional typists often exceed 100 WPM. Accuracy above 95% matters more than raw speed.",
+      },
+    ],
+  },
 ];
 
 export const toolSeoByPath: Record<string, ToolSeoEntry> = toolSeoEntries.reduce(
