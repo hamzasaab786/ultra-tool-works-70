@@ -635,23 +635,6 @@ const Index = () => {
   const allTools = toolCategories.flatMap(category => category.tools);
   const popularTools = popularToolPaths.map(path => allTools.find(tool => tool && tool.path === path)).filter(Boolean);
 
-  // Newest additions first — drives the "Newest" sort option.
-  const newToolPaths = [
-    "/tools/typing-speed-test",
-    "/tools/split-bill-calculator",
-    "/tools/sleep-calculator",
-    "/tools/pregnancy-due-date-calculator",
-    "/tools/electricity-bill-calculator",
-    "/tools/fuel-cost-calculator",
-    "/tools/calorie-calculator",
-    "/tools/scan-to-pdf",
-    "/tools/insert-pdf-pages",
-    "/tools/bates-numbering",
-    "/tools/grayscale-pdf",
-    "/tools/annotate-pdf",
-    "/tools/pdf-form-filler",
-    "/tools/pdf-viewer",
-  ];
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
