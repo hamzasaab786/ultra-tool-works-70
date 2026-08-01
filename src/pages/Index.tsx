@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
 import SEO from "@/components/SEO";
