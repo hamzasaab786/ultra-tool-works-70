@@ -31,19 +31,26 @@ const AdsterraIframeBanner = ({
   );
 
   return (
-    <div className={`flex justify-center my-8 px-4 ${className}`}>
-      <iframe
-        title="Advertisement"
-        srcDoc={srcDoc}
-        width={width}
-        height={height}
-        scrolling="no"
-        loading="lazy"
-        style={{ border: 0, width, height, maxWidth: "100%", overflow: "hidden" }}
-        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
-      />
+    <div className={`w-full flex justify-center my-8 px-4 ${className}`}>
+      <div
+        className="relative overflow-hidden"
+        style={{ width, height, maxWidth: "100%" }}
+      >
+        <iframe
+          title="Advertisement"
+          srcDoc={srcDoc}
+          width={width}
+          height={height}
+          scrolling="no"
+          loading="lazy"
+          className="block"
+          style={{ border: 0, width, height, maxWidth: "100%" }}
+          sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+        />
+      </div>
     </div>
   );
+
 };
 
 export default AdsterraIframeBanner;
