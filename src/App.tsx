@@ -152,11 +152,13 @@ const App = () => {
     <HelmetProvider>
       <ThemeProvider>
         <Router>
+          <ScrollToTop />
           <AnalyticsTracker />
           <Layout>
             <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
+
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
