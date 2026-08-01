@@ -26,6 +26,7 @@ const Navigation = () => {
     
     { name: "Passport Photo Maker", path: "/tools/passport-photo-maker" },
     { name: "Image Format Converter", path: "/tools/image-format-converter" },
+    { name: "Image to Text (OCR)", path: "/tools/image-to-text" },
     { name: "Image Metadata Extractor", path: "/tools/image-metadata-extractor" },
     { name: "Remove Watermark", path: "/tools/remove-watermark" },
   ];
@@ -51,6 +52,12 @@ const Navigation = () => {
     { name: "BMI Calculator", path: "/tools/bmi-calculator" },
     { name: "Loan Calculator", path: "/tools/loan-calculator" },
     { name: "Tip Calculator", path: "/tools/tip-calculator" },
+    { name: "GPA & CGPA Calculator", path: "/tools/gpa-calculator" },
+    { name: "Date Difference Calculator", path: "/tools/date-difference-calculator" },
+    { name: "Discount Calculator", path: "/tools/discount-calculator" },
+    { name: "Compound Interest Calculator", path: "/tools/compound-interest-calculator" },
+    { name: "Salary Calculator", path: "/tools/salary-calculator" },
+    { name: "Roman Numeral Converter", path: "/tools/roman-numeral-converter" },
     { name: "Hex to RGB", path: "/tools/hex-to-rgb" },
     { name: "Number Base Converter", path: "/tools/number-base-converter" },
   ];
