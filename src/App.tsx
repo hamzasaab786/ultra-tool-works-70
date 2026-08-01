@@ -107,6 +107,15 @@ const RepairPdf = lazy(() => import("@/pages/tools/RepairPdf"));
 const PdfToPdfA = lazy(() => import("@/pages/tools/PdfToPdfA"));
 const PdfToPowerPoint = lazy(() => import("@/pages/tools/PdfToPowerPoint"));
 const TestCardGenerator = lazy(() => import("@/pages/tools/TestCardGenerator"));
+const GpaCalculator = lazy(() => import("@/pages/tools/GpaCalculator"));
+const DateDifferenceCalculator = lazy(() => import("@/pages/tools/DateDifferenceCalculator"));
+const DiscountCalculator = lazy(() => import("@/pages/tools/DiscountCalculator"));
+const CompoundInterestCalculator = lazy(() => import("@/pages/tools/CompoundInterestCalculator"));
+const SalaryCalculator = lazy(() => import("@/pages/tools/SalaryCalculator"));
+const TimeZoneConverter = lazy(() => import("@/pages/tools/TimeZoneConverter"));
+const RandomPicker = lazy(() => import("@/pages/tools/RandomPicker"));
+const ImageToText = lazy(() => import("@/pages/tools/ImageToText"));
+const RomanNumeralConverter = lazy(() => import("@/pages/tools/DateToRomanNumerals"));
 
 const RouteFallback = () => (
   <div className="flex min-h-[60vh] items-center justify-center">
@@ -226,6 +235,15 @@ const App = () => {
             <Route path="/tools/unlock-pdf" element={<UnlockPdf />} />
             <Route path="/tools/pdf-to-excel" element={<PdfToExcel />} />
             <Route path="/tools/test-card-generator" element={<TestCardGenerator />} />
+            <Route path="/tools/gpa-calculator" element={<GpaCalculator />} />
+            <Route path="/tools/date-difference-calculator" element={<DateDifferenceCalculator />} />
+            <Route path="/tools/discount-calculator" element={<DiscountCalculator />} />
+            <Route path="/tools/compound-interest-calculator" element={<CompoundInterestCalculator />} />
+            <Route path="/tools/salary-calculator" element={<SalaryCalculator />} />
+            <Route path="/tools/time-zone-converter" element={<TimeZoneConverter />} />
+            <Route path="/tools/random-picker" element={<RandomPicker />} />
+            <Route path="/tools/image-to-text" element={<ImageToText />} />
+            <Route path="/tools/roman-numeral-converter" element={<RomanNumeralConverter />} />
 
             {/* Redirect removed tools to homepage */}
             <Route path="/tools/website-screenshot" element={<NotFound />} />

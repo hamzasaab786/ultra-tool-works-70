@@ -89,6 +89,15 @@ const toolPaths = [
   "/tools/sign-pdf",
   "/tools/edit-pdf-text",
   "/tools/test-card-generator",
+  "/tools/gpa-calculator",
+  "/tools/date-difference-calculator",
+  "/tools/discount-calculator",
+  "/tools/compound-interest-calculator",
+  "/tools/salary-calculator",
+  "/tools/roman-numeral-converter",
+  "/tools/time-zone-converter",
+  "/tools/random-picker",
+  "/tools/image-to-text",
 ]
 
 const entries: SitemapEntry[] = [

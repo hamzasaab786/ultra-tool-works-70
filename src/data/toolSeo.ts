@@ -1548,6 +1548,132 @@ export const toolSeoEntries: ToolSeoEntry[] = [
       },
     ],
   },
+  {
+    path: "/tools/gpa-calculator",
+    name: "GPA & CGPA Calculator",
+    category: CALC,
+    title: "GPA & CGPA Calculator — Free 4.0 Scale Grade Tool",
+    description:
+      "Calculate semester GPA from credits and letter grades, then combine every semester into an accurate cumulative CGPA on the 4.0 scale. Free and instant.",
+    keywords:
+      "gpa calculator, cgpa calculator, semester gpa calculator online, how to calculate cgpa from gpa, 4.0 scale grade calculator, college gpa calculator with credits, cumulative gpa calculator free, university cgpa calculator online",
+    faqs: [
+      { q: "How is GPA calculated?", a: "Multiply each course's grade point by its credit hours, add them all up, then divide by the total credit hours. The calculator does this automatically as you type." },
+      { q: "What is the difference between GPA and CGPA?", a: "GPA covers a single semester, while CGPA is the credit-weighted average of every semester you have completed. Enter your semester GPAs and credits in the CGPA panel to get it." },
+    ],
+  },
+  {
+    path: "/tools/date-difference-calculator",
+    name: "Date Difference Calculator",
+    category: CALC,
+    title: "Date Difference Calculator — Days Between Two Dates",
+    description:
+      "Find the exact days, weeks, months and working days between two dates, or add days to any date to get a deadline. Free, instant and accurate.",
+    keywords:
+      "date difference calculator, days between two dates, how many days until date, working days calculator online, add days to date calculator, business days between dates, date duration calculator free",
+    faqs: [
+      { q: "Does it count working days only?", a: "Both. The result shows total calendar days as well as a separate working-days figure that excludes Saturdays and Sundays." },
+      { q: "Can I add or subtract days from a date?", a: "Yes. Enter a start date and the number of days in the second panel — use a minus sign to go backwards in time." },
+    ],
+  },
+  {
+    path: "/tools/discount-calculator",
+    name: "Discount & Sales Tax Calculator",
+    category: CALC,
+    title: "Discount Calculator — Percent Off, Sale Price & Tax",
+    description:
+      "Calculate the sale price, how much you save and the final total after VAT, GST or sales tax. Works with any currency and updates instantly.",
+    keywords:
+      "discount calculator, percent off calculator, sale price calculator online, how much do i save calculator, gst calculator online free, vat calculator, sales tax calculator with discount",
+    faqs: [
+      { q: "How do I calculate a percentage discount?", a: "Multiply the original price by the discount percent and divide by 100 to get the saving, then subtract it from the price. Enter both values and the tool shows every step." },
+      { q: "Can I add tax after the discount?", a: "Yes. Enter your VAT, GST or sales-tax rate and it is applied to the discounted price, exactly like a real checkout." },
+    ],
+  },
+  {
+    path: "/tools/compound-interest-calculator",
+    name: "Compound Interest Calculator",
+    category: CALC,
+    title: "Compound Interest Calculator — Savings Growth Tool",
+    description:
+      "See how savings and investments grow with compound interest, monthly contributions and any compounding frequency, with a year-by-year breakdown.",
+    keywords:
+      "compound interest calculator, savings growth calculator, investment return calculator online, monthly compound interest calculator, future value calculator free, sip calculator online, daily compound interest calculator",
+    faqs: [
+      { q: "What compounding frequencies are supported?", a: "Yearly, half-yearly, quarterly, monthly and daily. Frequency matters: the same rate compounded monthly grows faster than compounded yearly." },
+      { q: "Can I include monthly deposits?", a: "Yes. Add a monthly contribution and the calculator compounds those deposits alongside your starting balance and shows the totals separately." },
+    ],
+  },
+  {
+    path: "/tools/salary-calculator",
+    name: "Salary & Hourly Wage Calculator",
+    category: CALC,
+    title: "Salary Calculator — Hourly to Monthly & Yearly Pay",
+    description:
+      "Convert an hourly rate into weekly, monthly and annual pay or work backwards, with custom working hours and an optional tax deduction.",
+    keywords:
+      "salary calculator, hourly to annual salary calculator, hourly wage to monthly salary, take home pay calculator online, annual salary to hourly rate, pay rate converter free, monthly income calculator",
+    faqs: [
+      { q: "How do I convert an hourly rate to a yearly salary?", a: "Multiply the hourly rate by hours worked per week and weeks worked per year. Set your own hours and weeks so holidays and part-time schedules stay accurate." },
+      { q: "Is the take-home figure exact?", a: "It applies the flat deduction percentage you enter, which is an estimate. Real payslips use progressive tax bands and local contributions that vary by country." },
+    ],
+  },
+  {
+    path: "/tools/roman-numeral-converter",
+    name: "Roman Numeral Converter",
+    category: CALC,
+    title: "Roman Numeral Converter — Numbers & Dates to Roman",
+    description:
+      "Convert numbers to Roman numerals and back, and turn any date into Roman numerals for tattoos, certificates, logos and design work.",
+    keywords:
+      "roman numeral converter, number to roman numerals, roman numerals to numbers converter, roman numeral date converter, roman numeral tattoo generator, convert year to roman numerals free",
+    faqs: [
+      { q: "What is the largest number supported?", a: "3999 (MMMCMXCIX). Standard Roman numerals have no symbol for larger values without overline notation." },
+      { q: "How do I write a date in Roman numerals?", a: "Use the date field: the day, month and year are each converted separately, which is the format used for tattoos and monument inscriptions." },
+    ],
+  },
+  {
+    path: "/tools/time-zone-converter",
+    name: "Time Zone Converter",
+    category: UTIL,
+    title: "Time Zone Converter — World Clock & Meeting Planner",
+    description:
+      "Convert any date and time between world time zones and compare several cities side by side. Perfect for scheduling meetings, calls and flights.",
+    keywords:
+      "time zone converter, world clock converter online, meeting time planner across time zones, utc to local time converter, est to pst converter, compare time zones tool free",
+    faqs: [
+      { q: "Does it handle daylight saving time?", a: "Yes. Conversions use your browser's IANA time-zone database, so DST shifts are applied automatically for the exact date you pick." },
+      { q: "Can I compare more than two zones?", a: "Yes — add as many target zones as you need and every one updates at once when you change the source time." },
+    ],
+  },
+  {
+    path: "/tools/random-picker",
+    name: "Random Name Picker",
+    category: UTIL,
+    title: "Random Name Picker & Number Generator — Free",
+    description:
+      "Pick random winners from a list, shuffle names into a fair order or generate random numbers in any range using cryptographically secure randomness.",
+    keywords:
+      "random name picker, giveaway winner picker online, random number generator free, list randomizer online, pick a random name from list, raffle picker tool, random team generator",
+    faqs: [
+      { q: "Is the draw really random?", a: "Yes. It uses the browser's cryptographic random generator (crypto.getRandomValues), not a predictable pseudo-random seed, so results cannot be guessed or reproduced." },
+      { q: "Can I pick multiple winners without duplicates?", a: "Yes. Set how many names to draw and keep the no-duplicates option enabled to remove each winner from the pool as it is picked." },
+    ],
+  },
+  {
+    path: "/tools/image-to-text",
+    name: "Image to Text Converter",
+    category: IMAGE,
+    title: "Image to Text (OCR) — Extract Text From Photos Free",
+    description:
+      "Extract editable text from photos, screenshots and scanned pages in 12+ languages. OCR runs in your browser, so images are never uploaded.",
+    keywords:
+      "image to text, photo to text converter online, ocr online free, screenshot to text converter, extract text from image free, jpg to text converter, handwriting to text online",
+    faqs: [
+      { q: "Which languages can it read?", a: "Twelve languages including English, Spanish, French, German, Arabic, Urdu, Hindi, Chinese, Japanese and Russian. Pick the language before extracting for the best accuracy." },
+      { q: "How do I get the most accurate result?", a: "Use a sharp, well-lit, straight-on image with good contrast between text and background. Blurry, skewed or low-resolution photos reduce OCR accuracy." },
+    ],
+  },
 ];
 
 export const toolSeoByPath: Record<string, ToolSeoEntry> = toolSeoEntries.reduce(

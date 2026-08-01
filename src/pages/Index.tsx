@@ -72,6 +72,11 @@ const Index = () => {
       description: "Convert between PNG, JPG, WebP, and other image formats",
       icon: <Repeat />,
       path: "/tools/image-format-converter"
+    }, {
+      title: "Image to Text (OCR)",
+      description: "Extract editable text from photos, screenshots and scanned pages in 12+ languages",
+      icon: <Scan />,
+      path: "/tools/image-to-text"
     }]
   }, {
     title: "📄 PDF Tools",
@@ -333,6 +338,46 @@ const Index = () => {
       description: "Luhn-valid sandbox test cards for Stripe/PayPal developer testing. Not for real payments",
       icon: <CreditCard />,
       path: "/tools/test-card-generator"
+    }, {
+      title: "GPA & CGPA Calculator",
+      description: "Calculate semester GPA and cumulative CGPA on the 4.0 scale from credits and grades",
+      icon: <Calculator />,
+      path: "/tools/gpa-calculator"
+    }, {
+      title: "Date Difference Calculator",
+      description: "Days, weeks, months and working days between two dates, plus add days to a deadline",
+      icon: <CalendarRange />,
+      path: "/tools/date-difference-calculator"
+    }, {
+      title: "Discount Calculator",
+      description: "Sale price, savings and final total after VAT, GST or sales tax in any currency",
+      icon: <Percent />,
+      path: "/tools/discount-calculator"
+    }, {
+      title: "Compound Interest Calculator",
+      description: "Project savings growth with monthly deposits and a year-by-year balance table",
+      icon: <BarChart />,
+      path: "/tools/compound-interest-calculator"
+    }, {
+      title: "Salary Calculator",
+      description: "Convert hourly, monthly and yearly pay with custom hours and tax deductions",
+      icon: <DollarSign />,
+      path: "/tools/salary-calculator"
+    }, {
+      title: "Roman Numeral Converter",
+      description: "Convert numbers and dates to Roman numerals and back for tattoos and designs",
+      icon: <Type />,
+      path: "/tools/roman-numeral-converter"
+    }, {
+      title: "Time Zone Converter",
+      description: "Compare world time zones side by side and plan meetings across countries",
+      icon: <Clock />,
+      path: "/tools/time-zone-converter"
+    }, {
+      title: "Random Name Picker",
+      description: "Pick giveaway winners, shuffle lists and generate secure random numbers",
+      icon: <Target />,
+      path: "/tools/random-picker"
     }]
   }];
 
@@ -348,6 +393,10 @@ const Index = () => {
     "/tools/image-format-converter",
     "/tools/password-generator",
     "/tools/timer-stopwatch",
+    "/tools/gpa-calculator",
+    "/tools/image-to-text",
+    "/tools/discount-calculator",
+    "/tools/date-difference-calculator",
   ];
 
   const allTools = toolCategories.flatMap(category => category.tools);
