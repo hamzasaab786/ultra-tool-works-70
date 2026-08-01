@@ -682,15 +682,14 @@ const Index = () => {
   const isFiltering = query.trim().length > 0 || activeCategory !== "all" || sortBy !== "popular";
 
   const filteredTools = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    // Every whitespace-separated word must appear somewhere in the tool entry,
+    // so "pdf compress" also finds "Compress PDF"-style tools.
+    const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
     let list = flatTools.filter(tool => {
       const matchesCategory =
         activeCategory === "all" || String(tool.categoryIndex) === activeCategory;
-      const matchesQuery =
-        !q ||
-        tool.title.toLowerCase().includes(q) ||
-        tool.description.toLowerCase().includes(q) ||
-        tool.path.toLowerCase().includes(q);
+      const haystack = `${tool.title} ${tool.description} ${tool.path} ${tool.categoryTitle}`.toLowerCase();
+      const matchesQuery = terms.every(term => haystack.includes(term));
       return matchesCategory && matchesQuery;
     });
 
