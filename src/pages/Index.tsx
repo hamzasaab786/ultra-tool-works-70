@@ -378,6 +378,41 @@ const Index = () => {
       description: "Pick giveaway winners, shuffle lists and generate secure random numbers",
       icon: <Target />,
       path: "/tools/random-picker"
+    }, {
+      title: "Calorie Calculator",
+      description: "Daily BMR, TDEE and calorie targets for weight loss, maintenance or muscle gain",
+      icon: <Calculator />,
+      path: "/tools/calorie-calculator"
+    }, {
+      title: "Fuel Cost Calculator",
+      description: "Trip petrol or diesel cost from distance, mileage and fuel price, split per person",
+      icon: <Calculator />,
+      path: "/tools/fuel-cost-calculator"
+    }, {
+      title: "Electricity Bill Calculator",
+      description: "Estimate monthly units and bill appliance by appliance from watts and hours used",
+      icon: <Calculator />,
+      path: "/tools/electricity-bill-calculator"
+    }, {
+      title: "Pregnancy Due Date Calculator",
+      description: "Baby due date, current pregnancy week and trimester dates from your last period",
+      icon: <CalendarRange />,
+      path: "/tools/pregnancy-due-date-calculator"
+    }, {
+      title: "Sleep Calculator",
+      description: "Best bedtime and wake-up times based on 90-minute sleep cycles",
+      icon: <Clock />,
+      path: "/tools/sleep-calculator"
+    }, {
+      title: "Split Bill Calculator",
+      description: "Split shared bills between friends and see the fewest payments to settle up",
+      icon: <DollarSign />,
+      path: "/tools/split-bill-calculator"
+    }, {
+      title: "Typing Speed Test",
+      description: "Measure your WPM and accuracy with 15, 30, 60 or 120 second typing tests",
+      icon: <Type />,
+      path: "/tools/typing-speed-test"
     }]
   }];
 
@@ -397,6 +432,8 @@ const Index = () => {
     "/tools/image-to-text",
     "/tools/discount-calculator",
     "/tools/date-difference-calculator",
+    "/tools/calorie-calculator",
+    "/tools/sleep-calculator",
   ];
 
   const allTools = toolCategories.flatMap(category => category.tools);

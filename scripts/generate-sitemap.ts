@@ -113,6 +113,13 @@ const toolPaths = [
   "/tools/time-zone-converter",
   "/tools/random-picker",
   "/tools/image-to-text",
+  "/tools/calorie-calculator",
+  "/tools/fuel-cost-calculator",
+  "/tools/electricity-bill-calculator",
+  "/tools/pregnancy-due-date-calculator",
+  "/tools/sleep-calculator",
+  "/tools/split-bill-calculator",
+  "/tools/typing-speed-test",
 ]
 
 const entries: SitemapEntry[] = [

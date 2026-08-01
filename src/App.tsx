@@ -129,6 +129,13 @@ const CompoundInterestCalculator = lazy(() => import("@/pages/tools/CompoundInte
 const SalaryCalculator = lazy(() => import("@/pages/tools/SalaryCalculator"));
 const TimeZoneConverter = lazy(() => import("@/pages/tools/TimeZoneConverter"));
 const RandomPicker = lazy(() => import("@/pages/tools/RandomPicker"));
+const CalorieCalculator = lazy(() => import("@/pages/tools/CalorieCalculator"));
+const FuelCostCalculator = lazy(() => import("@/pages/tools/FuelCostCalculator"));
+const ElectricityBillCalculator = lazy(() => import("@/pages/tools/ElectricityBillCalculator"));
+const PregnancyDueDateCalculator = lazy(() => import("@/pages/tools/PregnancyDueDateCalculator"));
+const SleepCalculator = lazy(() => import("@/pages/tools/SleepCalculator"));
+const SplitBillCalculator = lazy(() => import("@/pages/tools/SplitBillCalculator"));
+const TypingSpeedTest = lazy(() => import("@/pages/tools/TypingSpeedTest"));
 const ImageToText = lazy(() => import("@/pages/tools/ImageToText"));
 const RomanNumeralConverter = lazy(() => import("@/pages/tools/DateToRomanNumerals"));
 
@@ -274,6 +281,13 @@ const App = () => {
             <Route path="/tools/random-picker" element={<RandomPicker />} />
             <Route path="/tools/image-to-text" element={<ImageToText />} />
             <Route path="/tools/roman-numeral-converter" element={<RomanNumeralConverter />} />
+            <Route path="/tools/calorie-calculator" element={<CalorieCalculator />} />
+            <Route path="/tools/fuel-cost-calculator" element={<FuelCostCalculator />} />
+            <Route path="/tools/electricity-bill-calculator" element={<ElectricityBillCalculator />} />
+            <Route path="/tools/pregnancy-due-date-calculator" element={<PregnancyDueDateCalculator />} />
+            <Route path="/tools/sleep-calculator" element={<SleepCalculator />} />
+            <Route path="/tools/split-bill-calculator" element={<SplitBillCalculator />} />
+            <Route path="/tools/typing-speed-test" element={<TypingSpeedTest />} />
 
             {/* Redirect removed tools to homepage */}
             <Route path="/tools/website-screenshot" element={<NotFound />} />
