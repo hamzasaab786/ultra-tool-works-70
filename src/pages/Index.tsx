@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getRecentTools, type RecentTool } from "@/lib/recentTools";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Sparkles, Zap, Shield, Clock } from "lucide-react";
 
@@ -636,35 +635,9 @@ const Index = () => {
   const allTools = toolCategories.flatMap(category => category.tools);
   const popularTools = popularToolPaths.map(path => allTools.find(tool => tool && tool.path === path)).filter(Boolean);
 
-  // Newest additions first — drives the "Newest" sort option.
-  const newToolPaths = [
-    "/tools/typing-speed-test",
-    "/tools/split-bill-calculator",
-    "/tools/sleep-calculator",
-    "/tools/pregnancy-due-date-calculator",
-    "/tools/electricity-bill-calculator",
-    "/tools/fuel-cost-calculator",
-    "/tools/calorie-calculator",
-    "/tools/scan-to-pdf",
-    "/tools/insert-pdf-pages",
-    "/tools/bates-numbering",
-    "/tools/grayscale-pdf",
-    "/tools/annotate-pdf",
-    "/tools/pdf-form-filler",
-    "/tools/pdf-viewer",
-  ];
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
-  const [sortBy, setSortBy] = useState<"popular" | "az" | "newest">("popular");
-  const [recentTools, setRecentTools] = useState<RecentTool[]>([]);
-
-  useEffect(() => {
-    const sync = () => setRecentTools(getRecentTools());
-    sync();
-    window.addEventListener("klipza:recent-tools-changed", sync);
-    return () => window.removeEventListener("klipza:recent-tools-changed", sync);
-  }, []);
 
   const flatTools = useMemo(
     () => toolCategories.flatMap((category, categoryIndex) =>
@@ -674,44 +647,20 @@ const Index = () => {
     [],
   );
 
-  const recentToolCards = recentTools
-    .map(recent => flatTools.find(tool => tool.path === recent.path))
-    .filter(Boolean)
-    .slice(0, 8);
-
-  const isFiltering = query.trim().length > 0 || activeCategory !== "all" || sortBy !== "popular";
+  const isFiltering = query.trim().length > 0 || activeCategory !== "all";
 
   const filteredTools = useMemo(() => {
     // Every whitespace-separated word must appear somewhere in the tool entry,
     // so "pdf compress" also finds "Compress PDF"-style tools.
     const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    let list = flatTools.filter(tool => {
+    return flatTools.filter(tool => {
       const matchesCategory =
         activeCategory === "all" || String(tool.categoryIndex) === activeCategory;
       const haystack = `${tool.title} ${tool.description} ${tool.path} ${tool.categoryTitle}`.toLowerCase();
       const matchesQuery = terms.every(term => haystack.includes(term));
       return matchesCategory && matchesQuery;
     });
-
-    if (sortBy === "az") {
-      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "newest") {
-      const rank = (path: string) => {
-        const index = newToolPaths.indexOf(path);
-        return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-      };
-      list = [...list].sort((a, b) => rank(a.path) - rank(b.path));
-    } else {
-      const rank = (path: string) => {
-        const index = popularToolPaths.indexOf(path);
-        return index === -1 ? Number.MAX_SAFE_INTEGER : index;
-      };
-      list = [...list].sort((a, b) => rank(a.path) - rank(b.path));
-    }
-
-    return list;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, activeCategory, sortBy, flatTools]);
+  }, [query, activeCategory, flatTools]);
 
   const faqs = [{
     question: "Are all tools completely free to use?",
@@ -859,57 +808,18 @@ const Index = () => {
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <span className="text-sm text-muted-foreground">Sort by:</span>
-              {([
-                { id: "popular", label: "Most popular" },
-                { id: "newest", label: "Newest" },
-                { id: "az", label: "A–Z" },
-              ] as const).map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setSortBy(option.id)}
-                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${
-                    sortBy === option.id
-                      ? "border-indigo-500 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40"
-                      : "border-border/70 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-              {isFiltering && (
+            {isFiltering && (
+              <div className="flex justify-center">
                 <button
                   type="button"
                   onClick={() => {
                     setQuery("");
                     setActiveCategory("all");
-                    setSortBy("popular");
                   }}
                   className="px-3 py-1.5 rounded-lg text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
                 >
                   Reset
                 </button>
-              )}
-            </div>
-
-            {recentToolCards.length > 0 && !isFiltering && (
-              <div className="pt-2">
-                <p className="text-sm font-medium text-muted-foreground mb-2 text-center">
-                  ⏱️ Recently used
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {recentToolCards.map((tool) => tool && (
-                    <Link
-                      key={tool.path}
-                      to={tool.path}
-                      className="px-3 py-1.5 rounded-full text-sm border border-border/70 bg-card/80 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                    >
-                      {tool.title}
-                    </Link>
-                  ))}
-                </div>
               </div>
             )}
           </div>
