@@ -8,6 +8,8 @@ import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
 import AdsterraNative from "./ads/AdsterraNative";
 import AdsterraSocialBar from "./ads/AdsterraSocialBar";
+import AdsterraBanner160x300 from "./ads/AdsterraBanner160x300";
+
 
 
 
