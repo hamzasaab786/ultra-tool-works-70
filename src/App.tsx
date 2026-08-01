@@ -4,7 +4,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
 import Layout from "@/components/Layout";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Analytics from "@/components/Analytics";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 
@@ -117,7 +117,7 @@ const App = () => {
     <HelmetProvider>
       <ThemeProvider>
         <Router>
-          <Analytics />
+          <AnalyticsTracker />
           <Layout>
             <Suspense fallback={<RouteFallback />}>
             <Routes>

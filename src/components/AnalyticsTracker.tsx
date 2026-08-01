@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { initAnalytics, trackPageView } from "@/lib/analytics";
 
 /** Initializes GA4 and reports SPA route changes as page views. */
-const Analytics = () => {
+const AnalyticsTracker = () => {
   const location = useLocation();
   const lastPath = useRef<string | null>(null);
 
@@ -23,4 +23,4 @@ const Analytics = () => {
   return null;
 };
 
-export default Analytics;
+export default AnalyticsTracker;
