@@ -116,6 +116,7 @@ const App = () => {
     <HelmetProvider>
       <ThemeProvider>
         <Router>
+          <Analytics />
           <Layout>
             <Suspense fallback={<RouteFallback />}>
             <Routes>
