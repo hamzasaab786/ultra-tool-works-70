@@ -50,6 +50,8 @@ const Layout = ({ children }: LayoutProps) => {
         <AdsterraIframeBanner adKey="38fcb1c657b604f630f79cb846ce6e8d" width={160} height={300} />
         <ToolFaqSection />
         <AdsterraIframeBanner adKey="8733cc7cd38bc0b47d60fceda97b070b" width={300} height={250} />
+        <AdsterraIframeBanner adKey="4d4c58fa4b319e0d3384c6b3841162c6" width={320} height={50} />
+
       </main>
 
 
