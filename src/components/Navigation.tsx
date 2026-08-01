@@ -50,6 +50,13 @@ const Navigation = () => {
     { name: "Resize PDF Page Size", path: "/tools/pdf-page-resizer" },
     { name: "Header & Footer", path: "/tools/pdf-header-footer" },
     { name: "Pages Per Sheet (N-up)", path: "/tools/n-up-pdf" },
+    { name: "PDF Viewer & Reader", path: "/tools/pdf-viewer" },
+    { name: "PDF Form Filler", path: "/tools/pdf-form-filler" },
+    { name: "Annotate PDF", path: "/tools/annotate-pdf" },
+    { name: "Grayscale / B&W PDF", path: "/tools/grayscale-pdf" },
+    { name: "Bates Numbering", path: "/tools/bates-numbering" },
+    { name: "Insert Pages into PDF", path: "/tools/insert-pdf-pages" },
+    { name: "Scan to PDF (Camera)", path: "/tools/scan-to-pdf" },
   ];
 
   const calculatorTools = [

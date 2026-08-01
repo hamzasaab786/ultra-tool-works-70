@@ -114,6 +114,13 @@ const TextToPdf = lazy(() => import("@/pages/tools/TextToPdf"));
 const PdfPageResizer = lazy(() => import("@/pages/tools/PdfPageResizer"));
 const PdfHeaderFooter = lazy(() => import("@/pages/tools/PdfHeaderFooter"));
 const NUpPdf = lazy(() => import("@/pages/tools/NUpPdf"));
+const PdfViewer = lazy(() => import("@/pages/tools/PdfViewer"));
+const PdfFormFiller = lazy(() => import("@/pages/tools/PdfFormFiller"));
+const AnnotatePdf = lazy(() => import("@/pages/tools/AnnotatePdf"));
+const GrayscalePdf = lazy(() => import("@/pages/tools/GrayscalePdf"));
+const BatesNumbering = lazy(() => import("@/pages/tools/BatesNumbering"));
+const InsertPdfPages = lazy(() => import("@/pages/tools/InsertPdfPages"));
+const ScanToPdf = lazy(() => import("@/pages/tools/ScanToPdf"));
 const TestCardGenerator = lazy(() => import("@/pages/tools/TestCardGenerator"));
 const GpaCalculator = lazy(() => import("@/pages/tools/GpaCalculator"));
 const DateDifferenceCalculator = lazy(() => import("@/pages/tools/DateDifferenceCalculator"));
@@ -250,6 +257,13 @@ const App = () => {
             <Route path="/tools/pdf-page-resizer" element={<PdfPageResizer />} />
             <Route path="/tools/pdf-header-footer" element={<PdfHeaderFooter />} />
             <Route path="/tools/n-up-pdf" element={<NUpPdf />} />
+            <Route path="/tools/pdf-viewer" element={<PdfViewer />} />
+            <Route path="/tools/pdf-form-filler" element={<PdfFormFiller />} />
+            <Route path="/tools/annotate-pdf" element={<AnnotatePdf />} />
+            <Route path="/tools/grayscale-pdf" element={<GrayscalePdf />} />
+            <Route path="/tools/bates-numbering" element={<BatesNumbering />} />
+            <Route path="/tools/insert-pdf-pages" element={<InsertPdfPages />} />
+            <Route path="/tools/scan-to-pdf" element={<ScanToPdf />} />
             <Route path="/tools/test-card-generator" element={<TestCardGenerator />} />
             <Route path="/tools/gpa-calculator" element={<GpaCalculator />} />
             <Route path="/tools/date-difference-calculator" element={<DateDifferenceCalculator />} />
