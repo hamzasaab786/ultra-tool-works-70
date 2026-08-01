@@ -77,6 +77,16 @@ const Index = () => {
       description: "Extract editable text from photos, screenshots and scanned pages in 12+ languages",
       icon: <Scan />,
       path: "/tools/image-to-text"
+    }, {
+      title: "Image Metadata Extractor",
+      description: "View EXIF data, camera details, GPS location and dimensions of any photo",
+      icon: <Search />,
+      path: "/tools/image-metadata-extractor"
+    }, {
+      title: "Remove Watermark",
+      description: "Erase watermarks and unwanted objects from images with AI-assisted cleanup",
+      icon: <FileImage />,
+      path: "/tools/remove-watermark"
     }]
   }, {
     title: "📄 PDF Tools",
@@ -151,6 +161,101 @@ const Index = () => {
       description: "Compare two PDF documents and highlight differences",
       icon: <Search />,
       path: "/tools/compare-pdf"
+    }, {
+      title: "PDF to Excel",
+      description: "Extract tables from PDF files into editable Excel spreadsheets",
+      icon: <FileText />,
+      path: "/tools/PdfToExcel"
+    }, {
+      title: "Unlock PDF",
+      description: "Remove passwords and restrictions from PDF files you own",
+      icon: <ShieldIcon />,
+      path: "/tools/UnlockPdf"
+    }, {
+      title: "PDF Metadata Extractor",
+      description: "Read title, author, producer and creation dates from any PDF",
+      icon: <Search />,
+      path: "/tools/pdf-metadata-extractor"
+    }, {
+      title: "Add Page Numbers",
+      description: "Insert page numbers anywhere on your PDF with custom format and style",
+      icon: <FileText />,
+      path: "/tools/add-page-numbers"
+    }, {
+      title: "Delete PDF Pages",
+      description: "Remove unwanted pages from a PDF and download the clean document",
+      icon: <Scissors />,
+      path: "/tools/delete-pdf-pages"
+    }, {
+      title: "Extract PDF Pages",
+      description: "Save selected pages from a PDF as a brand new document",
+      icon: <FilePlus />,
+      path: "/tools/extract-pdf-pages"
+    }, {
+      title: "Extract Images from PDF",
+      description: "Pull every embedded image out of a PDF in original quality",
+      icon: <FileImage />,
+      path: "/tools/extract-pdf-images"
+    }, {
+      title: "Flatten PDF",
+      description: "Flatten form fields and annotations into a non-editable PDF",
+      icon: <Archive />,
+      path: "/tools/flatten-pdf"
+    }, {
+      title: "Text to PDF",
+      description: "Turn plain text or notes into a formatted, printable PDF document",
+      icon: <Type />,
+      path: "/tools/text-to-pdf"
+    }, {
+      title: "PDF Page Resizer",
+      description: "Change page size to A4, Letter or custom dimensions with scaling",
+      icon: <Ruler />,
+      path: "/tools/pdf-page-resizer"
+    }, {
+      title: "PDF Header & Footer",
+      description: "Add running headers and footers with dates, titles and page numbers",
+      icon: <FileText />,
+      path: "/tools/pdf-header-footer"
+    }, {
+      title: "Pages Per Sheet (N-up)",
+      description: "Print 2, 4 or more PDF pages on a single sheet to save paper",
+      icon: <Repeat />,
+      path: "/tools/n-up-pdf"
+    }, {
+      title: "PDF Viewer & Reader",
+      description: "Open and read PDF files online with zoom, search and page navigation",
+      icon: <Search />,
+      path: "/tools/pdf-viewer"
+    }, {
+      title: "PDF Form Filler",
+      description: "Fill in interactive PDF forms and save the completed document",
+      icon: <FileText />,
+      path: "/tools/pdf-form-filler"
+    }, {
+      title: "Annotate PDF",
+      description: "Highlight, draw and add sticky notes to any PDF page",
+      icon: <FileText />,
+      path: "/tools/annotate-pdf"
+    }, {
+      title: "Grayscale PDF",
+      description: "Convert colour PDFs to black and white for cheaper printing",
+      icon: <FileImage />,
+      path: "/tools/grayscale-pdf"
+    }, {
+      title: "Bates Numbering",
+      description: "Apply legal Bates numbering with prefixes across PDF documents",
+      icon: <FileText />,
+      path: "/tools/bates-numbering"
+    }, {
+      title: "Insert Pages into PDF",
+      description: "Merge extra pages into an existing PDF at any position",
+      icon: <FilePlus />,
+      path: "/tools/insert-pdf-pages"
+    }, {
+      title: "Scan to PDF",
+      description: "Use your camera to scan documents and save them as a clean PDF",
+      icon: <Scan />,
+      path: "/tools/scan-to-pdf"
     }]
   }, {
     title: "🧮 Calculators & Converters",
@@ -224,6 +329,41 @@ const Index = () => {
       description: "Generate placeholder text for design and development projects",
       icon: <Type />,
       path: "/tools/lorem-ipsum"
+    }, {
+      title: "JSON Formatter",
+      description: "Beautify, minify and validate JSON data with instant error highlighting",
+      icon: <FileCode />,
+      path: "/tools/json-formatter"
+    }, {
+      title: "CSV to JSON",
+      description: "Convert CSV spreadsheets into clean JSON arrays for developers",
+      icon: <FileCode />,
+      path: "/tools/csv-to-json"
+    }, {
+      title: "URL Encoder / Decoder",
+      description: "Encode and decode URLs and query strings safely",
+      icon: <Type />,
+      path: "/tools/url-decoder"
+    }, {
+      title: "Text Encryption",
+      description: "Encrypt and decrypt text with a passphrase before sharing it",
+      icon: <ShieldIcon />,
+      path: "/tools/text-encryption"
+    }, {
+      title: "Morse Code Translator",
+      description: "Translate text to Morse code and back with audio playback",
+      icon: <Type />,
+      path: "/tools/morse-code-translator"
+    }, {
+      title: "Regex Tester",
+      description: "Test regular expressions live with match highlighting and groups",
+      icon: <Search />,
+      path: "/tools/regex-tester"
+    }, {
+      title: "Document Translator",
+      description: "Translate documents and text between dozens of languages",
+      icon: <Type />,
+      path: "/tools/document-translator"
     }]
   }, {
     title: "🛠️ Utility Tools",
@@ -339,6 +479,51 @@ const Index = () => {
       icon: <CreditCard />,
       path: "/tools/test-card-generator"
     }, {
+      title: "Email Validator",
+      description: "Check if an email address is valid, disposable or has a working domain",
+      icon: <MessageSquare />,
+      path: "/tools/email-validator"
+    }, {
+      title: "Password Strength Checker",
+      description: "Test how strong your password is and how long it takes to crack",
+      icon: <ShieldIcon />,
+      path: "/tools/password-strength"
+    }, {
+      title: "File Hash Checker",
+      description: "Verify downloads by comparing MD5, SHA-1 and SHA-256 checksums",
+      icon: <Fingerprint />,
+      path: "/tools/file-hash-checker"
+    }, {
+      title: "Whois Lookup",
+      description: "Look up domain owner, registrar and expiry details instantly",
+      icon: <Search />,
+      path: "/tools/whois-lookup"
+    }, {
+      title: "DNS Lookup",
+      description: "Check A, AAAA, MX, TXT and CNAME records for any domain",
+      icon: <Wifi />,
+      path: "/tools/dns-lookup"
+    }, {
+      title: "IP Geolocation",
+      description: "Find the country, city, ISP and timezone behind any IP address",
+      icon: <Target />,
+      path: "/tools/ip-geolocation"
+    }, {
+      title: "Credit Card Validator",
+      description: "Validate card numbers with the Luhn algorithm and detect the card brand",
+      icon: <CreditCard />,
+      path: "/tools/credit-card-validator"
+    }, {
+      title: "Emoji Picker",
+      description: "Search and copy thousands of emojis for posts, chats and documents",
+      icon: <MessageSquare />,
+      path: "/tools/emoji-picker"
+    }, {
+      title: "URL Shortener",
+      description: "Shorten long links into clean, shareable short URLs",
+      icon: <Link2 />,
+      path: "/tools/url-shortener"
+    }, {
       title: "GPA & CGPA Calculator",
       description: "Calculate semester GPA and cumulative CGPA on the 4.0 scale from credits and grades",
       icon: <Calculator />,
@@ -413,6 +598,16 @@ const Index = () => {
       description: "Measure your WPM and accuracy with 15, 30, 60 or 120 second typing tests",
       icon: <Type />,
       path: "/tools/typing-speed-test"
+    }, {
+      title: "Hex to RGB Converter",
+      description: "Convert HEX, RGB and HSL colour codes for design and CSS",
+      icon: <Palette />,
+      path: "/tools/hex-to-rgb"
+    }, {
+      title: "Number Base Converter",
+      description: "Convert numbers between binary, octal, decimal and hexadecimal",
+      icon: <Hash />,
+      path: "/tools/number-base-converter"
     }]
   }];
 
