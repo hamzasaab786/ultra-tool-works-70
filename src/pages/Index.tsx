@@ -655,15 +655,6 @@ const Index = () => {
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
-  const [sortBy, setSortBy] = useState<"popular" | "az" | "newest">("popular");
-  const [recentTools, setRecentTools] = useState<RecentTool[]>([]);
-
-  useEffect(() => {
-    const sync = () => setRecentTools(getRecentTools());
-    sync();
-    window.addEventListener("klipza:recent-tools-changed", sync);
-    return () => window.removeEventListener("klipza:recent-tools-changed", sync);
-  }, []);
 
   const flatTools = useMemo(
     () => toolCategories.flatMap((category, categoryIndex) =>
