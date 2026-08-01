@@ -211,7 +211,7 @@ const Navigation = () => {
                   🖼️ Image Tools
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {imageTools.slice(0, 5).map((tool) => (
+                  {imageTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -238,7 +238,7 @@ const Navigation = () => {
                   📄 PDF Tools
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {pdfTools.slice(0, 5).map((tool) => (
+                  {pdfTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -265,7 +265,7 @@ const Navigation = () => {
                   🧮 Calculators
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {calculatorTools.slice(0, 5).map((tool) => (
+                  {calculatorTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -292,7 +292,7 @@ const Navigation = () => {
                   📝 Text Tools
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {textTools.slice(0, 5).map((tool) => (
+                  {textTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
@@ -319,7 +319,7 @@ const Navigation = () => {
                   🛠️ Utilities
                 </Link>
                 <div className="grid grid-cols-1 gap-1 ml-4">
-                  {utilityTools.slice(0, 5).map((tool) => (
+                  {utilityTools.map((tool) => (
                     <Link
                       key={tool.path}
                       to={tool.path}
