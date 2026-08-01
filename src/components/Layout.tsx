@@ -8,7 +8,7 @@ import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
 import AdsterraNative from "./ads/AdsterraNative";
 import AdsterraSocialBar from "./ads/AdsterraSocialBar";
-import AdsterraBanner160x300 from "./ads/AdsterraBanner160x300";
+import AdsterraIframeBanner from "./ads/AdsterraIframeBanner";
 
 
 
@@ -44,11 +44,13 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Main content with optimized spacing */}
       <main className="flex-1 relative z-10 w-full overflow-hidden">
         {children}
+        <AdsterraIframeBanner adKey="a12b748603de2316c41b40c80d031b8e" width={468} height={60} />
         <AdsterraNative />
         <ToolSeoArticle />
-        <AdsterraBanner160x300 />
+        <AdsterraIframeBanner adKey="38fcb1c657b604f630f79cb846ce6e8d" width={160} height={300} />
         <ToolFaqSection />
       </main>
+
 
 
 
