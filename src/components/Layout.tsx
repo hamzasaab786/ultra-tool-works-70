@@ -9,6 +9,8 @@ import ToolSeoArticle from "./ToolSeoArticle";
 import AdsterraNative from "./ads/AdsterraNative";
 import AdsterraSocialBar from "./ads/AdsterraSocialBar";
 import AdsterraIframeBanner from "./ads/AdsterraIframeBanner";
+import AdsterraResponsiveAd from "./ads/AdsterraResponsiveAd";
+
 
 
 
