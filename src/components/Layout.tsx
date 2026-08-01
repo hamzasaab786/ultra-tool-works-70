@@ -7,6 +7,8 @@ import ToolSeoHead from "./ToolSeoHead";
 import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
 import AdsterraNative from "./ads/AdsterraNative";
+import AdsterraSocialBar from "./ads/AdsterraSocialBar";
+
 
 
 interface LayoutProps {
