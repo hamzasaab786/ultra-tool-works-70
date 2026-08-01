@@ -27,8 +27,15 @@ serve(async (req) => {
 
     console.log('Processing image edit request for size:', photoSize);
 
-    // Optimized prompt for faster processing and better face preservation
-    const prompt = `Professional passport photo for ${photoSize}. Apply: white/light blue background, even lighting, center subject, enhance clarity. PRESERVE facial features exactly - no face alterations.`;
+    // Identity-preserving prompt: only the background may change
+    const prompt = `Passport photo retouch for ${photoSize}. ONLY replace the background with a clean, evenly lit plain backdrop and even out lighting. ${instructions}
+
+CRITICAL IDENTITY RULES — the person must remain pixel-identical:
+- Do NOT redraw, beautify, smooth, slim, age, or restyle the face in any way.
+- Keep exact facial geometry, skin tone, skin texture, moles, freckles, wrinkles, facial hair, eyebrows, eye colour and gaze.
+- Keep hair, glasses, clothing and accessories exactly as in the original.
+- Do not change head pose, expression, or proportions.
+- Treat this as a background segmentation + compositing task, not an image generation task.`;
 
     console.log('Calling Lovable AI for fast processing...');
     
