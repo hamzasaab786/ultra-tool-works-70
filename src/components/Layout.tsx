@@ -8,6 +8,8 @@ import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
 import AdsterraNative from "./ads/AdsterraNative";
 import AdsterraSocialBar from "./ads/AdsterraSocialBar";
+import AdsterraBanner160x300 from "./ads/AdsterraBanner160x300";
+
 
 
 
@@ -44,8 +46,10 @@ const Layout = ({ children }: LayoutProps) => {
         {children}
         <AdsterraNative />
         <ToolSeoArticle />
+        <AdsterraBanner160x300 />
         <ToolFaqSection />
       </main>
+
 
 
       {/* Route-aware SEO head; rendered last so it overrides page-level tags */}
