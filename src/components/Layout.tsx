@@ -49,7 +49,9 @@ const Layout = ({ children }: LayoutProps) => {
         <ToolSeoArticle />
         <AdsterraIframeBanner adKey="38fcb1c657b604f630f79cb846ce6e8d" width={160} height={300} />
         <ToolFaqSection />
+        <AdsterraIframeBanner adKey="8733cc7cd38bc0b47d60fceda97b070b" width={300} height={250} />
       </main>
+
 
 
 
