@@ -50,9 +50,12 @@ const Layout = ({ children }: LayoutProps) => {
 
       {/* Route-aware SEO head; rendered last so it overrides page-level tags */}
       <ToolSeoHead />
-      
+
+      <AdsterraSocialBar />
+
       {/* Footer */}
       <Footer />
+
     </div>
   );
 };
