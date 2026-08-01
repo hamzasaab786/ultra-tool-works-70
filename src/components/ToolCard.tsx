@@ -24,8 +24,9 @@ const ToolCard = ({
   style
 }: ToolCardProps) => {
   const navigate = useNavigate();
-  
+
   const handleNavigate = () => {
+    recordRecentTool(path, title);
     navigate(path);
   };
 
