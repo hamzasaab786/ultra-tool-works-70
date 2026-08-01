@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import ThreeDEffects from "./ThreeDEffects";
+import { recordRecentTool } from "@/lib/recentTools";
 
 interface ToolCardProps {
   title: string;
@@ -24,8 +25,9 @@ const ToolCard = ({
   style
 }: ToolCardProps) => {
   const navigate = useNavigate();
-  
+
   const handleNavigate = () => {
+    recordRecentTool(path, title);
     navigate(path);
   };
 
