@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getRecentTools, type RecentTool } from "@/lib/recentTools";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
+import { Sparkles, Zap, Shield, Clock } from "lucide-react";
 
 // Import tool icons
 import { 
@@ -880,11 +880,6 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2">
-          <button onClick={scrollToTools} className="animate-bounce p-3 glassmorphism rounded-full border border-indigo-200/50 hover:bg-indigo-50/50 transition-all duration-300 btn-modern">
-            <ArrowDown className="h-6 w-6 text-indigo-600" />
-          </button>
-        </div>
       </section>
 
       {/* Popular Tools Section */}
