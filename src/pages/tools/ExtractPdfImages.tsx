@@ -75,7 +75,7 @@ const ExtractPdfImages = () => {
         const ops = await page.getOperatorList();
         for (let i = 0; i < ops.fnArray.length; i++) {
           const fn = ops.fnArray[i];
-          if (fn !== pdfjsLib.OPS.paintImageXObject && fn !== pdfjsLib.OPS.paintJpegXObject) continue;
+          if (fn !== pdfjsLib.OPS.paintImageXObject && fn !== (pdfjsLib.OPS as any).paintJpegXObject) continue;
           const name = ops.argsArray[i][0];
           if (typeof name !== "string" || seen.has(`${p}:${name}`)) continue;
           seen.add(`${p}:${name}`);
