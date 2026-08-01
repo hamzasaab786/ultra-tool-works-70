@@ -71,7 +71,7 @@ const ResumeBuilder = () => {
   const updateList = <T extends { id: string }>(key: "experience" | "education" | "projects", id: string, patch: Partial<T>) =>
     setData((prev) => ({
       ...prev,
-      [key]: (prev[key] as T[]).map((item) => (item.id === id ? { ...item, ...patch } : item)),
+      [key]: (prev[key] as unknown as T[]).map((item) => (item.id === id ? { ...item, ...patch } : item)),
     }));
 
   const removeItem = (key: "experience" | "education" | "projects", id: string) =>
