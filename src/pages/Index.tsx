@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { getRecentTools, type RecentTool } from "@/lib/recentTools";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ArrowDown, Sparkles, Zap, Shield, Clock } from "lucide-react";
 
@@ -633,6 +635,84 @@ const Index = () => {
 
   const allTools = toolCategories.flatMap(category => category.tools);
   const popularTools = popularToolPaths.map(path => allTools.find(tool => tool && tool.path === path)).filter(Boolean);
+
+  // Newest additions first — drives the "Newest" sort option.
+  const newToolPaths = [
+    "/tools/typing-speed-test",
+    "/tools/split-bill-calculator",
+    "/tools/sleep-calculator",
+    "/tools/pregnancy-due-date-calculator",
+    "/tools/electricity-bill-calculator",
+    "/tools/fuel-cost-calculator",
+    "/tools/calorie-calculator",
+    "/tools/scan-to-pdf",
+    "/tools/insert-pdf-pages",
+    "/tools/bates-numbering",
+    "/tools/grayscale-pdf",
+    "/tools/annotate-pdf",
+    "/tools/pdf-form-filler",
+    "/tools/pdf-viewer",
+  ];
+
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [sortBy, setSortBy] = useState<"popular" | "az" | "newest">("popular");
+  const [recentTools, setRecentTools] = useState<RecentTool[]>([]);
+
+  useEffect(() => {
+    const sync = () => setRecentTools(getRecentTools());
+    sync();
+    window.addEventListener("klipza:recent-tools-changed", sync);
+    return () => window.removeEventListener("klipza:recent-tools-changed", sync);
+  }, []);
+
+  const flatTools = useMemo(
+    () => toolCategories.flatMap((category, categoryIndex) =>
+      category.tools.map(tool => ({ ...tool, categoryIndex, categoryTitle: category.title })),
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const recentToolCards = recentTools
+    .map(recent => flatTools.find(tool => tool.path === recent.path))
+    .filter(Boolean)
+    .slice(0, 8);
+
+  const isFiltering = query.trim().length > 0 || activeCategory !== "all" || sortBy !== "popular";
+
+  const filteredTools = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    let list = flatTools.filter(tool => {
+      const matchesCategory =
+        activeCategory === "all" || String(tool.categoryIndex) === activeCategory;
+      const matchesQuery =
+        !q ||
+        tool.title.toLowerCase().includes(q) ||
+        tool.description.toLowerCase().includes(q) ||
+        tool.path.toLowerCase().includes(q);
+      return matchesCategory && matchesQuery;
+    });
+
+    if (sortBy === "az") {
+      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === "newest") {
+      const rank = (path: string) => {
+        const index = newToolPaths.indexOf(path);
+        return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+      };
+      list = [...list].sort((a, b) => rank(a.path) - rank(b.path));
+    } else {
+      const rank = (path: string) => {
+        const index = popularToolPaths.indexOf(path);
+        return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+      };
+      list = [...list].sort((a, b) => rank(a.path) - rank(b.path));
+    }
+
+    return list;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, activeCategory, sortBy, flatTools]);
 
   const faqs = [{
     question: "Are all tools completely free to use?",
