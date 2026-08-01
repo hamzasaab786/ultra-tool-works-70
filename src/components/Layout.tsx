@@ -6,6 +6,8 @@ import ScrollAnimation from "./ScrollAnimation";
 import ToolSeoHead from "./ToolSeoHead";
 import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
+import AdsterraNative from "./ads/AdsterraNative";
+
 
 interface LayoutProps {
   children: React.ReactNode;
