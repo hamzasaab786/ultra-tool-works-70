@@ -23,6 +23,8 @@ const AboutUs = lazy(() => import("@/pages/AboutUs"));
 const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
 const Terms = lazy(() => import("@/pages/Terms"));
 const Disclaimer = lazy(() => import("@/pages/Disclaimer"));
+const AuthPage = lazy(() => import("@/pages/Auth"));
+const OAuthConsent = lazy(() => import("@/pages/OAuthConsent"));
 const ImageCompressor = lazy(() => import("@/pages/tools/ImageCompressor"));
 const ImageResizer = lazy(() => import("@/pages/tools/ImageResizer"));
 const ImageEnhancer = lazy(() => import("@/pages/tools/ImageEnhancer"));
@@ -126,6 +128,9 @@ const App = () => {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
+
             
             {/* Image Tools */}
             <Route path="/tools/image-compressor" element={<ImageCompressor />} />

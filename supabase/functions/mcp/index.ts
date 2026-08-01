@@ -3,7 +3,7 @@
 // supabase function: mcp
 // Bundled from src/lib/mcp/index.ts by @lovable.dev/mcp-js.
 // src/lib/mcp/index.ts
-import { defineMcp } from "npm:@lovable.dev/mcp-js@0.20.0";
+import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.20.0";
 
 // src/lib/mcp/tools/word-count.ts
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.0";
@@ -186,11 +186,16 @@ var lorem_ipsum_default = defineTool6({
 });
 
 // src/lib/mcp/index.ts
+var projectRef = "ykncsyybscvuavfnvbke";
 var mcp_default = defineMcp({
   name: "klipza-mcp",
   title: "Klipza Tools",
   version: "0.1.0",
   instructions: "Utility tools from Klipza. Use `word_count` for text stats, `case_convert` to change casing, `base64` to encode/decode, `hash_text` for cryptographic hashes, `generate_password` for random passwords, and `lorem_ipsum` for placeholder text.",
+  auth: auth.oauth.issuer({
+    issuer: `https://${projectRef}.supabase.co/auth/v1`,
+    acceptedAudiences: "authenticated"
+  }),
   tools: [word_count_default, case_convert_default, base64_default, hash_text_default, generate_password_default, lorem_ipsum_default]
 });
 
