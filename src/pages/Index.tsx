@@ -5,7 +5,6 @@ import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getRecentTools, type RecentTool } from "@/lib/recentTools";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Sparkles, Zap, Shield, Clock } from "lucide-react";
 
