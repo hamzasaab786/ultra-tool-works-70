@@ -100,8 +100,15 @@ const AdsterraResponsiveAd = ({
     [active.adKey, active.width, active.height]
   );
 
+  const filledRef = useRef(false);
+  const [blocked, setBlocked] = useState(false);
+
   const retry = useCallback(() => {
-    if (retriesRef.current >= MAX_RETRIES) return;
+    if (filledRef.current) return;
+    if (retriesRef.current >= MAX_RETRIES) {
+      setBlocked(true);
+      return;
+    }
     retriesRef.current += 1;
     setAttempt((a) => a + 1);
   }, []);
@@ -112,19 +119,33 @@ const AdsterraResponsiveAd = ({
     const onMessage = (e: MessageEvent) => {
       const data = e.data as { __ad?: string; filled?: boolean } | undefined;
       if (!data || data.__ad !== active.adKey) return;
-      if (!data.filled) setTimeout(retry, RETRY_DELAY_MS);
+      if (data.filled) {
+        filledRef.current = true;
+        setBlocked(false);
+      } else {
+        setTimeout(retry, RETRY_DELAY_MS);
+      }
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
   }, [active.adKey, retry]);
 
-  // Safety net: if no report arrives at all (script blocked / timed out), retry once per attempt.
+  // Safety net: if no report arrives at all (script blocked by ISP/DNS or ad blocker).
   useEffect(() => {
     if (!active.adKey) return;
     const t = setTimeout(() => {
-      const doc = iframeRef.current?.contentDocument;
-      const filled = doc?.body?.querySelector("iframe, img, ins");
-      if (!filled) retry();
+      if (filledRef.current) return;
+      let filled: Element | null | undefined = null;
+      try {
+        filled = iframeRef.current?.contentDocument?.body?.querySelector("iframe, img, ins");
+      } catch {
+        filled = null;
+      }
+      if (filled) {
+        filledRef.current = true;
+      } else {
+        retry();
+      }
     }, RETRY_DELAY_MS + 3000);
     return () => clearTimeout(t);
   }, [active.adKey, attempt, retry]);
@@ -132,7 +153,7 @@ const AdsterraResponsiveAd = ({
   // Re-request the ad when the user returns to the tab after a long absence.
   useEffect(() => {
     const onVisible = () => {
-      if (document.visibilityState === "visible" && retriesRef.current < MAX_RETRIES) {
+      if (document.visibilityState === "visible" && !filledRef.current && retriesRef.current < MAX_RETRIES) {
         setAttempt((a) => a + 1);
       }
     };
@@ -140,7 +161,31 @@ const AdsterraResponsiveAd = ({
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, []);
 
+  // Reset retry budget when the variant (breakpoint) changes.
+  useEffect(() => {
+    retriesRef.current = 0;
+    filledRef.current = false;
+    setBlocked(false);
+  }, [active.adKey]);
+
   if (!active.adKey) return null;
+
+  if (blocked) {
+    return (
+      <div
+        className={`w-full flex justify-center my-6 px-2 sm:px-4 ${className}`}
+        style={{ minHeight: active.height }}
+      >
+        <a
+          href="/#tool-results"
+          className="flex items-center justify-center rounded-lg border border-border bg-muted/40 text-xs text-muted-foreground hover:bg-muted transition-colors"
+          style={{ width: active.width, height: active.height, maxWidth: "100%" }}
+        >
+          Explore 130+ free Klipza tools →
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div
