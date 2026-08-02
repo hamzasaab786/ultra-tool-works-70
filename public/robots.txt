@@ -46,4 +46,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://klipza.live/sitemap.xml
+Sitemap: https://ultra-tool-works-70.lovable.app/sitemap.xml
