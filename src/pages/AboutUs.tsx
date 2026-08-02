@@ -1,10 +1,17 @@
 
 import React from "react";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 
 const AboutUs = () => {
   return (
     <Layout>
+      <SEO
+        title="About Klipza — Free Privacy-First Online Tools"
+        description="Learn who builds Klipza, why our 130+ PDF, image, text and calculator tools are free, and how browser-based processing keeps your files private."
+        keywords="about klipza, free online tools company, privacy first web tools"
+        canonicalUrl="https://klipza.live/about"
+      />
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-8">About Klipza</h1>

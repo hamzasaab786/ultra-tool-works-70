@@ -691,7 +691,7 @@ const Index = () => {
   };
 
   return <>
-      <SEO title="Klipza — 80+ Free Online Tools: PDF, Image, QR & Text" description="Use 80+ free online tools in one place: merge and compress PDFs, OCR scans, convert and compress images, generate QR codes, build an ATS resume and more. No signup — files stay on your device." keywords="free online tools, pdf tools online, image compressor, qr code generator with logo, ats resume builder, pdf ocr, word counter, unit converter, klipza" canonicalUrl="https://klipza.live/" />
+      <SEO title="Klipza — 80+ Free Online Tools: PDF, Image, QR & Text" description="130+ free online tools: merge & compress PDFs, OCR scans, convert images, make QR codes and build ATS resumes. No signup, files stay private." keywords="free online tools, pdf tools online, image compressor, qr code generator with logo, ats resume builder, pdf ocr, word counter, unit converter, klipza" canonicalUrl="https://klipza.live/" />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>
       </Helmet>
