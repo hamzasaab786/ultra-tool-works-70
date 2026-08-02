@@ -14,6 +14,7 @@ const AdsterraNative = ({ className = "" }: { className?: string }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const retries = useRef(0);
   const [attempt, setAttempt] = useState(0);
+  const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,7 +34,11 @@ const AdsterraNative = ({ className = "" }: { className?: string }) => {
     };
 
     const scheduleRetry = () => {
-      if (cancelled || retries.current >= MAX_RETRIES) return;
+      if (cancelled) return;
+      if (retries.current >= MAX_RETRIES) {
+        setBlocked(true);
+        return;
+      }
       retries.current += 1;
       setTimeout(() => !cancelled && setAttempt((a) => a + 1), RETRY_DELAY_MS);
     };
@@ -44,7 +49,11 @@ const AdsterraNative = ({ className = "" }: { className?: string }) => {
     const check = setTimeout(() => {
       if (cancelled) return;
       const el = containerRef.current?.querySelector(`#container-${AD_KEY}`);
-      if (!el || el.childElementCount === 0) scheduleRetry();
+      if (!el || el.childElementCount === 0) {
+        scheduleRetry();
+      } else {
+        setBlocked(false);
+      }
     }, RETRY_DELAY_MS);
 
     return () => {
@@ -52,6 +61,19 @@ const AdsterraNative = ({ className = "" }: { className?: string }) => {
       clearTimeout(check);
     };
   }, [attempt]);
+
+  if (blocked) {
+    return (
+      <div className={`w-full max-w-5xl mx-auto px-4 my-8 ${className}`}>
+        <a
+          href="/#tool-results"
+          className="flex min-h-20 items-center justify-center rounded-lg border border-border bg-muted/40 px-4 text-center text-sm text-muted-foreground transition-colors hover:bg-muted"
+        >
+          Explore 130+ free Klipza tools →
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className={`w-full max-w-5xl mx-auto px-4 my-8 ${className}`}>
