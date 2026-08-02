@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 
 export interface AdVariant {
   /** Max-width (in px) below which this variant should display. */
@@ -13,17 +13,21 @@ export interface AdVariant {
 interface AdsterraResponsiveAdProps {
   /** Ordered from smallest to largest breakpoint. */
   variants: AdVariant[];
-  /** Default to show while/instead of no match. */
   defaultAdKey?: string;
   defaultWidth?: number;
   defaultHeight?: number;
   className?: string;
 }
 
+/** Max automatic reload attempts when an ad slot stays empty. */
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 4000;
+
 /**
  * Responsive Adsterra iframe ad slot.
- * Picks the best variant based on the current viewport width.
- * Ads are rendered in a sandboxed iframe so their scripts never leak into the app.
+ * - Picks a variant from the viewport width (debounced so resizing doesn't kill the ad).
+ * - Renders the ad inside a sandboxed iframe (scripts never leak into the app).
+ * - Retries automatically if the ad fails to fill (slow networks / regional latency).
  */
 const AdsterraResponsiveAd = ({
   variants,
@@ -33,77 +37,132 @@ const AdsterraResponsiveAd = ({
   className = "",
 }: AdsterraResponsiveAdProps) => {
   const [viewportWidth, setViewportWidth] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth : 0
+    typeof window !== "undefined" ? window.innerWidth : 1280
   );
+  const [attempt, setAttempt] = useState(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const retriesRef = useRef(0);
 
+  // Debounced resize so the iframe isn't remounted mid-drag.
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    const handleResize = () => setViewportWidth(window.innerWidth);
-    handleResize();
+    let t: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(t);
+      t = setTimeout(() => setViewportWidth(window.innerWidth), 250);
+    };
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+    };
   }, []);
 
-  const variant = useMemo(() => {
-    if (!variants.length) return null;
-
-    // Pick the largest matching variant by breakpoint.
+  const active = useMemo(() => {
     let matched: AdVariant | null = null;
     for (const v of variants) {
-      if (viewportWidth <= v.maxWidth) matched = v;
+      if (viewportWidth <= v.maxWidth) {
+        matched = v;
+        break;
+      }
     }
-    // Fallback to the last (largest) variant if viewport is larger than all breakpoints.
-    return matched || variants[variants.length - 1];
-  }, [variants, viewportWidth]);
-
-  const active = variant || {
-    adKey: defaultAdKey || variants[0]?.adKey || "",
-    width: variant?.width || defaultWidth,
-    height: variant?.height || defaultHeight,
-  };
-
-  if (!active.adKey) return null;
+    const chosen = matched || variants[variants.length - 1];
+    return (
+      chosen || {
+        adKey: defaultAdKey || "",
+        width: defaultWidth,
+        height: defaultHeight,
+      }
+    );
+  }, [variants, viewportWidth, defaultAdKey, defaultWidth, defaultHeight]);
 
   const srcDoc = useMemo(
     () => `<!DOCTYPE html><html><head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   html,body{margin:0;padding:0;overflow:hidden;background:transparent;display:flex;align-items:center;justify-content:center;min-height:${active.height}px;}
-  iframe{width:100%;height:100%;border:0;}
+  iframe,img{max-width:100%;border:0;}
 </style>
 </head><body>
 <script type="text/javascript">
   atOptions = { 'key':'${active.adKey}', 'format':'iframe', 'height':${active.height}, 'width':${active.width}, 'params':{} };
+  // Report fill status back to the parent so it can retry when empty.
+  setTimeout(function(){
+    var filled = document.body.querySelector('iframe, img, ins, div[id]');
+    try { parent.postMessage({ __ad: '${active.adKey}', filled: !!filled }, '*'); } catch (e) {}
+  }, 3000);
 <\/script>
 <script type="text/javascript" src="https://www.highperformanceformat.com/${active.adKey}/invoke.js"><\/script>
 </body></html>`,
     [active.adKey, active.width, active.height]
   );
 
+  const retry = useCallback(() => {
+    if (retriesRef.current >= MAX_RETRIES) return;
+    retriesRef.current += 1;
+    setAttempt((a) => a + 1);
+  }, []);
+
+  // Listen for the fill report; retry when the slot came back empty.
+  useEffect(() => {
+    if (!active.adKey) return;
+    const onMessage = (e: MessageEvent) => {
+      const data = e.data as { __ad?: string; filled?: boolean } | undefined;
+      if (!data || data.__ad !== active.adKey) return;
+      if (!data.filled) setTimeout(retry, RETRY_DELAY_MS);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [active.adKey, retry]);
+
+  // Safety net: if no report arrives at all (script blocked / timed out), retry once per attempt.
+  useEffect(() => {
+    if (!active.adKey) return;
+    const t = setTimeout(() => {
+      const doc = iframeRef.current?.contentDocument;
+      const filled = doc?.body?.querySelector("iframe, img, ins");
+      if (!filled) retry();
+    }, RETRY_DELAY_MS + 3000);
+    return () => clearTimeout(t);
+  }, [active.adKey, attempt, retry]);
+
+  // Re-request the ad when the user returns to the tab after a long absence.
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible" && retriesRef.current < MAX_RETRIES) {
+        setAttempt((a) => a + 1);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
+
+  if (!active.adKey) return null;
+
   return (
     <div
+      ref={containerRef}
       className={`w-full flex justify-center my-6 px-2 sm:px-4 ${className}`}
       style={{ minHeight: active.height }}
     >
       <div
         className="relative overflow-hidden"
-        style={{
-          width: active.width,
-          height: active.height,
-          maxWidth: "100%",
-        }}
+        style={{ width: active.width, height: active.height, maxWidth: "100%" }}
       >
         <iframe
+          key={`${active.adKey}-${attempt}`}
+          ref={iframeRef}
           title="Advertisement"
           srcDoc={srcDoc}
           width={active.width}
           height={active.height}
           scrolling="no"
-          loading="lazy"
           className="block"
           style={{ border: 0, width: active.width, height: active.height, maxWidth: "100%" }}
-          sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+          sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-forms"
         />
       </div>
     </div>
