@@ -240,7 +240,7 @@ const ImageCompressor = () => {
                 <div className="aspect-square relative bg-gray-100 rounded-md overflow-hidden">
                   <img 
                     src={processedImage.originalUrl} 
-                    alt="Original" 
+                    alt="Original uploaded image" 
                     className="absolute w-full h-full object-contain"
                   />
                 </div>
@@ -252,7 +252,7 @@ const ImageCompressor = () => {
                 <div className="aspect-square relative bg-gray-100 rounded-md overflow-hidden">
                   <img 
                     src={processedImage.compressedUrl} 
-                    alt="Compressed" 
+                    alt="Compressed output image" 
                     className="absolute w-full h-full object-contain"
                   />
                 </div>

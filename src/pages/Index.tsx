@@ -706,7 +706,7 @@ const Index = () => {
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold mb-6 gradient-text animate-slide-up">
-              Klipza
+              Klipza — Free Online PDF, Image &amp; Utility Tools
             </h1>
 
             <p className="text-xl md:text-2xl mb-8 text-foreground/90 animate-slide-up delay-200">The Ultimate Collection of 100% Free Online Tools</p>
@@ -724,7 +724,7 @@ const Index = () => {
               <Button size="lg" variant="outline" className="text-lg px-8 py-3 btn-modern border-2 border-indigo-200 dark:border-indigo-400/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30" onClick={() => document.getElementById('features')?.scrollIntoView({
               behavior: 'smooth'
             })}>
-                Learn More
+                Learn about Klipza features
               </Button>
             </div>
           </div>
