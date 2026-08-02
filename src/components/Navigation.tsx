@@ -54,7 +54,7 @@ const Navigation = () => {
           <Link to="/" className="flex items-center gap-2 group">
             <img
               src={klipzaLogo}
-              alt="Klipza logo"
+              alt="Klipza brand logo"
               width={40}
               height={40}
               className="h-8 w-8 sm:h-9 sm:w-9 transform transition-transform duration-200 group-hover:scale-105"
@@ -142,6 +142,8 @@ const Navigation = () => {
           <Button
             variant="ghost"
             size="sm"
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isMobileMenuOpen}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

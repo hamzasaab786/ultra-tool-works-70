@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src={klipzaLogo} alt="Klipza logo" width={36} height={36} loading="lazy" className="h-9 w-9" />
+              <img src={klipzaLogo} alt="Klipza brand logo" width={36} height={36} loading="lazy" className="h-9 w-9" />
               <h3 className="font-bold text-xl text-white">Klipza</h3>
             </div>
             <p className="text-gray-300 leading-relaxed">
