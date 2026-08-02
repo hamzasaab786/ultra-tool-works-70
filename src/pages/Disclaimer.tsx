@@ -1,6 +1,7 @@
 
 import React from "react";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 
 const Disclaimer = () => {
   const currentDate = new Date();
@@ -8,6 +9,12 @@ const Disclaimer = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Disclaimer — Accuracy & Use of Klipza Tools"
+        description="Klipza's disclaimer: tool results, calculators and conversions are provided as-is for general use, with no professional, legal, medical or financial advice."
+        keywords="klipza disclaimer, online tools disclaimer, no warranty online calculator"
+        canonicalUrl="https://klipza.live/disclaimer"
+      />
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Disclaimer</h1>
