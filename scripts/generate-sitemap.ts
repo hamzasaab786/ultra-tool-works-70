@@ -3,7 +3,7 @@
 import { writeFileSync } from "fs"
 import { resolve } from "path"
 
-const BASE_URL = "https://klipza.live"
+const BASE_URL = "https://ultra-tool-works-70.lovable.app"
 const TODAY = new Date().toISOString().split("T")[0]
 
 interface SitemapEntry {
