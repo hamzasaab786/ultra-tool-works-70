@@ -286,8 +286,10 @@ const PdfToJpg = () => {
     a.href = url;
     a.download = page.filename;
     a.rel = 'noopener';
+    a.style.display = 'none';
     document.body.appendChild(a);
-    a.click();
+    // Use the browser's normal download flow; never request directory access.
+    a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
     document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   };
@@ -306,13 +308,14 @@ const PdfToJpg = () => {
   const downloadPages = async (pages: ConvertedPage[]) => {
     if (pages.length === 0) return;
 
-    // Always download each page as its own image file, in the given order.
-    await downloadSequentially(pages);
+    // Always download each page directly as its own image, without a folder picker.
+    const orderedPages = [...pages].sort((a, b) => a.pageNumber - b.pageNumber);
+    await downloadSequentially(orderedPages);
 
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${pages.length} image(s) in page order. If your browser asks, allow multiple downloads.`,
+      description: `Downloaded ${orderedPages.length} image(s) directly in page order.`,
     });
   };
 
