@@ -10,7 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { FileText, Download, Settings, Zap, Image, AlertCircle } from 'lucide-react';
 import ToolPageTemplate from './ToolPageTemplate';
-import { loadPdfDocument, pdfjsLib } from '@/utils/pdfClient';
+import { loadPdfDocument, pdfjsLib, mapConcurrent } from '@/utils/pdfClient';
 
 interface ConversionSettings {
   format: 'jpg' | 'png';
@@ -152,6 +152,7 @@ const PdfToJpg = () => {
 
     try {
       const pagesToConvert = getPageNumbers(processedFile.totalPages);
+      const converted: ConvertedPage[] = [];
       let done = 0;
       const mime = `image/${settings.format}`;
       const quality = settings.format === 'jpg' ? settings.quality / 100 : 1;
