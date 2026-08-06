@@ -18,6 +18,9 @@ const JpgToPdf = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [mode, setMode] = useState<"image" | "searchable" | "text">("searchable");
+  const [status, setStatus] = useState("");
+
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
