@@ -262,16 +262,18 @@ const PdfToJpg = () => {
     return [...new Set(pages)].sort((a, b) => a - b);
   };
 
-  const downloadSingle = (page: ConvertedPage) => {
+  const downloadSingle = (page: Pick<ConvertedPage, 'blob' | 'filename'>) => {
     const url = URL.createObjectURL(page.blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = page.filename;
+    a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
   };
+
 
   const downloadAll = async (fileId: string) => {
     const processedFile = processedFiles.find(f => f.id === fileId);
