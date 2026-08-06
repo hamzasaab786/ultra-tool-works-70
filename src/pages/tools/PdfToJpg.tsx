@@ -202,7 +202,9 @@ const PdfToJpg = () => {
         }
       });
 
+      converted.push(...(results.filter(Boolean) as ConvertedPage[]));
       converted.sort((a, b) => a.pageNumber - b.pageNumber);
+
 
 
       setProcessedFiles(prev => prev.map(f =>
