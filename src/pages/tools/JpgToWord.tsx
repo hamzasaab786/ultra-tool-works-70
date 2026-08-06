@@ -155,13 +155,21 @@ const JpgToWord = () => {
           className="w-full p-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary transition-colors"
         />
 
+        <div className="rounded-lg border border-primary/40 bg-primary/5 p-4 text-sm space-y-1">
+          <p className="font-semibold">Can't type in Word after opening?</p>
+          <p className="text-muted-foreground">
+            Word opens downloaded files in <strong>Protected View</strong> (read-only). Click the yellow
+            <strong> “Enable Editing”</strong> bar at the top — then every line is fully editable.
+          </p>
+        </div>
+
         <div className="rounded-lg border p-4 space-y-3">
           <p className="font-medium">Output type</p>
           <div className="grid gap-2 sm:grid-cols-3">
             {[
-              { id: "text" as const, title: "Fully editable text", desc: "OCR text only — every word editable in Word" },
+              { id: "text" as const, title: "Fully editable text (recommended)", desc: "OCR text only — every word editable in Word" },
               { id: "both" as const, title: "Image + editable text", desc: "Picture plus the extracted editable text" },
-              { id: "image" as const, title: "Image only", desc: "Just place the picture, fastest" },
+              { id: "image" as const, title: "Image only (not editable)", desc: "Just places the picture — text can't be edited" },
             ].map((opt) => (
               <button
                 key={opt.id}
