@@ -282,41 +282,48 @@ const PdfToJpg = () => {
       downloadSingle(pages[i]);
       // small gap so the browser queues every file instead of dropping them
       if (i < pages.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 350));
+        await new Promise(resolve => setTimeout(resolve, 400));
       }
     }
-  };
-
-  const downloadAll = async (fileId: string) => {
-    const processedFile = processedFiles.find(f => f.id === fileId);
-    if (!processedFile) return;
-
-    const convertedPages = processedFile.convertedPages;
-    if (convertedPages.length === 0) return;
-
-    await downloadSequentially(convertedPages);
-
-    toast({
-      title: 'Download completed',
-      description: `Downloaded ${convertedPages.length} image(s) from ${processedFile.file.name}. If your browser asks, allow multiple downloads.`,
-    });
   };
 
   const downloadAllConverted = async () => {
     const files = processedFiles.filter(f => f.convertedPages.length > 0);
     if (files.length === 0) return;
 
-    let total = 0;
-    for (const file of files) {
-      await downloadSequentially(file.convertedPages);
-      total += file.convertedPages.length;
+    const allPages = files.flatMap(f => f.convertedPages);
+
+    // Preferred path: let the user pick a folder once, then write every JPG
+    // into it (no per-file prompts, no browser multi-download limit).
+    const picker = (window as any).showDirectoryPicker;
+    if (typeof picker === 'function') {
+      try {
+        const dirHandle = await picker({ mode: 'readwrite' });
+        for (const page of allPages) {
+          const handle = await dirHandle.getFileHandle(page.filename, { create: true });
+          const writable = await handle.createWritable();
+          await writable.write(page.blob);
+          await writable.close();
+        }
+        toast({
+          title: 'Download completed',
+          description: `Saved ${allPages.length} JPG image(s) to the selected folder.`,
+        });
+        return;
+      } catch (err: any) {
+        if (err?.name === 'AbortError') return; // user cancelled
+        // fall through to sequential downloads
+      }
     }
+
+    await downloadSequentially(allPages);
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${total} image(s). If your browser asks, allow multiple downloads.`,
+      description: `Downloaded ${allPages.length} image(s). If your browser asks, allow multiple downloads.`,
     });
   };
+
 
 
 
@@ -602,9 +609,12 @@ const PdfToJpg = () => {
                 <p className="text-sm text-gray-600">
                   {processedFiles.filter(f => f.convertedPages.length > 0).length} file(s) converted successfully
                 </p>
-                <Button onClick={downloadAllConverted} className="flex items-center gap-2">
+                <Button
+                  onClick={downloadAllConverted}
+                  className="flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90"
+                >
                   <Download className="h-4 w-4" />
-                  Download All Pages
+                  Download All Pages (JPG)
                 </Button>
               </div>
 
@@ -612,11 +622,9 @@ const PdfToJpg = () => {
                 <div key={file.id} className="space-y-3">
                   <div className="flex items-center justify-between">
                     <p className="font-medium text-sm">{file.file.name}</p>
-                    <Button onClick={() => downloadAll(file.id)} size="sm" variant="outline">
-                      <Download className="h-3 w-3 mr-1" />
-                      Download all {file.convertedPages.length} pages
-                    </Button>
+                    <p className="text-xs text-muted-foreground">{file.convertedPages.length} pages</p>
                   </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {file.convertedPages.map((page) => (
                       <div key={page.pageNumber} className="border rounded-lg overflow-hidden">
