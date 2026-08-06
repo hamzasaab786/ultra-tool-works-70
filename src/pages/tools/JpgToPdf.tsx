@@ -433,7 +433,7 @@ const JpgToPdf = () => {
               className="flex-1"
             >
               {isConverting ? (
-                <>Converting...</>
+                <>{status || "Converting..."}</>
               ) : (
                 <>
                   <FileIcon className="mr-2 h-4 w-4" /> Convert to PDF
