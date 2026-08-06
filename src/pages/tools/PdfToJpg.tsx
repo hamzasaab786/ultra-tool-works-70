@@ -303,33 +303,11 @@ const PdfToJpg = () => {
     }
   };
 
-  const downloadPages = async (pages: ConvertedPage[], allowFolderPicker = false) => {
+  const downloadPages = async (pages: ConvertedPage[]) => {
     if (pages.length === 0) return;
 
-    // Preferred path (explicit click only): pick a folder once, then write every
-    // image into it — no per-file prompts, no browser multi-download limit.
-    const picker = (window as any).showDirectoryPicker;
-    if (allowFolderPicker && typeof picker === 'function') {
-      try {
-        const dirHandle = await picker({ mode: 'readwrite' });
-        for (const page of pages) {
-          const handle = await dirHandle.getFileHandle(page.filename, { create: true });
-          const writable = await handle.createWritable();
-          await writable.write(page.blob);
-          await writable.close();
-        }
-        toast({
-          title: 'Download completed',
-          description: `Saved ${pages.length} image(s) to the selected folder.`,
-        });
-        return;
-      } catch (err: any) {
-        if (err?.name === 'AbortError') return; // user cancelled
-        // fall through to sequential downloads
-      }
-    }
-
-    await downloadSequentially(pages);
+    // Always download each page as its own image file, in page order.
+    await downloadSequentially([...pages].sort((a, b) => a.pageNumber - b.pageNumber));
 
     toast({
       title: 'Download completed',
@@ -340,9 +318,10 @@ const PdfToJpg = () => {
   const downloadAllConverted = async () => {
     const allPages = processedFiles
       .filter(f => f.convertedPages.length > 0)
-      .flatMap(f => f.convertedPages);
-    await downloadPages(allPages, true);
+      .flatMap(f => [...f.convertedPages].sort((a, b) => a.pageNumber - b.pageNumber));
+    await downloadPages(allPages);
   };
+
 
 
 
