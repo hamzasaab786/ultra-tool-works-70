@@ -282,41 +282,48 @@ const PdfToJpg = () => {
       downloadSingle(pages[i]);
       // small gap so the browser queues every file instead of dropping them
       if (i < pages.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 350));
+        await new Promise(resolve => setTimeout(resolve, 400));
       }
     }
-  };
-
-  const downloadAll = async (fileId: string) => {
-    const processedFile = processedFiles.find(f => f.id === fileId);
-    if (!processedFile) return;
-
-    const convertedPages = processedFile.convertedPages;
-    if (convertedPages.length === 0) return;
-
-    await downloadSequentially(convertedPages);
-
-    toast({
-      title: 'Download completed',
-      description: `Downloaded ${convertedPages.length} image(s) from ${processedFile.file.name}. If your browser asks, allow multiple downloads.`,
-    });
   };
 
   const downloadAllConverted = async () => {
     const files = processedFiles.filter(f => f.convertedPages.length > 0);
     if (files.length === 0) return;
 
-    let total = 0;
-    for (const file of files) {
-      await downloadSequentially(file.convertedPages);
-      total += file.convertedPages.length;
+    const allPages = files.flatMap(f => f.convertedPages);
+
+    // Preferred path: let the user pick a folder once, then write every JPG
+    // into it (no per-file prompts, no browser multi-download limit).
+    const picker = (window as any).showDirectoryPicker;
+    if (typeof picker === 'function') {
+      try {
+        const dirHandle = await picker({ mode: 'readwrite' });
+        for (const page of allPages) {
+          const handle = await dirHandle.getFileHandle(page.filename, { create: true });
+          const writable = await handle.createWritable();
+          await writable.write(page.blob);
+          await writable.close();
+        }
+        toast({
+          title: 'Download completed',
+          description: `Saved ${allPages.length} JPG image(s) to the selected folder.`,
+        });
+        return;
+      } catch (err: any) {
+        if (err?.name === 'AbortError') return; // user cancelled
+        // fall through to sequential downloads
+      }
     }
+
+    await downloadSequentially(allPages);
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${total} image(s). If your browser asks, allow multiple downloads.`,
+      description: `Downloaded ${allPages.length} image(s). If your browser asks, allow multiple downloads.`,
     });
   };
+
 
 
 
