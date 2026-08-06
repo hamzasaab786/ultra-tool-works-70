@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Upload, Contrast } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import { loadPdfDocument, renderPdfPageToCanvas } from "@/utils/pdfClient";
+import { loadPdfDocument, renderPdfPageToCanvas, mapConcurrent } from "@/utils/pdfClient";
 import { downloadBlob, baseName } from "@/utils/pdfPages";
 
 type Mode = "grayscale" | "bw" | "invert";
@@ -30,28 +30,42 @@ const GrayscalePdf = () => {
       const pdf = await loadPdfDocument(file);
       const out = await PDFDocument.create();
 
-      for (let p = 1; p <= pdf.numPages; p++) {
-        const page = await pdf.getPage(p);
-        const { canvas } = await renderPdfPageToCanvas(page, Number(dpiScale));
-        const ctx = canvas.getContext("2d")!;
-        const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const d = img.data;
+      let done = 0;
+      const rendered = await mapConcurrent(
+        Array.from({ length: pdf.numPages }, (_, i) => i + 1),
+        async (p) => {
+          const page = await pdf.getPage(p);
+          const { canvas } = await renderPdfPageToCanvas(page, Number(dpiScale));
+          const ctx = canvas.getContext("2d")!;
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const d = img.data;
 
-        for (let i = 0; i < d.length; i += 4) {
-          const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-          let v: number;
-          if (mode === "grayscale") v = lum;
-          else if (mode === "bw") v = lum >= threshold ? 255 : 0;
-          else v = 255 - lum;
-          d[i] = d[i + 1] = d[i + 2] = v;
+          for (let i = 0; i < d.length; i += 4) {
+            const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+            let v: number;
+            if (mode === "grayscale") v = lum;
+            else if (mode === "bw") v = lum >= threshold ? 255 : 0;
+            else v = 255 - lum;
+            d[i] = d[i + 1] = d[i + 2] = v;
+          }
+          ctx.putImageData(img, 0, 0);
+
+          const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.9));
+          const bytes = new Uint8Array(await blob!.arrayBuffer());
+          const base = page.getViewport({ scale: 1 });
+          page.cleanup();
+          canvas.width = 0;
+          canvas.height = 0;
+          done += 1;
+          setProgress(Math.round((done / pdf.numPages) * 100));
+          return { bytes, width: base.width, height: base.height };
         }
-        ctx.putImageData(img, 0, 0);
+      );
 
-        const jpg = await out.embedJpg(canvas.toDataURL("image/jpeg", 0.9));
-        const base = page.getViewport({ scale: 1 });
-        const newPage = out.addPage([base.width, base.height]);
-        newPage.drawImage(jpg, { x: 0, y: 0, width: base.width, height: base.height });
-        setProgress(Math.round((p / pdf.numPages) * 100));
+      for (const r of rendered) {
+        const jpg = await out.embedJpg(r.bytes);
+        const newPage = out.addPage([r.width, r.height]);
+        newPage.drawImage(jpg, { x: 0, y: 0, width: r.width, height: r.height });
       }
 
       const bytes = await out.save();
