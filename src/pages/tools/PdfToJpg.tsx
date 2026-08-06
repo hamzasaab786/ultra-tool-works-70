@@ -79,29 +79,33 @@ const PdfToJpg = () => {
       try {
         const pdf = await loadPdfDocument(file);
 
-        // Generate previews for first 3 pages
-        const previews: string[] = [];
+        // Generate previews for first 3 pages (in parallel)
         const maxPreviews = Math.min(3, pdf.numPages);
-        
-        for (let i = 1; i <= maxPreviews; i++) {
-          try {
-            const page = await pdf.getPage(i);
-            const viewport = page.getViewport({ scale: 0.5 });
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d')!;
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+        const previewResults = await mapConcurrent(
+          Array.from({ length: maxPreviews }, (_, i) => i + 1),
+          async (i) => {
+            try {
+              const page = await pdf.getPage(i);
+              const viewport = page.getViewport({ scale: 0.5 });
+              const canvas = document.createElement('canvas');
+              const context = canvas.getContext('2d', { alpha: false })!;
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
 
-            await page.render({
-              canvasContext: context,
-              viewport: viewport,
-            }).promise;
-
-            previews.push(canvas.toDataURL('image/jpeg', 0.8));
-          } catch (pageError) {
-            console.error('Error generating preview for page', i, pageError);
+              await page.render({ canvasContext: context, viewport }).promise;
+              const blob = await new Promise<Blob | null>((resolve) =>
+                canvas.toBlob(resolve, 'image/jpeg', 0.7)
+              );
+              page.cleanup();
+              return blob ? URL.createObjectURL(blob) : null;
+            } catch (pageError) {
+              console.error('Error generating preview for page', i, pageError);
+              return null;
+            }
           }
-        }
+        );
+        const previews: string[] = previewResults.filter(Boolean) as string[];
+
 
         const processedFile: ProcessedFile = {
           id: Math.random().toString(36).substr(2, 9),
