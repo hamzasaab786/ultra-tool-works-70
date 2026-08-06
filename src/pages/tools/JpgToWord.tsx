@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { FileType, Download, Loader2, X } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
@@ -21,7 +20,7 @@ const readImageSize = (url: string) =>
 
 const JpgToWord = () => {
   const [pics, setPics] = useState<Pic[]>([]);
-  const [ocr, setOcr] = useState(false);
+  const [mode, setMode] = useState<"text" | "both" | "image">("text");
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
 
@@ -50,7 +49,7 @@ const JpgToWord = () => {
 
       const children: any[] = [];
       let worker: any = null;
-      if (ocr) {
+      if (mode !== "image") {
         setStatus("Loading OCR engine…");
         const Tesseract = (await import("tesseract.js")).default;
         worker = await Tesseract.createWorker("eng");
@@ -64,7 +63,7 @@ const JpgToWord = () => {
         const data = new Uint8Array(await pic.file.arrayBuffer());
         const ext = (pic.file.type.split("/")[1] || "png").replace("jpeg", "jpg");
 
-        children.push(
+        if (mode !== "text") children.push(
           new Paragraph({
             children: [
               new ImageRun({
@@ -81,10 +80,19 @@ const JpgToWord = () => {
           const { data: res } = await worker.recognize(pic.file);
           const txt = (res.text || "").trim();
           if (txt) {
-            children.push(new Paragraph({ spacing: { before: 200 }, children: [new TextRun({ text: "Extracted text:", bold: true })] }));
+            if (mode === "both") {
+              children.push(
+                new Paragraph({ spacing: { before: 200 }, children: [new TextRun({ text: "Extracted text:", bold: true })] })
+              );
+            }
+            // Every OCR line becomes a real, editable Word paragraph.
             txt.split(/\r?\n/).forEach((line) =>
-              children.push(new Paragraph({ children: [new TextRun({ text: line })] }))
+              children.push(
+                new Paragraph({ spacing: { after: 80 }, children: [new TextRun({ text: line })] })
+              )
             );
+          } else if (mode === "text") {
+            children.push(new Paragraph({ children: [new TextRun({ text: "(No readable text found in this image)", italics: true })] }));
           }
         }
 
@@ -147,12 +155,27 @@ const JpgToWord = () => {
           className="w-full p-3 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary transition-colors"
         />
 
-        <div className="flex items-center justify-between rounded-lg border p-4">
-          <div>
-            <p className="font-medium">Also extract text with OCR</p>
-            <p className="text-sm text-muted-foreground">Adds selectable text under each image (slower).</p>
+        <div className="rounded-lg border p-4 space-y-3">
+          <p className="font-medium">Output type</p>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {[
+              { id: "text" as const, title: "Fully editable text", desc: "OCR text only — every word editable in Word" },
+              { id: "both" as const, title: "Image + editable text", desc: "Picture plus the extracted editable text" },
+              { id: "image" as const, title: "Image only", desc: "Just place the picture, fastest" },
+            ].map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setMode(opt.id)}
+                className={`text-left rounded-lg border p-3 transition-colors ${
+                  mode === opt.id ? "border-primary bg-primary/10" : "hover:border-primary/50"
+                }`}
+              >
+                <span className="block text-sm font-semibold">{opt.title}</span>
+                <span className="block text-xs text-muted-foreground mt-1">{opt.desc}</span>
+              </button>
+            ))}
           </div>
-          <Switch checked={ocr} onCheckedChange={setOcr} aria-label="Enable OCR text extraction" />
         </div>
 
         {pics.length > 0 && (
