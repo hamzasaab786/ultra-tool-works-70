@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { FileText, Download, Loader2, Upload, CheckCircle, Copy } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { Document, Packer, Paragraph, TextRun } from "docx";
-import { loadPdfDocument } from "@/utils/pdfClient";
+import { loadPdfDocument, mapConcurrent } from "@/utils/pdfClient";
 
 const PdfToWord = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -41,45 +41,34 @@ const PdfToWord = () => {
       let fullText = "";
       const paragraphs: Paragraph[] = [];
       
-      // Extract text from all pages
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items
-          .map((item: any) => item.str)
-          .join(" ");
-        
+      // Extract text from all pages (in parallel)
+      const pageTexts = await mapConcurrent(
+        Array.from({ length: pdf.numPages }, (_, i) => i + 1),
+        async (i) => {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const text = textContent.items.map((item: any) => item.str).join(" ");
+          page.cleanup();
+          return text;
+        }
+      );
+
+      pageTexts.forEach((pageText, idx) => {
         fullText += `${pageText}\n\n`;
-        
-        // Add page heading
         paragraphs.push(
           new Paragraph({
-            children: [
-              new TextRun({
-                text: `Page ${i}`,
-                bold: true,
-                size: 28,
-              }),
-            ],
+            children: [new TextRun({ text: `Page ${idx + 1}`, bold: true, size: 28 })],
             spacing: { before: 400, after: 200 },
           })
         );
-        
-        // Add page content
         paragraphs.push(
           new Paragraph({
-            children: [
-              new TextRun({
-                text: pageText,
-                size: 24,
-              }),
-            ],
+            children: [new TextRun({ text: pageText, size: 24 })],
             spacing: { after: 400 },
           })
         );
-        
-        setProgress(30 + (i / pdf.numPages) * 50);
-      }
+      });
+      setProgress(80);
 
       setExtractedText(fullText);
       setProgress(85);
