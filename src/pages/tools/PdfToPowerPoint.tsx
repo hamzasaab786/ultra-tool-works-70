@@ -33,7 +33,7 @@ const PdfToPowerPoint = () => {
     if (!file) return;
     setIsConverting(true);
     try {
-      const { loadPdfDocument, renderPdfPageToCanvas } = await import("@/utils/pdfClient");
+      const { loadPdfDocument, renderPdfPageToCanvas, mapConcurrent } = await import("@/utils/pdfClient");
       const PptxGenJS = (await import("pptxgenjs")).default;
       const pdf = await loadPdfDocument(file);
       const pptx = new PptxGenJS();
@@ -41,15 +41,29 @@ const PdfToPowerPoint = () => {
       const slideW = 13.333;
       const slideH = 7.5;
 
+      // Render every page up-front, in parallel, so slide assembly is instant.
+      const shots = await mapConcurrent(
+        Array.from({ length: pdf.numPages }, (_, i) => i + 1),
+        async (n) => {
+          const page = await pdf.getPage(n);
+          const { canvas } = await renderPdfPageToCanvas(page, 2);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+          const cw = canvas.width;
+          const ch = canvas.height;
+          canvas.width = 0;
+          canvas.height = 0;
+          return { dataUrl, cw, ch };
+        }
+      );
+
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const viewport = page.getViewport({ scale: 1 });
-        const { canvas } = await renderPdfPageToCanvas(page, 2);
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+        const { dataUrl, cw, ch } = shots[i - 1];
         const slide = pptx.addSlide();
 
         // Fit the rendered page into the slide
-        const ratio = canvas.width / canvas.height;
+        const ratio = cw / ch;
         let w = slideW;
         let h = slideW / ratio;
         if (h > slideH) {
