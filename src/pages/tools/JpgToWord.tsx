@@ -167,9 +167,9 @@ const JpgToWord = () => {
           <p className="font-medium">Output type</p>
           <div className="grid gap-2 sm:grid-cols-3">
             {[
-              { id: "text" as const, title: "Fully editable text", desc: "OCR text only — every word editable in Word" },
+              { id: "text" as const, title: "Fully editable text (recommended)", desc: "OCR text only — every word editable in Word" },
               { id: "both" as const, title: "Image + editable text", desc: "Picture plus the extracted editable text" },
-              { id: "image" as const, title: "Image only", desc: "Just place the picture, fastest" },
+              { id: "image" as const, title: "Image only (not editable)", desc: "Just places the picture — text can't be edited" },
             ].map((opt) => (
               <button
                 key={opt.id}
