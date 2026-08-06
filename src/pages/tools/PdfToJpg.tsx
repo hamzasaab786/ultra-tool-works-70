@@ -144,9 +144,9 @@ const PdfToJpg = () => {
     multiple: true,
   });
 
-  const convertPdfToImages = async (fileId: string) => {
+  const convertPdfToImages = async (fileId: string): Promise<ConvertedPage[]> => {
     const fileIndex = processedFiles.findIndex(f => f.id === fileId);
-    if (fileIndex === -1) return;
+    if (fileIndex === -1) return [];
 
     const processedFile = processedFiles[fileIndex];
     
@@ -183,7 +183,8 @@ const PdfToJpg = () => {
             canvas.toBlob((b) => resolve(b!), mime, quality);
           });
           const dataUrl = URL.createObjectURL(blob);
-          const filename = `${processedFile.file.name.replace('.pdf', '')}_page_${pageNum}.${settings.format}`;
+          const pad = String(pageNum).padStart(String(processedFile.totalPages).length, '0');
+          const filename = `${processedFile.file.name.replace('.pdf', '')}_page_${pad}.${settings.format}`;
 
           page.cleanup();
           canvas.width = 0;
@@ -215,6 +216,8 @@ const PdfToJpg = () => {
         title: 'Conversion completed',
         description: `Successfully converted ${converted.length} pages from ${processedFile.file.name}`,
       });
+
+      return converted;
     } catch (error) {
       console.error('Conversion error:', error);
       setProcessedFiles(prev => prev.map(f =>
@@ -225,16 +228,29 @@ const PdfToJpg = () => {
         description: 'An error occurred during conversion. Please try again.',
         variant: 'destructive',
       });
+      return [];
     }
   };
 
   const convertAllFiles = async () => {
+    const freshPages: ConvertedPage[] = [];
+
     for (const file of processedFiles) {
       if (file.convertedPages.length === 0) {
-        await convertPdfToImages(file.id);
+        const pages = await convertPdfToImages(file.id);
+        freshPages.push(...pages);
+      } else {
+        freshPages.push(...file.convertedPages);
       }
     }
+
+    // One-click flow: as soon as the conversion finishes, every page is saved
+    // as its own image file, in page order.
+    if (freshPages.length > 0) {
+      await downloadPages(freshPages);
+    }
   };
+
 
   const getPageNumbers = (totalPages: number): number[] => {
     if (settings.pageRange === 'all') {
@@ -287,19 +303,16 @@ const PdfToJpg = () => {
     }
   };
 
-  const downloadAllConverted = async () => {
-    const files = processedFiles.filter(f => f.convertedPages.length > 0);
-    if (files.length === 0) return;
+  const downloadPages = async (pages: ConvertedPage[], allowFolderPicker = false) => {
+    if (pages.length === 0) return;
 
-    const allPages = files.flatMap(f => f.convertedPages);
-
-    // Preferred path: let the user pick a folder once, then write every JPG
-    // into it (no per-file prompts, no browser multi-download limit).
+    // Preferred path (explicit click only): pick a folder once, then write every
+    // image into it — no per-file prompts, no browser multi-download limit.
     const picker = (window as any).showDirectoryPicker;
-    if (typeof picker === 'function') {
+    if (allowFolderPicker && typeof picker === 'function') {
       try {
         const dirHandle = await picker({ mode: 'readwrite' });
-        for (const page of allPages) {
+        for (const page of pages) {
           const handle = await dirHandle.getFileHandle(page.filename, { create: true });
           const writable = await handle.createWritable();
           await writable.write(page.blob);
@@ -307,7 +320,7 @@ const PdfToJpg = () => {
         }
         toast({
           title: 'Download completed',
-          description: `Saved ${allPages.length} JPG image(s) to the selected folder.`,
+          description: `Saved ${pages.length} image(s) to the selected folder.`,
         });
         return;
       } catch (err: any) {
@@ -316,13 +329,21 @@ const PdfToJpg = () => {
       }
     }
 
-    await downloadSequentially(allPages);
+    await downloadSequentially(pages);
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${allPages.length} image(s). If your browser asks, allow multiple downloads.`,
+      description: `Downloaded ${pages.length} image(s) in page order. If your browser asks, allow multiple downloads.`,
     });
   };
+
+  const downloadAllConverted = async () => {
+    const allPages = processedFiles
+      .filter(f => f.convertedPages.length > 0)
+      .flatMap(f => f.convertedPages);
+    await downloadPages(allPages, true);
+  };
+
 
 
 
