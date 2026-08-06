@@ -50,6 +50,13 @@ const ComparePdf = lazy(() => import("@/pages/tools/ComparePdf"));
 const AddWatermark = lazy(() => import("@/pages/tools/AddWatermark"));
 const WordToPdf = lazy(() => import("@/pages/tools/WordToPdf"));
 const PdfToWord = lazy(() => import("@/pages/tools/PdfToWord"));
+const PdfToText = lazy(() => import("@/pages/tools/PdfToText"));
+const TextToWord = lazy(() => import("@/pages/tools/TextToWord"));
+const WordToText = lazy(() => import("@/pages/tools/WordToText"));
+const WordToJpg = lazy(() => import("@/pages/tools/WordToJpg"));
+const JpgToWord = lazy(() => import("@/pages/tools/JpgToWord"));
+const PdfToCsv = lazy(() => import("@/pages/tools/PdfToCsv"));
+const WordToExcel = lazy(() => import("@/pages/tools/WordToExcel"));
 const ProtectPdf = lazy(() => import("@/pages/tools/ProtectPdf"));
 const ExtractTextPdf = lazy(() => import("@/pages/tools/ExtractTextPdf"));
 const OrganizePdf = lazy(() => import("@/pages/tools/OrganizePdf"));
@@ -194,6 +201,13 @@ const App = () => {
             <Route path="/tools/add-watermark" element={<AddWatermark />} />
             <Route path="/tools/word-to-pdf" element={<WordToPdf />} />
             <Route path="/tools/pdf-to-word" element={<PdfToWord />} />
+            <Route path="/tools/pdf-to-text" element={<PdfToText />} />
+            <Route path="/tools/text-to-word" element={<TextToWord />} />
+            <Route path="/tools/word-to-text" element={<WordToText />} />
+            <Route path="/tools/word-to-jpg" element={<WordToJpg />} />
+            <Route path="/tools/jpg-to-word" element={<JpgToWord />} />
+            <Route path="/tools/pdf-to-csv" element={<PdfToCsv />} />
+            <Route path="/tools/word-to-excel" element={<WordToExcel />} />
             <Route path="/tools/protect-pdf" element={<ProtectPdf />} />
             <Route path="/tools/extract-text-pdf" element={<ExtractTextPdf />} />
             <Route path="/tools/organize-pdf" element={<OrganizePdf />} />
