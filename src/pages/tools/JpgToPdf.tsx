@@ -322,14 +322,32 @@ const JpgToPdf = () => {
             </Button>
           </div>
 
-          <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-2">
-              <GripVertical className="h-5 w-5 text-blue-600" />
-              <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
-                Drag and drop images to change their order in the PDF
-              </p>
+          <div className="rounded-lg border p-4 space-y-3">
+            <p className="font-medium">Output type</p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {[
+                { id: "searchable" as const, title: "Editable & searchable", desc: "Photo + real text layer you can select, search and edit" },
+                { id: "text" as const, title: "Fully editable text", desc: "Text-only PDF (OCR) — every line editable, no image" },
+                { id: "image" as const, title: "Image only", desc: "Classic picture PDF, fastest" },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setMode(opt.id)}
+                  className={`text-left rounded-lg border p-3 transition-colors ${
+                    mode === opt.id ? "border-primary bg-primary/10" : "hover:border-primary/50"
+                  }`}
+                >
+                  <span className="block text-sm font-semibold">{opt.title}</span>
+                  <span className="block text-xs text-muted-foreground mt-1">{opt.desc}</span>
+                </button>
+              ))}
             </div>
+            <p className="text-xs text-muted-foreground flex items-center gap-2">
+              <GripVertical className="h-4 w-4" /> Drag and drop images to change their order in the PDF
+            </p>
           </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {images.map((image, index) => (
