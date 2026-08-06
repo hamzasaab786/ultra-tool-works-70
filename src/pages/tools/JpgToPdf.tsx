@@ -205,7 +205,8 @@ const JpgToPdf = () => {
           setStatus(`Reading text from image ${idx + 1} of ${images.length}…`);
           const { data } = await worker.recognize(image.file);
           const words: any[] = (data as any).words || [];
-          const scale = width / img.width;
+          const scale = width / img.width; // image px -> pdf mm
+          const MM_TO_PT = 72 / 25.4;
 
           pdf.setFont("helvetica", "normal");
           pdf.setTextColor(0, 0, 0);
@@ -213,30 +214,37 @@ const JpgToPdf = () => {
           words.forEach((w) => {
             const text = (w.text || "").trim();
             if (!text || !w.bbox) return;
-            const bw = (w.bbox.x1 - w.bbox.x0) * scale;
-            const bh = (w.bbox.y1 - w.bbox.y0) * scale;
+            const bw = (w.bbox.x1 - w.bbox.x0) * scale; // mm
+            const bh = (w.bbox.y1 - w.bbox.y0) * scale; // mm
             if (bw <= 0 || bh <= 0) return;
 
-            const fontSize = Math.max(4, bh * 0.92 * (72 / 25.4) / (72 / 25.4)); // bh is already in pt-equivalent mm units
-            pdf.setFontSize(Math.max(4, bh * 2.4));
+            // Font size from the real glyph height, then shrink so the word
+            // never overflows the box it occupied in the picture.
+            let fontSize = Math.max(3, bh * MM_TO_PT * 0.92);
+            pdf.setFontSize(fontSize);
+            const natural = pdf.getTextWidth(text);
+            if (natural > 0 && natural > bw) {
+              fontSize = Math.max(3, fontSize * (bw / natural));
+              pdf.setFontSize(fontSize);
+            }
+
+            const isBold = !!w.font_bold;
+            const isItalic = !!w.font_italic;
+            pdf.setFont("helvetica", isBold && isItalic ? "bolditalic" : isBold ? "bold" : isItalic ? "italic" : "normal");
+
             const baselineX = x + w.bbox.x0 * scale;
             const baselineY = y + w.bbox.y1 * scale;
 
             if (mode === "searchable") {
-              // Invisible text layer sitting exactly over the picture.
               (pdf as any).setTextRenderingMode?.("invisible");
             }
-            // Squeeze each word into its original box so the layout matches the photo.
-            const natural = pdf.getTextWidth(text);
-            const options: any = { baseline: "alphabetic" };
-            if (natural > 0) options.maxWidth = undefined;
-            pdf.text(text, baselineX, baselineY, options);
+            pdf.text(text, baselineX, baselineY, { baseline: "alphabetic" });
             if (mode === "searchable") {
               (pdf as any).setTextRenderingMode?.("fill");
             }
-            void fontSize;
           });
         }
+
       }
 
       if (worker) await worker.terminate();

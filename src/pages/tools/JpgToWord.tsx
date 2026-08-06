@@ -44,7 +44,8 @@ const JpgToWord = () => {
     if (!pics.length) return toast.error("Please add at least one image");
     setBusy(true);
     try {
-      const { Document, Packer, Paragraph, TextRun, ImageRun, PageBreak } = await import("docx");
+      const { Document, Packer, Paragraph, TextRun, ImageRun, PageBreak, AlignmentType } = await import("docx");
+      const CONTENT_DXA = 9360; // 6.5in usable width (Letter, 1in margins)
       const maxW = 600; // points-ish width inside 1" margins
 
       const children: any[] = [];
@@ -78,19 +79,52 @@ const JpgToWord = () => {
 
         if (worker) {
           const { data: res } = await worker.recognize(pic.file);
-          const txt = (res.text || "").trim();
-          if (txt) {
+          const lines: any[] = (res as any).lines || [];
+          const dxaPerPx = CONTENT_DXA / (w || 1);
+
+          if (lines.length) {
             if (mode === "both") {
               children.push(
                 new Paragraph({ spacing: { before: 200 }, children: [new TextRun({ text: "Extracted text:", bold: true })] })
               );
             }
-            // Every OCR line becomes a real, editable Word paragraph.
-            txt.split(/\r?\n/).forEach((line) =>
+
+            let prevBottom: number | null = null;
+            lines.forEach((line) => {
+              const words: any[] = line.words || [];
+              const text = (line.text || "").replace(/\s+$/g, "");
+              if (!text.trim() || !line.bbox) {
+                prevBottom = line.bbox ? line.bbox.y1 : prevBottom;
+                return;
+              }
+
+              const lineH = line.bbox.y1 - line.bbox.y0;
+              // Font size in half-points, derived from the real glyph height in the picture.
+              const halfPts = Math.min(96, Math.max(12, Math.round((lineH * dxaPerPx) / 10 * 0.82)));
+
+              // Keep the original left indent and the vertical gap between lines.
+              const indentLeft = Math.max(0, Math.round(line.bbox.x0 * dxaPerPx));
+              const gapPx = prevBottom === null ? 0 : Math.max(0, line.bbox.y0 - prevBottom);
+              const spacingBefore = Math.min(1200, Math.round(gapPx * dxaPerPx * 0.5));
+              prevBottom = line.bbox.y1;
+
+              // Centred / right-aligned lines keep their look instead of collapsing left.
+              const leftGap = line.bbox.x0;
+              const rightGap = Math.max(0, w - line.bbox.x1);
+              const centred = leftGap > w * 0.12 && Math.abs(leftGap - rightGap) < w * 0.06;
+
+              const bold = words.length > 0 && words.every((wd: any) => wd?.font_bold);
+              const italics = words.length > 0 && words.every((wd: any) => wd?.font_italic);
+
               children.push(
-                new Paragraph({ spacing: { after: 80 }, children: [new TextRun({ text: line })] })
-              )
-            );
+                new Paragraph({
+                  alignment: centred ? AlignmentType.CENTER : AlignmentType.LEFT,
+                  indent: centred ? undefined : { left: indentLeft },
+                  spacing: { before: spacingBefore, after: 0, line: Math.round(lineH * dxaPerPx * 1.0) || undefined },
+                  children: [new TextRun({ text, size: halfPts, bold, italics })],
+                })
+              );
+            });
           } else if (mode === "text") {
             children.push(new Paragraph({ children: [new TextRun({ text: "(No readable text found in this image)", italics: true })] }));
           }
@@ -98,6 +132,7 @@ const JpgToWord = () => {
 
         if (i < pics.length - 1) children.push(new Paragraph({ children: [new PageBreak()] }));
       }
+
 
       if (worker) await worker.terminate();
       setStatus("Building document…");
