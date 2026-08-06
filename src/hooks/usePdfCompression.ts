@@ -215,15 +215,13 @@ export const usePdfCompression = () => {
       return;
     }
 
-    if (completedFiles.length === 1) {
-      downloadFile(completedFiles[0]);
-    } else {
-      const { default: JSZip } = await import('jszip');
-      const zip = new JSZip();
-      completedFiles.forEach(file => zip.file(`compressed_${file.name}`, file.result!.blob!));
-      const blob = await zip.generateAsync({ type: 'blob' });
-      triggerDownload(blob, 'klipza-compressed-pdfs.zip');
+    for (let i = 0; i < completedFiles.length; i++) {
+      downloadFile(completedFiles[i]);
+      if (i < completedFiles.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 350));
+      }
     }
+
 
     
     toast({
