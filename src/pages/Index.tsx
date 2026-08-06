@@ -15,7 +15,7 @@ import {
   Camera, Timer, Palette, DollarSign, Link2, Eraser, FileImage, MessageSquare, 
   Volume2, Film, FileCode, Hash, CalendarRange, Zap as ZapIcon, Heart, 
   CreditCard, Archive, Search, Copy, Target, BarChart, Users, Repeat, 
-  Shield as ShieldIcon, Mic, Wifi, Scan, Crop, FileText
+  Shield as ShieldIcon, Mic, Wifi, Scan, Crop, FileText, FileSpreadsheet, Table2, FileType
 } from "lucide-react";
 
 const Index = () => {
@@ -79,6 +79,11 @@ const Index = () => {
       icon: <Scan />,
       path: "/tools/image-to-text"
     }, {
+      title: "JPG to Word",
+      description: "Convert JPG or PNG images into an editable Word document with optional OCR",
+      icon: <FileType />,
+      path: "/tools/jpg-to-word"
+    }, {
       title: "Image Metadata Extractor",
       description: "View EXIF data, camera details, GPS location and dimensions of any photo",
       icon: <Search />,
@@ -122,6 +127,36 @@ const Index = () => {
       description: "Convert PDF to editable Word documents",
       icon: <FileText />,
       path: "/tools/pdf-to-word"
+    }, {
+      title: "PDF to Text",
+      description: "Convert PDF documents into clean plain text with layout-aware line detection",
+      icon: <FileText />,
+      path: "/tools/pdf-to-text"
+    }, {
+      title: "PDF to CSV",
+      description: "Extract tables and rows from PDF files into a ready-to-use CSV spreadsheet",
+      icon: <Table2 />,
+      path: "/tools/pdf-to-csv"
+    }, {
+      title: "Text to Word",
+      description: "Turn plain text into a properly formatted Microsoft Word (.docx) document",
+      icon: <FileType />,
+      path: "/tools/text-to-word"
+    }, {
+      title: "Word to Text",
+      description: "Extract plain text from Word documents and download it as a .txt file",
+      icon: <AlignLeft />,
+      path: "/tools/word-to-text"
+    }, {
+      title: "Word to Excel",
+      description: "Convert Word tables into an Excel workbook with one sheet per table",
+      icon: <FileSpreadsheet />,
+      path: "/tools/word-to-excel"
+    }, {
+      title: "Word to JPG",
+      description: "Convert Word documents into high-quality JPG images, one per page",
+      icon: <FileImage />,
+      path: "/tools/word-to-jpg"
     }, {
       title: "Protect PDF",
       description: "Add password protection to secure your PDF files",
