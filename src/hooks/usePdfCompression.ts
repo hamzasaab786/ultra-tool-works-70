@@ -186,20 +186,24 @@ export const usePdfCompression = () => {
     }
   };
 
-  const downloadFile = (file: ProcessedFile) => {
-    if (!file.result?.blob) return;
-
-    const url = URL.createObjectURL(file.result.blob);
+  const triggerDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `compressed_${file.name}`;
+    a.download = filename;
+    a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
   };
 
-  const downloadAllFiles = () => {
+  const downloadFile = (file: ProcessedFile) => {
+    if (!file.result?.blob) return;
+    triggerDownload(file.result.blob, `compressed_${file.name}`);
+  };
+
+  const downloadAllFiles = async () => {
     const completedFiles = files.filter(f => f.status === 'completed' && f.result?.blob);
     
     if (completedFiles.length === 0) {
@@ -211,7 +215,16 @@ export const usePdfCompression = () => {
       return;
     }
 
-    completedFiles.forEach(file => downloadFile(file));
+    if (completedFiles.length === 1) {
+      downloadFile(completedFiles[0]);
+    } else {
+      const { default: JSZip } = await import('jszip');
+      const zip = new JSZip();
+      completedFiles.forEach(file => zip.file(`compressed_${file.name}`, file.result!.blob!));
+      const blob = await zip.generateAsync({ type: 'blob' });
+      triggerDownload(blob, 'klipza-compressed-pdfs.zip');
+    }
+
     
     toast({
       title: "Download Started",
