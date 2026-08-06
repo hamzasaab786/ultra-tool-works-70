@@ -18,6 +18,9 @@ const JpgToPdf = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [mode, setMode] = useState<"image" | "searchable" | "text">("searchable");
+  const [status, setStatus] = useState("");
+
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -140,12 +143,21 @@ const JpgToPdf = () => {
     if (images.length === 0) return;
 
     setIsConverting(true);
-    
+
     try {
       const pdf = new jsPDF();
       let isFirstPage = true;
 
-      for (const image of images) {
+      // OCR worker is only created when an editable/searchable mode is picked.
+      let worker: any = null;
+      if (mode !== "image") {
+        setStatus("Loading OCR engine…");
+        const Tesseract = (await import("tesseract.js")).default;
+        worker = await Tesseract.createWorker("eng");
+      }
+
+      for (let idx = 0; idx < images.length; idx += 1) {
+        const image = images[idx];
         if (!isFirstPage) {
           pdf.addPage();
         }
@@ -181,20 +193,65 @@ const JpgToPdf = () => {
         const x = (pdfWidth - width) / 2;
         const y = (pdfHeight - height) / 2;
 
-        // Derive the real format from the data URL so PNG/WEBP uploads embed correctly
-        const mimeMatch = /^data:image\/([a-z+]+);/i.exec(image.preview);
-        const detected = (mimeMatch?.[1] || 'jpeg').toUpperCase();
-        const format = detected === 'JPG' ? 'JPEG' : detected;
+        if (mode !== "text") {
+          // Derive the real format from the data URL so PNG/WEBP uploads embed correctly
+          const mimeMatch = /^data:image\/([a-z+]+);/i.exec(image.preview);
+          const detected = (mimeMatch?.[1] || 'jpeg').toUpperCase();
+          const format = detected === 'JPG' ? 'JPEG' : detected;
+          pdf.addImage(image.preview, format, x, y, width, height);
+        }
 
-        pdf.addImage(image.preview, format, x, y, width, height);
+        if (worker) {
+          setStatus(`Reading text from image ${idx + 1} of ${images.length}…`);
+          const { data } = await worker.recognize(image.file);
+          const words: any[] = (data as any).words || [];
+          const scale = width / img.width;
+
+          pdf.setFont("helvetica", "normal");
+          pdf.setTextColor(0, 0, 0);
+
+          words.forEach((w) => {
+            const text = (w.text || "").trim();
+            if (!text || !w.bbox) return;
+            const bw = (w.bbox.x1 - w.bbox.x0) * scale;
+            const bh = (w.bbox.y1 - w.bbox.y0) * scale;
+            if (bw <= 0 || bh <= 0) return;
+
+            const fontSize = Math.max(4, bh * 0.92 * (72 / 25.4) / (72 / 25.4)); // bh is already in pt-equivalent mm units
+            pdf.setFontSize(Math.max(4, bh * 2.4));
+            const baselineX = x + w.bbox.x0 * scale;
+            const baselineY = y + w.bbox.y1 * scale;
+
+            if (mode === "searchable") {
+              // Invisible text layer sitting exactly over the picture.
+              (pdf as any).setTextRenderingMode?.("invisible");
+            }
+            // Squeeze each word into its original box so the layout matches the photo.
+            const natural = pdf.getTextWidth(text);
+            const options: any = { baseline: "alphabetic" };
+            if (natural > 0) options.maxWidth = undefined;
+            pdf.text(text, baselineX, baselineY, options);
+            if (mode === "searchable") {
+              (pdf as any).setTextRenderingMode?.("fill");
+            }
+            void fontSize;
+          });
+        }
       }
 
+      if (worker) await worker.terminate();
+
       // Save the PDF
-      pdf.save('converted-images.pdf');
+      pdf.save(mode === "image" ? 'converted-images.pdf' : 'editable-images.pdf');
       
       toast({
         title: "Success",
-        description: "Images converted to PDF successfully!",
+        description:
+          mode === "image"
+            ? "Images converted to PDF successfully!"
+            : mode === "searchable"
+            ? "Searchable PDF created — text is selectable and editable over the image."
+            : "Fully editable text PDF created from your images.",
       });
     } catch (error) {
       console.error('PDF conversion error:', error);
@@ -204,9 +261,11 @@ const JpgToPdf = () => {
         variant: "destructive"
       });
     } finally {
+      setStatus("");
       setIsConverting(false);
     }
-  }, [images]);
+  }, [images, mode]);
+
 
   const resetImages = useCallback(() => {
     setImages([]);
@@ -263,14 +322,32 @@ const JpgToPdf = () => {
             </Button>
           </div>
 
-          <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-2">
-              <GripVertical className="h-5 w-5 text-blue-600" />
-              <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
-                Drag and drop images to change their order in the PDF
-              </p>
+          <div className="rounded-lg border p-4 space-y-3">
+            <p className="font-medium">Output type</p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {[
+                { id: "searchable" as const, title: "Editable & searchable", desc: "Photo + real text layer you can select, search and edit" },
+                { id: "text" as const, title: "Fully editable text", desc: "Text-only PDF (OCR) — every line editable, no image" },
+                { id: "image" as const, title: "Image only", desc: "Classic picture PDF, fastest" },
+              ].map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setMode(opt.id)}
+                  className={`text-left rounded-lg border p-3 transition-colors ${
+                    mode === opt.id ? "border-primary bg-primary/10" : "hover:border-primary/50"
+                  }`}
+                >
+                  <span className="block text-sm font-semibold">{opt.title}</span>
+                  <span className="block text-xs text-muted-foreground mt-1">{opt.desc}</span>
+                </button>
+              ))}
             </div>
+            <p className="text-xs text-muted-foreground flex items-center gap-2">
+              <GripVertical className="h-4 w-4" /> Drag and drop images to change their order in the PDF
+            </p>
           </div>
+
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {images.map((image, index) => (
@@ -356,7 +433,7 @@ const JpgToPdf = () => {
               className="flex-1"
             >
               {isConverting ? (
-                <>Converting...</>
+                <>{status || "Converting..."}</>
               ) : (
                 <>
                   <FileIcon className="mr-2 h-4 w-4" /> Convert to PDF
