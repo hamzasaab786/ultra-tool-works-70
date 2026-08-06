@@ -303,19 +303,16 @@ const PdfToJpg = () => {
     }
   };
 
-  const downloadAllConverted = async () => {
-    const files = processedFiles.filter(f => f.convertedPages.length > 0);
-    if (files.length === 0) return;
+  const downloadPages = async (pages: ConvertedPage[], allowFolderPicker = false) => {
+    if (pages.length === 0) return;
 
-    const allPages = files.flatMap(f => f.convertedPages);
-
-    // Preferred path: let the user pick a folder once, then write every JPG
-    // into it (no per-file prompts, no browser multi-download limit).
+    // Preferred path (explicit click only): pick a folder once, then write every
+    // image into it — no per-file prompts, no browser multi-download limit.
     const picker = (window as any).showDirectoryPicker;
-    if (typeof picker === 'function') {
+    if (allowFolderPicker && typeof picker === 'function') {
       try {
         const dirHandle = await picker({ mode: 'readwrite' });
-        for (const page of allPages) {
+        for (const page of pages) {
           const handle = await dirHandle.getFileHandle(page.filename, { create: true });
           const writable = await handle.createWritable();
           await writable.write(page.blob);
@@ -323,7 +320,7 @@ const PdfToJpg = () => {
         }
         toast({
           title: 'Download completed',
-          description: `Saved ${allPages.length} JPG image(s) to the selected folder.`,
+          description: `Saved ${pages.length} image(s) to the selected folder.`,
         });
         return;
       } catch (err: any) {
@@ -332,13 +329,21 @@ const PdfToJpg = () => {
       }
     }
 
-    await downloadSequentially(allPages);
+    await downloadSequentially(pages);
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${allPages.length} image(s). If your browser asks, allow multiple downloads.`,
+      description: `Downloaded ${pages.length} image(s) in page order. If your browser asks, allow multiple downloads.`,
     });
   };
+
+  const downloadAllConverted = async () => {
+    const allPages = processedFiles
+      .filter(f => f.convertedPages.length > 0)
+      .flatMap(f => f.convertedPages);
+    await downloadPages(allPages, true);
+  };
+
 
 
 
