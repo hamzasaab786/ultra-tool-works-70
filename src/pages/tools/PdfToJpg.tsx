@@ -144,9 +144,9 @@ const PdfToJpg = () => {
     multiple: true,
   });
 
-  const convertPdfToImages = async (fileId: string) => {
+  const convertPdfToImages = async (fileId: string): Promise<ConvertedPage[]> => {
     const fileIndex = processedFiles.findIndex(f => f.id === fileId);
-    if (fileIndex === -1) return;
+    if (fileIndex === -1) return [];
 
     const processedFile = processedFiles[fileIndex];
     
@@ -183,7 +183,8 @@ const PdfToJpg = () => {
             canvas.toBlob((b) => resolve(b!), mime, quality);
           });
           const dataUrl = URL.createObjectURL(blob);
-          const filename = `${processedFile.file.name.replace('.pdf', '')}_page_${pageNum}.${settings.format}`;
+          const pad = String(pageNum).padStart(String(processedFile.totalPages).length, '0');
+          const filename = `${processedFile.file.name.replace('.pdf', '')}_page_${pad}.${settings.format}`;
 
           page.cleanup();
           canvas.width = 0;
@@ -215,6 +216,8 @@ const PdfToJpg = () => {
         title: 'Conversion completed',
         description: `Successfully converted ${converted.length} pages from ${processedFile.file.name}`,
       });
+
+      return converted;
     } catch (error) {
       console.error('Conversion error:', error);
       setProcessedFiles(prev => prev.map(f =>
@@ -225,16 +228,29 @@ const PdfToJpg = () => {
         description: 'An error occurred during conversion. Please try again.',
         variant: 'destructive',
       });
+      return [];
     }
   };
 
   const convertAllFiles = async () => {
+    const freshPages: ConvertedPage[] = [];
+
     for (const file of processedFiles) {
       if (file.convertedPages.length === 0) {
-        await convertPdfToImages(file.id);
+        const pages = await convertPdfToImages(file.id);
+        freshPages.push(...pages);
+      } else {
+        freshPages.push(...file.convertedPages);
       }
     }
+
+    // One-click flow: as soon as the conversion finishes, every page is saved
+    // as its own image file, in page order.
+    if (freshPages.length > 0) {
+      await downloadPages(freshPages);
+    }
   };
+
 
   const getPageNumbers = (totalPages: number): number[] => {
     if (settings.pageRange === 'all') {
