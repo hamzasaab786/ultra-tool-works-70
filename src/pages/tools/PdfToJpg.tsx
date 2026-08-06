@@ -278,29 +278,49 @@ const PdfToJpg = () => {
     if (!processedFile) return;
 
     const convertedPages = processedFile.convertedPages;
+    if (convertedPages.length === 0) return;
     if (convertedPages.length === 1) {
       downloadSingle(convertedPages[0]);
       return;
     }
 
-    for (const page of convertedPages) {
-      downloadSingle(page);
-      await new Promise(resolve => setTimeout(resolve, 200));
-    }
+    const { default: JSZip } = await import('jszip');
+    const zip = new JSZip();
+    convertedPages.forEach(page => zip.file(page.filename, page.blob));
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const baseName = processedFile.file.name.replace(/\.pdf$/i, '') || 'pages';
+    downloadSingle({ blob, filename: `${baseName}-images.zip` } as ConvertedPage);
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${convertedPages.length} images from ${processedFile.file.name}`,
+      description: `Downloaded ${convertedPages.length} images as a ZIP from ${processedFile.file.name}`,
     });
   };
 
   const downloadAllConverted = async () => {
-    for (const file of processedFiles) {
-      if (file.convertedPages.length > 0) {
-        await downloadAll(file.id);
-      }
+    const files = processedFiles.filter(f => f.convertedPages.length > 0);
+    if (files.length === 0) return;
+    if (files.length === 1) {
+      await downloadAll(files[0].id);
+      return;
     }
+
+    const { default: JSZip } = await import('jszip');
+    const zip = new JSZip();
+    files.forEach(file => {
+      const baseName = file.file.name.replace(/\.pdf$/i, '') || 'pdf';
+      const folder = zip.folder(baseName);
+      file.convertedPages.forEach(page => folder?.file(page.filename, page.blob));
+    });
+    const blob = await zip.generateAsync({ type: 'blob' });
+    downloadSingle({ blob, filename: 'klipza-pdf-images.zip' } as ConvertedPage);
+
+    toast({
+      title: 'Download completed',
+      description: `Downloaded images from ${files.length} PDFs as a ZIP`,
+    });
   };
+
 
   const removeFile = (fileId: string) => {
     setProcessedFiles(prev => prev.filter(f => f.id !== fileId));
