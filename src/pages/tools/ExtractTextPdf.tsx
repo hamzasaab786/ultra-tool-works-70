@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FileText, Copy, Download, Loader2 } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import { loadPdfDocument } from "@/utils/pdfClient";
+import { loadPdfDocument, mapConcurrent } from "@/utils/pdfClient";
 
 const ExtractTextPdf = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -33,16 +33,17 @@ const ExtractTextPdf = () => {
     try {
       const pdf = await loadPdfDocument(file);
       
-      let fullText = "";
-      
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items
-          .map((item: any) => item.str)
-          .join(" ");
-        fullText += `\n\n=== Page ${i} ===\n\n${pageText}`;
-      }
+      const pageTexts = await mapConcurrent(
+        Array.from({ length: pdf.numPages }, (_, i) => i + 1),
+        async (i) => {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item: any) => item.str).join(" ");
+          page.cleanup();
+          return `\n\n=== Page ${i} ===\n\n${pageText}`;
+        }
+      );
+      const fullText = pageTexts.join("");
 
       setExtractedText(fullText.trim());
       toast.success(`Successfully extracted text from ${pdf.numPages} pages!`);

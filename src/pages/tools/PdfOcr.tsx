@@ -47,16 +47,29 @@ const PdfOcr = () => {
       const pdf = await loadPdfDocument(file);
       const worker = await getWorker();
       let result = "";
-      for (let p = 1; p <= pdf.numPages; p++) {
-        setStatus(`Page ${p}/${pdf.numPages}: rendering...`);
+
+      const renderPage = async (p: number) => {
         const page = await pdf.getPage(p);
         const { canvas } = await renderPdfPageToCanvas(page, 2);
+        page.cleanup();
+        return canvas;
+      };
+
+      // Render the next page while the current one is being OCR'd (pipelining).
+      let nextCanvas = renderPage(1);
+      for (let p = 1; p <= pdf.numPages; p++) {
+        setStatus(`Page ${p}/${pdf.numPages}: rendering...`);
+        const canvas = await nextCanvas;
+        if (p < pdf.numPages) nextCanvas = renderPage(p + 1);
 
         setStatus(`Page ${p}/${pdf.numPages}: OCR...`);
         const { data } = await worker.recognize(canvas, undefined, undefined, `page-${p}`);
+        canvas.width = 0;
+        canvas.height = 0;
         setProgress(Math.round((p / pdf.numPages) * 100));
         result += `\n\n===== PAGE ${p} =====\n\n${data.text.trim()}`;
       }
+
       setText(result.trim());
       setProgress(100);
       setStatus("Done");
