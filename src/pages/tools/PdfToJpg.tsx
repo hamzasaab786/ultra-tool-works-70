@@ -609,9 +609,12 @@ const PdfToJpg = () => {
                 <p className="text-sm text-gray-600">
                   {processedFiles.filter(f => f.convertedPages.length > 0).length} file(s) converted successfully
                 </p>
-                <Button onClick={downloadAllConverted} className="flex items-center gap-2">
+                <Button
+                  onClick={downloadAllConverted}
+                  className="flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90"
+                >
                   <Download className="h-4 w-4" />
-                  Download All Pages
+                  Download All Pages (JPG)
                 </Button>
               </div>
 
@@ -619,11 +622,9 @@ const PdfToJpg = () => {
                 <div key={file.id} className="space-y-3">
                   <div className="flex items-center justify-between">
                     <p className="font-medium text-sm">{file.file.name}</p>
-                    <Button onClick={() => downloadAll(file.id)} size="sm" variant="outline">
-                      <Download className="h-3 w-3 mr-1" />
-                      Download all {file.convertedPages.length} pages
-                    </Button>
+                    <p className="text-xs text-muted-foreground">{file.convertedPages.length} pages</p>
                   </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {file.convertedPages.map((page) => (
                       <div key={page.pageNumber} className="border rounded-lg overflow-hidden">
