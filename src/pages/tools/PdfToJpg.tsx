@@ -277,53 +277,47 @@ const PdfToJpg = () => {
   };
 
 
+  const downloadSequentially = async (pages: ConvertedPage[]) => {
+    for (let i = 0; i < pages.length; i++) {
+      downloadSingle(pages[i]);
+      // small gap so the browser queues every file instead of dropping them
+      if (i < pages.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 350));
+      }
+    }
+  };
+
   const downloadAll = async (fileId: string) => {
     const processedFile = processedFiles.find(f => f.id === fileId);
     if (!processedFile) return;
 
     const convertedPages = processedFile.convertedPages;
     if (convertedPages.length === 0) return;
-    if (convertedPages.length === 1) {
-      downloadSingle(convertedPages[0]);
-      return;
-    }
 
-    const { default: JSZip } = await import('jszip');
-    const zip = new JSZip();
-    convertedPages.forEach(page => zip.file(page.filename, page.blob));
-    const blob = await zip.generateAsync({ type: 'blob' });
-    const baseName = processedFile.file.name.replace(/\.pdf$/i, '') || 'pages';
-    downloadSingle({ blob, filename: `${baseName}-images.zip` } as ConvertedPage);
+    await downloadSequentially(convertedPages);
 
     toast({
       title: 'Download completed',
-      description: `Downloaded ${convertedPages.length} images as a ZIP from ${processedFile.file.name}`,
+      description: `Downloaded ${convertedPages.length} image(s) from ${processedFile.file.name}. If your browser asks, allow multiple downloads.`,
     });
   };
 
   const downloadAllConverted = async () => {
     const files = processedFiles.filter(f => f.convertedPages.length > 0);
     if (files.length === 0) return;
-    if (files.length === 1) {
-      await downloadAll(files[0].id);
-      return;
-    }
 
-    const { default: JSZip } = await import('jszip');
-    const zip = new JSZip();
-    files.forEach(file => {
-      const baseName = file.file.name.replace(/\.pdf$/i, '') || 'pdf';
-      const folder = zip.folder(baseName);
-      file.convertedPages.forEach(page => folder?.file(page.filename, page.blob));
-    });
-    const blob = await zip.generateAsync({ type: 'blob' });
-    downloadSingle({ blob, filename: 'klipza-pdf-images.zip' } as ConvertedPage);
+    let total = 0;
+    for (const file of files) {
+      await downloadSequentially(file.convertedPages);
+      total += file.convertedPages.length;
+    }
 
     toast({
       title: 'Download completed',
-      description: `Downloaded images from ${files.length} PDFs as a ZIP`,
+      description: `Downloaded ${total} image(s). If your browser asks, allow multiple downloads.`,
     });
   };
+
 
 
   const removeFile = (fileId: string) => {
