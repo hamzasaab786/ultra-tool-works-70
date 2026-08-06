@@ -604,7 +604,7 @@ const PdfToJpg = () => {
                 </p>
                 <Button onClick={downloadAllConverted} className="flex items-center gap-2">
                   <Download className="h-4 w-4" />
-                  Download All (ZIP)
+                  Download All Pages
                 </Button>
               </div>
 
@@ -614,7 +614,7 @@ const PdfToJpg = () => {
                     <p className="font-medium text-sm">{file.file.name}</p>
                     <Button onClick={() => downloadAll(file.id)} size="sm" variant="outline">
                       <Download className="h-3 w-3 mr-1" />
-                      Download all {file.convertedPages.length} pages (ZIP)
+                      Download all {file.convertedPages.length} pages
                     </Button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
