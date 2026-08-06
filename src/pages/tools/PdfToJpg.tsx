@@ -152,19 +152,19 @@ const PdfToJpg = () => {
 
     try {
       const pagesToConvert = getPageNumbers(processedFile.totalPages);
-      const converted: ConvertedPage[] = [];
+      let done = 0;
+      const mime = `image/${settings.format}`;
+      const quality = settings.format === 'jpg' ? settings.quality / 100 : 1;
 
-      for (let i = 0; i < pagesToConvert.length; i++) {
-        const pageNum = pagesToConvert[i];
-        
+      const results = await mapConcurrent(pagesToConvert, async (pageNum) => {
         try {
           const page = await processedFile.pdfDocument.getPage(pageNum);
-          
+
           const scale = settings.dpi / 72;
           const viewport = page.getViewport({ scale });
-          
+
           const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d')!;
+          const context = canvas.getContext('2d', { alpha: false })!;
           canvas.height = viewport.height;
           canvas.width = viewport.width;
 
@@ -173,30 +173,32 @@ const PdfToJpg = () => {
             viewport: viewport,
           }).promise;
 
+          // Encode once; the object URL reuses the same bytes as the blob.
           const blob = await new Promise<Blob>((resolve) => {
-            canvas.toBlob((blob) => {
-              resolve(blob!);
-            }, `image/${settings.format}`, settings.format === 'jpg' ? settings.quality / 100 : 1);
+            canvas.toBlob((b) => resolve(b!), mime, quality);
           });
-
-          const dataUrl = canvas.toDataURL(`image/${settings.format}`, settings.format === 'jpg' ? settings.quality / 100 : 1);
+          const dataUrl = URL.createObjectURL(blob);
           const filename = `${processedFile.file.name.replace('.pdf', '')}_page_${pageNum}.${settings.format}`;
 
-          converted.push({
-            pageNumber: pageNum,
-            dataUrl,
-            blob,
-            filename
-          });
+          page.cleanup();
+          canvas.width = 0;
+          canvas.height = 0;
 
+          return { pageNumber: pageNum, dataUrl, blob, filename } as ConvertedPage;
         } catch (pageError) {
           console.error('Error converting page', pageNum, pageError);
+          return null;
+        } finally {
+          done += 1;
+          const pct = (done / pagesToConvert.length) * 100;
+          setProcessedFiles(prev => prev.map(f =>
+            f.id === fileId ? { ...f, conversionProgress: pct } : f
+          ));
         }
+      });
 
-        setProcessedFiles(prev => prev.map(f =>
-          f.id === fileId ? { ...f, conversionProgress: ((i + 1) / pagesToConvert.length) * 100 } : f
-        ));
-      }
+      converted.push(...(results.filter(Boolean) as ConvertedPage[]));
+
 
       setProcessedFiles(prev => prev.map(f =>
         f.id === fileId ? { ...f, convertedPages: converted, isConverting: false } : f
