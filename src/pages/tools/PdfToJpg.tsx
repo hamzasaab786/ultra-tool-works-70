@@ -306,8 +306,9 @@ const PdfToJpg = () => {
   const downloadPages = async (pages: ConvertedPage[]) => {
     if (pages.length === 0) return;
 
-    // Always download each page as its own image file, in page order.
-    await downloadSequentially([...pages].sort((a, b) => a.pageNumber - b.pageNumber));
+    // Always download each page as its own image file, in the given order.
+    await downloadSequentially(pages);
+
 
     toast({
       title: 'Download completed',
