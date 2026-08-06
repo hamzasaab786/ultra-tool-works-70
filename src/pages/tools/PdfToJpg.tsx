@@ -620,7 +620,7 @@ const PdfToJpg = () => {
                     <p className="font-medium text-sm">{file.file.name}</p>
                     <Button onClick={() => downloadAll(file.id)} size="sm" variant="outline">
                       <Download className="h-3 w-3 mr-1" />
-                      Download ({file.convertedPages.length})
+                      Download all {file.convertedPages.length} pages (ZIP)
                     </Button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
