@@ -1,5 +1,4 @@
 import React from "react";
-import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
@@ -27,7 +26,7 @@ const PrivacyPolicy = () => {
   };
 
   return (
-    <Layout>
+    <>
       <SEO
         title="Privacy Policy — How Klipza Handles Your Data"
         description="Klipza processes files in your browser and never stores them. Read how we use cookies, analytics and advertising partners, and what rights you have."
@@ -220,7 +219,7 @@ const PrivacyPolicy = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

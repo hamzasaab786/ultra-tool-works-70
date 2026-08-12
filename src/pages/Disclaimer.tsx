@@ -1,6 +1,5 @@
 
 import React from "react";
-import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 
 const Disclaimer = () => {
@@ -8,7 +7,7 @@ const Disclaimer = () => {
   const formattedDate = `${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getDate()}, ${currentDate.getFullYear()}`;
 
   return (
-    <Layout>
+    <>
       <SEO
         title="Disclaimer — Accuracy & Use of Klipza Tools"
         description="Klipza's disclaimer: tool results, calculators and conversions are provided as-is for general use, with no professional, legal, medical or financial advice."
@@ -93,7 +92,7 @@ const Disclaimer = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

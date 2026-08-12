@@ -1,5 +1,4 @@
 import React from "react";
-import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
@@ -27,7 +26,7 @@ const Terms = () => {
   };
 
   return (
-    <Layout>
+    <>
       <SEO
         title="Terms and Conditions — Using Klipza's Free Tools"
         description="Read the terms and conditions for using Klipza: acceptable use, your content and ownership, accuracy of results, advertising, liability limits and governing law."
@@ -198,7 +197,7 @@ const Terms = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

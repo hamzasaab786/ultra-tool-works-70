@@ -1,11 +1,10 @@
 
 import React from "react";
-import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 
 const AboutUs = () => {
   return (
-    <Layout>
+    <>
       <SEO
         title="About Klipza — Free Privacy-First Online Tools"
         description="Learn who builds Klipza, why our 130+ PDF, image, text and calculator tools are free, and how browser-based processing keeps your files private."
@@ -81,7 +80,7 @@ const AboutUs = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 
