@@ -60,6 +60,28 @@ const ToolSeoHead = () => {
     ],
   };
 
+  // HowTo is emitted only when the page actually renders the matching numbered
+  // steps, so the structured data always reflects visible on-page content.
+  const content = getToolContent(entry.path);
+  const howToSchema = content
+    ? {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "@id": `${url}#howto`,
+        name: `How to use the ${entry.name}`,
+        description: entry.description,
+        totalTime: "PT1M",
+        step: content.steps.map((text, i) => ({
+          "@type": "HowToStep",
+          position: i + 1,
+          name: `Step ${i + 1}`,
+          text,
+          url: `${url}#tool-article-heading`,
+        })),
+      }
+    : null;
+
+
   return (
     <Helmet prioritizeSeoTags>
       <title>{`${entry.title} | Klipza`}</title>
