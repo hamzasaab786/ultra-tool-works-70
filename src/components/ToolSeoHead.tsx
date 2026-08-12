@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import { getToolSeo, buildCommonFaqs } from "@/data/toolSeo";
+import { getToolContent } from "@/data/toolContent";
 
 const SITE_URL = "https://klipza.live";
 
