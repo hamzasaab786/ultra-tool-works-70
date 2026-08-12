@@ -88,20 +88,25 @@ const ToolSeoArticle = () => {
         </h2>
 
         <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
-          <p>
-            Klipza&rsquo;s {entry.name} is a free online {entry.category.toLowerCase().replace(/ tools?$/, "")} tool
-            built for people who need a reliable {primary} without downloading software or creating an
-            account. {entry.description}
-          </p>
-          <p>
-            Thousands of students, freelancers, developers, teachers and small business owners search for a
-            dependable {primary} every day — and most paid apps hide the same functionality behind a
-            subscription, a watermark or a file limit. The {entry.name} removes all of that: open the page,
-            do the job, download the result. Because the work happens in your own browser, the {entry.name}{" "}
-            is also one of the safest ways to handle sensitive documents, invoices, ID photos or private
-            data.
-          </p>
+          {content ? (
+            content.intro.map((para) => <p key={para.slice(0, 40)}>{para}</p>)
+          ) : (
+            <>
+              <p>
+                Klipza&rsquo;s {entry.name} is a free online{" "}
+                {entry.category.toLowerCase().replace(/ tools?$/, "")} tool built for people who need a
+                reliable {primary} without downloading software or creating an account. {entry.description}
+              </p>
+              <p>
+                Most paid apps hide the same functionality behind a subscription, a watermark or a file
+                limit. The {entry.name} removes all of that: open the page, do the job, download the
+                result. Because the work happens in your own browser, the {entry.name} is also one of the
+                safest ways to handle sensitive documents, invoices, ID photos or private data.
+              </p>
+            </>
+          )}
         </div>
+
 
         {/* How to use */}
         <h3 className="mt-10 text-xl font-semibold text-foreground">
