@@ -47,3 +47,7 @@ User-agent: Applebot-Extended
 Allow: /
 
 Sitemap: https://klipza.live/sitemap.xml
+
+# AI / answer engines
+User-agent: *
+Allow: /llms.txt

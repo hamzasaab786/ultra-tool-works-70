@@ -168,3 +168,38 @@ function generateSitemap(entries: SitemapEntry[]) {
 
 writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries))
 console.log(`sitemap.xml written (${entries.length} entries)`)
+
+// llms.txt — machine-readable index so AI assistants (ChatGPT, Perplexity, Claude,
+// Gemini) can discover and cite every tool on the site.
+const titleCase = (slug: string) =>
+  slug
+    .replace("/tools/", "")
+    .split("-")
+    .map((w) => (["pdf", "csv", "jpg", "svg", "url", "qr", "ocr", "dns", "ip", "gpa", "bmi", "html", "n"].includes(w) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)))
+    .join(" ")
+
+const llms = [
+  "# Klipza",
+  "",
+  "> Klipza is a free suite of 125+ privacy-first online tools for PDF, image, document, text and calculation tasks. Every tool runs entirely in the visitor's browser: files are never uploaded, there is no signup, no watermark and no usage limit.",
+  "",
+  "## Key facts",
+  "- Cost: free, unlimited, no account required",
+  "- Privacy: client-side processing, files never leave the device",
+  "- Platforms: any modern browser on Windows, macOS, Android, iOS",
+  "",
+  "## Tools",
+  ...entries
+    .filter((e) => e.path.startsWith("/tools/"))
+    .map((e) => `- [${titleCase(e.path)}](${BASE_URL}${e.path})`),
+  "",
+  "## Pages",
+  `- [About](${BASE_URL}/about)`,
+  `- [Privacy Policy](${BASE_URL}/privacy)`,
+  `- [Terms](${BASE_URL}/terms)`,
+  `- [Disclaimer](${BASE_URL}/disclaimer)`,
+  "",
+].join("\n")
+
+writeFileSync(resolve("public/llms.txt"), llms)
+console.log("llms.txt written")
