@@ -20,6 +20,9 @@ export const imageTools: ToolLink[] = [
     { name: "JPG to Word", path: "/tools/jpg-to-word" },
     { name: "Image Metadata Extractor", path: "/tools/image-metadata-extractor" },
     { name: "Remove Watermark", path: "/tools/remove-watermark" },
+    { name: "Image Watermark", path: "/tools/image-watermark" },
+    { name: "Meme Generator", path: "/tools/meme-generator" },
+    { name: "Favicon Generator", path: "/tools/favicon-generator" },
 ];
 
 export const pdfTools: ToolLink[] = [
@@ -99,6 +102,8 @@ export const calculatorTools: ToolLink[] = [
     { name: "Typing Speed Test", path: "/tools/typing-speed-test" },
     { name: "Time Zone Converter", path: "/tools/time-zone-converter" },
     { name: "Random Name Picker", path: "/tools/random-picker" },
+    { name: "Random Number Generator", path: "/tools/random-number-generator" },
+    { name: "Ovulation Calculator", path: "/tools/ovulation-calculator" },
 ];
 
 export const textTools: ToolLink[] = [
@@ -119,6 +124,7 @@ export const textTools: ToolLink[] = [
 
 export const utilityTools: ToolLink[] = [
     { name: "QR Code Generator", path: "/tools/qr-code-generator" },
+    { name: "Signature Generator", path: "/tools/signature-generator" },
     { name: "Password Generator", path: "/tools/password-generator" },
     { name: "Hash Generator", path: "/tools/hash-generator" },
     { name: "Timer & Stopwatch", path: "/tools/timer-stopwatch" },
