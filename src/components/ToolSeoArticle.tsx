@@ -2,12 +2,13 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CheckCircle2, Sparkles, Zap, ShieldCheck, Search } from "lucide-react";
 import { getToolSeo, toolSeoEntries, type ToolSeoEntry } from "@/data/toolSeo";
+import { getToolContent } from "@/data/toolContent";
 
 /**
- * Long-form, keyword-rich SEO content rendered under every tool.
- * Content is generated from the per-tool catalog (name, category, description,
- * researched keyword set) so every route gets unique, crawlable copy that
- * matches its title/description and structured data.
+ * Long-form SEO content rendered under every tool.
+ * Hand-written, tool-specific copy from src/data/toolContent is used whenever it
+ * exists, so no two tool pages share the same body text. Tools that do not have
+ * bespoke copy yet fall back to catalog-driven content.
  */
 
 const keywordList = (entry: ToolSeoEntry) =>
@@ -16,14 +17,14 @@ const keywordList = (entry: ToolSeoEntry) =>
     .map((k) => k.trim())
     .filter(Boolean);
 
-const buildSteps = (entry: ToolSeoEntry): string[] => [
+const fallbackSteps = (entry: ToolSeoEntry): string[] => [
   `Open the ${entry.name} on Klipza — no signup, no installation and no email required.`,
   `Add your file or input to the tool. Everything runs in your browser, so even large jobs start instantly.`,
   `Adjust the available options until the live result matches exactly what you need.`,
   `Download the finished result in one click and reuse the ${entry.name} as often as you like — it is unlimited and free.`,
 ];
 
-const buildFeatures = (entry: ToolSeoEntry): { title: string; body: string }[] => [
+const fallbackFeatures = (entry: ToolSeoEntry): { title: string; body: string }[] => [
   {
     title: "100% free, unlimited use",
     body: `The ${entry.name} has no paywall, no trial period, no watermark and no daily cap. Use it once or a hundred times a day at no cost.`,
@@ -42,20 +43,31 @@ const buildFeatures = (entry: ToolSeoEntry): { title: string; body: string }[] =
   },
 ];
 
+const fallbackUseCases = (entry: ToolSeoEntry): string[] => [
+  `Students and teachers preparing assignments, applications and classroom material`,
+  `Freelancers and agencies delivering polished files to clients on a deadline`,
+  `Small business owners handling paperwork without paid office software`,
+  `Developers, marketers and job seekers who need a quick, accurate ${entry.name.toLowerCase()}`,
+];
+
 const ToolSeoArticle = () => {
   const { pathname } = useLocation();
   const entry = getToolSeo(pathname);
 
   if (!entry) return null;
 
+  const content = getToolContent(entry.path);
   const keywords = keywordList(entry);
   const primary = keywords[0] ?? entry.name.toLowerCase();
-  const steps = buildSteps(entry);
-  const features = buildFeatures(entry);
+  const steps = content?.steps ?? fallbackSteps(entry);
+  const features = content?.benefits ?? fallbackFeatures(entry);
+  const useCases = content?.useCases ?? fallbackUseCases(entry);
+  const sections = content?.sections ?? [];
 
   const related = toolSeoEntries
     .filter((e) => e.category === entry.category && e.path !== entry.path)
     .slice(0, 6);
+
 
   return (
     <section
