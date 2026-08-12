@@ -2115,6 +2115,231 @@ export const toolSeoEntries: ToolSeoEntry[] = [
       },
     ],
   },
+  /* ------------------------------------------- CONVERTERS & PDF UTILITIES */
+  {
+    path: "/tools/pdf-to-text",
+    name: "PDF to Text",
+    category: PDF,
+    title: "PDF to Text Converter — Extract TXT from PDF Free",
+    description:
+      "Convert PDF to plain text online free. Keeps line breaks, paragraphs and reading order, runs fully in your browser and downloads a clean .txt file.",
+    keywords:
+      "pdf to text, convert pdf to txt, extract text from pdf, pdf text extractor online free, pdf to plain text converter, copy text from pdf online",
+    faqs: [
+      { q: "Does it keep the original layout?", a: "Yes. Lines are rebuilt from the PDF's own text coordinates, so paragraphs, line breaks and reading order match the document instead of arriving as one long block." },
+      { q: "Does it work on scanned PDFs?", a: "Scanned pages contain images, not text. For those use the PDF OCR tool, which recognises the characters first and then gives you editable text." },
+    ],
+  },
+  {
+    path: "/tools/pdf-to-csv",
+    name: "PDF to CSV",
+    category: PDF,
+    title: "PDF to CSV Converter — Export PDF Tables to CSV",
+    description:
+      "Turn tables inside a PDF into a clean CSV spreadsheet. Column detection runs in your browser, so bank statements and invoices never leave your device.",
+    keywords:
+      "pdf to csv, convert pdf table to csv, extract table from pdf, pdf to spreadsheet, bank statement pdf to csv free, pdf table extractor online",
+    faqs: [
+      { q: "How are columns detected?", a: "The tool measures the horizontal gaps between text runs on each line and splits the row where consistent column boundaries appear, which works well for invoices, statements and reports." },
+      { q: "Can I open the result in Excel?", a: "Yes. The CSV opens directly in Excel, Google Sheets, Numbers or any spreadsheet app, where you can sort, filter and chart the data." },
+    ],
+  },
+  {
+    path: "/tools/pdf-to-excel",
+    name: "PDF to Excel",
+    category: PDF,
+    title: "PDF to Excel Converter — PDF Tables to XLSX Free",
+    description:
+      "Convert PDF tables into a real Excel .xlsx workbook with rows and columns preserved. Free, unlimited and processed locally in your browser.",
+    keywords:
+      "pdf to excel, convert pdf to xlsx, pdf table to excel free, pdf to spreadsheet converter, extract excel data from pdf online",
+    faqs: [
+      { q: "Is the output a real Excel file?", a: "Yes, you get a genuine .xlsx workbook with each detected table mapped into cells, so formulas, sorting and pivot tables work immediately." },
+      { q: "What happens to multi-page tables?", a: "Every page is scanned and its rows are appended in document order, so a table spanning several pages ends up as one continuous sheet." },
+    ],
+  },
+  {
+    path: "/tools/pdf-to-powerpoint",
+    name: "PDF to PowerPoint",
+    category: PDF,
+    title: "PDF to PowerPoint — Convert PDF to PPTX Slides",
+    description:
+      "Convert each PDF page into a PowerPoint slide at high resolution. Free browser-based PDF to PPTX converter with no upload and no watermark.",
+    keywords:
+      "pdf to powerpoint, pdf to pptx converter, convert pdf to slides free, pdf to presentation online, pdf deck to powerpoint",
+    faqs: [
+      { q: "Are slides the right size?", a: "Pages are rendered to fit standard 16:9 slides and scaled without distortion, so the deck presents cleanly on any projector or screen." },
+      { q: "Can I edit the text afterwards?", a: "Page content is placed as a high-resolution render, so you can add your own text boxes, notes and shapes on top of each slide." },
+    ],
+  },
+  {
+    path: "/tools/pdf-to-pdfa",
+    name: "PDF to PDF/A",
+    category: PDF,
+    title: "PDF to PDF/A Converter — Archive-Ready PDFs Free",
+    description:
+      "Convert a normal PDF into an archive-friendly PDF/A style document for long-term storage and compliance submissions. Free and fully browser-based.",
+    keywords:
+      "pdf to pdfa, pdf/a converter online free, archive pdf format, convert pdf for long term storage, pdfa compliance converter",
+    faqs: [
+      { q: "Why do I need PDF/A?", a: "Courts, universities and government portals often require PDF/A because it embeds everything needed to display the file identically decades from now." },
+      { q: "Does converting change how the file looks?", a: "No. Page content, order and dimensions stay identical — only the document metadata and embedding rules are normalised for archiving." },
+    ],
+  },
+  {
+    path: "/tools/unlock-pdf",
+    name: "Unlock PDF",
+    category: PDF,
+    title: "Unlock PDF — Remove PDF Password & Restrictions",
+    description:
+      "Remove the password or printing and copying restrictions from a PDF you own. Runs entirely in your browser, so the file is never uploaded anywhere.",
+    keywords:
+      "unlock pdf, remove pdf password, pdf password remover online free, decrypt pdf, remove print restriction from pdf, unlock secured pdf free",
+    faqs: [
+      { q: "Do I need the password?", a: "Yes for encrypted files — enter the open password once and the tool saves a copy without it. This tool is for documents you own or are authorised to unlock." },
+      { q: "Will the content change?", a: "No. Pages, fonts and images are preserved exactly; only the encryption and permission flags are removed from the saved copy." },
+    ],
+  },
+  {
+    path: "/tools/rotate-pdf",
+    name: "Rotate PDF",
+    category: PDF,
+    title: "Rotate PDF Online — Fix Page Orientation Free",
+    description:
+      "Rotate PDF pages 90, 180 or 270 degrees and save the new orientation permanently. Rotate a single page or the whole document in seconds, free.",
+    keywords:
+      "rotate pdf, rotate pdf pages online free, turn pdf sideways, fix pdf orientation, rotate and save pdf permanently",
+    faqs: [
+      { q: "Is the rotation saved permanently?", a: "Yes. The rotation is written into the PDF itself, so the pages open the right way up in every reader, not just in the preview." },
+      { q: "Can I rotate only some pages?", a: "Yes — pick individual pages from the thumbnail grid and rotate just those, or apply one rotation to the whole document at once." },
+    ],
+  },
+  {
+    path: "/tools/crop-pdf",
+    name: "Crop PDF",
+    category: PDF,
+    title: "Crop PDF Online — Trim Margins & Page Borders",
+    description:
+      "Crop PDF pages visually to remove white margins, scan borders or unwanted edges. Apply one crop to every page or crop pages individually, free.",
+    keywords:
+      "crop pdf, trim pdf margins, remove white space from pdf, crop pdf pages online free, cut pdf borders",
+    faqs: [
+      { q: "Does cropping reduce file size?", a: "Cropping changes the visible page box rather than deleting content, so size stays similar — combine it with the PDF Compressor for a smaller file." },
+      { q: "Can I crop every page the same way?", a: "Yes. Draw the crop area once and choose 'apply to all pages' so scanned documents get consistent margins throughout." },
+    ],
+  },
+  {
+    path: "/tools/redact-pdf",
+    name: "Redact PDF",
+    category: PDF,
+    title: "Redact PDF — Permanently Black Out Sensitive Text",
+    description:
+      "Black out names, account numbers and other private details in a PDF. Redactions are burned into the page so hidden text cannot be copied back out.",
+    keywords:
+      "redact pdf, black out text in pdf free, hide sensitive information pdf, pdf redaction tool online, permanently remove text from pdf",
+    faqs: [
+      { q: "Can redacted text be recovered?", a: "No. The area is flattened into the page render, so the underlying characters are gone rather than simply covered by a rectangle." },
+      { q: "Is my document uploaded?", a: "No. Redaction happens inside your browser, which is exactly what you want for contracts, medical records and bank statements." },
+    ],
+  },
+  {
+    path: "/tools/repair-pdf",
+    name: "Repair PDF",
+    category: PDF,
+    title: "Repair PDF — Fix Corrupt or Damaged PDF Files",
+    description:
+      "Rebuild a damaged PDF that will not open, shows blank pages or reports a broken structure. Free browser-based PDF repair with instant download.",
+    keywords:
+      "repair pdf, fix corrupted pdf online free, pdf file damaged repair, recover pdf file, pdf won't open fix",
+    faqs: [
+      { q: "What kind of damage can be fixed?", a: "Broken cross-reference tables, truncated downloads and malformed page trees are rebuilt. Files with genuinely missing content cannot be restored." },
+      { q: "Will I lose pages?", a: "Every page the parser can still read is kept in its original order; unreadable fragments are dropped so the rest of the document opens normally." },
+    ],
+  },
+  {
+    path: "/tools/edit-pdf",
+    name: "Edit PDF",
+    category: PDF,
+    title: "Edit PDF Online Free — Add Text, Images & Shapes",
+    description:
+      "Edit a PDF in your browser: add text, images, highlights and shapes anywhere on the page, then download the edited file. Free, no signup, no watermark.",
+    keywords:
+      "edit pdf online free, pdf editor no signup, add text to pdf, write on pdf online, free pdf editor without watermark",
+    faqs: [
+      { q: "Can I edit existing text?", a: "For replacing text that is already in the document use the Edit PDF Text tool; this editor is for adding new text, images and annotations on top of the page." },
+      { q: "Is there a watermark?", a: "No. Downloads are clean, unlimited and free — nothing is stamped onto your document." },
+    ],
+  },
+  {
+    path: "/tools/text-to-word",
+    name: "Text to Word",
+    category: TEXT,
+    title: "Text to Word Converter — TXT to DOCX Online Free",
+    description:
+      "Convert plain text or a .txt file into a properly formatted Microsoft Word .docx document with real paragraphs and page margins. Free and instant.",
+    keywords:
+      "text to word, txt to docx converter, convert text file to word online, plain text to word document, create docx from text free",
+    faqs: [
+      { q: "Is the output a real Word file?", a: "Yes, a genuine .docx built with Word's own document format — it opens and edits normally in Word, Google Docs, LibreOffice and Pages." },
+      { q: "Why does Word open it read-only?", a: "Word puts downloaded files in Protected View. Click 'Enable Editing' in the yellow bar at the top and the document becomes fully editable." },
+    ],
+  },
+  {
+    path: "/tools/word-to-text",
+    name: "Word to Text",
+    category: TEXT,
+    title: "Word to Text Converter — DOCX to TXT Online Free",
+    description:
+      "Extract clean plain text from a Word .docx file, keeping paragraphs and list structure. Free browser-based DOCX to TXT converter with no upload.",
+    keywords:
+      "word to text, docx to txt converter, extract text from word document, convert doc to plain text online free, word to notepad",
+    faqs: [
+      { q: "Are headings and lists preserved?", a: "Paragraph breaks and list items are kept as separate lines so the text stays readable, while fonts, colours and images are stripped out." },
+      { q: "Does it support .doc files?", a: "Modern .docx files are fully supported. For an older .doc, save it as .docx in Word first, then convert." },
+    ],
+  },
+  {
+    path: "/tools/word-to-excel",
+    name: "Word to Excel",
+    category: PDF,
+    title: "Word to Excel Converter — DOCX Tables to XLSX",
+    description:
+      "Pull every table out of a Word document into an Excel workbook, one sheet per table. Free, unlimited and processed entirely in your browser.",
+    keywords:
+      "word to excel, docx to xlsx converter, convert word table to excel free, extract tables from word document, word data to spreadsheet",
+    faqs: [
+      { q: "What happens to non-table text?", a: "Tables become spreadsheet rows and columns; surrounding paragraphs are collected separately so nothing important is silently dropped." },
+      { q: "How are multiple tables handled?", a: "Each table becomes its own worksheet inside the same workbook, keeping the data separated exactly as it was in the document." },
+    ],
+  },
+  {
+    path: "/tools/word-to-jpg",
+    name: "Word to JPG",
+    category: IMAGE,
+    title: "Word to JPG Converter — DOCX to Image Online Free",
+    description:
+      "Convert a Word document into high-resolution JPG images, one per page, ready for sharing on WhatsApp, Instagram or slides. Free with no signup.",
+    keywords:
+      "word to jpg, docx to image converter, convert word document to picture, word to png online free, doc page to jpg",
+    faqs: [
+      { q: "What resolution are the images?", a: "Pages are rendered at a high pixel density so text stays sharp when zoomed or printed, not blurry like a screenshot." },
+      { q: "Can I get one image per page?", a: "Yes. Every page is exported as its own JPG in the original order, so you can share or upload them individually." },
+    ],
+  },
+  {
+    path: "/tools/jpg-to-word",
+    name: "JPG to Word",
+    category: IMAGE,
+    title: "JPG to Word Converter — Image to Editable DOCX",
+    description:
+      "Turn a photo or scan into an editable Word document using OCR that rebuilds indentation, spacing and bold text. Free, private and browser-based.",
+    keywords:
+      "jpg to word, image to word converter, photo to editable word document, ocr jpg to docx free, convert picture to word text",
+    faqs: [
+      { q: "Is the text really editable?", a: "Yes. OCR reads every line and writes it back as a real Word paragraph, so you can retype, restyle and spell-check it like any document." },
+      { q: "How accurate is the recognition?", a: "Clear, well-lit and straight images of printed text give the best results. Handwriting and low-resolution photos are recognised less reliably." },
+    ],
+  },
 ];
 
 export const toolSeoByPath: Record<string, ToolSeoEntry> = toolSeoEntries.reduce(

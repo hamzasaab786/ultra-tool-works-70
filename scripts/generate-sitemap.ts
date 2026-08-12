@@ -3,8 +3,7 @@
 import { writeFileSync } from "fs"
 import { resolve } from "path"
 
-const BASE_URL = "https://ultra-tool-works-70.lovable.app"
-const TODAY = new Date().toISOString().split("T")[0]
+const BASE_URL = "https://klipza.live"
 
 interface SitemapEntry {
   path: string
@@ -29,8 +28,8 @@ const toolPaths = [
   "/tools/split-pdf",
   "/tools/pdf-to-jpg",
   "/tools/pdf-compressor",
-  "/tools/PdfToExcel",
-  "/tools/UnlockPdf",
+  "/tools/pdf-to-excel",
+  "/tools/unlock-pdf",
   "/tools/pdf-metadata-extractor",
   "/tools/add-page-numbers",
   "/tools/compare-pdf",
@@ -120,15 +119,29 @@ const toolPaths = [
   "/tools/sleep-calculator",
   "/tools/split-bill-calculator",
   "/tools/typing-speed-test",
+  "/tools/pdf-to-text",
+  "/tools/pdf-to-csv",
+  "/tools/pdf-to-powerpoint",
+  "/tools/pdf-to-pdfa",
+  "/tools/rotate-pdf",
+  "/tools/crop-pdf",
+  "/tools/redact-pdf",
+  "/tools/repair-pdf",
+  "/tools/edit-pdf",
+  "/tools/text-to-word",
+  "/tools/word-to-text",
+  "/tools/word-to-excel",
+  "/tools/word-to-jpg",
+  "/tools/jpg-to-word",
 ]
 
 const entries: SitemapEntry[] = [
-  { path: "/", changefreq: "weekly", priority: "1.0", lastmod: TODAY },
-  { path: "/about", changefreq: "yearly", priority: "0.5", lastmod: TODAY },
-  { path: "/privacy", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
-  { path: "/terms", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
-  { path: "/disclaimer", changefreq: "yearly", priority: "0.3", lastmod: TODAY },
-  ...toolPaths.map((path): SitemapEntry => ({ path, changefreq: "monthly", priority: "0.8", lastmod: TODAY })),
+  { path: "/", changefreq: "weekly", priority: "1.0" },
+  { path: "/about", changefreq: "yearly", priority: "0.5" },
+  { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+  { path: "/terms", changefreq: "yearly", priority: "0.3" },
+  { path: "/disclaimer", changefreq: "yearly", priority: "0.3" },
+  ...toolPaths.map((path): SitemapEntry => ({ path, changefreq: "monthly", priority: "0.8" })),
 ]
 
 function generateSitemap(entries: SitemapEntry[]) {
@@ -155,3 +168,38 @@ function generateSitemap(entries: SitemapEntry[]) {
 
 writeFileSync(resolve("public/sitemap.xml"), generateSitemap(entries))
 console.log(`sitemap.xml written (${entries.length} entries)`)
+
+// llms.txt — machine-readable index so AI assistants (ChatGPT, Perplexity, Claude,
+// Gemini) can discover and cite every tool on the site.
+const titleCase = (slug: string) =>
+  slug
+    .replace("/tools/", "")
+    .split("-")
+    .map((w) => (["pdf", "csv", "jpg", "svg", "url", "qr", "ocr", "dns", "ip", "gpa", "bmi", "html", "n"].includes(w) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)))
+    .join(" ")
+
+const llms = [
+  "# Klipza",
+  "",
+  "> Klipza is a free suite of 125+ privacy-first online tools for PDF, image, document, text and calculation tasks. Every tool runs entirely in the visitor's browser: files are never uploaded, there is no signup, no watermark and no usage limit.",
+  "",
+  "## Key facts",
+  "- Cost: free, unlimited, no account required",
+  "- Privacy: client-side processing, files never leave the device",
+  "- Platforms: any modern browser on Windows, macOS, Android, iOS",
+  "",
+  "## Tools",
+  ...entries
+    .filter((e) => e.path.startsWith("/tools/"))
+    .map((e) => `- [${titleCase(e.path)}](${BASE_URL}${e.path})`),
+  "",
+  "## Pages",
+  `- [About](${BASE_URL}/about)`,
+  `- [Privacy Policy](${BASE_URL}/privacy)`,
+  `- [Terms](${BASE_URL}/terms)`,
+  `- [Disclaimer](${BASE_URL}/disclaimer)`,
+  "",
+].join("\n")
+
+writeFileSync(resolve("public/llms.txt"), llms)
+console.log("llms.txt written")

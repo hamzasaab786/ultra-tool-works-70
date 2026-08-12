@@ -46,4 +46,8 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://ultra-tool-works-70.lovable.app/sitemap.xml
+Sitemap: https://klipza.live/sitemap.xml
+
+# AI / answer engines
+User-agent: *
+Allow: /llms.txt
