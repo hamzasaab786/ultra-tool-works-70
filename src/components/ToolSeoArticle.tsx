@@ -150,18 +150,23 @@ const ToolSeoArticle = () => {
           Who uses the {entry.name}?
         </h3>
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-          {[
-            `Students and teachers preparing assignments, applications and classroom material`,
-            `Freelancers and agencies delivering polished files to clients on a deadline`,
-            `Small business owners handling paperwork without paid office software`,
-            `Developers, marketers and job seekers who need a quick, accurate ${entry.name.toLowerCase()}`,
-          ].map((useCase) => (
+          {useCases.map((useCase) => (
             <li key={useCase} className="flex items-start gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
               <span>{useCase}</span>
             </li>
           ))}
         </ul>
+
+        {/* Tool-specific deep-dive sections */}
+        {sections.map((section) => (
+          <React.Fragment key={section.heading}>
+            <h3 className="mt-10 text-xl font-semibold text-foreground">{section.heading}</h3>
+            <p className="mt-3 leading-relaxed text-muted-foreground">{section.body}</p>
+          </React.Fragment>
+        ))}
+
+
 
         {/* Keyword cluster */}
         <h3 className="mt-10 text-xl font-semibold text-foreground">
