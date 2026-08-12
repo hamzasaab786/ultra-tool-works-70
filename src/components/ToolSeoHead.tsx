@@ -17,8 +17,10 @@ const SITE_URL = "https://klipza.live";
 const ToolSeoHead = () => {
   const { pathname } = useLocation();
   const entry = getToolSeo(pathname);
+  const content = useToolContent(pathname);
 
   if (!entry) return null;
+
 
   const url = `${SITE_URL}${entry.path}`;
   const faqs = [...entry.faqs, ...buildCommonFaqs(entry)];
