@@ -2,7 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import { getToolSeo, buildCommonFaqs } from "@/data/toolSeo";
-import { getToolContent } from "@/data/toolContent";
+import { useToolContent } from "@/data/toolContent";
 
 const SITE_URL = "https://klipza.live";
 
@@ -63,7 +63,7 @@ const ToolSeoHead = () => {
 
   // HowTo is emitted only when the page actually renders the matching numbered
   // steps, so the structured data always reflects visible on-page content.
-  const content = getToolContent(entry.path);
+  const content = useToolContent(pathname);
   const howToSchema = content
     ? {
         "@context": "https://schema.org",

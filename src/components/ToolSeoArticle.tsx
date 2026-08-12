@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CheckCircle2, Sparkles, Zap, ShieldCheck, Search } from "lucide-react";
 import { getToolSeo, toolSeoEntries, type ToolSeoEntry } from "@/data/toolSeo";
-import { getToolContent } from "@/data/toolContent";
+import { useToolContent } from "@/data/toolContent";
 
 /**
  * Long-form SEO content rendered under every tool.
@@ -56,7 +56,7 @@ const ToolSeoArticle = () => {
 
   if (!entry) return null;
 
-  const content = getToolContent(entry.path);
+  const content = useToolContent(pathname);
   const keywords = keywordList(entry);
   const primary = keywords[0] ?? entry.name.toLowerCase();
   const steps = content?.steps ?? fallbackSteps(entry);
