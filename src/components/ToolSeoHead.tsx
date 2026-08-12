@@ -104,6 +104,9 @@ const ToolSeoHead = () => {
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      {howToSchema && (
+        <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
+      )}
     </Helmet>
   );
 };
