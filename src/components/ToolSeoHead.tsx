@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import { getToolSeo, buildCommonFaqs } from "@/data/toolSeo";
+import { useToolContent } from "@/data/toolContent";
 
 const SITE_URL = "https://klipza.live";
 
@@ -16,8 +17,10 @@ const SITE_URL = "https://klipza.live";
 const ToolSeoHead = () => {
   const { pathname } = useLocation();
   const entry = getToolSeo(pathname);
+  const content = useToolContent(pathname);
 
   if (!entry) return null;
+
 
   const url = `${SITE_URL}${entry.path}`;
   const faqs = [...entry.faqs, ...buildCommonFaqs(entry)];
@@ -60,6 +63,27 @@ const ToolSeoHead = () => {
     ],
   };
 
+  // HowTo is emitted only when the page actually renders the matching numbered
+  // steps, so the structured data always reflects visible on-page content.
+  const howToSchema = content
+    ? {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "@id": `${url}#howto`,
+        name: `How to use the ${entry.name}`,
+        description: entry.description,
+        totalTime: "PT1M",
+        step: content.steps.map((text, i) => ({
+          "@type": "HowToStep",
+          position: i + 1,
+          name: `Step ${i + 1}`,
+          text,
+          url: `${url}#tool-article-heading`,
+        })),
+      }
+    : null;
+
+
   return (
     <Helmet prioritizeSeoTags>
       <title>{`${entry.title} | Klipza`}</title>
@@ -81,6 +105,9 @@ const ToolSeoHead = () => {
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      {howToSchema && (
+        <script type="application/ld+json">{JSON.stringify(howToSchema)}</script>
+      )}
     </Helmet>
   );
 };

@@ -2,12 +2,13 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CheckCircle2, Sparkles, Zap, ShieldCheck, Search } from "lucide-react";
 import { getToolSeo, toolSeoEntries, type ToolSeoEntry } from "@/data/toolSeo";
+import { useToolContent } from "@/data/toolContent";
 
 /**
- * Long-form, keyword-rich SEO content rendered under every tool.
- * Content is generated from the per-tool catalog (name, category, description,
- * researched keyword set) so every route gets unique, crawlable copy that
- * matches its title/description and structured data.
+ * Long-form SEO content rendered under every tool.
+ * Hand-written, tool-specific copy from src/data/toolContent is used whenever it
+ * exists, so no two tool pages share the same body text. Tools that do not have
+ * bespoke copy yet fall back to catalog-driven content.
  */
 
 const keywordList = (entry: ToolSeoEntry) =>
@@ -16,14 +17,14 @@ const keywordList = (entry: ToolSeoEntry) =>
     .map((k) => k.trim())
     .filter(Boolean);
 
-const buildSteps = (entry: ToolSeoEntry): string[] => [
+const fallbackSteps = (entry: ToolSeoEntry): string[] => [
   `Open the ${entry.name} on Klipza — no signup, no installation and no email required.`,
   `Add your file or input to the tool. Everything runs in your browser, so even large jobs start instantly.`,
   `Adjust the available options until the live result matches exactly what you need.`,
   `Download the finished result in one click and reuse the ${entry.name} as often as you like — it is unlimited and free.`,
 ];
 
-const buildFeatures = (entry: ToolSeoEntry): { title: string; body: string }[] => [
+const fallbackFeatures = (entry: ToolSeoEntry): { title: string; body: string }[] => [
   {
     title: "100% free, unlimited use",
     body: `The ${entry.name} has no paywall, no trial period, no watermark and no daily cap. Use it once or a hundred times a day at no cost.`,
@@ -42,20 +43,32 @@ const buildFeatures = (entry: ToolSeoEntry): { title: string; body: string }[] =
   },
 ];
 
+const fallbackUseCases = (entry: ToolSeoEntry): string[] => [
+  `Students and teachers preparing assignments, applications and classroom material`,
+  `Freelancers and agencies delivering polished files to clients on a deadline`,
+  `Small business owners handling paperwork without paid office software`,
+  `Developers, marketers and job seekers who need a quick, accurate ${entry.name.toLowerCase()}`,
+];
+
 const ToolSeoArticle = () => {
   const { pathname } = useLocation();
   const entry = getToolSeo(pathname);
+  const content = useToolContent(pathname);
 
   if (!entry) return null;
 
+
   const keywords = keywordList(entry);
   const primary = keywords[0] ?? entry.name.toLowerCase();
-  const steps = buildSteps(entry);
-  const features = buildFeatures(entry);
+  const steps = content?.steps ?? fallbackSteps(entry);
+  const features = content?.benefits ?? fallbackFeatures(entry);
+  const useCases = content?.useCases ?? fallbackUseCases(entry);
+  const sections = content?.sections ?? [];
 
   const related = toolSeoEntries
     .filter((e) => e.category === entry.category && e.path !== entry.path)
     .slice(0, 6);
+
 
   return (
     <section
@@ -76,20 +89,25 @@ const ToolSeoArticle = () => {
         </h2>
 
         <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
-          <p>
-            Klipza&rsquo;s {entry.name} is a free online {entry.category.toLowerCase().replace(/ tools?$/, "")} tool
-            built for people who need a reliable {primary} without downloading software or creating an
-            account. {entry.description}
-          </p>
-          <p>
-            Thousands of students, freelancers, developers, teachers and small business owners search for a
-            dependable {primary} every day — and most paid apps hide the same functionality behind a
-            subscription, a watermark or a file limit. The {entry.name} removes all of that: open the page,
-            do the job, download the result. Because the work happens in your own browser, the {entry.name}{" "}
-            is also one of the safest ways to handle sensitive documents, invoices, ID photos or private
-            data.
-          </p>
+          {content ? (
+            content.intro.map((para) => <p key={para.slice(0, 40)}>{para}</p>)
+          ) : (
+            <>
+              <p>
+                Klipza&rsquo;s {entry.name} is a free online{" "}
+                {entry.category.toLowerCase().replace(/ tools?$/, "")} tool built for people who need a
+                reliable {primary} without downloading software or creating an account. {entry.description}
+              </p>
+              <p>
+                Most paid apps hide the same functionality behind a subscription, a watermark or a file
+                limit. The {entry.name} removes all of that: open the page, do the job, download the
+                result. Because the work happens in your own browser, the {entry.name} is also one of the
+                safest ways to handle sensitive documents, invoices, ID photos or private data.
+              </p>
+            </>
+          )}
         </div>
+
 
         {/* How to use */}
         <h3 className="mt-10 text-xl font-semibold text-foreground">
@@ -133,18 +151,23 @@ const ToolSeoArticle = () => {
           Who uses the {entry.name}?
         </h3>
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-          {[
-            `Students and teachers preparing assignments, applications and classroom material`,
-            `Freelancers and agencies delivering polished files to clients on a deadline`,
-            `Small business owners handling paperwork without paid office software`,
-            `Developers, marketers and job seekers who need a quick, accurate ${entry.name.toLowerCase()}`,
-          ].map((useCase) => (
+          {useCases.map((useCase) => (
             <li key={useCase} className="flex items-start gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
               <span>{useCase}</span>
             </li>
           ))}
         </ul>
+
+        {/* Tool-specific deep-dive sections */}
+        {sections.map((section) => (
+          <div key={section.heading}>
+            <h3 className="mt-10 text-xl font-semibold text-foreground">{section.heading}</h3>
+            <p className="mt-3 leading-relaxed text-muted-foreground">{section.body}</p>
+          </div>
+        ))}
+
+
 
         {/* Keyword cluster */}
         <h3 className="mt-10 text-xl font-semibold text-foreground">
