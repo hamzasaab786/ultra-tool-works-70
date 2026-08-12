@@ -65,7 +65,6 @@ const ToolSeoHead = () => {
 
   // HowTo is emitted only when the page actually renders the matching numbered
   // steps, so the structured data always reflects visible on-page content.
-  const content = useToolContent(pathname);
   const howToSchema = content
     ? {
         "@context": "https://schema.org",
