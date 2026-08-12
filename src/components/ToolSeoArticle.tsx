@@ -53,10 +53,11 @@ const fallbackUseCases = (entry: ToolSeoEntry): string[] => [
 const ToolSeoArticle = () => {
   const { pathname } = useLocation();
   const entry = getToolSeo(pathname);
+  const content = useToolContent(pathname);
 
   if (!entry) return null;
 
-  const content = useToolContent(pathname);
+
   const keywords = keywordList(entry);
   const primary = keywords[0] ?? entry.name.toLowerCase();
   const steps = content?.steps ?? fallbackSteps(entry);
