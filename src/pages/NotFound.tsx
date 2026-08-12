@@ -1,7 +1,6 @@
 
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -16,7 +15,7 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <Layout>
+    <>
       <div className="container mx-auto px-4 py-24 flex items-center justify-center">
         <div className="text-center max-w-md">
           <h1 className="text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-400">404</h1>
@@ -26,7 +25,7 @@ const NotFound = () => {
           </Button>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 
