@@ -161,10 +161,10 @@ const ToolSeoArticle = () => {
 
         {/* Tool-specific deep-dive sections */}
         {sections.map((section) => (
-          <React.Fragment key={section.heading}>
+          <div key={section.heading}>
             <h3 className="mt-10 text-xl font-semibold text-foreground">{section.heading}</h3>
             <p className="mt-3 leading-relaxed text-muted-foreground">{section.body}</p>
-          </React.Fragment>
+          </div>
         ))}
 
 
