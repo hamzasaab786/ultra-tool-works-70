@@ -97,10 +97,16 @@ const ToolSeoHead = () => {
       <meta property="og:title" content={entry.title} />
       <meta property="og:description" content={entry.description} />
       <meta property="og:url" content={url} />
+      <meta property="og:image" content={`${SITE_URL}/og-image.jpg`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={`${entry.name} — free online tool on Klipza`} />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={entry.title} />
       <meta name="twitter:description" content={entry.description} />
+      <meta name="twitter:image" content={`${SITE_URL}/og-image.jpg`} />
+
 
       <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
