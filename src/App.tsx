@@ -138,6 +138,12 @@ const CompoundInterestCalculator = lazy(() => import("@/pages/tools/CompoundInte
 const SalaryCalculator = lazy(() => import("@/pages/tools/SalaryCalculator"));
 const TimeZoneConverter = lazy(() => import("@/pages/tools/TimeZoneConverter"));
 const RandomPicker = lazy(() => import("@/pages/tools/RandomPicker"));
+const SignatureGenerator = lazy(() => import("@/pages/tools/SignatureGenerator"));
+const MemeGenerator = lazy(() => import("@/pages/tools/MemeGenerator"));
+const FaviconGenerator = lazy(() => import("@/pages/tools/FaviconGenerator"));
+const ImageWatermark = lazy(() => import("@/pages/tools/ImageWatermark"));
+const RandomNumberGenerator = lazy(() => import("@/pages/tools/RandomNumberGenerator"));
+const OvulationCalculator = lazy(() => import("@/pages/tools/OvulationCalculator"));
 const CalorieCalculator = lazy(() => import("@/pages/tools/CalorieCalculator"));
 const FuelCostCalculator = lazy(() => import("@/pages/tools/FuelCostCalculator"));
 const ElectricityBillCalculator = lazy(() => import("@/pages/tools/ElectricityBillCalculator"));
@@ -297,6 +303,12 @@ const App = () => {
             <Route path="/tools/salary-calculator" element={<SalaryCalculator />} />
             <Route path="/tools/time-zone-converter" element={<TimeZoneConverter />} />
             <Route path="/tools/random-picker" element={<RandomPicker />} />
+            <Route path="/tools/signature-generator" element={<SignatureGenerator />} />
+            <Route path="/tools/meme-generator" element={<MemeGenerator />} />
+            <Route path="/tools/favicon-generator" element={<FaviconGenerator />} />
+            <Route path="/tools/image-watermark" element={<ImageWatermark />} />
+            <Route path="/tools/random-number-generator" element={<RandomNumberGenerator />} />
+            <Route path="/tools/ovulation-calculator" element={<OvulationCalculator />} />
             <Route path="/tools/image-to-text" element={<ImageToText />} />
             <Route path="/tools/roman-numeral-converter" element={<RomanNumeralConverter />} />
             <Route path="/tools/calorie-calculator" element={<CalorieCalculator />} />
