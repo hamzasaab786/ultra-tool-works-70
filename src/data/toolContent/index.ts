@@ -1,19 +1,64 @@
+import { useEffect, useState } from "react";
 import type { ToolContent, ToolContentMap } from "./types";
-import { chunk1 } from "./chunk1";
-import { chunk2 } from "./chunk2";
-import { chunk3 } from "./chunk3";
-import { chunk4 } from "./chunk4";
-import { chunk5 } from "./chunk5";
+import { pathChunk } from "./pathChunk";
 
 export type { ToolContent, ToolContentSection, ToolContentMap } from "./types";
+export { pathChunk } from "./pathChunk";
 
-export const toolContent: ToolContentMap = {
-  ...chunk1,
-  ...chunk2,
-  ...chunk3,
-  ...chunk4,
-  ...chunk5,
+const loaders: Record<number, () => Promise<ToolContentMap>> = {
+  1: () => import("./chunk1").then((m) => m.chunk1),
+  2: () => import("./chunk2").then((m) => m.chunk2),
+  3: () => import("./chunk3").then((m) => m.chunk3),
+  4: () => import("./chunk4").then((m) => m.chunk4),
+  5: () => import("./chunk5").then((m) => m.chunk5),
 };
 
-export const getToolContent = (path: string): ToolContent | undefined =>
-  toolContent[path.replace(/\/+$/, "") || "/"];
+const cache = new Map<number, ToolContentMap>();
+const inflight = new Map<number, Promise<ToolContentMap>>();
+
+const normalize = (path: string) => path.replace(/\/+$/, "") || "/";
+
+/** Synchronous read — only returns content once its chunk has been loaded. */
+export const getToolContent = (path: string): ToolContent | undefined => {
+  const key = normalize(path);
+  const chunk = pathChunk[key];
+  if (!chunk) return undefined;
+  return cache.get(chunk)?.[key];
+};
+
+export const loadToolContent = async (path: string): Promise<ToolContent | undefined> => {
+  const key = normalize(path);
+  const chunk = pathChunk[key];
+  if (!chunk) return undefined;
+  if (cache.has(chunk)) return cache.get(chunk)![key];
+
+  let promise = inflight.get(chunk);
+  if (!promise) {
+    promise = loaders[chunk]().then((map) => {
+      cache.set(chunk, map);
+      inflight.delete(chunk);
+      return map;
+    });
+    inflight.set(chunk, promise);
+  }
+  const map = await promise;
+  return map[key];
+};
+
+/** React hook: loads the route's SEO copy on demand. */
+export const useToolContent = (path: string): ToolContent | undefined => {
+  const [content, setContent] = useState<ToolContent | undefined>(() => getToolContent(path));
+
+  useEffect(() => {
+    let active = true;
+    setContent(getToolContent(path));
+    loadToolContent(path).then((next) => {
+      if (active) setContent(next);
+    });
+    return () => {
+      active = false;
+    };
+  }, [path]);
+
+  return content;
+};
