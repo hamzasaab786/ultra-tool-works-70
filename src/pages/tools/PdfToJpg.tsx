@@ -285,36 +285,54 @@ const PdfToJpg = () => {
   };
 
 
-  const downloadSequentially = async (pages: ConvertedPage[]) => {
-    for (let i = 0; i < pages.length; i++) {
-      downloadSingle(pages[i]);
-      // small gap so the browser queues every file instead of dropping them
-      if (i < pages.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 400));
-      }
+  const allConvertedPages = (): ConvertedPage[] =>
+    processedFiles
+      .filter(f => f.convertedPages.length > 0)
+      .flatMap(f => [...f.convertedPages].sort((a, b) => a.pageNumber - b.pageNumber));
+
+  /** Reliable path: every page in one ZIP, named in page order. */
+  const downloadAllAsZip = async () => {
+    const pages = allConvertedPages();
+    if (pages.length === 0) return;
+
+    if (pages.length === 1) {
+      downloadSingle(pages[0]);
+      return;
+    }
+
+    setIsZipping(true);
+    try {
+      const JSZip = (await import('jszip')).default;
+      const zip = new JSZip();
+      pages.forEach((p) => zip.file(p.filename, p.blob));
+      const blob = await zip.generateAsync({ type: 'blob' });
+      downloadSingle({ blob, filename: `converted-${settings.format}-pages.zip` });
+      toast({
+        title: 'Download ready',
+        description: `${pages.length} pages saved in one ZIP, in page order.`,
+      });
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'ZIP failed', description: 'Please try downloading pages individually.', variant: 'destructive' });
+    } finally {
+      setIsZipping(false);
     }
   };
 
-  const downloadPages = async (pages: ConvertedPage[]) => {
+  /** Optional: save each page separately (browser may ask to allow multiple downloads). */
+  const downloadEachSeparately = async () => {
+    const pages = allConvertedPages();
     if (pages.length === 0) return;
-
-    // Always download each page directly as its own image, without a folder picker.
-    const orderedPages = [...pages].sort((a, b) => a.pageNumber - b.pageNumber);
-    await downloadSequentially(orderedPages);
-
-
+    for (let i = 0; i < pages.length; i++) {
+      downloadSingle(pages[i]);
+      if (i < pages.length - 1) await new Promise(r => setTimeout(r, 500));
+    }
     toast({
-      title: 'Download completed',
-      description: `Downloaded ${orderedPages.length} image(s) directly in page order.`,
+      title: 'Downloads started',
+      description: `${pages.length} images queued. If only one arrives, allow "multiple downloads" for this site.`,
     });
   };
 
-  const downloadAllConverted = async () => {
-    const allPages = processedFiles
-      .filter(f => f.convertedPages.length > 0)
-      .flatMap(f => [...f.convertedPages].sort((a, b) => a.pageNumber - b.pageNumber));
-    await downloadPages(allPages);
-  };
 
 
 
