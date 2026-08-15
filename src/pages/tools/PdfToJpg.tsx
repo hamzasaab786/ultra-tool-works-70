@@ -160,7 +160,7 @@ const PdfToJpg = () => {
       const pagesToConvert = getPageNumbers(processedFile.totalPages);
       const converted: ConvertedPage[] = [];
       let done = 0;
-      const mime = `image/${settings.format}`;
+      const mime = settings.format === 'jpg' ? 'image/jpeg' : 'image/png';
       const quality = settings.format === 'jpg' ? settings.quality / 100 : 1;
 
       const results = await mapConcurrent(pagesToConvert, async (pageNum) => {
@@ -181,8 +181,11 @@ const PdfToJpg = () => {
           }).promise;
 
           // Encode once; the object URL reuses the same bytes as the blob.
-          const blob = await new Promise<Blob>((resolve) => {
-            canvas.toBlob((b) => resolve(b!), mime, quality);
+          const blob = await new Promise<Blob>((resolve, reject) => {
+            canvas.toBlob((encodedBlob) => {
+              if (encodedBlob) resolve(encodedBlob);
+              else reject(new Error(`Page ${pageNum} could not be encoded`));
+            }, mime, quality);
           });
           const dataUrl = URL.createObjectURL(blob);
           const pad = String(pageNum).padStart(String(processedFile.totalPages).length, '0');
@@ -272,18 +275,22 @@ const PdfToJpg = () => {
     return [...new Set(pages)].sort((a, b) => a - b);
   };
 
-  const downloadSingle = (page: Pick<ConvertedPage, 'blob' | 'filename'>) => {
-    const url = URL.createObjectURL(page.blob);
+  const triggerBlobDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = page.filename;
-    a.rel = 'noopener';
+    a.download = filename;
     a.style.display = 'none';
     document.body.appendChild(a);
-    // Use the browser's normal download flow; never request directory access.
-    a.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    a.click();
+    window.setTimeout(() => {
+      a.remove();
+      URL.revokeObjectURL(url);
+    }, 1000);
+  };
+
+  const downloadSingle = (page: Pick<ConvertedPage, 'blob' | 'filename'>) => {
+    triggerBlobDownload(page.blob, page.filename);
   };
 
 
@@ -307,8 +314,12 @@ const PdfToJpg = () => {
       const JSZip = (await import('jszip')).default;
       const zip = new JSZip();
       pages.forEach((p) => zip.file(p.filename, p.blob));
-      const blob = await zip.generateAsync({ type: 'blob' });
-      downloadSingle({ blob, filename: `converted-${settings.format}-pages.zip` });
+      const zipBytes = await zip.generateAsync({
+        type: 'arraybuffer',
+        compression: 'STORE',
+      });
+      const zipBlob = new Blob([zipBytes], { type: 'application/zip' });
+      triggerBlobDownload(zipBlob, `converted-${settings.format}-pages.zip`);
       toast({
         title: 'Download ready',
         description: `${pages.length} pages saved in one ZIP, in page order.`,
