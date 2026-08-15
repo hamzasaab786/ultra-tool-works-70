@@ -619,18 +619,26 @@ const PdfToJpg = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-wrap justify-between items-center gap-3">
                 <p className="text-sm text-gray-600">
                   {processedFiles.filter(f => f.convertedPages.length > 0).length} file(s) converted successfully
                 </p>
-                <Button
-                  onClick={downloadAllConverted}
-                  className="flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90"
-                >
-                  <Download className="h-4 w-4" />
-                  Download All Pages (JPG)
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={downloadAllAsZip}
+                    disabled={isZipping}
+                    className="flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90"
+                  >
+                    <Download className="h-4 w-4" />
+                    {isZipping ? 'Preparing ZIP…' : `Download All Pages (ZIP)`}
+                  </Button>
+                  <Button variant="outline" onClick={downloadEachSeparately} disabled={isZipping}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Save pages one by one
+                  </Button>
+                </div>
               </div>
+
 
               {processedFiles.filter(f => f.convertedPages.length > 0).map((file) => (
                 <div key={file.id} className="space-y-3">
