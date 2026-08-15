@@ -41,6 +41,8 @@ interface ProcessedFile {
 const PdfToJpg = () => {
   const [processedFiles, setProcessedFiles] = useState<ProcessedFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isZipping, setIsZipping] = useState(false);
+
   
   const [settings, setSettings] = useState<ConversionSettings>({
     format: 'jpg',
