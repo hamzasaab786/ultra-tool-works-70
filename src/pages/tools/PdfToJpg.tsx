@@ -233,23 +233,13 @@ const PdfToJpg = () => {
   };
 
   const convertAllFiles = async () => {
-    const freshPages: ConvertedPage[] = [];
-
     for (const file of processedFiles) {
       if (file.convertedPages.length === 0) {
-        const pages = await convertPdfToImages(file.id);
-        freshPages.push(...pages);
-      } else {
-        freshPages.push(...file.convertedPages);
+        await convertPdfToImages(file.id);
       }
     }
-
-    // One-click flow: as soon as the conversion finishes, every page is saved
-    // as its own image file, in page order.
-    if (freshPages.length > 0) {
-      await downloadPages(freshPages);
-    }
   };
+
 
 
   const getPageNumbers = (totalPages: number): number[] => {
