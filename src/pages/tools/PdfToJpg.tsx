@@ -41,6 +41,8 @@ interface ProcessedFile {
 const PdfToJpg = () => {
   const [processedFiles, setProcessedFiles] = useState<ProcessedFile[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isZipping, setIsZipping] = useState(false);
+
   
   const [settings, setSettings] = useState<ConversionSettings>({
     format: 'jpg',
@@ -233,23 +235,13 @@ const PdfToJpg = () => {
   };
 
   const convertAllFiles = async () => {
-    const freshPages: ConvertedPage[] = [];
-
     for (const file of processedFiles) {
       if (file.convertedPages.length === 0) {
-        const pages = await convertPdfToImages(file.id);
-        freshPages.push(...pages);
-      } else {
-        freshPages.push(...file.convertedPages);
+        await convertPdfToImages(file.id);
       }
     }
-
-    // One-click flow: as soon as the conversion finishes, every page is saved
-    // as its own image file, in page order.
-    if (freshPages.length > 0) {
-      await downloadPages(freshPages);
-    }
   };
+
 
 
   const getPageNumbers = (totalPages: number): number[] => {
@@ -295,36 +287,54 @@ const PdfToJpg = () => {
   };
 
 
-  const downloadSequentially = async (pages: ConvertedPage[]) => {
-    for (let i = 0; i < pages.length; i++) {
-      downloadSingle(pages[i]);
-      // small gap so the browser queues every file instead of dropping them
-      if (i < pages.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 400));
-      }
+  const allConvertedPages = (): ConvertedPage[] =>
+    processedFiles
+      .filter(f => f.convertedPages.length > 0)
+      .flatMap(f => [...f.convertedPages].sort((a, b) => a.pageNumber - b.pageNumber));
+
+  /** Reliable path: every page in one ZIP, named in page order. */
+  const downloadAllAsZip = async () => {
+    const pages = allConvertedPages();
+    if (pages.length === 0) return;
+
+    if (pages.length === 1) {
+      downloadSingle(pages[0]);
+      return;
+    }
+
+    setIsZipping(true);
+    try {
+      const JSZip = (await import('jszip')).default;
+      const zip = new JSZip();
+      pages.forEach((p) => zip.file(p.filename, p.blob));
+      const blob = await zip.generateAsync({ type: 'blob' });
+      downloadSingle({ blob, filename: `converted-${settings.format}-pages.zip` });
+      toast({
+        title: 'Download ready',
+        description: `${pages.length} pages saved in one ZIP, in page order.`,
+      });
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'ZIP failed', description: 'Please try downloading pages individually.', variant: 'destructive' });
+    } finally {
+      setIsZipping(false);
     }
   };
 
-  const downloadPages = async (pages: ConvertedPage[]) => {
+  /** Optional: save each page separately (browser may ask to allow multiple downloads). */
+  const downloadEachSeparately = async () => {
+    const pages = allConvertedPages();
     if (pages.length === 0) return;
-
-    // Always download each page directly as its own image, without a folder picker.
-    const orderedPages = [...pages].sort((a, b) => a.pageNumber - b.pageNumber);
-    await downloadSequentially(orderedPages);
-
-
+    for (let i = 0; i < pages.length; i++) {
+      downloadSingle(pages[i]);
+      if (i < pages.length - 1) await new Promise(r => setTimeout(r, 500));
+    }
     toast({
-      title: 'Download completed',
-      description: `Downloaded ${orderedPages.length} image(s) directly in page order.`,
+      title: 'Downloads started',
+      description: `${pages.length} images queued. If only one arrives, allow "multiple downloads" for this site.`,
     });
   };
 
-  const downloadAllConverted = async () => {
-    const allPages = processedFiles
-      .filter(f => f.convertedPages.length > 0)
-      .flatMap(f => [...f.convertedPages].sort((a, b) => a.pageNumber - b.pageNumber));
-    await downloadPages(allPages);
-  };
 
 
 
@@ -609,18 +619,26 @@ const PdfToJpg = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-wrap justify-between items-center gap-3">
                 <p className="text-sm text-gray-600">
                   {processedFiles.filter(f => f.convertedPages.length > 0).length} file(s) converted successfully
                 </p>
-                <Button
-                  onClick={downloadAllConverted}
-                  className="flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90"
-                >
-                  <Download className="h-4 w-4" />
-                  Download All Pages (JPG)
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={downloadAllAsZip}
+                    disabled={isZipping}
+                    className="flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90"
+                  >
+                    <Download className="h-4 w-4" />
+                    {isZipping ? 'Preparing ZIP…' : `Download All Pages (ZIP)`}
+                  </Button>
+                  <Button variant="outline" onClick={downloadEachSeparately} disabled={isZipping}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Save pages one by one
+                  </Button>
+                </div>
               </div>
+
 
               {processedFiles.filter(f => f.convertedPages.length > 0).map((file) => (
                 <div key={file.id} className="space-y-3">
