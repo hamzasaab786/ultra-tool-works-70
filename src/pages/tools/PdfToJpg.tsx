@@ -315,7 +315,7 @@ const PdfToJpg = () => {
       const zip = new JSZip();
       pages.forEach((p) => zip.file(p.filename, p.blob));
       const zipBytes = await zip.generateAsync({
-        type: 'uint8array',
+        type: 'arraybuffer',
         compression: 'STORE',
       });
       const zipBlob = new Blob([zipBytes], { type: 'application/zip' });
