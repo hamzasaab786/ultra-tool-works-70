@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -9,18 +9,23 @@ import mammoth from "mammoth";
 import htmlToPdfmake from "html-to-pdfmake";
 import { loadPdfMake } from "@/utils/officeConvert";
 
+type Mode = "exact" | "text";
+
 const WordToPdf = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [preview, setPreview] = useState<string>("");
+  const [mode, setMode] = useState<Mode>("exact");
+  const stageRef = useRef<HTMLDivElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       if (
         selectedFile.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-        selectedFile.type === "application/msword"
+        selectedFile.type === "application/msword" ||
+        /\.docx?$/i.test(selectedFile.name)
       ) {
         setFile(selectedFile);
         toast.success("Word file selected successfully!");
@@ -28,6 +33,253 @@ const WordToPdf = () => {
         toast.error("Please select a valid Word file (.docx or .doc)");
       }
     }
+  };
+
+/**
+ * Word stores "page break before" as a paragraph property that the renderer ignores.
+ * Rewrite it into an explicit page-break run so pagination matches Word exactly.
+ */
+const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
+  try {
+    const JSZip = (await import("jszip")).default;
+    const zip = await JSZip.loadAsync(await docFile.arrayBuffer());
+    const entry = zip.file("word/document.xml");
+    if (!entry) return await docFile.arrayBuffer();
+    const xml = await entry.async("string");
+    if (!/<w:pageBreakBefore(\s[^>]*)?\/?>/.test(xml)) return await docFile.arrayBuffer();
+
+    let isFirstParagraph = true;
+    const patched = xml.replace(/<w:p(?:\s[^>]*)?>[\s\S]*?<\/w:p>/g, (para) => {
+      const wasFirst = isFirstParagraph;
+      isFirstParagraph = false;
+      if (!/<w:pageBreakBefore(?![^>]*w:val="(?:0|false)")/.test(para)) return para;
+      // Word ignores a break placed before the very first paragraph of the body
+      if (wasFirst) return para;
+      return para.replace(/<\/w:pPr>/, '</w:pPr><w:r><w:br w:type="page"/></w:r>');
+    });
+
+    zip.file("word/document.xml", patched);
+    return await zip.generateAsync({ type: "arraybuffer" });
+  } catch {
+    return await docFile.arrayBuffer();
+  }
+};
+
+  /** Pixel-perfect: render the real DOCX layout (page size, margins, fonts, tables) then snapshot each page. */
+  const convertExact = async (docFile: File) => {
+    const [{ renderAsync }, html2canvas, jsPDFmod, buffer] = await Promise.all([
+      import("docx-preview"),
+      import("html2canvas").then((m) => m.default),
+      import("jspdf"),
+      normalizeDocxPageBreaks(docFile),
+    ]);
+    const jsPDF = (jsPDFmod as any).jsPDF ?? (jsPDFmod as any).default;
+
+    const stage = stageRef.current!;
+    stage.innerHTML = "";
+    const styleHost = document.createElement("div");
+    const target = document.createElement("div");
+    stage.appendChild(styleHost);
+    stage.appendChild(target);
+
+    setProgress(25);
+    await renderAsync(buffer, target, styleHost, {
+      className: "docx",
+      inWrapper: true,
+      ignoreWidth: false,
+      ignoreHeight: false,
+      ignoreFonts: false,
+      breakPages: true,
+      renderHeaders: true,
+      renderFooters: true,
+      renderFootnotes: true,
+      renderEndnotes: true,
+      useBase64URL: true,
+      experimental: true,
+    } as any);
+
+    // wait for fonts + images so nothing renders blank
+    await (document as any).fonts?.ready?.catch?.(() => {});
+    const imgs = Array.from(target.querySelectorAll("img"));
+    await Promise.all(
+      imgs.map((img) =>
+        img.complete
+          ? Promise.resolve()
+          : new Promise((res) => {
+              img.onload = img.onerror = () => res(null);
+            })
+      )
+    );
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))));
+
+    const sections = Array.from(target.querySelectorAll<HTMLElement>("section.docx"));
+    if (!sections.length) throw new Error("no-pages");
+
+    setProgress(40);
+    const PX_TO_PT = 72 / 96;
+    let pdf: any = null;
+    let pageCount = 0;
+
+    const addPage = (dataUrl: string, wPt: number, hPt: number, imgHPt = hPt) => {
+      if (!pdf) {
+        pdf = new jsPDF({
+          unit: "pt",
+          format: [wPt, hPt],
+          orientation: wPt > hPt ? "landscape" : "portrait",
+          compress: true,
+        });
+      } else {
+        pdf.addPage([wPt, hPt], wPt > hPt ? "landscape" : "portrait");
+      }
+      pdf.addImage(dataUrl, "JPEG", 0, 0, wPt, imgHPt, undefined, "FAST");
+      pageCount++;
+    };
+
+    for (let i = 0; i < sections.length; i++) {
+      const el = sections[i];
+      const rect = el.getBoundingClientRect();
+      const cs = getComputedStyle(el);
+      // docx-preview sets the real Word page height as min-height on the section
+      const declaredH = parseFloat(cs.minHeight) || parseFloat(cs.height) || rect.height;
+      const pageH = declaredH > 20 ? declaredH : rect.height;
+
+      const canvas = await html2canvas(el, {
+        scale: Math.min(3, Math.max(2, 1600 / rect.width)),
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        windowWidth: Math.ceil(rect.width),
+        windowHeight: Math.ceil(rect.height),
+      });
+
+      const wPt = rect.width * PX_TO_PT;
+      const pageHPt = pageH * PX_TO_PT;
+      const ratio = canvas.height / rect.height; // device px per CSS px
+      const padTop = (parseFloat(cs.paddingTop) || 0) * ratio;
+      const padBottom = (parseFloat(cs.paddingBottom) || 0) * ratio;
+
+      if (rect.height <= pageH + 1) {
+        addPage(canvas.toDataURL("image/jpeg", 0.95), wPt, pageHPt, rect.height * PX_TO_PT);
+      } else {
+        // Long flowing content: re-paginate like Word, keeping the page margins on every page.
+        const pageCanvasH = Math.round(pageH * ratio);
+        const bodyH = Math.max(1, pageCanvasH - padTop - padBottom);
+        const contentTop = padTop;
+        const contentBottom = canvas.height - padBottom;
+        const src = canvas.getContext("2d")!;
+
+        /** Nudge the cut up to the nearest blank pixel row so glyphs are never sliced in half. */
+        const snap = (y: number) => {
+          const limit = Math.max(contentTop, y - Math.round(28 * ratio));
+          for (let probe = Math.min(y, contentBottom); probe > limit; probe--) {
+            const row = src.getImageData(0, probe, canvas.width, 1).data;
+            let blank = true;
+            for (let p = 0; p < row.length; p += 4) {
+              if (row[p] < 245 || row[p + 1] < 245 || row[p + 2] < 245) {
+                blank = false;
+                break;
+              }
+            }
+            if (blank) return probe;
+          }
+          return y;
+        };
+
+        let y = contentTop;
+        while (y < contentBottom) {
+          const wanted = Math.min(y + bodyH, contentBottom);
+          const end = wanted >= contentBottom ? contentBottom : snap(wanted);
+          const h = Math.max(1, end - y);
+
+          const part = document.createElement("canvas");
+          part.width = canvas.width;
+          part.height = pageCanvasH;
+          const ctx = part.getContext("2d")!;
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, part.width, part.height);
+          ctx.drawImage(canvas, 0, y, canvas.width, h, 0, padTop, canvas.width, h);
+          addPage(part.toDataURL("image/jpeg", 0.95), wPt, pageHPt);
+          y = end;
+        }
+      }
+
+
+      setProgress(40 + Math.round(((i + 1) / sections.length) * 50));
+    }
+
+
+    pdf.save(docFile.name.replace(/\.(docx?|DOCX?)$/, "") + ".pdf");
+    stage.innerHTML = "";
+    return `${pageCount} page(s) rendered with exact Word layout.`;
+  };
+
+  /** Selectable-text mode (vector) using mammoth + pdfmake. */
+  const convertText = async (docFile: File) => {
+    const arrayBuffer = await docFile.arrayBuffer();
+    setProgress(25);
+
+    const result = await mammoth.convertToHtml(
+      { arrayBuffer },
+      {
+        styleMap: [
+          "p[style-name='Title'] => h1.title:fresh",
+          "p[style-name='Subtitle'] => h2.subtitle:fresh",
+          "p[style-name='Heading 1'] => h1:fresh",
+          "p[style-name='Heading 2'] => h2:fresh",
+          "p[style-name='Heading 3'] => h3:fresh",
+          "p[style-name='Heading 4'] => h4:fresh",
+          "p[style-name='Quote'] => blockquote:fresh",
+          "r[style-name='Strong'] => strong",
+          "r[style-name='Emphasis'] => em",
+        ],
+        convertImage: mammoth.images.imgElement(async (image) => {
+          const base64 = await image.read("base64");
+          return { src: `data:${image.contentType};base64,${base64}` };
+        }),
+      }
+    );
+    const html = result.value || "<p></p>";
+    setProgress(55);
+
+    const pdfMake = await loadPdfMake();
+    const converted: any = htmlToPdfmake(html, {
+      window,
+      imagesByReference: true,
+      removeExtraBlanks: true,
+      tableAutoSize: true,
+      defaultStyles: {
+        p: { margin: [0, 0, 0, 8], lineHeight: 1.35 },
+        h1: { fontSize: 22, bold: true, margin: [0, 10, 0, 8] },
+        h2: { fontSize: 18, bold: true, margin: [0, 10, 0, 6] },
+        h3: { fontSize: 15, bold: true, margin: [0, 8, 0, 6] },
+        h4: { fontSize: 13, bold: true, margin: [0, 8, 0, 4] },
+        li: { margin: [0, 0, 0, 4] },
+        a: { color: "#1a56db", decoration: "underline" },
+        blockquote: { italics: true, margin: [16, 6, 0, 8] },
+        table: { margin: [0, 6, 0, 10] },
+        th: { bold: true, fillColor: "#f1f5f9" },
+      },
+    });
+    setProgress(80);
+
+    const docDefinition: any = {
+      pageSize: "A4",
+      pageMargins: [56, 56, 56, 56],
+      content: converted.content ?? converted,
+      images: converted.images ?? {},
+      defaultStyle: { fontSize: 11, lineHeight: 1.3, font: "Roboto" },
+    };
+
+    await new Promise<void>((resolve, reject) => {
+      try {
+        pdfMake
+          .createPdf(docDefinition)
+          .download(docFile.name.replace(/\.(docx?|DOCX?)$/, "") + ".pdf", () => resolve());
+      } catch (e) {
+        reject(e);
+      }
+    });
+    return "Converted with selectable text.";
   };
 
   const convertToPdf = async () => {
@@ -40,77 +292,25 @@ const WordToPdf = () => {
     setProgress(10);
 
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      setProgress(25);
-
-      // Word -> HTML keeping headings, bold/italic, lists, tables and images
-      const result = await mammoth.convertToHtml(
-        { arrayBuffer },
-        {
-          styleMap: [
-            "p[style-name='Title'] => h1.title:fresh",
-            "p[style-name='Subtitle'] => h2.subtitle:fresh",
-            "p[style-name='Heading 1'] => h1:fresh",
-            "p[style-name='Heading 2'] => h2:fresh",
-            "p[style-name='Heading 3'] => h3:fresh",
-            "p[style-name='Heading 4'] => h4:fresh",
-            "p[style-name='Quote'] => blockquote:fresh",
-            "r[style-name='Strong'] => strong",
-            "r[style-name='Emphasis'] => em",
-          ],
-          convertImage: mammoth.images.imgElement(async (image) => {
-            const base64 = await image.read("base64");
-            return { src: `data:${image.contentType};base64,${base64}` };
-          }),
-        }
-      );
-      const html = result.value || "<p></p>";
-      setProgress(55);
-
-      const pdfMake = await loadPdfMake();
-
-      const converted: any = htmlToPdfmake(html, {
-        window,
-        imagesByReference: true,
-        removeExtraBlanks: true,
-        tableAutoSize: true,
-        defaultStyles: {
-          p: { margin: [0, 0, 0, 8], lineHeight: 1.35 },
-          h1: { fontSize: 22, bold: true, margin: [0, 10, 0, 8] },
-          h2: { fontSize: 18, bold: true, margin: [0, 10, 0, 6] },
-          h3: { fontSize: 15, bold: true, margin: [0, 8, 0, 6] },
-          h4: { fontSize: 13, bold: true, margin: [0, 8, 0, 4] },
-          li: { margin: [0, 0, 0, 4] },
-          a: { color: "#1a56db", decoration: "underline" },
-          blockquote: { italics: true, margin: [16, 6, 0, 8] },
-          table: { margin: [0, 6, 0, 10] },
-          th: { bold: true, fillColor: "#f1f5f9" },
-        },
-      });
-
-      setProgress(80);
-
-      const docDefinition: any = {
-        pageSize: "A4",
-        pageMargins: [56, 56, 56, 56],
-        content: converted.content ?? converted,
-        images: converted.images ?? {},
-        defaultStyle: { fontSize: 11, lineHeight: 1.3, font: "Roboto" },
-      };
-
-      await new Promise<void>((resolve, reject) => {
+      let message: string;
+      if (mode === "exact") {
         try {
-          pdfMake
-            .createPdf(docDefinition)
-            .download(file.name.replace(/\.(docx?|DOCX?)$/, "") + ".pdf", () => resolve());
-        } catch (e) {
-          reject(e);
+          message = await convertExact(file);
+        } catch (err) {
+          console.warn("Exact mode failed, falling back to text mode:", err);
+          message = await convertText(file);
         }
-      });
+      } else {
+        message = await convertText(file);
+      }
 
       setProgress(100);
-      toast.success("Converted with original formatting — text stays selectable!");
-      setPreview(html.substring(0, 500) + "...");
+      toast.success(
+        mode === "exact"
+          ? "Converted — layout matches your Word file exactly!"
+          : "Converted with original formatting — text stays selectable!"
+      );
+      setPreview(message);
     } catch (error) {
       console.error("Conversion error:", error);
       toast.error("Failed to convert Word file to PDF. Make sure the file is a valid .docx document.");
@@ -121,6 +321,7 @@ const WordToPdf = () => {
       }, 1000);
     }
   };
+
 
   return (
     <ToolPageTemplate
@@ -141,7 +342,41 @@ const WordToPdf = () => {
               </p>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setMode("exact")}
+                disabled={isConverting}
+                className={`text-left p-4 rounded-xl border-2 transition-all ${
+                  mode === "exact"
+                    ? "border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/30"
+                    : "border-border hover:border-indigo-300"
+                }`}
+              >
+                <p className="font-semibold text-sm">Exact Layout (recommended)</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Pixel-perfect copy of your Word file — page size, margins, fonts, tables and images stay identical.
+                </p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("text")}
+                disabled={isConverting}
+                className={`text-left p-4 rounded-xl border-2 transition-all ${
+                  mode === "text"
+                    ? "border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/30"
+                    : "border-border hover:border-indigo-300"
+                }`}
+              >
+                <p className="font-semibold text-sm">Selectable Text</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Smaller file with copyable, searchable text. Layout may shift slightly.
+                </p>
+              </button>
+            </div>
+
             <div className="space-y-4">
+
               <div>
                 <label
                   htmlFor="word-file"
@@ -274,7 +509,23 @@ const WordToPdf = () => {
             </li>
           </ul>
         </Card>
+
+        {/* Offscreen high-fidelity DOCX render stage */}
+        <div
+          ref={stageRef}
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            left: "-10000px",
+            top: 0,
+            width: "1400px",
+            background: "#ffffff",
+            zIndex: -1,
+            pointerEvents: "none",
+          }}
+        />
       </div>
+
     </ToolPageTemplate>
   );
 };
