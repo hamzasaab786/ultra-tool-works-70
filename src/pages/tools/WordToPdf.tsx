@@ -12,6 +12,7 @@ import "@fontsource/carlito/400.css";
 import "@fontsource/carlito/400-italic.css";
 import "@fontsource/carlito/700.css";
 import "@fontsource/carlito/700-italic.css";
+import "@fontsource/noto-color-emoji/400.css";
 
 type Mode = "exact" | "text";
 
@@ -110,17 +111,45 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
      * so alias every Calibri reference before measuring or capturing pages.
      */
     styleHost.querySelectorAll("style").forEach((style) => {
-      style.textContent = style.textContent?.replace(/(["']?)Calibri\1/gi, '"Carlito"') ?? "";
+      style.textContent = style.textContent
+        ?.replace(/(["']?)Calibri(?: Light)?\1/gi, '"Carlito"') ?? "";
     });
     const metricFontOverride = document.createElement("style");
     metricFontOverride.textContent = `
       .docx-wrapper, section.docx { text-rendering: geometricPrecision; }
-      section.docx { font-synthesis: none; }
+      section.docx { font-synthesis: none; font-kerning: normal; }
+      section.docx .docx-emoji { font-family: "Noto Color Emoji"; font-style: normal; }
     `;
     styleHost.appendChild(metricFontOverride);
 
+    // docx-preview leaves unsupported emoji to the browser fallback. That
+    // fallback differs by device and html2canvas can render it as an empty box.
+    // Wrap only emoji glyphs so document text continues to use Word's metrics.
+    const walker = document.createTreeWalker(target, NodeFilter.SHOW_TEXT);
+    const emojiNodes: Text[] = [];
+    while (walker.nextNode()) {
+      const node = walker.currentNode as Text;
+      if (node.data.includes("🧠")) emojiNodes.push(node);
+    }
+    emojiNodes.forEach((node) => {
+      const parts = node.data.split("🧠");
+      const fragment = document.createDocumentFragment();
+      parts.forEach((part, index) => {
+        if (index > 0) {
+          const emoji = document.createElement("span");
+          emoji.className = "docx-emoji";
+          emoji.textContent = "🧠";
+          fragment.appendChild(emoji);
+        }
+        if (part) fragment.appendChild(document.createTextNode(part));
+      });
+      node.parentNode?.replaceChild(fragment, node);
+    });
+
     // wait for fonts + images so nothing renders blank
     await document.fonts?.load('400 10.5pt "Carlito"');
+    await document.fonts?.load('400 10.5pt "Carlito"', "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+    await document.fonts?.load('400 10.5pt "Noto Color Emoji"', "🧠");
     await document.fonts?.load('700 16pt "Carlito"');
     await document.fonts?.ready;
     const imgs = Array.from(target.querySelectorAll("img"));
