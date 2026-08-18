@@ -118,7 +118,14 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
     metricFontOverride.textContent = `
       .docx-wrapper, section.docx { text-rendering: geometricPrecision; }
       section.docx { font-synthesis: none; font-kerning: normal; }
-      section.docx .docx-emoji { font-family: "Noto Color Emoji"; font-style: normal; }
+      section.docx .docx-emoji {
+        display: inline-block;
+        width: 1.05em;
+        height: 1.05em;
+        margin-right: 0.15em;
+        vertical-align: -0.14em;
+      }
+      section.docx .docx-emoji svg { display: block; width: 100%; height: 100%; }
     `;
     styleHost.appendChild(metricFontOverride);
 
@@ -138,7 +145,8 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
         if (index > 0) {
           const emoji = document.createElement("span");
           emoji.className = "docx-emoji";
-          emoji.textContent = "🧠";
+          emoji.setAttribute("aria-label", "brain");
+          emoji.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#f05b9b" d="M9.2 3.1a4 4 0 0 0-3.8 3A3.7 3.7 0 0 0 3 11.8a3.8 3.8 0 0 0 2.4 5.8A3.5 3.5 0 0 0 9.2 21c1 0 1.8-.4 2.8-1.1V5.2a3.8 3.8 0 0 0-2.8-2.1Zm5.6 0c-1 0-1.8.4-2.8 1.1v15.7c1 .7 1.8 1.1 2.8 1.1a3.5 3.5 0 0 0 3.8-3.4 3.8 3.8 0 0 0 2.4-5.8 3.7 3.7 0 0 0-2.4-5.7 4 4 0 0 0-3.8-3Z"/><path fill="none" stroke="#d83d82" stroke-width="1.35" stroke-linecap="round" d="M8.2 7.1c1.3.2 2.1 1 2.2 2.2M5.8 12c1.5-.4 2.8 0 3.5 1.2m-.7 2.2c1.1.2 1.7.8 1.8 1.8m5.4-10.1c-1.3.2-2.1 1-2.2 2.2m4.6 2.7c-1.5-.4-2.8 0-3.5 1.2m.7 2.2c-1.1.2-1.7.8-1.8 1.8"/></svg>`;
           fragment.appendChild(emoji);
         }
         if (part) fragment.appendChild(document.createTextNode(part));
@@ -149,7 +157,6 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
     // wait for fonts + images so nothing renders blank
     await document.fonts?.load('400 10.5pt "Carlito"');
     await document.fonts?.load('400 10.5pt "Carlito"', "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-    await document.fonts?.load('400 10.5pt "Noto Color Emoji"', "🧠");
     await document.fonts?.load('700 16pt "Carlito"');
     await document.fonts?.ready;
     const imgs = Array.from(target.querySelectorAll("img"));
