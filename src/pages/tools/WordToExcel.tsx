@@ -22,12 +22,36 @@ const WordToExcel = () => {
       const doc = new DOMParser().parseFromString(html, "text/html");
       const tables = Array.from(doc.querySelectorAll("table"));
 
+      // expand colspan/rowspan so merged Word cells land in the right columns
+      const tableToRows = (t: HTMLTableElement): string[][] => {
+        const grid: string[][] = [];
+        Array.from(t.querySelectorAll("tr")).forEach((tr, r) => {
+          grid[r] = grid[r] || [];
+          let c = 0;
+          Array.from(tr.querySelectorAll("th,td")).forEach((td) => {
+            while (grid[r][c] !== undefined) c++;
+            const text = (td.textContent || "").replace(/\s+/g, " ").trim();
+            const cs = Math.max(1, Number((td as HTMLTableCellElement).colSpan) || 1);
+            const rs = Math.max(1, Number((td as HTMLTableCellElement).rowSpan) || 1);
+            for (let dr = 0; dr < rs; dr++) {
+              grid[r + dr] = grid[r + dr] || [];
+              for (let dc = 0; dc < cs; dc++) {
+                grid[r + dr][c + dc] = dr === 0 && dc === 0 ? text : "";
+              }
+            }
+            c += cs;
+          });
+        });
+        const width = Math.max(...grid.map((row) => row.length), 1);
+        return grid.map((row) => Array.from({ length: width }, (_, i) => row[i] ?? ""));
+      };
+
       const result: { name: string; rows: string[][] }[] = tables.map((t, i) => ({
-        name: `Table ${i + 1}`,
-        rows: Array.from(t.querySelectorAll("tr")).map((tr) =>
-          Array.from(tr.querySelectorAll("th,td")).map((td) => (td.textContent || "").replace(/\s+/g, " ").trim())
-        ),
+        name:
+          (t.querySelector("caption")?.textContent || "").trim().slice(0, 28) || `Table ${i + 1}`,
+        rows: tableToRows(t as HTMLTableElement),
       }));
+
 
       if (!result.length) {
         const paragraphs = Array.from(doc.querySelectorAll("p,h1,h2,h3,h4,li"))

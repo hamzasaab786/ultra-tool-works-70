@@ -7,7 +7,13 @@ import { FileSpreadsheet, Download, Upload, Loader2, CheckCircle } from "lucide-
 import ToolPageTemplate from "./ToolPageTemplate";
 import * as XLSX from "xlsx";
 import { loadPdfDocument } from "@/utils/pdfClient";
-import { extractPageLines, linesToGrid, coerceCell, downloadBlob } from "@/utils/officeConvert";
+import {
+  extractPageLines,
+  linesToGrid,
+  coerceCell,
+  inferNumberFormat,
+  downloadBlob,
+} from "@/utils/officeConvert";
 
 const PdfToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -52,15 +58,39 @@ const PdfToExcel = () => {
           );
 
           const ws = XLSX.utils.aoa_to_sheet(rows);
+
+          // keep the original look of numbers (currency, thousands, percent)
+          grid.forEach((row, r) => {
+            for (let c = 0; c < maxCols; c++) {
+              const original = row[c] ?? "";
+              const addr = XLSX.utils.encode_cell({ r, c });
+              const cell = ws[addr];
+              if (!cell) continue;
+              if (cell.t === "n") {
+                const fmt = inferNumberFormat(original);
+                if (fmt) cell.z = fmt;
+              }
+              if (r === 0) cell.s = { font: { bold: true } };
+            }
+          });
+
           // column widths sized to the real content so nothing gets cut off
           ws["!cols"] = Array.from({ length: maxCols }, (_, c) => ({
-            wch: Math.min(60, Math.max(10, ...rows.map((r) => String(r[c] ?? "").length + 2))),
+            wch: Math.min(60, Math.max(10, ...grid.map((r) => (r[c] ?? "").length + 2))),
           }));
+          // freeze the header row for easy reading
+          if (rows.length > 1) ws["!freeze"] = { xSplit: "0", ySplit: "1" };
+          ws["!ref"] = XLSX.utils.encode_range({
+            s: { r: 0, c: 0 },
+            e: { r: rows.length - 1, c: maxCols - 1 },
+          });
+
           XLSX.utils.book_append_sheet(workbook, ws, `Page ${i}`);
         }
 
         setProgress(25 + (i / pdf.numPages) * 65);
       }
+
 
       if (!workbook.SheetNames.length) {
         toast.error("No extractable text found (this PDF may be a scan — try PDF OCR)");
