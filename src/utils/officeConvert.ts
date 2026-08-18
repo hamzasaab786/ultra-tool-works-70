@@ -124,12 +124,7 @@ export function groupLinesIntoBlocks(lines: PdfLine[]): PdfBlock[] {
   for (const line of lines) {
     const gap = prev ? prev.y - line.y : 0;
     const sameParagraph =
-      prev !== null &&
-      gap < prev.size * 1.75 &&
-      Math.abs(line.size - prev.size) < 1.2 &&
-      !/[.!?:]$/.test(prev.text) === false
-        ? gap < prev.size * 1.75 && Math.abs(line.size - prev.size) < 1.2
-        : false;
+      prev !== null && gap > 0 && gap < prev.size * 1.75 && Math.abs(line.size - prev.size) < 1.2;
 
     if (prev && sameParagraph) {
       blocks[blocks.length - 1].lines.push(line);
