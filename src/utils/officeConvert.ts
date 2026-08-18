@@ -38,6 +38,7 @@ export function downloadBlob(blob: Blob, filename: string) {
 
 export interface PdfTextPart {
   x: number;
+  w: number;
   text: string;
   size: number;
   bold: boolean;
@@ -67,6 +68,7 @@ export async function extractPageLines(page: any): Promise<PdfLine[]> {
     const fontName: string = String(style.fontFamily || item.fontName || "");
     raw.push({
       x: t[4],
+      w: typeof item.width === "number" && item.width > 0 ? item.width : str.length * size * 0.5,
       y: t[5],
       text: str,
       size: Math.round(size * 10) / 10,
@@ -96,7 +98,7 @@ export async function extractPageLines(page: any): Promise<PdfLine[]> {
     let prev: PdfTextPart | null = null;
     for (const p of line.parts) {
       if (prev) {
-        const gap = p.x - (prev.x + estimateWidth(prev));
+        const gap = p.x - (prev.x + prev.w);
         if (gap > prev.size * 0.22 && !/\s$/.test(text) && !/^\s/.test(p.text)) text += " ";
       }
       text += p.text;
@@ -109,7 +111,7 @@ export async function extractPageLines(page: any): Promise<PdfLine[]> {
 }
 
 function estimateWidth(part: PdfTextPart) {
-  return part.text.length * part.size * 0.5;
+  return part.w;
 }
 
 /** Merge lines into paragraphs, preserving blank-line spacing. */

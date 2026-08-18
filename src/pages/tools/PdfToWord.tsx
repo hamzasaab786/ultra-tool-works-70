@@ -59,7 +59,7 @@ const PdfToWord = () => {
           // guess alignment from horizontal placement
           const widths = block.lines.map((l) => {
             const last = l.parts[l.parts.length - 1];
-            return last.x + last.text.length * last.size * 0.5;
+            return last.x + last.w;
           });
           const left = Math.min(...block.lines.map((l) => l.x));
           const right = Math.max(...widths);
@@ -98,7 +98,7 @@ const PdfToWord = () => {
                   size: part.size,
                 });
               }
-              prevEnd = part.x + part.text.length * part.size * 0.5;
+              prevEnd = part.x + part.w;
             }
           });
 
