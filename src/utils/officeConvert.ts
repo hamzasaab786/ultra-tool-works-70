@@ -147,41 +147,46 @@ export function groupLinesIntoBlocks(lines: PdfLine[]): PdfBlock[] {
 export function linesToGrid(lines: PdfLine[]): string[][] {
   // 1) merge each line's text parts into logical cells (big horizontal gap = new cell)
   const lineCells = lines.map((line) => {
-    const cells: { x: number; text: string }[] = [];
+    const cells: { x: number; end: number; text: string }[] = [];
     let prev: PdfTextPart | null = null;
     for (const p of line.parts) {
-      const gap = prev ? p.x - (prev.x + estimateWidth(prev)) : Infinity;
+      const gap = prev ? p.x - (prev.x + prev.w) : Infinity;
       if (!prev || gap > Math.max(p.size * 0.8, 5)) {
-        cells.push({ x: p.x, text: p.text.trim() });
+        cells.push({ x: p.x, end: p.x + p.w, text: p.text.trim() });
       } else {
         const cell = cells[cells.length - 1];
         cell.text = (cell.text + (gap > p.size * 0.22 ? " " : "") + p.text).replace(/\s+/g, " ");
+        cell.end = p.x + p.w;
       }
       prev = p;
     }
     return cells.filter((c) => c.text !== "");
   });
 
-  // 2) cluster the cell start positions into shared columns
-  const xs: number[] = [];
-  for (const cells of lineCells) for (const c of cells) xs.push(Math.round(c.x));
-  if (!xs.length) return [];
-  xs.sort((a, b) => a - b);
-  const clusters: number[][] = [];
-  for (const x of xs) {
-    const last = clusters[clusters.length - 1];
-    if (last && x - last[last.length - 1] <= 12) last.push(x);
-    else clusters.push([x]);
-  }
-  const columns = clusters.map((c) => c.reduce((a, b) => a + b, 0) / c.length);
+  // 2) build column bands by merging overlapping cell spans (handles left/right aligned data)
+  const spans = lineCells
+    .flat()
+    .map((c) => ({ start: c.x, end: Math.max(c.end, c.x + 1) }))
+    .sort((a, b) => a.start - b.start);
+  if (!spans.length) return [];
 
-  const colIndex = (x: number) => {
+  const bands: { start: number; end: number }[] = [];
+  for (const span of spans) {
+    const last = bands[bands.length - 1];
+    if (last && span.start < last.end - 1) {
+      last.end = Math.max(last.end, span.end);
+    } else {
+      bands.push({ ...span });
+    }
+  }
+
+  const bandIndex = (cell: { x: number; end: number }) => {
     let best = 0;
-    let bestD = Infinity;
-    columns.forEach((c, i) => {
-      const d = Math.abs(c - x);
-      if (d < bestD) {
-        bestD = d;
+    let bestOverlap = -Infinity;
+    bands.forEach((b, i) => {
+      const overlap = Math.min(b.end, cell.end) - Math.max(b.start, cell.x);
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
         best = i;
       }
     });
@@ -190,9 +195,9 @@ export function linesToGrid(lines: PdfLine[]): string[][] {
 
   return lineCells
     .map((cells) => {
-      const row: string[] = new Array(columns.length).fill("");
+      const row: string[] = new Array(bands.length).fill("");
       for (const c of cells) {
-        const i = colIndex(c.x);
+        const i = bandIndex(c);
         row[i] = row[i] ? `${row[i]} ${c.text}` : c.text;
       }
       while (row.length && row[row.length - 1] === "") row.pop();
