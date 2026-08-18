@@ -606,7 +606,7 @@ export const encodeCanvas = async (
     case "tiff":
       return { blob: encodeTIFF(canvas), format: "tiff" };
     case "gif":
-      return { blob: encodeGIF(canvas), format: "gif" };
+      return { blob: await encodeGIF(canvas), format: "gif" };
     case "ico":
       return { blob: encodeICO(canvas, options.icoSizes?.length ? options.icoSizes : [256, 128, 64, 48, 32, 16]), format: "ico" };
     case "svg":
