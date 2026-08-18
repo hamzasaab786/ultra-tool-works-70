@@ -155,26 +155,54 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
       const wPt = rect.width * PX_TO_PT;
       const pageHPt = pageH * PX_TO_PT;
       const ratio = canvas.height / rect.height; // device px per CSS px
-      // Content taller than one Word page (long flowing docs) is split into real pages.
-      const slices = Math.max(1, Math.ceil((rect.height - 1) / pageH));
+      const padTop = (parseFloat(cs.paddingTop) || 0) * ratio;
+      const padBottom = (parseFloat(cs.paddingBottom) || 0) * ratio;
 
-      if (slices === 1) {
+      if (rect.height <= pageH + 1) {
         addPage(canvas.toDataURL("image/jpeg", 0.95), wPt, pageHPt, rect.height * PX_TO_PT);
       } else {
-        const sliceH = Math.round(pageH * ratio);
-        for (let s = 0; s < slices; s++) {
-          const h = Math.min(sliceH, canvas.height - sliceH * s);
-          if (h <= 0) break;
+        // Long flowing content: re-paginate like Word, keeping the page margins on every page.
+        const pageCanvasH = Math.round(pageH * ratio);
+        const bodyH = Math.max(1, pageCanvasH - padTop - padBottom);
+        const contentTop = padTop;
+        const contentBottom = canvas.height - padBottom;
+        const src = canvas.getContext("2d")!;
+
+        /** Nudge the cut up to the nearest blank pixel row so glyphs are never sliced in half. */
+        const snap = (y: number) => {
+          const limit = Math.max(contentTop, y - Math.round(28 * ratio));
+          for (let probe = Math.min(y, contentBottom); probe > limit; probe--) {
+            const row = src.getImageData(0, probe, canvas.width, 1).data;
+            let blank = true;
+            for (let p = 0; p < row.length; p += 4) {
+              if (row[p] < 245 || row[p + 1] < 245 || row[p + 2] < 245) {
+                blank = false;
+                break;
+              }
+            }
+            if (blank) return probe;
+          }
+          return y;
+        };
+
+        let y = contentTop;
+        while (y < contentBottom) {
+          const wanted = Math.min(y + bodyH, contentBottom);
+          const end = wanted >= contentBottom ? contentBottom : snap(wanted);
+          const h = Math.max(1, end - y);
+
           const part = document.createElement("canvas");
           part.width = canvas.width;
-          part.height = h;
+          part.height = pageCanvasH;
           const ctx = part.getContext("2d")!;
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, part.width, part.height);
-          ctx.drawImage(canvas, 0, -sliceH * s);
-          addPage(part.toDataURL("image/jpeg", 0.95), wPt, pageHPt, (h / ratio) * PX_TO_PT);
+          ctx.drawImage(canvas, 0, y, canvas.width, h, 0, padTop, canvas.width, h);
+          addPage(part.toDataURL("image/jpeg", 0.95), wPt, pageHPt);
+          y = end;
         }
       }
+
 
       setProgress(40 + Math.round(((i + 1) / sections.length) * 50));
     }
