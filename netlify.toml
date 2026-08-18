@@ -1,4 +1,8 @@
+# Static files (including the build-time prerendered /tools/<slug>/index.html
+# pages) are served as-is. Only genuinely unmatched paths fall back to the SPA
+# shell, so crawlers always get the prerendered HTML for real routes.
 [[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
+force = false
