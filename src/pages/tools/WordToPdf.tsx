@@ -414,7 +414,23 @@ const WordToPdf = () => {
             </li>
           </ul>
         </Card>
+
+        {/* Offscreen high-fidelity DOCX render stage */}
+        <div
+          ref={stageRef}
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            left: "-10000px",
+            top: 0,
+            width: "1400px",
+            background: "#ffffff",
+            zIndex: -1,
+            pointerEvents: "none",
+          }}
+        />
       </div>
+
     </ToolPageTemplate>
   );
 };
