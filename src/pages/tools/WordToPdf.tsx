@@ -48,13 +48,13 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
     const xml = await entry.async("string");
     if (!/<w:pageBreakBefore(\s[^>]*)?\/?>/.test(xml)) return await docFile.arrayBuffer();
 
-    let first = true;
+    let isFirstParagraph = true;
     const patched = xml.replace(/<w:p(?:\s[^>]*)?>[\s\S]*?<\/w:p>/g, (para) => {
+      const wasFirst = isFirstParagraph;
+      isFirstParagraph = false;
       if (!/<w:pageBreakBefore(?![^>]*w:val="(?:0|false)")/.test(para)) return para;
-      if (first) {
-        first = false; // Word ignores a break before the very first paragraph of the body
-        return para;
-      }
+      // Word ignores a break placed before the very first paragraph of the body
+      if (wasFirst) return para;
       return para.replace(/<\/w:pPr>/, '</w:pPr><w:r><w:br w:type="page"/></w:r>');
     });
 
