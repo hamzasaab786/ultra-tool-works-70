@@ -163,9 +163,10 @@ export function linesToGrid(lines: PdfLine[]): string[][] {
     return cells.filter((c) => c.text !== "");
   });
 
-  // 2) build column bands by merging overlapping cell spans (handles left/right aligned data)
-  const spans = lineCells
-    .flat()
+  // 2) build column bands from table-like rows only (lines with 2+ cells)
+  const tableRows = lineCells.filter((c) => c.length > 1);
+  const source = (tableRows.length ? tableRows : lineCells).flat();
+  const spans = source
     .map((c) => ({ start: c.x, end: Math.max(c.end, c.x + 1) }))
     .sort((a, b) => a.start - b.start);
   if (!spans.length) return [];
@@ -173,7 +174,8 @@ export function linesToGrid(lines: PdfLine[]): string[][] {
   const bands: { start: number; end: number }[] = [];
   for (const span of spans) {
     const last = bands[bands.length - 1];
-    if (last && span.start < last.end - 1) {
+    // merge when spans overlap or are separated by less than a typical column gutter
+    if (last && span.start < last.end + 10) {
       last.end = Math.max(last.end, span.end);
     } else {
       bands.push({ ...span });
