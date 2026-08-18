@@ -484,162 +484,27 @@ export const encodeTIFF = (canvas: HTMLCanvasElement): Blob => {
   return new Blob([buffer], { type: "image/tiff" });
 };
 
-/* ---------- GIF (median-cut palette + LZW) ---------- */
+/* ---------- GIF ---------- */
 
-const medianCutPalette = (data: Uint8ClampedArray, maxColors: number) => {
-  interface Box { pixels: number[]; }
-  const sample: number[] = [];
-  const total = data.length / 4;
-  const step = Math.max(1, Math.floor(total / 40000));
-  for (let i = 0; i < total; i += step) sample.push(i * 4);
-
-  let boxes: Box[] = [{ pixels: sample }];
-  while (boxes.length < maxColors) {
-    boxes.sort((a, b) => b.pixels.length - a.pixels.length);
-    const box = boxes.shift();
-    if (!box || box.pixels.length < 2) {
-      if (box) boxes.push(box);
-      break;
-    }
-    let rMin = 255, rMax = 0, gMin = 255, gMax = 0, bMin = 255, bMax = 0;
-    box.pixels.forEach((p) => {
-      rMin = Math.min(rMin, data[p]); rMax = Math.max(rMax, data[p]);
-      gMin = Math.min(gMin, data[p + 1]); gMax = Math.max(gMax, data[p + 1]);
-      bMin = Math.min(bMin, data[p + 2]); bMax = Math.max(bMax, data[p + 2]);
-    });
-    const ranges = [rMax - rMin, gMax - gMin, bMax - bMin];
-    const channel = ranges.indexOf(Math.max(...ranges));
-    box.pixels.sort((a, b) => data[a + channel] - data[b + channel]);
-    const mid = Math.floor(box.pixels.length / 2);
-    boxes.push({ pixels: box.pixels.slice(0, mid) }, { pixels: box.pixels.slice(mid) });
-    if (boxes.every((b) => b.pixels.length < 2)) break;
-  }
-
-  return boxes.map((box) => {
-    let r = 0, g = 0, b = 0;
-    box.pixels.forEach((p) => { r += data[p]; g += data[p + 1]; b += data[p + 2]; });
-    const n = box.pixels.length || 1;
-    return [Math.round(r / n), Math.round(g / n), Math.round(b / n)] as [number, number, number];
-  });
-};
-
-const lzwEncode = (indices: Uint8Array, minCodeSize: number) => {
-  const clearCode = 1 << minCodeSize;
-  const eoiCode = clearCode + 1;
-  let codeSize = minCodeSize + 1;
-  let dict = new Map<string, number>();
-  let next = eoiCode + 1;
-
-  const out: number[] = [];
-  let bitBuffer = 0;
-  let bitCount = 0;
-  const write = (code: number) => {
-    bitBuffer |= code << bitCount;
-    bitCount += codeSize;
-    while (bitCount >= 8) {
-      out.push(bitBuffer & 0xff);
-      bitBuffer >>= 8;
-      bitCount -= 8;
-    }
-  };
-
-  const resetDict = () => {
-    dict = new Map();
-    next = eoiCode + 1;
-    codeSize = minCodeSize + 1;
-  };
-
-  write(clearCode);
-  resetDict();
-
-  let prefix = String(indices[0]);
-  for (let i = 1; i < indices.length; i++) {
-    const k = indices[i];
-    const combined = `${prefix},${k}`;
-    if (dict.has(combined)) {
-      prefix = combined;
-      continue;
-    }
-    write(prefix.includes(",") ? dict.get(prefix)! : Number(prefix));
-    dict.set(combined, next++);
-    if (next === (1 << codeSize) && codeSize < 12) codeSize++;
-    if (next >= 4096) {
-      write(clearCode);
-      resetDict();
-    }
-    prefix = String(k);
-  }
-  write(prefix.includes(",") ? dict.get(prefix)! : Number(prefix));
-  write(eoiCode);
-  if (bitCount > 0) out.push(bitBuffer & 0xff);
-  return Uint8Array.from(out);
-};
-
-/** Single-frame GIF87a/89a with a 256-colour median-cut palette. */
-export const encodeGIF = (canvas: HTMLCanvasElement): Blob => {
+/** Single-frame GIF with a 256-colour quantised palette and alpha support. */
+export const encodeGIF = async (canvas: HTMLCanvasElement): Promise<Blob> => {
+  const { GIFEncoder, quantize, applyPalette } = await import("gifenc");
   const { width, height, data } = getPixels(canvas);
-  const palette = medianCutPalette(data, 255);
-  while (palette.length < 2) palette.push([0, 0, 0]);
-
-  const cache = new Map<number, number>();
-  const nearest = (r: number, g: number, b: number) => {
-    const key = (r << 16) | (g << 8) | b;
-    const hit = cache.get(key);
-    if (hit !== undefined) return hit;
-    let best = 0;
-    let bestDist = Infinity;
-    for (let i = 0; i < palette.length; i++) {
-      const dr = palette[i][0] - r, dg = palette[i][1] - g, db = palette[i][2] - b;
-      const dist = dr * dr + dg * dg + db * db;
-      if (dist < bestDist) { bestDist = dist; best = i; }
-    }
-    cache.set(key, best);
-    return best;
-  };
-
-  const transparentIndex = palette.length; // reserve one slot for alpha
-  palette.push([0, 0, 0]);
-  const indices = new Uint8Array(width * height);
-  for (let i = 0; i < indices.length; i++) {
-    const o = i * 4;
-    indices[i] = data[o + 3] < 128 ? transparentIndex : nearest(data[o], data[o + 1], data[o + 2]);
-  }
-
-  let paletteBits = 1;
-  while ((1 << paletteBits) < palette.length) paletteBits++;
-  const paletteSize = 1 << paletteBits;
-
-  const bytes: number[] = [];
-  const push = (...b: number[]) => bytes.push(...b);
-  const pushShort = (v: number) => push(v & 0xff, (v >> 8) & 0xff);
-
-  "GIF89a".split("").forEach((c) => push(c.charCodeAt(0)));
-  pushShort(width);
-  pushShort(height);
-  push(0x80 | ((paletteBits - 1) & 0x07), 0, 0);
-  for (let i = 0; i < paletteSize; i++) {
-    const c = palette[i] || [0, 0, 0];
-    push(c[0], c[1], c[2]);
-  }
-  // Graphic control extension for transparency
-  push(0x21, 0xf9, 0x04, 0x01, 0, 0, transparentIndex, 0x00);
-  // Image descriptor
-  push(0x2c);
-  pushShort(0); pushShort(0);
-  pushShort(width); pushShort(height);
-  push(0x00);
-
-  const minCodeSize = Math.max(2, paletteBits);
-  push(minCodeSize);
-  const lzw = lzwEncode(indices, minCodeSize);
-  for (let i = 0; i < lzw.length; i += 255) {
-    const chunk = lzw.subarray(i, i + 255);
-    push(chunk.length, ...Array.from(chunk));
-  }
-  push(0x00, 0x3b);
-
-  return new Blob([Uint8Array.from(bytes)], { type: "image/gif" });
+  const rgba = new Uint8Array(data.buffer.slice(0));
+  const palette = quantize(rgba, 256, { format: "rgba4444" });
+  const index = applyPalette(rgba, palette, "rgba4444");
+  const encoder = GIFEncoder();
+  // Transparency: gifenc marks fully transparent palette entries when told the index.
+  const transparentIndex = palette.findIndex((c: number[]) => (c[3] ?? 255) < 128);
+  encoder.writeFrame(index, width, height, {
+    palette,
+    transparent: transparentIndex >= 0,
+    transparentIndex: transparentIndex >= 0 ? transparentIndex : 0,
+  });
+  encoder.finish();
+  return new Blob([encoder.bytes()], { type: "image/gif" });
 };
+
 
 /** Multi-resolution ICO with 32-bit BGRA entries (Windows compatible). */
 export const encodeICO = (source: HTMLCanvasElement, sizes: number[]): Blob => {
