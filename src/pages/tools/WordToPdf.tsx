@@ -247,7 +247,41 @@ const WordToPdf = () => {
               </p>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setMode("exact")}
+                disabled={isConverting}
+                className={`text-left p-4 rounded-xl border-2 transition-all ${
+                  mode === "exact"
+                    ? "border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/30"
+                    : "border-border hover:border-indigo-300"
+                }`}
+              >
+                <p className="font-semibold text-sm">Exact Layout (recommended)</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Pixel-perfect copy of your Word file — page size, margins, fonts, tables and images stay identical.
+                </p>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("text")}
+                disabled={isConverting}
+                className={`text-left p-4 rounded-xl border-2 transition-all ${
+                  mode === "text"
+                    ? "border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/30"
+                    : "border-border hover:border-indigo-300"
+                }`}
+              >
+                <p className="font-semibold text-sm">Selectable Text</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Smaller file with copyable, searchable text. Layout may shift slightly.
+                </p>
+              </button>
+            </div>
+
             <div className="space-y-4">
+
               <div>
                 <label
                   htmlFor="word-file"
