@@ -144,15 +144,20 @@ const ExcelToPdf = () => {
             })
         );
 
-        // Keep the first row as a header only when it is purely textual labels
-        const firstRow = rows[0]?.map((c) => c.content) || [];
-        const looksLikeHeader =
-          firstRow.filter(Boolean).length > 1 &&
-          firstRow.every((c) => c === "" || Number.isNaN(Number(c.replace(/[,\s]/g, ""))));
+        // find the real header row (first multi-column row of pure text labels)
+        const headerRowIndex = rows.findIndex((row) => {
+          const texts = row.map((c) => c.content);
+          return (
+            texts.filter(Boolean).length > 1 &&
+            row.every((c) => c.colSpan === 1) &&
+            texts.every((c) => c === "" || Number.isNaN(Number(c.replace(/[,\s]/g, ""))))
+          );
+        });
+        const useHead = headerRowIndex === 0;
 
         autoTable(pdf, {
-          head: looksLikeHeader ? [rows[0]] : undefined,
-          body: looksLikeHeader ? rows.slice(1) : rows,
+          head: useHead ? [rows[0]] : undefined,
+          body: useHead ? rows.slice(1) : rows,
           startY: 17,
           margin: { left: 10, right: 10 },
           tableWidth: pageWidth,
@@ -169,6 +174,15 @@ const ExcelToPdf = () => {
           alternateRowStyles: { fillColor: [248, 250, 252] },
           didParseCell: (data: any) => {
             const raw = String(data.cell.raw?.content ?? data.cell.raw ?? "");
+
+            // style the header row even when it is not the first row of the sheet
+            if (data.section === "body" && !useHead && data.row.index === headerRowIndex) {
+              data.cell.styles.fillColor = [79, 70, 229];
+              data.cell.styles.textColor = 255;
+              data.cell.styles.fontStyle = "bold";
+              return;
+            }
+
             // right-align numeric / currency / percentage cells like Excel does
             if (
               !data.cell.raw?.styles?.halign &&
@@ -180,6 +194,7 @@ const ExcelToPdf = () => {
             }
           },
         });
+
 
         setProgress(50 + ((index + 1) / workbook.SheetNames.length) * 40);
       });
