@@ -60,6 +60,7 @@ export const pdfTools: ToolLink[] = [
     { name: "Word to Excel", path: "/tools/word-to-excel" },
     { name: "Word to JPG", path: "/tools/word-to-jpg" },
     { name: "Excel to PDF", path: "/tools/excel-to-pdf" },
+    { name: "Excel to Word", path: "/tools/excel-to-word" },
     { name: "PowerPoint to PDF", path: "/tools/powerpoint-to-pdf" },
     { name: "PDF to PowerPoint", path: "/tools/pdf-to-powerpoint" },
     { name: "HTML to PDF", path: "/tools/html-to-pdf" },
