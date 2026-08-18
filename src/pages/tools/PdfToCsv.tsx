@@ -52,14 +52,12 @@ const PdfToCsv = () => {
         Array.from({ length: pdf.numPages }, (_, i) => i + 1),
         async (n) => {
           const page = await pdf.getPage(n);
-          const content = await page.getTextContent();
-          const items = (content.items as any[])
-            .filter((i) => typeof i.str === "string" && i.str.trim())
-            .map((i) => ({ str: i.str, x: i.transform[4], y: i.transform[5], w: i.width || 0 }));
+          const lines = await extractPageLines(page);
           page.cleanup();
-          return pageToRows(items);
+          return linesToGrid(lines);
         }
       );
+
 
       const rows = perPage.flat().filter((r) => r.some((c) => c.length));
       if (!rows.length) {
