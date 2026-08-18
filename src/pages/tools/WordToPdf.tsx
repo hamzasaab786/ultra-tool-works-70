@@ -35,12 +35,43 @@ const WordToPdf = () => {
     }
   };
 
+/**
+ * Word stores "page break before" as a paragraph property that the renderer ignores.
+ * Rewrite it into an explicit page-break run so pagination matches Word exactly.
+ */
+const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
+  try {
+    const JSZip = (await import("jszip")).default;
+    const zip = await JSZip.loadAsync(await docFile.arrayBuffer());
+    const entry = zip.file("word/document.xml");
+    if (!entry) return await docFile.arrayBuffer();
+    const xml = await entry.async("string");
+    if (!/<w:pageBreakBefore(\s[^>]*)?\/?>/.test(xml)) return await docFile.arrayBuffer();
+
+    let first = true;
+    const patched = xml.replace(/<w:p(?:\s[^>]*)?>[\s\S]*?<\/w:p>/g, (para) => {
+      if (!/<w:pageBreakBefore(?![^>]*w:val="(?:0|false)")/.test(para)) return para;
+      if (first) {
+        first = false; // Word ignores a break before the very first paragraph of the body
+        return para;
+      }
+      return para.replace(/<\/w:pPr>/, '</w:pPr><w:r><w:br w:type="page"/></w:r>');
+    });
+
+    zip.file("word/document.xml", patched);
+    return await zip.generateAsync({ type: "arraybuffer" });
+  } catch {
+    return await docFile.arrayBuffer();
+  }
+};
+
   /** Pixel-perfect: render the real DOCX layout (page size, margins, fonts, tables) then snapshot each page. */
   const convertExact = async (docFile: File) => {
-    const [{ renderAsync }, html2canvas, jsPDFmod] = await Promise.all([
+    const [{ renderAsync }, html2canvas, jsPDFmod, buffer] = await Promise.all([
       import("docx-preview"),
       import("html2canvas").then((m) => m.default),
       import("jspdf"),
+      normalizeDocxPageBreaks(docFile),
     ]);
     const jsPDF = (jsPDFmod as any).jsPDF ?? (jsPDFmod as any).default;
 
@@ -52,7 +83,7 @@ const WordToPdf = () => {
     stage.appendChild(target);
 
     setProgress(25);
-    await renderAsync(await docFile.arrayBuffer(), target, styleHost, {
+    await renderAsync(buffer, target, styleHost, {
       className: "docx",
       inWrapper: true,
       ignoreWidth: false,
@@ -81,18 +112,36 @@ const WordToPdf = () => {
     );
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))));
 
-    const pages = Array.from(target.querySelectorAll<HTMLElement>("section.docx"));
-    if (!pages.length) throw new Error("no-pages");
+    const sections = Array.from(target.querySelectorAll<HTMLElement>("section.docx"));
+    if (!sections.length) throw new Error("no-pages");
 
     setProgress(40);
     const PX_TO_PT = 72 / 96;
     let pdf: any = null;
+    let pageCount = 0;
 
-    for (let i = 0; i < pages.length; i++) {
-      const el = pages[i];
+    const addPage = (dataUrl: string, wPt: number, hPt: number) => {
+      if (!pdf) {
+        pdf = new jsPDF({
+          unit: "pt",
+          format: [wPt, hPt],
+          orientation: wPt > hPt ? "landscape" : "portrait",
+          compress: true,
+        });
+      } else {
+        pdf.addPage([wPt, hPt], wPt > hPt ? "landscape" : "portrait");
+      }
+      pdf.addImage(dataUrl, "JPEG", 0, 0, wPt, hPt, undefined, "FAST");
+      pageCount++;
+    };
+
+    for (let i = 0; i < sections.length; i++) {
+      const el = sections[i];
       const rect = el.getBoundingClientRect();
-      const wPt = rect.width * PX_TO_PT;
-      const hPt = rect.height * PX_TO_PT;
+      const cs = getComputedStyle(el);
+      // docx-preview sets the real Word page height as min-height on the section
+      const declaredH = parseFloat(cs.minHeight) || parseFloat(cs.height) || rect.height;
+      const pageH = declaredH > 20 ? declaredH : rect.height;
 
       const canvas = await html2canvas(el, {
         scale: Math.min(3, Math.max(2, 1600 / rect.width)),
@@ -103,15 +152,29 @@ const WordToPdf = () => {
         windowHeight: Math.ceil(rect.height),
       });
 
-      const img = canvas.toDataURL("image/jpeg", 0.95);
-      if (!pdf) {
-        pdf = new jsPDF({ unit: "pt", format: [wPt, hPt], orientation: wPt > hPt ? "landscape" : "portrait", compress: true });
+      const wPt = rect.width * PX_TO_PT;
+      const ratio = canvas.width / rect.width; // device px per CSS px
+      // Content taller than one Word page (long flowing docs) is split into real pages.
+      const slices = Math.max(1, Math.round(rect.height / pageH));
+
+      if (slices === 1) {
+        addPage(canvas.toDataURL("image/jpeg", 0.95), wPt, rect.height * PX_TO_PT);
       } else {
-        pdf.addPage([wPt, hPt], wPt > hPt ? "landscape" : "portrait");
+        const sliceH = Math.floor(canvas.height / slices);
+        for (let s = 0; s < slices; s++) {
+          const part = document.createElement("canvas");
+          part.width = canvas.width;
+          part.height = s === slices - 1 ? canvas.height - sliceH * s : sliceH;
+          const ctx = part.getContext("2d")!;
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, part.width, part.height);
+          ctx.drawImage(canvas, 0, -sliceH * s);
+          addPage(part.toDataURL("image/jpeg", 0.95), wPt, (part.height / ratio) * PX_TO_PT);
+        }
       }
-      pdf.addImage(img, "JPEG", 0, 0, wPt, hPt, undefined, "FAST");
-      setProgress(40 + Math.round(((i + 1) / pages.length) * 50));
+      setProgress(40 + Math.round(((i + 1) / sections.length) * 50));
     }
+
 
     pdf.save(docFile.name.replace(/\.(docx?|DOCX?)$/, "") + ".pdf");
     stage.innerHTML = "";
