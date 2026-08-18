@@ -175,7 +175,7 @@ export function linesToGrid(lines: PdfLine[]): string[][] {
   for (const span of spans) {
     const last = bands[bands.length - 1];
     // merge when spans overlap or are separated by less than a typical column gutter
-    if (last && span.start < last.end + 10) {
+    if (last && span.start < last.end - 1) {
       last.end = Math.max(last.end, span.end);
     } else {
       bands.push({ ...span });
@@ -195,13 +195,35 @@ export function linesToGrid(lines: PdfLine[]): string[][] {
     return best;
   };
 
-  return lineCells
+  let rows = lineCells
     .map((cells) => {
       const row: string[] = new Array(bands.length).fill("");
       for (const c of cells) {
         const i = bandIndex(c);
         row[i] = row[i] ? `${row[i]} ${c.text}` : c.text;
       }
+      return row;
+    })
+    .filter((r) => r.some((c) => c !== ""));
+
+  // 3) merge neighbouring columns that never hold data on the same row
+  //    (fixes left-aligned headers sitting above right-aligned numbers)
+  for (let c = 0; c < (rows[0]?.length ?? 0) - 1; c++) {
+    const conflict = rows.some((r) => r[c] !== "" && r[c + 1] !== "");
+    if (!conflict) {
+      rows = rows.map((r) => {
+        const merged = [...r];
+        merged[c] = (r[c] || r[c + 1]).trim();
+        merged.splice(c + 1, 1);
+        return merged;
+      });
+      c--;
+    }
+  }
+
+  return rows
+    .map((r) => {
+      const row = [...r];
       while (row.length && row[row.length - 1] === "") row.pop();
       return row;
     })
