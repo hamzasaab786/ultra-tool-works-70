@@ -71,39 +71,48 @@ const PdfToWord = () => {
               ? AlignmentType.RIGHT
               : AlignmentType.LEFT;
 
-          const runs: TextRun[] = [];
+          type Tok = { text: string; bold: boolean; italics: boolean; size: number };
+          const toks: Tok[] = [];
           block.lines.forEach((line, li) => {
-            if (li > 0) runs.push(new TextRun({ text: " " }));
-            let buffer = "";
-            let bold = line.parts[0]?.bold ?? false;
-            let italics = line.parts[0]?.italic ?? false;
-            let partSize = line.parts[0]?.size ?? size;
-            const flush = () => {
-              if (!buffer) return;
-              runs.push(
-                new TextRun({
-                  text: buffer,
-                  bold,
-                  italics,
-                  size: Math.max(12, Math.round(partSize * 2)),
-                })
-              );
-              buffer = "";
-            };
+            if (li > 0 && toks.length) toks[toks.length - 1].text += " ";
             let prevEnd: number | null = null;
             for (const part of line.parts) {
-              if (part.bold !== bold || part.italic !== italics || Math.abs(part.size - partSize) > 0.6) {
-                flush();
-                bold = part.bold;
-                italics = part.italic;
-                partSize = part.size;
+              const needSpace =
+                prevEnd !== null && part.x - prevEnd > part.size * 0.22;
+              if (needSpace && toks.length && !/\s$/.test(toks[toks.length - 1].text)) {
+                toks[toks.length - 1].text += " ";
               }
-              if (prevEnd !== null && part.x - prevEnd > part.size * 0.22 && !/\s$/.test(buffer)) buffer += " ";
-              buffer += part.text;
+              const last = toks[toks.length - 1];
+              if (
+                last &&
+                last.bold === part.bold &&
+                last.italics === part.italic &&
+                Math.abs(last.size - part.size) <= 0.6
+              ) {
+                last.text += part.text;
+              } else {
+                toks.push({
+                  text: part.text,
+                  bold: part.bold,
+                  italics: part.italic,
+                  size: part.size,
+                });
+              }
               prevEnd = part.x + part.text.length * part.size * 0.5;
             }
-            flush();
           });
+
+          const runs = toks
+            .filter((t) => t.text.length)
+            .map(
+              (t) =>
+                new TextRun({
+                  text: t.text,
+                  bold: t.bold,
+                  italics: t.italics,
+                  size: Math.max(12, Math.round(t.size * 2)),
+                })
+            );
 
           if (!runs.length) continue;
 

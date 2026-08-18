@@ -143,16 +143,32 @@ export function groupLinesIntoBlocks(lines: PdfLine[]): PdfBlock[] {
  * into a fixed grid so spreadsheets keep their original column structure.
  */
 export function linesToGrid(lines: PdfLine[]): string[][] {
-  const xs: number[] = [];
-  for (const line of lines) for (const p of line.parts) xs.push(Math.round(p.x));
-  if (!xs.length) return [];
+  // 1) merge each line's text parts into logical cells (big horizontal gap = new cell)
+  const lineCells = lines.map((line) => {
+    const cells: { x: number; text: string }[] = [];
+    let prev: PdfTextPart | null = null;
+    for (const p of line.parts) {
+      const gap = prev ? p.x - (prev.x + estimateWidth(prev)) : Infinity;
+      if (!prev || gap > Math.max(p.size * 1.2, 9)) {
+        cells.push({ x: p.x, text: p.text.trim() });
+      } else {
+        const cell = cells[cells.length - 1];
+        cell.text = (cell.text + (gap > p.size * 0.22 ? " " : "") + p.text).replace(/\s+/g, " ");
+      }
+      prev = p;
+    }
+    return cells.filter((c) => c.text !== "");
+  });
 
+  // 2) cluster the cell start positions into shared columns
+  const xs: number[] = [];
+  for (const cells of lineCells) for (const c of cells) xs.push(Math.round(c.x));
+  if (!xs.length) return [];
   xs.sort((a, b) => a - b);
-  // cluster x positions that are within 8pt of each other
   const clusters: number[][] = [];
   for (const x of xs) {
     const last = clusters[clusters.length - 1];
-    if (last && x - last[last.length - 1] <= 8) last.push(x);
+    if (last && x - last[last.length - 1] <= 12) last.push(x);
     else clusters.push([x]);
   }
   const columns = clusters.map((c) => c.reduce((a, b) => a + b, 0) / c.length);
@@ -170,16 +186,17 @@ export function linesToGrid(lines: PdfLine[]): string[][] {
     return best;
   };
 
-  return lines.map((line) => {
-    const row = new Array(columns.length).fill("");
-    for (const p of line.parts) {
-      const i = colIndex(p.x);
-      row[i] = row[i] ? `${row[i]} ${p.text}`.trim() : p.text.trim();
-    }
-    // trim trailing empty columns
-    while (row.length && row[row.length - 1] === "") row.pop();
-    return row;
-  }).filter((r) => r.some((c) => c !== ""));
+  return lineCells
+    .map((cells) => {
+      const row: string[] = new Array(columns.length).fill("");
+      for (const c of cells) {
+        const i = colIndex(c.x);
+        row[i] = row[i] ? `${row[i]} ${c.text}` : c.text;
+      }
+      while (row.length && row[row.length - 1] === "") row.pop();
+      return row;
+    })
+    .filter((r) => r.some((c) => c !== ""));
 }
 
 /** Convert a raw string to a number when it clearly is one (keeps Excel typing). */
