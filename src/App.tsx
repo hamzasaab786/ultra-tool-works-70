@@ -62,6 +62,7 @@ const ExtractTextPdf = lazy(() => import("@/pages/tools/ExtractTextPdf"));
 const OrganizePdf = lazy(() => import("@/pages/tools/OrganizePdf"));
 const HtmlToPdf = lazy(() => import("@/pages/tools/HtmlToPdf"));
 const ExcelToPdf = lazy(() => import("@/pages/tools/ExcelToPdf"));
+const ExcelToWord = lazy(() => import("@/pages/tools/ExcelToWord"));
 const PowerPointToPdf = lazy(() => import("@/pages/tools/PowerPointToPdf"));
 const PercentageCalculator = lazy(() => import("@/pages/tools/PercentageCalculator"));
 const UnitConverter = lazy(() => import("@/pages/tools/UnitConverter"));
@@ -219,6 +220,7 @@ const App = () => {
             <Route path="/tools/organize-pdf" element={<OrganizePdf />} />
             <Route path="/tools/html-to-pdf" element={<HtmlToPdf />} />
             <Route path="/tools/excel-to-pdf" element={<ExcelToPdf />} />
+            <Route path="/tools/excel-to-word" element={<ExcelToWord />} />
             <Route path="/tools/powerpoint-to-pdf" element={<PowerPointToPdf />} />
 
             {/* Calculator Tools */}

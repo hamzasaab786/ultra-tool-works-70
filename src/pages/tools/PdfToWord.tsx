@@ -6,8 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FileText, Download, Loader2, Upload, CheckCircle, Copy } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import { Document, Packer, Paragraph, TextRun } from "docx";
-import { loadPdfDocument, mapConcurrent } from "@/utils/pdfClient";
+import { Document, Packer, Paragraph, TextRun, AlignmentType, PageBreak, convertInchesToTwip } from "docx";
+import { loadPdfDocument } from "@/utils/pdfClient";
+import { extractPageLines, groupLinesIntoBlocks, downloadBlob } from "@/utils/officeConvert";
 
 const PdfToWord = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -36,91 +37,126 @@ const PdfToWord = () => {
 
     try {
       const pdf = await loadPdfDocument(file);
-      setProgress(30);
-      
-      let fullText = "";
-      const paragraphs: Paragraph[] = [];
-      
-      // Extract text from all pages (in parallel)
-      const pageTexts = await mapConcurrent(
-        Array.from({ length: pdf.numPages }, (_, i) => i + 1),
-        async (i) => {
-          const page = await pdf.getPage(i);
-          const textContent = await page.getTextContent();
-          const text = textContent.items.map((item: any) => item.str).join(" ");
-          page.cleanup();
-          return text;
-        }
-      );
+      setProgress(25);
 
-      pageTexts.forEach((pageText, idx) => {
-        fullText += `${pageText}\n\n`;
-        paragraphs.push(
-          new Paragraph({
-            children: [new TextRun({ text: `Page ${idx + 1}`, bold: true, size: 28 })],
-            spacing: { before: 400, after: 200 },
-          })
-        );
-        paragraphs.push(
-          new Paragraph({
-            children: [new TextRun({ text: pageText, size: 24 })],
-            spacing: { after: 400 },
-          })
-        );
-      });
-      setProgress(80);
+      const children: Paragraph[] = [];
+      let fullText = "";
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 1 });
+        const lines = await extractPageLines(page);
+        const blocks = groupLinesIntoBlocks(lines);
+
+        if (i > 1) {
+          children.push(new Paragraph({ children: [new PageBreak()] }));
+        }
+
+        for (const block of blocks) {
+          const first = block.lines[0];
+          const size = first.size;
+
+          // guess alignment from horizontal placement
+          const widths = block.lines.map((l) => {
+            const last = l.parts[l.parts.length - 1];
+            return last.x + last.w;
+          });
+          const left = Math.min(...block.lines.map((l) => l.x));
+          const right = Math.max(...widths);
+          const centerOffset = Math.abs((left + (viewport.width - right)) / 2 - left);
+          const alignment =
+            left > 60 && centerOffset < 20
+              ? AlignmentType.CENTER
+              : viewport.width - right < 60 && left > viewport.width * 0.45
+              ? AlignmentType.RIGHT
+              : AlignmentType.LEFT;
+
+          type Tok = { text: string; bold: boolean; italics: boolean; size: number };
+          const toks: Tok[] = [];
+          block.lines.forEach((line, li) => {
+            if (li > 0 && toks.length) toks[toks.length - 1].text += " ";
+            let prevEnd: number | null = null;
+            for (const part of line.parts) {
+              const needSpace =
+                prevEnd !== null && part.x - prevEnd > part.size * 0.22;
+              if (needSpace && toks.length && !/\s$/.test(toks[toks.length - 1].text)) {
+                toks[toks.length - 1].text += " ";
+              }
+              const last = toks[toks.length - 1];
+              if (
+                last &&
+                last.bold === part.bold &&
+                last.italics === part.italic &&
+                Math.abs(last.size - part.size) <= 0.6
+              ) {
+                last.text += part.text;
+              } else {
+                toks.push({
+                  text: part.text,
+                  bold: part.bold,
+                  italics: part.italic,
+                  size: part.size,
+                });
+              }
+              prevEnd = part.x + part.w;
+            }
+          });
+
+          const runs = toks
+            .filter((t) => t.text.length)
+            .map(
+              (t) =>
+                new TextRun({
+                  text: t.text,
+                  bold: t.bold,
+                  italics: t.italics,
+                  size: Math.max(12, Math.round(t.size * 2)),
+                })
+            );
+
+          if (!runs.length) continue;
+
+          const indent = alignment === AlignmentType.LEFT && left > 80 ? Math.round(((left - 56) / 72) * 1440) : 0;
+
+          children.push(
+            new Paragraph({
+              children: runs,
+              alignment,
+              indent: indent > 0 ? { left: Math.min(indent, convertInchesToTwip(2)) } : undefined,
+              spacing: {
+                before: Math.min(400, Math.round(block.spaceBefore * 12)),
+                after: 120,
+                line: 276,
+              },
+            })
+          );
+          fullText += block.lines.map((l) => l.text).join(" ") + "\n";
+        }
+        fullText += "\n";
+        page.cleanup();
+        setProgress(25 + Math.round((i / pdf.numPages) * 60));
+      }
 
       setExtractedText(fullText);
-      setProgress(85);
 
-      // Create Word document
       const doc = new Document({
+        styles: { default: { document: { run: { font: "Calibri", size: 22 } } } },
         sections: [
           {
-            properties: {},
-            children: [
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: "Converted from PDF",
-                    bold: true,
-                    size: 32,
-                    color: "4F46E5",
-                  }),
-                ],
-                spacing: { after: 400 },
-              }),
-              new Paragraph({
-                children: [
-                  new TextRun({
-                    text: `Original file: ${file.name}`,
-                    size: 20,
-                    italics: true,
-                  }),
-                ],
-                spacing: { after: 600 },
-              }),
-              ...paragraphs,
-            ],
+            properties: {
+              page: { margin: { top: 1134, right: 1134, bottom: 1134, left: 1134 } },
+            },
+            children: children.length ? children : [new Paragraph({ children: [new TextRun("")] })],
           },
         ],
       });
 
       setProgress(95);
-
-      // Generate and download
       const blob = await Packer.toBlob(doc);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = file.name.replace(".pdf", ".docx");
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(blob, file.name.replace(/\.pdf$/i, "") + ".docx");
 
       setProgress(100);
-      toast.success(`PDF converted to Word successfully! Extracted ${pdf.numPages} pages.`);
+      toast.success(`Converted ${pdf.numPages} page(s) with original layout preserved!`);
     } catch (error) {
       console.error("Conversion error:", error);
       toast.error("Failed to convert PDF to Word. Make sure the file is a valid PDF.");

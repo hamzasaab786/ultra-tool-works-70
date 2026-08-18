@@ -7,6 +7,7 @@ import { FileSpreadsheet, Download, Upload, Loader2, CheckCircle } from "lucide-
 import ToolPageTemplate from "./ToolPageTemplate";
 import * as XLSX from "xlsx";
 import { loadPdfDocument } from "@/utils/pdfClient";
+import { extractPageLines, linesToGrid, coerceCell, downloadBlob } from "@/utils/officeConvert";
 
 const PdfToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -40,66 +41,45 @@ const PdfToExcel = () => {
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        
-        // Group text items by Y position to form rows
-        const lines: { y: number; items: { x: number; text: string }[] }[] = [];
-        
-        textContent.items.forEach((item: any) => {
-          const y = Math.round(item.transform[5]);
-          const x = Math.round(item.transform[4]);
-          const text = item.str?.trim();
-          if (!text) return;
+        const lines = await extractPageLines(page);
+        const grid = linesToGrid(lines);
+        page.cleanup();
 
-          let line = lines.find(l => Math.abs(l.y - y) < 5);
-          if (!line) {
-            line = { y, items: [] };
-            lines.push(line);
-          }
-          line.items.push({ x, text });
-        });
+        if (grid.length) {
+          const maxCols = Math.max(...grid.map((r) => r.length));
+          const rows = grid.map((row) =>
+            Array.from({ length: maxCols }, (_, c) => coerceCell(row[c] ?? ""))
+          );
 
-        // Sort lines by Y (top to bottom) and items by X (left to right)
-        lines.sort((a, b) => b.y - a.y);
-        lines.forEach(line => line.items.sort((a, b) => a.x - b.x));
-
-        // Convert to 2D array
-        const rows = lines.map(line => line.items.map(item => item.text));
-
-        // Normalize column count
-        const maxCols = Math.max(...rows.map(r => r.length), 1);
-        const normalizedRows = rows.map(row => {
-          while (row.length < maxCols) row.push("");
-          return row;
-        });
-
-        if (normalizedRows.length > 0) {
-          const ws = XLSX.utils.aoa_to_sheet(normalizedRows);
+          const ws = XLSX.utils.aoa_to_sheet(rows);
+          // column widths sized to the real content so nothing gets cut off
+          ws["!cols"] = Array.from({ length: maxCols }, (_, c) => ({
+            wch: Math.min(60, Math.max(10, ...rows.map((r) => String(r[c] ?? "").length + 2))),
+          }));
           XLSX.utils.book_append_sheet(workbook, ws, `Page ${i}`);
         }
 
         setProgress(25 + (i / pdf.numPages) * 65);
       }
 
+      if (!workbook.SheetNames.length) {
+        toast.error("No extractable text found (this PDF may be a scan — try PDF OCR)");
+        return;
+      }
+
       setProgress(95);
 
-      // Download
       const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-      const blob = new Blob([excelBuffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = file.name.replace(".pdf", ".xlsx");
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      downloadBlob(
+        new Blob([excelBuffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        file.name.replace(/\.pdf$/i, "") + ".xlsx"
+      );
 
       setProgress(100);
       setDone(true);
-      toast.success(`Converted ${pdf.numPages} pages to Excel!`);
+      toast.success(`Converted ${pdf.numPages} page(s) — columns and numbers preserved!`);
     } catch (error) {
       console.error("Conversion error:", error);
       toast.error("Failed to convert PDF to Excel");

@@ -7,8 +7,7 @@ import { FileText, Download, Loader2, Upload, CheckCircle } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import mammoth from "mammoth";
 import htmlToPdfmake from "html-to-pdfmake";
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+import { loadPdfMake } from "@/utils/officeConvert";
 
 const WordToPdf = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -42,70 +41,79 @@ const WordToPdf = () => {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      setProgress(30);
+      setProgress(25);
 
-      // Convert Word to HTML using mammoth
-      const result = await mammoth.convertToHtml({ arrayBuffer });
-      const html = result.value;
-      setProgress(60);
+      // Word -> HTML keeping headings, bold/italic, lists, tables and images
+      const result = await mammoth.convertToHtml(
+        { arrayBuffer },
+        {
+          styleMap: [
+            "p[style-name='Title'] => h1.title:fresh",
+            "p[style-name='Subtitle'] => h2.subtitle:fresh",
+            "p[style-name='Heading 1'] => h1:fresh",
+            "p[style-name='Heading 2'] => h2:fresh",
+            "p[style-name='Heading 3'] => h3:fresh",
+            "p[style-name='Heading 4'] => h4:fresh",
+            "p[style-name='Quote'] => blockquote:fresh",
+            "r[style-name='Strong'] => strong",
+            "r[style-name='Emphasis'] => em",
+          ],
+          convertImage: mammoth.images.imgElement(async (image) => {
+            const base64 = await image.read("base64");
+            return { src: `data:${image.contentType};base64,${base64}` };
+          }),
+        }
+      );
+      const html = result.value || "<p></p>";
+      setProgress(55);
 
-      // Render HTML in a hidden container
-      const container = document.createElement("div");
-      container.style.position = "absolute";
-      container.style.left = "-9999px";
-      container.style.width = "800px";
-      container.style.padding = "40px";
-      container.style.backgroundColor = "white";
-      container.style.fontFamily = "Arial, sans-serif";
-      container.innerHTML = html;
-      document.body.appendChild(container);
+      const pdfMake = await loadPdfMake();
 
-      setProgress(70);
-
-      // Convert to canvas
-      const canvas = await html2canvas(container, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
+      const converted: any = htmlToPdfmake(html, {
+        window,
+        imagesByReference: true,
+        removeExtraBlanks: true,
+        tableAutoSize: true,
+        defaultStyles: {
+          p: { margin: [0, 0, 0, 8], lineHeight: 1.35 },
+          h1: { fontSize: 22, bold: true, margin: [0, 10, 0, 8] },
+          h2: { fontSize: 18, bold: true, margin: [0, 10, 0, 6] },
+          h3: { fontSize: 15, bold: true, margin: [0, 8, 0, 6] },
+          h4: { fontSize: 13, bold: true, margin: [0, 8, 0, 4] },
+          li: { margin: [0, 0, 0, 4] },
+          a: { color: "#1a56db", decoration: "underline" },
+          blockquote: { italics: true, margin: [16, 6, 0, 8] },
+          table: { margin: [0, 6, 0, 10] },
+          th: { bold: true, fillColor: "#f1f5f9" },
+        },
       });
 
-      document.body.removeChild(container);
-      setProgress(85);
+      setProgress(80);
 
-      // Create PDF from canvas
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
-      const pdfWidth = 210; // A4 width in mm
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      const pdf = new jsPDF({
-        orientation: pdfHeight > 297 ? "portrait" : "portrait",
-        unit: "mm",
-        format: "a4",
+      const docDefinition: any = {
+        pageSize: "A4",
+        pageMargins: [56, 56, 56, 56],
+        content: converted.content ?? converted,
+        images: converted.images ?? {},
+        defaultStyle: { fontSize: 11, lineHeight: 1.3, font: "Roboto" },
+      };
+
+      await new Promise<void>((resolve, reject) => {
+        try {
+          pdfMake
+            .createPdf(docDefinition)
+            .download(file.name.replace(/\.(docx?|DOCX?)$/, "") + ".pdf", () => resolve());
+        } catch (e) {
+          reject(e);
+        }
       });
-
-      const pageHeight = 297; // A4 height in mm
-      let position = 0;
-      let remainingHeight = pdfHeight;
-
-      // Handle multi-page
-      while (remainingHeight > 0) {
-        if (position > 0) pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, -position, pdfWidth, pdfHeight);
-        position += pageHeight;
-        remainingHeight -= pageHeight;
-      }
-
-      pdf.save(file.name.replace(/\.(docx?|DOCX?)$/, ".pdf"));
 
       setProgress(100);
-      toast.success("Word file converted to PDF successfully!");
-      
-      // Show preview
+      toast.success("Converted with original formatting — text stays selectable!");
       setPreview(html.substring(0, 500) + "...");
     } catch (error) {
       console.error("Conversion error:", error);
-      toast.error("Failed to convert Word file to PDF. Make sure the file is a valid Word document.");
+      toast.error("Failed to convert Word file to PDF. Make sure the file is a valid .docx document.");
     } finally {
       setTimeout(() => {
         setIsConverting(false);

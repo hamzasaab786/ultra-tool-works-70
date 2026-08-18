@@ -6,6 +6,7 @@ import { FileSpreadsheet, Download, Loader2 } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import mammoth from "mammoth";
 import * as XLSX from "xlsx";
+import { coerceCell } from "@/utils/officeConvert";
 
 const WordToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -54,7 +55,7 @@ const WordToExcel = () => {
   const download = () => {
     const wb = XLSX.utils.book_new();
     sheets.forEach((s, i) => {
-      const ws = XLSX.utils.aoa_to_sheet(s.rows);
+      const ws = XLSX.utils.aoa_to_sheet(s.rows.map((r) => r.map((c) => coerceCell(c))));
       const widths = (s.rows[0] || []).map((_, c) => ({
         wch: Math.min(60, Math.max(12, ...s.rows.map((r) => (r[c] || "").length + 2))),
       }));
