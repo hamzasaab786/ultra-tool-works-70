@@ -44,57 +44,110 @@ const ExcelToPdf = () => {
       const arrayBuffer = await file.arrayBuffer();
       setProgress(30);
 
-      // Read Excel file
-      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      // cellStyles + formatted values keep the original number/date/currency display
+      const workbook = XLSX.read(arrayBuffer, {
+        type: "array",
+        cellStyles: true,
+        cellDates: true,
+        cellNF: true,
+      });
       setProgress(50);
 
-      // Create PDF
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4',
-      });
-
       const title = file.name.replace(/\.(xlsx?|csv)$/i, "");
-      
-      // Process each sheet
+      let pdf: jsPDF | null = null;
+      let pageIndex = 0;
+
       workbook.SheetNames.forEach((sheetName, index) => {
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+        // raw:false -> uses the cell's displayed (formatted) text exactly as in Excel
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          raw: false,
+          defval: "",
+          blankrows: false,
+        }) as any[][];
 
-        if (jsonData.length > 0) {
-          if (index > 0) pdf.addPage();
-          
-          // Add sheet title
-          pdf.setFontSize(16);
-          pdf.setTextColor(79, 70, 229);
-          pdf.text(`${title} - ${sheetName}`, 14, 15);
-          pdf.setTextColor(0, 0, 0);
+        if (!jsonData.length) return;
 
-          // Normalize rows to strings
-          const head = jsonData[0]?.map(cell => cell !== null && cell !== undefined ? String(cell) : '') || [];
-          const body = jsonData.slice(1).map(row => 
-            row.map(cell => cell !== null && cell !== undefined ? String(cell) : '')
-          );
+        const maxCols = Math.max(...jsonData.map((r) => r.length));
+        const orientation = maxCols > 5 ? "landscape" : "portrait";
 
-          // Use autoTable for proper table rendering
-          autoTable(pdf, {
-            head: [head],
-            body: body,
-            startY: 20,
-            styles: { fontSize: 8, cellPadding: 2 },
-            headStyles: { fillColor: [79, 70, 229], textColor: 255 },
-            alternateRowStyles: { fillColor: [245, 245, 255] },
-          });
+        if (!pdf) {
+          pdf = new jsPDF({ orientation, unit: "mm", format: "a4" });
+        } else {
+          pdf.addPage("a4", orientation);
         }
+        pageIndex++;
+
+        // Column widths taken from the sheet's own column widths when available
+        const cols: any[] = (worksheet["!cols"] as any[]) || [];
+        const pageWidth = pdf.internal.pageSize.getWidth() - 20;
+        const rawWidths = Array.from({ length: maxCols }, (_, i) => {
+          const w = cols[i]?.wch ?? cols[i]?.width;
+          return typeof w === "number" && w > 0 ? w : 12;
+        });
+        const totalW = rawWidths.reduce((a, b) => a + b, 0);
+        const columnStyles: Record<number, any> = {};
+        rawWidths.forEach((w, i) => {
+          columnStyles[i] = { cellWidth: (w / totalW) * pageWidth };
+        });
+
+        pdf.setFontSize(13);
+        pdf.setTextColor(30, 41, 59);
+        pdf.text(`${title}${workbook.SheetNames.length > 1 ? " — " + sheetName : ""}`, 10, 12);
+        pdf.setTextColor(0, 0, 0);
+
+        const rows = jsonData.map((row) =>
+          Array.from({ length: maxCols }, (_, i) => {
+            const cell = row[i];
+            return cell === null || cell === undefined ? "" : String(cell);
+          })
+        );
+
+        // Keep the first row as a header only when it is purely textual labels
+        const firstRow = rows[0] || [];
+        const looksLikeHeader =
+          firstRow.filter(Boolean).length > 1 &&
+          firstRow.every((c) => c === "" || Number.isNaN(Number(c.replace(/[,\s]/g, ""))));
+
+        autoTable(pdf, {
+          head: looksLikeHeader ? [firstRow] : undefined,
+          body: looksLikeHeader ? rows.slice(1) : rows,
+          startY: 17,
+          margin: { left: 10, right: 10 },
+          tableWidth: pageWidth,
+          columnStyles,
+          styles: {
+            fontSize: 8,
+            cellPadding: 1.6,
+            overflow: "linebreak",
+            valign: "middle",
+            lineColor: [203, 213, 225],
+            lineWidth: 0.1,
+          },
+          headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: "bold" },
+          alternateRowStyles: { fillColor: [248, 250, 252] },
+          didParseCell: (data: any) => {
+            const raw = String(data.cell.raw ?? "");
+            // right-align numeric / currency / percentage cells like Excel does
+            if (raw && /^[-(]?[$€£₹]?\s?[\d,]+(\.\d+)?\)?%?$/.test(raw.trim())) {
+              data.cell.styles.halign = "right";
+            }
+          },
+        });
 
         setProgress(50 + ((index + 1) / workbook.SheetNames.length) * 40);
       });
 
-      pdf.save(file.name.replace(/\.(xlsx?|csv)$/i, ".pdf"));
+      if (!pdf || pageIndex === 0) {
+        toast.error("This spreadsheet has no data to convert");
+        return;
+      }
+
+      pdf.save(file.name.replace(/\.(xlsx?|csv)$/i, "") + ".pdf");
 
       setProgress(100);
-      toast.success("Excel file converted to PDF successfully!");
+      toast.success("Converted — number, date and currency formats preserved!");
     } catch (error) {
       console.error("Conversion error:", error);
       toast.error("Failed to convert Excel file to PDF. Make sure the file is valid.");
