@@ -120,7 +120,7 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
     let pdf: any = null;
     let pageCount = 0;
 
-    const addPage = (dataUrl: string, wPt: number, hPt: number) => {
+    const addPage = (dataUrl: string, wPt: number, hPt: number, imgHPt = hPt) => {
       if (!pdf) {
         pdf = new jsPDF({
           unit: "pt",
@@ -131,7 +131,7 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
       } else {
         pdf.addPage([wPt, hPt], wPt > hPt ? "landscape" : "portrait");
       }
-      pdf.addImage(dataUrl, "JPEG", 0, 0, wPt, hPt, undefined, "FAST");
+      pdf.addImage(dataUrl, "JPEG", 0, 0, wPt, imgHPt, undefined, "FAST");
       pageCount++;
     };
 
@@ -153,25 +153,29 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
       });
 
       const wPt = rect.width * PX_TO_PT;
-      const ratio = canvas.width / rect.width; // device px per CSS px
+      const pageHPt = pageH * PX_TO_PT;
+      const ratio = canvas.height / rect.height; // device px per CSS px
       // Content taller than one Word page (long flowing docs) is split into real pages.
-      const slices = Math.max(1, Math.round(rect.height / pageH));
+      const slices = Math.max(1, Math.ceil((rect.height - 1) / pageH));
 
       if (slices === 1) {
-        addPage(canvas.toDataURL("image/jpeg", 0.95), wPt, rect.height * PX_TO_PT);
+        addPage(canvas.toDataURL("image/jpeg", 0.95), wPt, pageHPt, rect.height * PX_TO_PT);
       } else {
-        const sliceH = Math.floor(canvas.height / slices);
+        const sliceH = Math.round(pageH * ratio);
         for (let s = 0; s < slices; s++) {
+          const h = Math.min(sliceH, canvas.height - sliceH * s);
+          if (h <= 0) break;
           const part = document.createElement("canvas");
           part.width = canvas.width;
-          part.height = s === slices - 1 ? canvas.height - sliceH * s : sliceH;
+          part.height = h;
           const ctx = part.getContext("2d")!;
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, part.width, part.height);
           ctx.drawImage(canvas, 0, -sliceH * s);
-          addPage(part.toDataURL("image/jpeg", 0.95), wPt, (part.height / ratio) * PX_TO_PT);
+          addPage(part.toDataURL("image/jpeg", 0.95), wPt, pageHPt, (h / ratio) * PX_TO_PT);
         }
       }
+
       setProgress(40 + Math.round(((i + 1) / sections.length) * 50));
     }
 
