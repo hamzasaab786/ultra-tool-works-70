@@ -5,37 +5,9 @@ import { toast } from "sonner";
 import { Table2, Download, Loader2 } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
 import { loadPdfDocument, mapConcurrent } from "@/utils/pdfClient";
+import { extractPageLines, linesToGrid } from "@/utils/officeConvert";
 
 const escapeCsv = (v: string) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
-
-/** Groups PDF text items into rows (by baseline) and columns (by x-gaps). */
-const pageToRows = (items: { str: string; x: number; y: number; w: number }[]) => {
-  const rows: typeof items[] = [];
-  const sorted = [...items].sort((a, b) => b.y - a.y || a.x - b.x);
-  sorted.forEach((item) => {
-    const row = rows.find((r) => Math.abs(r[0].y - item.y) <= 3);
-    if (row) row.push(item);
-    else rows.push([item]);
-  });
-
-  return rows.map((row) => {
-    const line = row.sort((a, b) => a.x - b.x);
-    const cells: string[] = [];
-    let current = "";
-    line.forEach((item, i) => {
-      const prev = line[i - 1];
-      const gap = prev ? item.x - (prev.x + prev.w) : 0;
-      if (prev && gap > Math.max(6, prev.w * 0.12)) {
-        cells.push(current.trim());
-        current = item.str;
-      } else {
-        current += (prev && gap > 1 ? " " : "") + item.str;
-      }
-    });
-    cells.push(current.trim());
-    return cells.filter((c, i, arr) => !(c === "" && arr.length === 1));
-  });
-};
 
 const PdfToCsv = () => {
   const [file, setFile] = useState<File | null>(null);
