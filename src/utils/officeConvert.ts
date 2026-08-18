@@ -151,7 +151,7 @@ export function linesToGrid(lines: PdfLine[]): string[][] {
     let prev: PdfTextPart | null = null;
     for (const p of line.parts) {
       const gap = prev ? p.x - (prev.x + estimateWidth(prev)) : Infinity;
-      if (!prev || gap > Math.max(p.size * 1.2, 9)) {
+      if (!prev || gap > Math.max(p.size * 0.8, 5)) {
         cells.push({ x: p.x, text: p.text.trim() });
       } else {
         const cell = cells[cells.length - 1];
