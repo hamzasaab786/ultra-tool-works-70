@@ -59,17 +59,30 @@ const ExcelToPdf = () => {
 
       workbook.SheetNames.forEach((sheetName, index) => {
         const worksheet = workbook.Sheets[sheetName];
-        // raw:false -> uses the cell's displayed (formatted) text exactly as in Excel
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1,
-          raw: false,
-          defval: "",
-          blankrows: false,
-        }) as any[][];
+        if (!worksheet || !worksheet["!ref"]) return;
 
-        if (!jsonData.length) return;
+        const range = XLSX.utils.decode_range(worksheet["!ref"] as string);
+        const rowInfo: any[] = (worksheet["!rows"] as any[]) || [];
+        const colInfo: any[] = (worksheet["!cols"] as any[]) || [];
+        const merges: any[] = (worksheet["!merges"] as any[]) || [];
 
-        const maxCols = Math.max(...jsonData.map((r) => r.length));
+        // visible columns / rows only — hidden ones are not printed by Excel either
+        const colIdx: number[] = [];
+        for (let c = range.s.c; c <= range.e.c; c++) {
+          if (!colInfo[c]?.hidden) colIdx.push(c);
+        }
+        const rowIdx: number[] = [];
+        for (let r = range.s.r; r <= range.e.r; r++) {
+          if (rowInfo[r]?.hidden) continue;
+          const hasData = colIdx.some((c) => {
+            const cell = worksheet[XLSX.utils.encode_cell({ r, c })];
+            return cell && String(cell.w ?? cell.v ?? "").trim() !== "";
+          });
+          if (hasData) rowIdx.push(r);
+        }
+        if (!rowIdx.length || !colIdx.length) return;
+
+        const maxCols = colIdx.length;
         const orientation = maxCols > 5 ? "landscape" : "portrait";
 
         if (!pdf) {
@@ -80,10 +93,9 @@ const ExcelToPdf = () => {
         pageIndex++;
 
         // Column widths taken from the sheet's own column widths when available
-        const cols: any[] = (worksheet["!cols"] as any[]) || [];
         const pageWidth = pdf.internal.pageSize.getWidth() - 20;
-        const rawWidths = Array.from({ length: maxCols }, (_, i) => {
-          const w = cols[i]?.wch ?? cols[i]?.width;
+        const rawWidths = colIdx.map((c) => {
+          const w = colInfo[c]?.wch ?? colInfo[c]?.width;
           return typeof w === "number" && w > 0 ? w : 12;
         });
         const totalW = rawWidths.reduce((a, b) => a + b, 0);
@@ -97,22 +109,55 @@ const ExcelToPdf = () => {
         pdf.text(`${title}${workbook.SheetNames.length > 1 ? " — " + sheetName : ""}`, 10, 12);
         pdf.setTextColor(0, 0, 0);
 
-        const rows = jsonData.map((row) =>
-          Array.from({ length: maxCols }, (_, i) => {
-            const cell = row[i];
-            return cell === null || cell === undefined ? "" : String(cell);
-          })
+        // map merged ranges onto the visible grid
+        const spanAt = new Map<string, { colSpan: number; rowSpan: number }>();
+        const covered = new Set<string>();
+        for (const m of merges) {
+          const rs = rowIdx.filter((r) => r >= m.s.r && r <= m.e.r);
+          const cs = colIdx.filter((c) => c >= m.s.c && c <= m.e.c);
+          if (rs.length < 1 || cs.length < 1) continue;
+          spanAt.set(`${rs[0]}:${cs[0]}`, { colSpan: cs.length, rowSpan: rs.length });
+          for (const r of rs) for (const c of cs) {
+            if (!(r === rs[0] && c === cs[0])) covered.add(`${r}:${c}`);
+          }
+        }
+
+        const rows = rowIdx.map((r) =>
+          colIdx
+            .filter((c) => !covered.has(`${r}:${c}`))
+            .map((c) => {
+              const cell = worksheet[XLSX.utils.encode_cell({ r, c })];
+              // cell.w is the displayed (formatted) text exactly as shown in Excel
+              const content = cell ? String(cell.w ?? cell.v ?? "") : "";
+              const span = spanAt.get(`${r}:${c}`);
+              const styles: any = {};
+              const align = cell?.s?.alignment?.horizontal;
+              if (align === "center" || align === "right" || align === "left") styles.halign = align;
+              if (cell?.s?.font?.bold) styles.fontStyle = "bold";
+              return {
+                content,
+                colSpan: span?.colSpan ?? 1,
+                rowSpan: span?.rowSpan ?? 1,
+                styles,
+                raw: content,
+              };
+            })
         );
 
-        // Keep the first row as a header only when it is purely textual labels
-        const firstRow = rows[0] || [];
-        const looksLikeHeader =
-          firstRow.filter(Boolean).length > 1 &&
-          firstRow.every((c) => c === "" || Number.isNaN(Number(c.replace(/[,\s]/g, ""))));
+        // find the real header row (first multi-column row of pure text labels)
+        const headerRowIndex = rows.findIndex((row) => {
+          const texts = row.map((c) => c.content);
+          return (
+            texts.filter(Boolean).length > 1 &&
+            row.every((c) => c.colSpan === 1) &&
+            texts.every((c) => c === "" || Number.isNaN(Number(c.replace(/[,\s]/g, ""))))
+          );
+        });
+        const useHead = headerRowIndex === 0;
 
         autoTable(pdf, {
-          head: looksLikeHeader ? [firstRow] : undefined,
-          body: looksLikeHeader ? rows.slice(1) : rows,
+          head: useHead ? [rows[0]] : undefined,
+          body: useHead ? rows.slice(1) : rows,
           startY: 17,
           margin: { left: 10, right: 10 },
           tableWidth: pageWidth,
@@ -128,16 +173,32 @@ const ExcelToPdf = () => {
           headStyles: { fillColor: [79, 70, 229], textColor: 255, fontStyle: "bold" },
           alternateRowStyles: { fillColor: [248, 250, 252] },
           didParseCell: (data: any) => {
-            const raw = String(data.cell.raw ?? "");
+            const raw = String(data.cell.raw?.content ?? data.cell.raw ?? "");
+
+            // style the header row even when it is not the first row of the sheet
+            if (data.section === "body" && !useHead && data.row.index === headerRowIndex) {
+              data.cell.styles.fillColor = [79, 70, 229];
+              data.cell.styles.textColor = 255;
+              data.cell.styles.fontStyle = "bold";
+              return;
+            }
+
             // right-align numeric / currency / percentage cells like Excel does
-            if (raw && /^[-(]?[$€£₹]?\s?[\d,]+(\.\d+)?\)?%?$/.test(raw.trim())) {
+            if (
+              !data.cell.raw?.styles?.halign &&
+              raw &&
+              /^[-(]?[$€£¥₹]?\s?[\d,]+(\.\d+)?\)?%?$/.test(raw.trim()) &&
+              data.section === "body"
+            ) {
               data.cell.styles.halign = "right";
             }
           },
         });
 
+
         setProgress(50 + ((index + 1) / workbook.SheetNames.length) * 40);
       });
+
 
       if (!pdf || pageIndex === 0) {
         toast.error("This spreadsheet has no data to convert");
