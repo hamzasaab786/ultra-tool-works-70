@@ -8,6 +8,10 @@ import ToolPageTemplate from "./ToolPageTemplate";
 import mammoth from "mammoth";
 import htmlToPdfmake from "html-to-pdfmake";
 import { loadPdfMake } from "@/utils/officeConvert";
+import "@fontsource/carlito/400.css";
+import "@fontsource/carlito/400-italic.css";
+import "@fontsource/carlito/700.css";
+import "@fontsource/carlito/700-italic.css";
 
 type Mode = "exact" | "text";
 
@@ -75,7 +79,8 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
     ]);
     const jsPDF = (jsPDFmod as any).jsPDF ?? (jsPDFmod as any).default;
 
-    const stage = stageRef.current!;
+    const stage = stageRef.current;
+    if (!stage) throw new Error("render-stage-unavailable");
     stage.innerHTML = "";
     const styleHost = document.createElement("div");
     const target = document.createElement("div");
@@ -98,8 +103,26 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
       experimental: true,
     } as any);
 
+    /*
+     * Calibri is Word's layout font, but it is not installed on most phones or
+     * browsers. Falling back to Arial/Roboto changes glyph widths enough to add
+     * several pages to a long document. Carlito is Calibri metric-compatible,
+     * so alias every Calibri reference before measuring or capturing pages.
+     */
+    styleHost.querySelectorAll("style").forEach((style) => {
+      style.textContent = style.textContent?.replace(/(["']?)Calibri\1/gi, '"Carlito"') ?? "";
+    });
+    const metricFontOverride = document.createElement("style");
+    metricFontOverride.textContent = `
+      .docx-wrapper, section.docx { text-rendering: geometricPrecision; }
+      section.docx { font-synthesis: none; }
+    `;
+    styleHost.appendChild(metricFontOverride);
+
     // wait for fonts + images so nothing renders blank
-    await (document as any).fonts?.ready?.catch?.(() => {});
+    await document.fonts?.load('400 10.5pt "Carlito"');
+    await document.fonts?.load('700 16pt "Carlito"');
+    await document.fonts?.ready;
     const imgs = Array.from(target.querySelectorAll("img"));
     await Promise.all(
       imgs.map((img) =>
@@ -166,7 +189,8 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
         const bodyH = Math.max(1, pageCanvasH - padTop - padBottom);
         const contentTop = padTop;
         const contentBottom = canvas.height - padBottom;
-        const src = canvas.getContext("2d")!;
+      const src = canvas.getContext("2d");
+      if (!src) throw new Error("canvas-context-unavailable");
 
         /** Nudge the cut up to the nearest blank pixel row so glyphs are never sliced in half. */
         const snap = (y: number) => {
@@ -194,7 +218,8 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
           const part = document.createElement("canvas");
           part.width = canvas.width;
           part.height = pageCanvasH;
-          const ctx = part.getContext("2d")!;
+          const ctx = part.getContext("2d");
+          if (!ctx) throw new Error("canvas-context-unavailable");
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, part.width, part.height);
           ctx.drawImage(canvas, 0, y, canvas.width, h, 0, padTop, canvas.width, h);
