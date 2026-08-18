@@ -178,7 +178,7 @@ const normalizeDocxPageBreaks = async (docFile: File): Promise<ArrayBuffer> => {
 
     pdf.save(docFile.name.replace(/\.(docx?|DOCX?)$/, "") + ".pdf");
     stage.innerHTML = "";
-    return `${pages.length} page(s) rendered with exact Word layout.`;
+    return `${pageCount} page(s) rendered with exact Word layout.`;
   };
 
   /** Selectable-text mode (vector) using mammoth + pdfmake. */
