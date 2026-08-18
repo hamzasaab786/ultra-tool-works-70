@@ -183,12 +183,14 @@ const ImageResizer = () => {
         const decoded = await decodeImageFile(item.file);
         let { w, h } = targetFor(item);
         if (noUpscale && mode !== "percent") {
+          // Shrink the target box so the output is never bigger than the source.
           const ratio = Math.min(1, decoded.width / w, decoded.height / h);
-          if (fit !== "contain" && ratio < 1) {
+          if (ratio < 1) {
             w = Math.max(1, Math.round(w * ratio));
             h = Math.max(1, Math.round(h * ratio));
           }
         }
+
         const padBackground = transparentPad ? "transparent" : background;
         const canvas = resizeCanvas(decoded.canvas, {
           width: w,
