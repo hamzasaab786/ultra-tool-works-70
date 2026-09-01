@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 import Layout from "@/components/Layout";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
@@ -331,6 +332,7 @@ const App = () => {
             </Suspense>
         </Layout>
         <Toaster />
+        <Sonner richColors closeButton position="top-center" />
       </Router>
       </ThemeProvider>
     </HelmetProvider>
