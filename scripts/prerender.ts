@@ -103,7 +103,7 @@ const staticPages: Record<string, { title: string; description: string; keywords
 /* --------------------------------------------------------------- page meta */
 
 const toolPageMeta = (entry: ToolSeoEntry): PageMeta => {
-  const url = `${SITE_URL}${entry.path}`;
+  const url = `${SITE_URL}${entry.path}/`;
   const content = getContent(entry.path);
   const faqs = [...entry.faqs, ...buildCommonFaqs(entry)];
 
@@ -198,7 +198,7 @@ const toolPageMeta = (entry: ToolSeoEntry): PageMeta => {
 const staticPageMeta = (path: string): PageMeta | null => {
   const p = staticPages[path];
   if (!p) return null;
-  const url = `${SITE_URL}${path === "/" ? "/" : path}`;
+  const url = `${SITE_URL}${path === "/" ? "/" : `${path}/`}`;
   return {
     path,
     title: p.title,
@@ -224,7 +224,7 @@ const staticPageMeta = (path: string): PageMeta | null => {
 /* ------------------------------------------------------------ HTML rewrite */
 
 const buildHtml = (shell: string, meta: PageMeta) => {
-  const url = `${SITE_URL}${meta.path === "/" ? "/" : meta.path}`;
+  const url = `${SITE_URL}${meta.path === "/" ? "/" : `${meta.path}/`}`;
   let html = shell;
 
   html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(meta.title)}</title>`);
