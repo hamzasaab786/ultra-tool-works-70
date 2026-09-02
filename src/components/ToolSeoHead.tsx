@@ -22,7 +22,9 @@ const ToolSeoHead = () => {
   if (!entry) return null;
 
 
-  const url = `${SITE_URL}${entry.path}`;
+  // Trailing slash: the host 301-redirects /tools/x to /tools/x/, so the
+  // canonical must point at the final URL Google can index directly.
+  const url = `${SITE_URL}${entry.path}/`;
   const faqs = [...entry.faqs, ...buildCommonFaqs(entry)];
 
   const faqSchema = {

@@ -148,7 +148,7 @@ function generateSitemap(entries: SitemapEntry[]) {
   const urls = entries.map((e) =>
       [
         `  <url>`,
-        `    <loc>${BASE_URL}${e.path}</loc>`,
+        `    <loc>${BASE_URL}${e.path}${e.path === "/" ? "" : "/"}</loc>`,
         e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
         e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
         e.priority ? `    <priority>${e.priority}</priority>` : null,
@@ -191,13 +191,13 @@ const llms = [
   "## Tools",
   ...entries
     .filter((e) => e.path.startsWith("/tools/"))
-    .map((e) => `- [${titleCase(e.path)}](${BASE_URL}${e.path})`),
+    .map((e) => `- [${titleCase(e.path)}](${BASE_URL}${e.path}/)`),
   "",
   "## Pages",
-  `- [About](${BASE_URL}/about)`,
-  `- [Privacy Policy](${BASE_URL}/privacy)`,
-  `- [Terms](${BASE_URL}/terms)`,
-  `- [Disclaimer](${BASE_URL}/disclaimer)`,
+  `- [About](${BASE_URL}/about/)`,
+  `- [Privacy Policy](${BASE_URL}/privacy/)`,
+  `- [Terms](${BASE_URL}/terms/)`,
+  `- [Disclaimer](${BASE_URL}/disclaimer/)`,
   "",
 ].join("\n")
 

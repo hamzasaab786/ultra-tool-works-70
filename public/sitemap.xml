@@ -6,622 +6,622 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://klipza.live/about</loc>
+    <loc>https://klipza.live/about/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://klipza.live/privacy</loc>
+    <loc>https://klipza.live/privacy/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://klipza.live/terms</loc>
+    <loc>https://klipza.live/terms/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://klipza.live/disclaimer</loc>
+    <loc>https://klipza.live/disclaimer/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-compressor</loc>
+    <loc>https://klipza.live/tools/image-compressor/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-resizer</loc>
+    <loc>https://klipza.live/tools/image-resizer/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-enhancer</loc>
+    <loc>https://klipza.live/tools/image-enhancer/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/jpg-to-pdf</loc>
+    <loc>https://klipza.live/tools/jpg-to-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/svg-to-jpg</loc>
+    <loc>https://klipza.live/tools/svg-to-jpg/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-to-url</loc>
+    <loc>https://klipza.live/tools/image-to-url/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/passport-photo-maker</loc>
+    <loc>https://klipza.live/tools/passport-photo-maker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-format-converter</loc>
+    <loc>https://klipza.live/tools/image-format-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-metadata-extractor</loc>
+    <loc>https://klipza.live/tools/image-metadata-extractor/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/remove-watermark</loc>
+    <loc>https://klipza.live/tools/remove-watermark/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-crop-tool</loc>
+    <loc>https://klipza.live/tools/image-crop-tool/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/merge-pdf</loc>
+    <loc>https://klipza.live/tools/merge-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/split-pdf</loc>
+    <loc>https://klipza.live/tools/split-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-to-jpg</loc>
+    <loc>https://klipza.live/tools/pdf-to-jpg/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-compressor</loc>
+    <loc>https://klipza.live/tools/pdf-compressor/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-to-excel</loc>
+    <loc>https://klipza.live/tools/pdf-to-excel/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/unlock-pdf</loc>
+    <loc>https://klipza.live/tools/unlock-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-metadata-extractor</loc>
+    <loc>https://klipza.live/tools/pdf-metadata-extractor/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/add-page-numbers</loc>
+    <loc>https://klipza.live/tools/add-page-numbers/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/compare-pdf</loc>
+    <loc>https://klipza.live/tools/compare-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/add-watermark</loc>
+    <loc>https://klipza.live/tools/add-watermark/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/delete-pdf-pages</loc>
+    <loc>https://klipza.live/tools/delete-pdf-pages/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/extract-pdf-pages</loc>
+    <loc>https://klipza.live/tools/extract-pdf-pages/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/extract-pdf-images</loc>
+    <loc>https://klipza.live/tools/extract-pdf-images/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/flatten-pdf</loc>
+    <loc>https://klipza.live/tools/flatten-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/text-to-pdf</loc>
+    <loc>https://klipza.live/tools/text-to-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-page-resizer</loc>
+    <loc>https://klipza.live/tools/pdf-page-resizer/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-header-footer</loc>
+    <loc>https://klipza.live/tools/pdf-header-footer/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/n-up-pdf</loc>
+    <loc>https://klipza.live/tools/n-up-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-viewer</loc>
+    <loc>https://klipza.live/tools/pdf-viewer/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-form-filler</loc>
+    <loc>https://klipza.live/tools/pdf-form-filler/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/annotate-pdf</loc>
+    <loc>https://klipza.live/tools/annotate-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/grayscale-pdf</loc>
+    <loc>https://klipza.live/tools/grayscale-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/bates-numbering</loc>
+    <loc>https://klipza.live/tools/bates-numbering/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/insert-pdf-pages</loc>
+    <loc>https://klipza.live/tools/insert-pdf-pages/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/scan-to-pdf</loc>
+    <loc>https://klipza.live/tools/scan-to-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/word-to-pdf</loc>
+    <loc>https://klipza.live/tools/word-to-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-to-word</loc>
+    <loc>https://klipza.live/tools/pdf-to-word/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/protect-pdf</loc>
+    <loc>https://klipza.live/tools/protect-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/extract-text-pdf</loc>
+    <loc>https://klipza.live/tools/extract-text-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/organize-pdf</loc>
+    <loc>https://klipza.live/tools/organize-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/html-to-pdf</loc>
+    <loc>https://klipza.live/tools/html-to-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/excel-to-pdf</loc>
+    <loc>https://klipza.live/tools/excel-to-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/powerpoint-to-pdf</loc>
+    <loc>https://klipza.live/tools/powerpoint-to-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/percentage-calculator</loc>
+    <loc>https://klipza.live/tools/percentage-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/unit-converter</loc>
+    <loc>https://klipza.live/tools/unit-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/currency-converter</loc>
+    <loc>https://klipza.live/tools/currency-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/age-calculator</loc>
+    <loc>https://klipza.live/tools/age-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/bmi-calculator</loc>
+    <loc>https://klipza.live/tools/bmi-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/loan-calculator</loc>
+    <loc>https://klipza.live/tools/loan-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/tip-calculator</loc>
+    <loc>https://klipza.live/tools/tip-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/hex-to-rgb</loc>
+    <loc>https://klipza.live/tools/hex-to-rgb/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/number-base-converter</loc>
+    <loc>https://klipza.live/tools/number-base-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/word-counter</loc>
+    <loc>https://klipza.live/tools/word-counter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/case-converter</loc>
+    <loc>https://klipza.live/tools/case-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/base64-tool</loc>
+    <loc>https://klipza.live/tools/base64-tool/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/markdown-to-html</loc>
+    <loc>https://klipza.live/tools/markdown-to-html/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/text-diff</loc>
+    <loc>https://klipza.live/tools/text-diff/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/lorem-ipsum</loc>
+    <loc>https://klipza.live/tools/lorem-ipsum/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/url-decoder</loc>
+    <loc>https://klipza.live/tools/url-decoder/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/json-formatter</loc>
+    <loc>https://klipza.live/tools/json-formatter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/csv-to-json</loc>
+    <loc>https://klipza.live/tools/csv-to-json/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/text-encryption</loc>
+    <loc>https://klipza.live/tools/text-encryption/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/morse-code-translator</loc>
+    <loc>https://klipza.live/tools/morse-code-translator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/regex-tester</loc>
+    <loc>https://klipza.live/tools/regex-tester/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/document-translator</loc>
+    <loc>https://klipza.live/tools/document-translator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/qr-code-generator</loc>
+    <loc>https://klipza.live/tools/qr-code-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/password-generator</loc>
+    <loc>https://klipza.live/tools/password-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/hash-generator</loc>
+    <loc>https://klipza.live/tools/hash-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/timer-stopwatch</loc>
+    <loc>https://klipza.live/tools/timer-stopwatch/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/color-picker</loc>
+    <loc>https://klipza.live/tools/color-picker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/budget-tracker</loc>
+    <loc>https://klipza.live/tools/budget-tracker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/barcode-generator</loc>
+    <loc>https://klipza.live/tools/barcode-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/url-shortener</loc>
+    <loc>https://klipza.live/tools/url-shortener/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/email-validator</loc>
+    <loc>https://klipza.live/tools/email-validator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/password-strength</loc>
+    <loc>https://klipza.live/tools/password-strength/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/file-hash-checker</loc>
+    <loc>https://klipza.live/tools/file-hash-checker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/whois-lookup</loc>
+    <loc>https://klipza.live/tools/whois-lookup/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/dns-lookup</loc>
+    <loc>https://klipza.live/tools/dns-lookup/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/ip-geolocation</loc>
+    <loc>https://klipza.live/tools/ip-geolocation/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/credit-card-validator</loc>
+    <loc>https://klipza.live/tools/credit-card-validator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/emoji-picker</loc>
+    <loc>https://klipza.live/tools/emoji-picker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/invoice-generator</loc>
+    <loc>https://klipza.live/tools/invoice-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/receipt-generator</loc>
+    <loc>https://klipza.live/tools/receipt-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/resume-builder</loc>
+    <loc>https://klipza.live/tools/resume-builder/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/business-card-generator</loc>
+    <loc>https://klipza.live/tools/business-card-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-ocr</loc>
+    <loc>https://klipza.live/tools/pdf-ocr/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/sign-pdf</loc>
+    <loc>https://klipza.live/tools/sign-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/edit-pdf-text</loc>
+    <loc>https://klipza.live/tools/edit-pdf-text/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/test-card-generator</loc>
+    <loc>https://klipza.live/tools/test-card-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/gpa-calculator</loc>
+    <loc>https://klipza.live/tools/gpa-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/date-difference-calculator</loc>
+    <loc>https://klipza.live/tools/date-difference-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/discount-calculator</loc>
+    <loc>https://klipza.live/tools/discount-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/compound-interest-calculator</loc>
+    <loc>https://klipza.live/tools/compound-interest-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/salary-calculator</loc>
+    <loc>https://klipza.live/tools/salary-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/roman-numeral-converter</loc>
+    <loc>https://klipza.live/tools/roman-numeral-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/time-zone-converter</loc>
+    <loc>https://klipza.live/tools/time-zone-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/random-picker</loc>
+    <loc>https://klipza.live/tools/random-picker/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/image-to-text</loc>
+    <loc>https://klipza.live/tools/image-to-text/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/calorie-calculator</loc>
+    <loc>https://klipza.live/tools/calorie-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/fuel-cost-calculator</loc>
+    <loc>https://klipza.live/tools/fuel-cost-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/electricity-bill-calculator</loc>
+    <loc>https://klipza.live/tools/electricity-bill-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pregnancy-due-date-calculator</loc>
+    <loc>https://klipza.live/tools/pregnancy-due-date-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/sleep-calculator</loc>
+    <loc>https://klipza.live/tools/sleep-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/split-bill-calculator</loc>
+    <loc>https://klipza.live/tools/split-bill-calculator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/typing-speed-test</loc>
+    <loc>https://klipza.live/tools/typing-speed-test/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-to-text</loc>
+    <loc>https://klipza.live/tools/pdf-to-text/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-to-csv</loc>
+    <loc>https://klipza.live/tools/pdf-to-csv/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-to-powerpoint</loc>
+    <loc>https://klipza.live/tools/pdf-to-powerpoint/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/pdf-to-pdfa</loc>
+    <loc>https://klipza.live/tools/pdf-to-pdfa/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/rotate-pdf</loc>
+    <loc>https://klipza.live/tools/rotate-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/crop-pdf</loc>
+    <loc>https://klipza.live/tools/crop-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/redact-pdf</loc>
+    <loc>https://klipza.live/tools/redact-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/repair-pdf</loc>
+    <loc>https://klipza.live/tools/repair-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/edit-pdf</loc>
+    <loc>https://klipza.live/tools/edit-pdf/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/text-to-word</loc>
+    <loc>https://klipza.live/tools/text-to-word/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/word-to-text</loc>
+    <loc>https://klipza.live/tools/word-to-text/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/word-to-excel</loc>
+    <loc>https://klipza.live/tools/word-to-excel/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/word-to-jpg</loc>
+    <loc>https://klipza.live/tools/word-to-jpg/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/jpg-to-word</loc>
+    <loc>https://klipza.live/tools/jpg-to-word/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
