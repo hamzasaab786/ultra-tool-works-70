@@ -74,8 +74,10 @@ export const usePdfCompression = () => {
   };
 
   const handleFilesSelected = useCallback(async (fileList: FileList) => {
+    if (!fileList || fileList.length === 0) return;
+
     const pdfFiles = Array.from(fileList).filter(isPdfFile);
-    
+
     if (pdfFiles.length === 0) {
       toast({
         title: "Invalid File Type",
@@ -84,6 +86,7 @@ export const usePdfCompression = () => {
       });
       return;
     }
+
 
     const newFiles: ProcessedFile[] = pdfFiles.map(file => ({
       id: generateFileId(),
