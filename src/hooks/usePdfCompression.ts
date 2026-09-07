@@ -96,13 +96,18 @@ export const usePdfCompression = () => {
       file: file
     }));
 
+    const added: ProcessedFile[] = [];
     setFiles(prev => {
       const seen = new Set(prev.map(f => `${f.name}:${f.originalSize}`));
       const unique = newFiles.filter(f => !seen.has(`${f.name}:${f.originalSize}`));
-      // Analyze only the newly added files
-      unique.forEach(f => f.file && analyzeFile(f.id, f.file));
+      added.length = 0;
+      added.push(...unique);
       return [...prev, ...unique];
     });
+
+    // Analyze newly added files
+    queueMicrotask(() => added.forEach(f => f.file && analyzeFile(f.id, f.file)));
+
 
     toast({
       title: "Files Added",
