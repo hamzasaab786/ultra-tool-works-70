@@ -162,6 +162,8 @@ export const usePdfCompression = () => {
                 }
               : f
           ));
+          successCount++;
+
 
         } catch (error) {
           console.error(`Error compressing ${processedFile.name}:`, error);
@@ -180,7 +182,7 @@ export const usePdfCompression = () => {
         setProgress((processedCount / totalFiles) * 100);
       }
 
-      const successCount = files.filter(f => f.status === 'completed').length;
+      
       toast({
         title: "Compression Complete",
         description: `Successfully compressed ${successCount} PDF file(s).`
