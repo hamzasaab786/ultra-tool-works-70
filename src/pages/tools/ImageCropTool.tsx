@@ -13,6 +13,7 @@ const ImageCropTool = () => {
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [cropData, setCropData] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [ratio, setRatio] = useState<string>("free");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const { toast } = useToast();
@@ -57,15 +58,46 @@ const ImageCropTool = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     const currentX = e.clientX - rect.left;
     const currentY = e.clientY - rect.top;
-    setCropData(prev => ({
-      ...prev,
-      width: currentX - prev.x,
-      height: currentY - prev.y
-    }));
+    setCropData(prev => {
+      let width = currentX - prev.x;
+      let height = currentY - prev.y;
+      const ar = ratioValue(ratio);
+      if (ar) {
+        const sign = height < 0 ? -1 : 1;
+        height = sign * (Math.abs(width) / ar);
+      }
+      return { ...prev, width, height };
+    });
   };
 
   const endCrop = () => {
     setIsDragging(false);
+  };
+
+  const ratioValue = (r: string) => {
+    if (r === "free") return null;
+    const [a, b] = r.split(":").map(Number);
+    return a / b;
+  };
+
+  const centerCrop = (r: string) => {
+    const img = imageRef.current;
+    if (!img) return;
+    const W = img.clientWidth;
+    const H = img.clientHeight;
+    const ar = ratioValue(r);
+    let w = W, h = H;
+    if (ar) {
+      if (W / H > ar) { h = H; w = H * ar; } else { w = W; h = W / ar; }
+    }
+    setCropData({ x: (W - w) / 2, y: (H - h) / 2, width: w, height: h });
+  };
+
+  const onImageLoad = () => centerCrop(ratio);
+
+  const chooseRatio = (r: string) => {
+    setRatio(r);
+    centerCrop(r);
   };
 
   const applyCrop = () => {
@@ -145,10 +177,23 @@ const ImageCropTool = () => {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="text-center">
-                  <p className="text-sm text-gray-600 mb-2">
-                    Click and drag to select the area you want to crop
+                <div className="text-center space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Pick an aspect ratio, or click and drag on the image to select an area
                   </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {["free", "1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3"].map((r) => (
+                      <Button
+                        key={r}
+                        type="button"
+                        size="sm"
+                        variant={ratio === r ? "default" : "outline"}
+                        onClick={() => chooseRatio(r)}
+                      >
+                        {r === "free" ? "Free" : r}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
                 
                 <div 
@@ -163,6 +208,7 @@ const ImageCropTool = () => {
                     src={image}
                     alt="Original"
                     className="max-w-full max-h-96 block"
+                    onLoad={onImageLoad}
                     draggable={false}
                   />
                   
