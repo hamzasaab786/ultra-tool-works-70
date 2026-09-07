@@ -136,6 +136,8 @@ export const usePdfCompression = () => {
       const compressor = new PDFCompressor(settings);
       const totalFiles = filesToProcess.length;
       let processedCount = 0;
+      let successCount = 0;
+
 
       for (const processedFile of filesToProcess) {
         setFiles(prev => prev.map(f => 
