@@ -97,12 +97,26 @@ export class PDFCompressor {
     }
 
     const compressedBytes = await newPdfDoc.save({ useObjectStreams: true });
-    
-    const blob = new Blob([new Uint8Array(compressedBytes)], { type: 'application/pdf' });
+
+    let blob = new Blob([new Uint8Array(compressedBytes)], { type: 'application/pdf' });
+
+    // Never hand back a file bigger than the original (can happen with
+    // small text-only/vector PDFs where rasterising adds weight).
+    if (blob.size >= originalSize) {
+      blob = new Blob([await file.arrayBuffer()], { type: 'application/pdf' });
+      return {
+        blob,
+        originalSize,
+        compressedSize: originalSize,
+        compressionRatio: 0,
+        optimizations: ['Already optimized — original file kept'],
+      };
+    }
+
     const compressedSize = blob.size;
-    
+
     const compressionRatio = originalSize > 0 ? ((originalSize - compressedSize) / originalSize) * 100 : 0;
-    
+
     console.log('Compression complete:', {
       originalSize,
       compressedSize,
@@ -116,6 +130,7 @@ export class PDFCompressor {
       compressionRatio: Math.max(0, compressionRatio),
       optimizations,
     };
+
   }
 }
 

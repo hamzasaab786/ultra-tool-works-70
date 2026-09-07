@@ -5,7 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Upload, FileImage, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { isPdfFile, isImageFile } from '@/utils/fileUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
+
 
 interface DragDropUploadProps {
   onFilesSelected: (files: FileList) => void;
@@ -30,13 +32,17 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
   const getAcceptedFiles = () => {
     switch (acceptedFileTypes) {
       case 'pdf':
-        return { 'application/pdf': ['.pdf'] };
+        return {
+          'application/pdf': ['.pdf'],
+          'application/octet-stream': ['.pdf'],
+        };
       case 'images':
         return { 'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'] };
       case 'all':
         return {
           'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'],
-          'application/pdf': ['.pdf']
+          'application/pdf': ['.pdf'],
+          'application/octet-stream': ['.pdf'],
         };
       default:
         return { 'image/*': ['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif'] };
@@ -46,17 +52,16 @@ const DragDropUpload: React.FC<DragDropUploadProps> = ({
   const filterFiles = (files: File[]) => {
     switch (acceptedFileTypes) {
       case 'pdf':
-        return files.filter(file => file.type === 'application/pdf');
+        return files.filter(isPdfFile);
       case 'images':
-        return files.filter(file => file.type.startsWith('image/'));
+        return files.filter(isImageFile);
       case 'all':
-        return files.filter(file => 
-          file.type.startsWith('image/') || file.type === 'application/pdf'
-        );
+        return files.filter(file => isImageFile(file) || isPdfFile(file));
       default:
-        return files.filter(file => file.type.startsWith('image/'));
+        return files.filter(isImageFile);
     }
   };
+
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const filteredFiles = filterFiles(acceptedFiles);

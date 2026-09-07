@@ -2,7 +2,9 @@
 import { useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { PDFCompressor, PDFAnalyzer, CompressionSettings } from '@/utils/pdfCompression';
+import { isPdfFile } from '@/utils/fileUtils';
 import { ProcessedFile, CompressionSummary } from '@/types/pdfCompressor';
+
 
 export const usePdfCompression = () => {
   const [files, setFiles] = useState<ProcessedFile[]>([]);
@@ -72,8 +74,10 @@ export const usePdfCompression = () => {
   };
 
   const handleFilesSelected = useCallback(async (fileList: FileList) => {
-    const pdfFiles = Array.from(fileList).filter(file => file.type === 'application/pdf');
-    
+    if (!fileList || fileList.length === 0) return;
+
+    const pdfFiles = Array.from(fileList).filter(isPdfFile);
+
     if (pdfFiles.length === 0) {
       toast({
         title: "Invalid File Type",
@@ -83,6 +87,7 @@ export const usePdfCompression = () => {
       return;
     }
 
+
     const newFiles: ProcessedFile[] = pdfFiles.map(file => ({
       id: generateFileId(),
       name: file.name,
@@ -91,19 +96,24 @@ export const usePdfCompression = () => {
       file: file
     }));
 
-    setFiles(prev => [...prev, ...newFiles]);
+    const added: ProcessedFile[] = [];
+    setFiles(prev => {
+      const seen = new Set(prev.map(f => `${f.name}:${f.originalSize}`));
+      const unique = newFiles.filter(f => !seen.has(`${f.name}:${f.originalSize}`));
+      added.length = 0;
+      added.push(...unique);
+      return [...prev, ...unique];
+    });
 
-    // Analyze files automatically
-    for (const newFile of newFiles) {
-      if (newFile.file) {
-        analyzeFile(newFile.id, newFile.file);
-      }
-    }
+    // Analyze newly added files
+    queueMicrotask(() => added.forEach(f => f.file && analyzeFile(f.id, f.file)));
+
 
     toast({
       title: "Files Added",
       description: `${pdfFiles.length} PDF file(s) ready for compression.`
     });
+
   }, [toast]);
 
   const handleCompress = async () => {
@@ -126,6 +136,8 @@ export const usePdfCompression = () => {
       const compressor = new PDFCompressor(settings);
       const totalFiles = filesToProcess.length;
       let processedCount = 0;
+      let successCount = 0;
+
 
       for (const processedFile of filesToProcess) {
         setFiles(prev => prev.map(f => 
@@ -150,6 +162,8 @@ export const usePdfCompression = () => {
                 }
               : f
           ));
+          successCount++;
+
 
         } catch (error) {
           console.error(`Error compressing ${processedFile.name}:`, error);
@@ -168,7 +182,7 @@ export const usePdfCompression = () => {
         setProgress((processedCount / totalFiles) * 100);
       }
 
-      const successCount = files.filter(f => f.status === 'completed').length;
+      
       toast({
         title: "Compression Complete",
         description: `Successfully compressed ${successCount} PDF file(s).`
