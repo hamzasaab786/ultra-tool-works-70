@@ -96,19 +96,19 @@ export const usePdfCompression = () => {
       file: file
     }));
 
-    setFiles(prev => [...prev, ...newFiles]);
-
-    // Analyze files automatically
-    for (const newFile of newFiles) {
-      if (newFile.file) {
-        analyzeFile(newFile.id, newFile.file);
-      }
-    }
+    setFiles(prev => {
+      const seen = new Set(prev.map(f => `${f.name}:${f.originalSize}`));
+      const unique = newFiles.filter(f => !seen.has(`${f.name}:${f.originalSize}`));
+      // Analyze only the newly added files
+      unique.forEach(f => f.file && analyzeFile(f.id, f.file));
+      return [...prev, ...unique];
+    });
 
     toast({
       title: "Files Added",
       description: `${pdfFiles.length} PDF file(s) ready for compression.`
     });
+
   }, [toast]);
 
   const handleCompress = async () => {
