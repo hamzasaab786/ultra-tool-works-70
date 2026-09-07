@@ -5,7 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Upload, FileImage, X, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { isPdfFile, isImageFile } from '@/utils/fileUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
+
 
 interface DragDropUploadProps {
   onFilesSelected: (files: FileList) => void;

@@ -2,7 +2,9 @@
 import { useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { PDFCompressor, PDFAnalyzer, CompressionSettings } from '@/utils/pdfCompression';
+import { isPdfFile } from '@/utils/fileUtils';
 import { ProcessedFile, CompressionSummary } from '@/types/pdfCompressor';
+
 
 export const usePdfCompression = () => {
   const [files, setFiles] = useState<ProcessedFile[]>([]);
@@ -72,7 +74,7 @@ export const usePdfCompression = () => {
   };
 
   const handleFilesSelected = useCallback(async (fileList: FileList) => {
-    const pdfFiles = Array.from(fileList).filter(file => file.type === 'application/pdf');
+    const pdfFiles = Array.from(fileList).filter(isPdfFile);
     
     if (pdfFiles.length === 0) {
       toast({
