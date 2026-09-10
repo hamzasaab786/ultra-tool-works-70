@@ -6,6 +6,7 @@ import { Crop, Download, Upload, RotateCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useDropzone } from "react-dropzone";
 import ToolPageTemplate from "./ToolPageTemplate";
+import { isImageFile } from "@/utils/fileUtils";
 
 const ImageCropTool = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -20,7 +21,7 @@ const ImageCropTool = () => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file && isImageFile(file)) {
       setOriginalFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
