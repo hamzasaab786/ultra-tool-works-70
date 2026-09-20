@@ -166,3 +166,26 @@ export const toolCatalog: ToolCategory[] = [
 export const allToolLinks: (ToolLink & { category: string })[] = toolCatalog.flatMap(
   (c) => c.tools.map((t) => ({ ...t, category: c.label })),
 );
+
+// Extra search keywords per tool path, so common alternate names still find the tool.
+export const toolAliases: Record<string, string> = {
+  "/tools/case-converter":
+    "change case title case uppercase lowercase sentence case camelcase capitalize text case",
+  "/tools/word-counter": "character counter letter count text statistics",
+  "/tools/image-format-converter": "png to jpg webp converter change image format",
+  "/tools/image-resizer": "scale image change dimensions resize photo",
+  "/tools/image-compressor": "reduce image size shrink photo",
+  "/tools/image-to-text": "ocr read text from picture",
+  "/tools/pdf-to-word": "pdf to docx",
+  "/tools/word-to-pdf": "docx to pdf",
+  "/tools/merge-pdf": "combine pdf join pdf",
+  "/tools/split-pdf": "separate pdf pages divide pdf",
+  "/tools/pdf-compressor": "reduce pdf size shrink pdf",
+  "/tools/qr-code-generator": "qr maker barcode qr with logo",
+  "/tools/password-generator": "random password strong password",
+  "/tools/json-formatter": "json beautifier prettify json",
+  "/tools/url-decoder": "url encoder percent encoding",
+  "/tools/text-diff": "compare text difference checker",
+};
+
+export const getToolAliases = (path: string): string => toolAliases[path] ?? "";
