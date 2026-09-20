@@ -691,7 +691,7 @@ const Index = () => {
     return flatTools.filter(tool => {
       const matchesCategory =
         activeCategory === "all" || String(tool.categoryIndex) === activeCategory;
-      const haystack = `${tool.title} ${tool.description} ${tool.path} ${tool.categoryTitle}`.toLowerCase();
+      const haystack = `${tool.title} ${tool.description} ${tool.path} ${tool.categoryTitle} ${getToolAliases(tool.path)}`.toLowerCase();
       const matchesQuery = terms.every(term => haystack.includes(term));
       return matchesCategory && matchesQuery;
     });
