@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Sparkles, Zap, Shield, Clock } from "lucide-react";
+import { getToolAliases } from "@/data/toolIndex";
 
 // Import tool icons
 import { 
