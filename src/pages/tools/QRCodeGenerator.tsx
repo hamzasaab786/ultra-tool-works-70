@@ -1047,6 +1047,24 @@ const QRCodeGenerator = () => {
                 </>
               )}
             </div>
+
+            {/* Bulk generation */}
+            <div className="bg-card p-4 rounded-lg border space-y-3">
+              <h3 className="font-semibold flex items-center gap-2"><Layers className="h-4 w-4" /> Bulk generator</h3>
+              <p className="text-xs text-muted-foreground">
+                One value per line (URL, text, anything). Optionally start a line with <code>name,value</code> to control the file name. All
+                codes use the style you picked above and download as a ZIP.
+              </p>
+              <Textarea
+                rows={5}
+                value={batchInput}
+                onChange={(e) => setBatchInput(e.target.value)}
+                placeholder={"table-1,https://example.com/menu\ntable-2,https://example.com/menu?t=2"}
+              />
+              <Button onClick={downloadBatch} disabled={batchBusy} className="w-full" variant="outline">
+                <Download className="h-4 w-4 mr-2" /> {batchBusy ? "Generating…" : "Generate ZIP of QR codes"}
+              </Button>
+            </div>
           </div>
 
           {/* RIGHT - Preview */}
