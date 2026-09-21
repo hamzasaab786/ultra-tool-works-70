@@ -117,6 +117,33 @@ const QRCodeGenerator = () => {
   const [logoRound, setLogoRound] = useState(true);
   const [logoPadding, setLogoPadding] = useState([6]);
 
+  // WhatsApp / UPI / Location / Event / Crypto
+  const [waPhone, setWaPhone] = useState("");
+  const [waMsg, setWaMsg] = useState("");
+  const [upiId, setUpiId] = useState("");
+  const [upiName, setUpiName] = useState("");
+  const [upiAmount, setUpiAmount] = useState("");
+  const [upiNote, setUpiNote] = useState("");
+  const [geoLat, setGeoLat] = useState("");
+  const [geoLng, setGeoLng] = useState("");
+  const [evTitle, setEvTitle] = useState("");
+  const [evStart, setEvStart] = useState("");
+  const [evEnd, setEvEnd] = useState("");
+  const [evLocation, setEvLocation] = useState("");
+  const [coin, setCoin] = useState("bitcoin");
+  const [coinAddress, setCoinAddress] = useState("");
+  const [coinAmount, setCoinAmount] = useState("");
+
+  // Frame / call-to-action
+  const [frameStyle, setFrameStyle] = useState<FrameStyle>("none");
+  const [frameText, setFrameText] = useState("SCAN ME");
+  const [frameColor, setFrameColor] = useState("#1f2a44");
+  const [frameTextColor, setFrameTextColor] = useState("#ffffff");
+
+  // Batch
+  const [batchInput, setBatchInput] = useState("");
+  const [batchBusy, setBatchBusy] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
