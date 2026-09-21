@@ -18,14 +18,57 @@ import {
   User,
   X,
   Palette,
+  AlertTriangle,
+  Layers,
+  Sparkles,
+  MapPin,
+  CalendarDays,
+  Bitcoin,
+  IndianRupee,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import QRCode from "qrcode";
 
 type DotStyle = "square" | "rounded" | "dots" | "classy";
 type EyeStyle = "square" | "rounded" | "circle";
 type ErrorLevel = "L" | "M" | "Q" | "H";
+type FrameStyle = "none" | "box" | "rounded" | "banner";
+
+interface StylePreset {
+  name: string;
+  fg: string;
+  bg: string;
+  dot: DotStyle;
+  eye: EyeStyle;
+  gradient?: [string, string];
+}
+
+const STYLE_PRESETS: StylePreset[] = [
+  { name: "Classic", fg: "#1f2a44", bg: "#ffffff", dot: "square", eye: "square" },
+  { name: "Midnight", fg: "#0f172a", bg: "#ffffff", dot: "rounded", eye: "rounded" },
+  { name: "Sunset", fg: "#f97316", bg: "#ffffff", dot: "dots", eye: "circle", gradient: ["#f97316", "#db2777"] },
+  { name: "Ocean", fg: "#0ea5e9", bg: "#ffffff", dot: "classy", eye: "rounded", gradient: ["#0ea5e9", "#6366f1"] },
+  { name: "Forest", fg: "#166534", bg: "#f0fdf4", dot: "rounded", eye: "circle" },
+  { name: "Mono Dark", fg: "#ffffff", bg: "#111111", dot: "dots", eye: "circle" },
+];
+
+const hexLum = (hex: string) => {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!m) return 0;
+  const [r, g, b] = [1, 2, 3].map((i) => {
+    const v = parseInt(m[i], 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+const contrastRatio = (a: string, b: string) => {
+  const l1 = hexLum(a);
+  const l2 = hexLum(b);
+  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+};
 
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
