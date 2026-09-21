@@ -2340,6 +2340,111 @@ export const toolSeoEntries: ToolSeoEntry[] = [
       { q: "How accurate is the recognition?", a: "Clear, well-lit and straight images of printed text give the best results. Handwriting and low-resolution photos are recognised less reliably." },
     ],
   },
+  {
+    path: "/tools/excel-to-word",
+    name: "Excel to Word",
+    category: PDF,
+    title: "Excel to Word Converter — XLSX to DOCX Online Free",
+    description:
+      "Convert Excel spreadsheets into editable Word documents with real tables, preserved rows, columns and headers. Runs in your browser — free, no signup.",
+    keywords:
+      "excel to word, xlsx to docx converter, convert spreadsheet to word document, excel table to word online free, xls to doc converter, insert excel data into word",
+    faqs: [
+      { q: "Does the spreadsheet stay a real table in Word?", a: "Yes. Each sheet is rebuilt as a native Word table with its own rows and columns, so you can restyle borders, resize columns and edit any cell directly in Word." },
+      { q: "What happens to multiple sheets?", a: "Every worksheet in the workbook is converted in order and added under its own heading in the same document, so nothing is dropped during conversion." },
+      { q: "Are formulas converted too?", a: "The calculated values are carried across rather than the formula syntax, because Word has no spreadsheet engine. Keep the original workbook if you need the live calculations." },
+    ],
+  },
+  {
+    path: "/tools/signature-generator",
+    name: "Signature Generator",
+    category: IMAGE,
+    title: "Signature Generator — Draw & Download a Free e-Signature",
+    description:
+      "Draw or type your signature and download it as a transparent PNG for contracts, PDFs and emails. Free online signature maker, nothing is uploaded.",
+    keywords:
+      "signature generator, online signature maker free, draw signature online, electronic signature png transparent, create digital signature for documents, type signature in cursive font",
+    faqs: [
+      { q: "Can I get a signature with a transparent background?", a: "Yes. The PNG export keeps the background transparent, so your signature sits cleanly on a contract, letterhead or PDF page without a white box around it." },
+      { q: "Is a drawn signature legally valid?", a: "In many countries an electronic signature is accepted for everyday agreements, but requirements differ by jurisdiction and document type. Check your local rules for contracts that need a witnessed or notarised signature." },
+      { q: "Can I type instead of drawing?", a: "Yes. Type your name and pick a handwriting style if you prefer a consistent look, or draw with a mouse, trackpad or finger on a touchscreen for a genuine handwritten feel." },
+    ],
+  },
+  {
+    path: "/tools/meme-generator",
+    name: "Meme Generator",
+    category: IMAGE,
+    title: "Meme Generator — Add Top & Bottom Text to Any Image",
+    description:
+      "Make memes online free: upload any picture, add classic top and bottom captions, adjust size and colour, then download in HD with no watermark.",
+    keywords:
+      "meme generator, meme maker online free, add text to image meme, impact font meme creator, caption photo online, make meme without watermark",
+    faqs: [
+      { q: "Will my meme have a watermark?", a: "No. The downloaded image is clean — no logo, no branding and no reduced resolution, so it is ready to post anywhere." },
+      { q: "Can I use my own photo as a template?", a: "Yes. Upload any JPG or PNG from your device and caption it. The image stays in your browser and is never uploaded to a server." },
+      { q: "What size are the exported memes?", a: "The meme is exported at your source image's own resolution, which keeps text crisp on both phone screens and large displays." },
+    ],
+  },
+  {
+    path: "/tools/favicon-generator",
+    name: "Favicon Generator",
+    category: IMAGE,
+    title: "Favicon Generator — Create ICO & PNG Favicons Online",
+    description:
+      "Turn any logo or image into a complete favicon set with all the sizes browsers, iOS and Android need. Free, instant and processed in your browser.",
+    keywords:
+      "favicon generator, create favicon from image, ico converter online free, apple touch icon generator, png to favicon, website icon maker 16x16 32x32",
+    faqs: [
+      { q: "Which favicon sizes do I actually need?", a: "16x16 and 32x32 cover browser tabs and bookmarks, 180x180 is used for the iOS home-screen icon, and 192x192 plus 512x512 serve Android and progressive web apps. The generator produces all of them at once." },
+      { q: "What image should I start from?", a: "A square image of at least 512x512 pixels with a bold, simple mark works best. Fine detail and small text disappear entirely at 16 pixels wide." },
+      { q: "How do I add the favicon to my site?", a: "Place the exported files in your site's root or public folder and reference them with link tags in the head of your HTML, including apple-touch-icon for iOS." },
+    ],
+  },
+  {
+    path: "/tools/image-watermark",
+    name: "Image Watermark",
+    category: IMAGE,
+    title: "Add Watermark to Photos — Free Image Watermark Tool",
+    description:
+      "Add a text or logo watermark to your photos with full control over position, size, opacity, rotation and tiling. Batch friendly, free and fully private.",
+    keywords:
+      "image watermark, add watermark to photo online free, batch watermark images, logo watermark maker, copyright watermark photos, transparent watermark generator",
+    faqs: [
+      { q: "Can I watermark several photos at once?", a: "Yes. Apply the same text or logo, position and opacity across a batch of images, then download them together instead of editing each file by hand." },
+      { q: "How transparent should a watermark be?", a: "Around 30–50% opacity is the usual balance: clearly visible to deter reuse, yet light enough that it doesn't dominate the picture. Tiled watermarks can go lighter still." },
+      { q: "Does watermarking reduce image quality?", a: "No. The original resolution is preserved and only the watermark layer is drawn on top, so the exported photo stays as sharp as the file you started with." },
+    ],
+  },
+  {
+    path: "/tools/random-number-generator",
+    name: "Random Number Generator",
+    category: UTIL,
+    title: "Random Number Generator — Pick Numbers in Any Range",
+    description:
+      "Generate random numbers in any range, with or without duplicates, for raffles, giveaways, lotteries and testing. Cryptographically strong and free.",
+    keywords:
+      "random number generator, pick a random number between 1 and 100, raffle number picker, lottery number generator free, random number without duplicates, rng online",
+    faqs: [
+      { q: "How random are the numbers?", a: "Numbers come from the browser's cryptographically strong random source rather than a simple seeded formula, which makes the results suitable for giveaways and draws." },
+      { q: "Can I stop the same number repeating?", a: "Yes. Turn on unique results and every number in a draw is picked only once — exactly what you need for raffle winners or team assignments." },
+      { q: "Is there a limit on the range?", a: "You can set any sensible whole-number minimum and maximum, including negative values, and generate multiple numbers in a single draw." },
+    ],
+  },
+  {
+    path: "/tools/ovulation-calculator",
+    name: "Ovulation Calculator",
+    category: CALC,
+    title: "Ovulation Calculator — Fertile Window & Due Date Estimate",
+    description:
+      "Estimate your ovulation day and fertile window from your last period and cycle length. Free, private and calculated entirely in your browser.",
+    keywords:
+      "ovulation calculator, fertile window calculator, ovulation day predictor, period and ovulation tracker free, best days to conceive calculator, fertility calendar",
+    faqs: [
+      { q: "How is the ovulation date estimated?", a: "Ovulation is estimated roughly 14 days before your next period starts, based on the first day of your last period and your average cycle length. The fertile window covers the five days before ovulation plus the day itself." },
+      { q: "How accurate is an ovulation calculator?", a: "It is an estimate based on calendar averages. Cycle length varies between people and from month to month, so ovulation tests, basal temperature tracking or a doctor's guidance give a far more precise picture." },
+      { q: "Is my cycle information stored anywhere?", a: "No. The dates you enter are used only for the calculation in your browser — nothing is uploaded, saved to an account or shared." },
+    ],
+  },
 ];
 
 export const toolSeoByPath: Record<string, ToolSeoEntry> = toolSeoEntries.reduce(
