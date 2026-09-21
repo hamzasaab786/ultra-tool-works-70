@@ -864,8 +864,69 @@ const QRCodeGenerator = () => {
                           <SelectItem value="radial">Radial</SelectItem>
                         </SelectContent>
                       </Select>
+              </div>
+
+              {/* Style presets */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2 text-xs"><Sparkles className="h-3.5 w-3.5" /> Style presets</Label>
+                <div className="flex flex-wrap gap-2">
+                  {STYLE_PRESETS.map((p) => (
+                    <button
+                      key={p.name}
+                      type="button"
+                      onClick={() => applyPreset(p)}
+                      className="flex items-center gap-2 rounded-full border px-3 py-1 text-xs transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <span
+                        className="h-3 w-3 rounded-full border"
+                        style={{ background: p.gradient ? `linear-gradient(135deg, ${p.gradient[0]}, ${p.gradient[1]})` : p.fg }}
+                      />
+                      {p.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Frame / call-to-action */}
+              <div className="space-y-3">
+                <Label className="text-xs">Frame &amp; call-to-action</Label>
+                <Select value={frameStyle} onValueChange={(v: FrameStyle) => setFrameStyle(v)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No frame</SelectItem>
+                    <SelectItem value="box">Solid box</SelectItem>
+                    <SelectItem value="rounded">Rounded card</SelectItem>
+                    <SelectItem value="banner">Bottom banner</SelectItem>
+                  </SelectContent>
+                </Select>
+                {frameStyle !== "none" && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="col-span-2">
+                      <Label className="text-xs">Frame text</Label>
+                      <Input value={frameText} onChange={(e) => setFrameText(e.target.value)} placeholder="SCAN ME" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Frame color</Label>
+                      <Input type="color" value={frameColor} onChange={(e) => setFrameColor(e.target.value)} className="h-9 p-1" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Text color</Label>
+                      <Input type="color" value={frameTextColor} onChange={(e) => setFrameTextColor(e.target.value)} className="h-9 p-1" />
                     </div>
                   </div>
+                )}
+              </div>
+
+              {lowContrast && (
+                <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    Low contrast ({activeContrast.toFixed(1)}:1). Many phone cameras will fail to scan this — darken the dots or lighten the
+                    background.
+                  </span>
+                </div>
+              )}
+            </div>
                 )}
 
                 <div className="flex items-center justify-between">
