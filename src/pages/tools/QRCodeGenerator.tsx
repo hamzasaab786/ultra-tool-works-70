@@ -365,19 +365,45 @@ const QRCodeGenerator = () => {
     }
   };
 
-  const generateQR = async () => {
-    if (!isInputValid()) {
-      toast({
-        title: "Error",
-        description: "Please fill in the required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-    setLoading(true);
+  // Wrap the finished QR in an optional call-to-action frame
+  const applyFrame = (src: HTMLCanvasElement): string => {
+    if (frameStyle === "none") return src.toDataURL("image/png");
+    const pad = Math.round(src.width * 0.06);
+    const barH = Math.round(src.width * 0.16);
+    const w = src.width + pad * 2;
+    const h = src.height + pad * 2 + barH;
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const cx = c.getContext("2d")!;
+    const radius = frameStyle === "rounded" ? Math.round(w * 0.07) : 0;
 
-    try {
-      const data = formatTextForQR();
+    if (frameStyle === "banner") {
+      cx.fillStyle = transparentBg ? "#ffffff" : bgColor;
+      cx.fillRect(0, 0, w, h);
+      cx.fillStyle = frameColor;
+      cx.fillRect(0, h - barH, w, barH);
+    } else {
+      cx.fillStyle = frameColor;
+      roundRect(cx, 0, 0, w, h, radius);
+      cx.fill();
+      cx.fillStyle = transparentBg ? "#ffffff" : bgColor;
+      roundRect(cx, pad, pad, src.width, src.height, radius ? Math.round(radius / 2) : 0);
+      cx.fill();
+    }
+
+    cx.drawImage(src, pad, pad);
+    cx.fillStyle = frameTextColor;
+    cx.font = `bold ${Math.round(barH * 0.46)}px system-ui, sans-serif`;
+    cx.textAlign = "center";
+    cx.textBaseline = "middle";
+    cx.fillText((frameText || "SCAN ME").slice(0, 28), w / 2, h - barH / 2 + (frameStyle === "banner" ? 0 : -pad / 4));
+    return c.toDataURL("image/png");
+  };
+
+  const renderQR = async (data: string): Promise<string> => {
+    {
+    {
       const qr = QRCode.create(data, { errorCorrectionLevel: errorLevel });
       const modules = qr.modules.size;
       const moduleData = qr.modules.data;
