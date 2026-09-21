@@ -18,14 +18,57 @@ import {
   User,
   X,
   Palette,
+  AlertTriangle,
+  Layers,
+  Sparkles,
+  MapPin,
+  CalendarDays,
+  Bitcoin,
+  IndianRupee,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import QRCode from "qrcode";
 
 type DotStyle = "square" | "rounded" | "dots" | "classy";
 type EyeStyle = "square" | "rounded" | "circle";
 type ErrorLevel = "L" | "M" | "Q" | "H";
+type FrameStyle = "none" | "box" | "rounded" | "banner";
+
+interface StylePreset {
+  name: string;
+  fg: string;
+  bg: string;
+  dot: DotStyle;
+  eye: EyeStyle;
+  gradient?: [string, string];
+}
+
+const STYLE_PRESETS: StylePreset[] = [
+  { name: "Classic", fg: "#1f2a44", bg: "#ffffff", dot: "square", eye: "square" },
+  { name: "Midnight", fg: "#0f172a", bg: "#ffffff", dot: "rounded", eye: "rounded" },
+  { name: "Sunset", fg: "#f97316", bg: "#ffffff", dot: "dots", eye: "circle", gradient: ["#f97316", "#db2777"] },
+  { name: "Ocean", fg: "#0ea5e9", bg: "#ffffff", dot: "classy", eye: "rounded", gradient: ["#0ea5e9", "#6366f1"] },
+  { name: "Forest", fg: "#166534", bg: "#f0fdf4", dot: "rounded", eye: "circle" },
+  { name: "Mono Dark", fg: "#ffffff", bg: "#111111", dot: "dots", eye: "circle" },
+];
+
+const hexLum = (hex: string) => {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (!m) return 0;
+  const [r, g, b] = [1, 2, 3].map((i) => {
+    const v = parseInt(m[i], 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+const contrastRatio = (a: string, b: string) => {
+  const l1 = hexLum(a);
+  const l2 = hexLum(b);
+  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+};
 
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
@@ -74,6 +117,33 @@ const QRCodeGenerator = () => {
   const [logoRound, setLogoRound] = useState(true);
   const [logoPadding, setLogoPadding] = useState([6]);
 
+  // WhatsApp / UPI / Location / Event / Crypto
+  const [waPhone, setWaPhone] = useState("");
+  const [waMsg, setWaMsg] = useState("");
+  const [upiId, setUpiId] = useState("");
+  const [upiName, setUpiName] = useState("");
+  const [upiAmount, setUpiAmount] = useState("");
+  const [upiNote, setUpiNote] = useState("");
+  const [geoLat, setGeoLat] = useState("");
+  const [geoLng, setGeoLng] = useState("");
+  const [evTitle, setEvTitle] = useState("");
+  const [evStart, setEvStart] = useState("");
+  const [evEnd, setEvEnd] = useState("");
+  const [evLocation, setEvLocation] = useState("");
+  const [coin, setCoin] = useState("bitcoin");
+  const [coinAddress, setCoinAddress] = useState("");
+  const [coinAmount, setCoinAmount] = useState("");
+
+  // Frame / call-to-action
+  const [frameStyle, setFrameStyle] = useState<FrameStyle>("none");
+  const [frameText, setFrameText] = useState("SCAN ME");
+  const [frameColor, setFrameColor] = useState("#1f2a44");
+  const [frameTextColor, setFrameTextColor] = useState("#ffffff");
+
+  // Batch
+  const [batchInput, setBatchInput] = useState("");
+  const [batchBusy, setBatchBusy] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -95,6 +165,36 @@ const QRCodeGenerator = () => {
         }${wifiHidden ? "H:true;" : ""};`;
       case "vcard":
         return `BEGIN:VCARD\nVERSION:3.0\nFN:${vName}\nORG:${vOrg}\nTEL:${vPhone}\nEMAIL:${vEmail}\nURL:${vUrl}\nEND:VCARD`;
+      case "whatsapp": {
+        const digits = waPhone.replace(/[^\d]/g, "");
+        return `https://wa.me/${digits}${waMsg ? `?text=${encodeURIComponent(waMsg)}` : ""}`;
+      }
+      case "upi": {
+        const params = new URLSearchParams();
+        params.set("pa", upiId.trim());
+        if (upiName.trim()) params.set("pn", upiName.trim());
+        if (upiAmount.trim()) params.set("am", upiAmount.trim());
+        if (upiNote.trim()) params.set("tn", upiNote.trim());
+        params.set("cu", "INR");
+        return `upi://pay?${params.toString()}`;
+      }
+      case "geo":
+        return `geo:${geoLat.trim()},${geoLng.trim()}`;
+      case "event": {
+        const stamp = (v: string) => v.replace(/[-:]/g, "").replace(/\.\d+/, "");
+        return [
+          "BEGIN:VEVENT",
+          `SUMMARY:${evTitle}`,
+          evLocation ? `LOCATION:${evLocation}` : "",
+          evStart ? `DTSTART:${stamp(evStart)}00` : "",
+          evEnd ? `DTEND:${stamp(evEnd)}00` : "",
+          "END:VEVENT",
+        ]
+          .filter(Boolean)
+          .join("\n");
+      }
+      case "crypto":
+        return `${coin}:${coinAddress.trim()}${coinAmount.trim() ? `?amount=${coinAmount.trim()}` : ""}`;
       default:
         return text;
     }
@@ -106,8 +206,36 @@ const QRCodeGenerator = () => {
         return wifiSsid.trim().length > 0;
       case "vcard":
         return vName.trim().length > 0;
+      case "whatsapp":
+        return waPhone.replace(/[^\d]/g, "").length >= 7;
+      case "upi":
+        return upiId.trim().length > 2;
+      case "geo":
+        return geoLat.trim().length > 0 && geoLng.trim().length > 0;
+      case "event":
+        return evTitle.trim().length > 0;
+      case "crypto":
+        return coinAddress.trim().length > 5;
       default:
         return text.trim().length > 0;
+    }
+  };
+
+  const activeContrast = contrastRatio(useGradient ? gradStart : fgColor, transparentBg ? "#ffffff" : bgColor);
+  const lowContrast = activeContrast < 3;
+
+  const applyPreset = (p: StylePreset) => {
+    setDotStyle(p.dot);
+    setEyeStyle(p.eye);
+    setBgColor(p.bg);
+    setTransparentBg(false);
+    if (p.gradient) {
+      setUseGradient(true);
+      setGradStart(p.gradient[0]);
+      setGradEnd(p.gradient[1]);
+    } else {
+      setUseGradient(false);
+      setFgColor(p.fg);
     }
   };
 
@@ -237,19 +365,44 @@ const QRCodeGenerator = () => {
     }
   };
 
-  const generateQR = async () => {
-    if (!isInputValid()) {
-      toast({
-        title: "Error",
-        description: "Please fill in the required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-    setLoading(true);
+  // Wrap the finished QR in an optional call-to-action frame
+  const applyFrame = (src: HTMLCanvasElement): string => {
+    if (frameStyle === "none") return src.toDataURL("image/png");
+    const pad = Math.round(src.width * 0.06);
+    const barH = Math.round(src.width * 0.16);
+    const w = src.width + pad * 2;
+    const h = src.height + pad * 2 + barH;
+    const c = document.createElement("canvas");
+    c.width = w;
+    c.height = h;
+    const cx = c.getContext("2d")!;
+    const radius = frameStyle === "rounded" ? Math.round(w * 0.07) : 0;
 
-    try {
-      const data = formatTextForQR();
+    if (frameStyle === "banner") {
+      cx.fillStyle = transparentBg ? "#ffffff" : bgColor;
+      cx.fillRect(0, 0, w, h);
+      cx.fillStyle = frameColor;
+      cx.fillRect(0, h - barH, w, barH);
+    } else {
+      cx.fillStyle = frameColor;
+      roundRect(cx, 0, 0, w, h, radius);
+      cx.fill();
+      cx.fillStyle = transparentBg ? "#ffffff" : bgColor;
+      roundRect(cx, pad, pad, src.width, src.height, radius ? Math.round(radius / 2) : 0);
+      cx.fill();
+    }
+
+    cx.drawImage(src, pad, pad);
+    cx.fillStyle = frameTextColor;
+    cx.font = `bold ${Math.round(barH * 0.46)}px system-ui, sans-serif`;
+    cx.textAlign = "center";
+    cx.textBaseline = "middle";
+    cx.fillText((frameText || "SCAN ME").slice(0, 28), w / 2, h - barH / 2 + (frameStyle === "banner" ? 0 : -pad / 4));
+    return c.toDataURL("image/png");
+  };
+
+  const renderQR = async (data: string): Promise<string> => {
+    {
       const qr = QRCode.create(data, { errorCorrectionLevel: errorLevel });
       const modules = qr.modules.size;
       const moduleData = qr.modules.data;
@@ -353,8 +506,18 @@ const QRCodeGenerator = () => {
         });
       }
 
-      setQrCodeUrl(canvas.toDataURL("image/png"));
-      toast({ title: "Success", description: "QR code generated!" });
+      return applyFrame(canvas);
+    }
+  };
+
+  const generateQR = async () => {
+    if (!isInputValid()) {
+      toast({ title: "Error", description: "Please fill in the required fields", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+    try {
+      setQrCodeUrl(await renderQR(formatTextForQR()));
     } catch (e) {
       console.error(e);
       toast({
@@ -364,6 +527,46 @@ const QRCodeGenerator = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Bulk: one QR per line, downloaded as a ZIP
+  const downloadBatch = async () => {
+    const lines = batchInput
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .slice(0, 300);
+    if (lines.length === 0) {
+      toast({ title: "Nothing to generate", description: "Add one value per line first.", variant: "destructive" });
+      return;
+    }
+    setBatchBusy(true);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      for (let i = 0; i < lines.length; i++) {
+        const raw = lines[i];
+        const [labelPart, valuePart] = raw.includes(",") ? [raw.split(",")[0], raw.slice(raw.indexOf(",") + 1)] : [String(i + 1), raw];
+        const value = (valuePart || raw).trim();
+        const dataUrl = await renderQR(value);
+        const base64 = dataUrl.split(",")[1];
+        const safe = labelPart.trim().replace(/[^a-z0-9_-]+/gi, "-").slice(0, 40) || String(i + 1);
+        zip.file(`${String(i + 1).padStart(3, "0")}-${safe}.png`, base64, { base64: true });
+      }
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `qr-batch-${lines.length}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: "Batch ready", description: `${lines.length} QR codes downloaded as ZIP.` });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Batch failed", description: "Could not generate the ZIP file.", variant: "destructive" });
+    } finally {
+      setBatchBusy(false);
     }
   };
 
@@ -379,6 +582,10 @@ const QRCodeGenerator = () => {
     logo, logoSize, logoBg, logoRound, logoPadding,
     wifiSsid, wifiPassword, wifiEncryption, wifiHidden,
     vName, vPhone, vEmail, vOrg, vUrl, smsBody,
+    waPhone, waMsg, upiId, upiName, upiAmount, upiNote,
+    geoLat, geoLng, evTitle, evStart, evEnd, evLocation,
+    coin, coinAddress, coinAmount,
+    frameStyle, frameText, frameColor, frameTextColor,
   ]);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -458,14 +665,19 @@ const QRCodeGenerator = () => {
           <div className="space-y-4">
             <div className="bg-card p-4 rounded-lg border">
               <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setText(""); }}>
-                <TabsList className="grid grid-cols-4 lg:grid-cols-7 mb-4 h-auto">
-                  <TabsTrigger value="url"><LinkIcon className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="text"><MessageSquare className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="email"><Mail className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="phone"><Phone className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="sms">SMS</TabsTrigger>
-                  <TabsTrigger value="wifi"><Wifi className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="vcard"><User className="h-4 w-4" /></TabsTrigger>
+                <TabsList className="grid grid-cols-6 lg:grid-cols-12 mb-4 h-auto">
+                  <TabsTrigger value="url" title="Website URL"><LinkIcon className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="text" title="Plain text"><MessageSquare className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="email" title="Email"><Mail className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="phone" title="Phone call"><Phone className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="sms" title="SMS">SMS</TabsTrigger>
+                  <TabsTrigger value="wifi" title="WiFi"><Wifi className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="vcard" title="Contact card"><User className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="whatsapp" title="WhatsApp chat">WA</TabsTrigger>
+                  <TabsTrigger value="upi" title="UPI payment"><IndianRupee className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="geo" title="Map location"><MapPin className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="event" title="Calendar event"><CalendarDays className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="crypto" title="Crypto payment"><Bitcoin className="h-4 w-4" /></TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="url">
