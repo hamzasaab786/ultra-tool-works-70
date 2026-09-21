@@ -165,6 +165,36 @@ const QRCodeGenerator = () => {
         }${wifiHidden ? "H:true;" : ""};`;
       case "vcard":
         return `BEGIN:VCARD\nVERSION:3.0\nFN:${vName}\nORG:${vOrg}\nTEL:${vPhone}\nEMAIL:${vEmail}\nURL:${vUrl}\nEND:VCARD`;
+      case "whatsapp": {
+        const digits = waPhone.replace(/[^\d]/g, "");
+        return `https://wa.me/${digits}${waMsg ? `?text=${encodeURIComponent(waMsg)}` : ""}`;
+      }
+      case "upi": {
+        const params = new URLSearchParams();
+        params.set("pa", upiId.trim());
+        if (upiName.trim()) params.set("pn", upiName.trim());
+        if (upiAmount.trim()) params.set("am", upiAmount.trim());
+        if (upiNote.trim()) params.set("tn", upiNote.trim());
+        params.set("cu", "INR");
+        return `upi://pay?${params.toString()}`;
+      }
+      case "geo":
+        return `geo:${geoLat.trim()},${geoLng.trim()}`;
+      case "event": {
+        const stamp = (v: string) => v.replace(/[-:]/g, "").replace(/\.\d+/, "");
+        return [
+          "BEGIN:VEVENT",
+          `SUMMARY:${evTitle}`,
+          evLocation ? `LOCATION:${evLocation}` : "",
+          evStart ? `DTSTART:${stamp(evStart)}00` : "",
+          evEnd ? `DTEND:${stamp(evEnd)}00` : "",
+          "END:VEVENT",
+        ]
+          .filter(Boolean)
+          .join("\n");
+      }
+      case "crypto":
+        return `${coin}:${coinAddress.trim()}${coinAmount.trim() ? `?amount=${coinAmount.trim()}` : ""}`;
       default:
         return text;
     }
@@ -176,8 +206,36 @@ const QRCodeGenerator = () => {
         return wifiSsid.trim().length > 0;
       case "vcard":
         return vName.trim().length > 0;
+      case "whatsapp":
+        return waPhone.replace(/[^\d]/g, "").length >= 7;
+      case "upi":
+        return upiId.trim().length > 2;
+      case "geo":
+        return geoLat.trim().length > 0 && geoLng.trim().length > 0;
+      case "event":
+        return evTitle.trim().length > 0;
+      case "crypto":
+        return coinAddress.trim().length > 5;
       default:
         return text.trim().length > 0;
+    }
+  };
+
+  const activeContrast = contrastRatio(useGradient ? gradStart : fgColor, transparentBg ? "#ffffff" : bgColor);
+  const lowContrast = activeContrast < 3;
+
+  const applyPreset = (p: StylePreset) => {
+    setDotStyle(p.dot);
+    setEyeStyle(p.eye);
+    setBgColor(p.bg);
+    setTransparentBg(false);
+    if (p.gradient) {
+      setUseGradient(true);
+      setGradStart(p.gradient[0]);
+      setGradEnd(p.gradient[1]);
+    } else {
+      setUseGradient(false);
+      setFgColor(p.fg);
     }
   };
 
