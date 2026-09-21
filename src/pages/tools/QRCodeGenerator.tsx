@@ -507,8 +507,18 @@ const QRCodeGenerator = () => {
         });
       }
 
-      setQrCodeUrl(canvas.toDataURL("image/png"));
-      toast({ title: "Success", description: "QR code generated!" });
+      return applyFrame(canvas);
+    }
+  };
+
+  const generateQR = async () => {
+    if (!isInputValid()) {
+      toast({ title: "Error", description: "Please fill in the required fields", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+    try {
+      setQrCodeUrl(await renderQR(formatTextForQR()));
     } catch (e) {
       console.error(e);
       toast({
@@ -518,6 +528,46 @@ const QRCodeGenerator = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Bulk: one QR per line, downloaded as a ZIP
+  const downloadBatch = async () => {
+    const lines = batchInput
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .slice(0, 300);
+    if (lines.length === 0) {
+      toast({ title: "Nothing to generate", description: "Add one value per line first.", variant: "destructive" });
+      return;
+    }
+    setBatchBusy(true);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      for (let i = 0; i < lines.length; i++) {
+        const raw = lines[i];
+        const [labelPart, valuePart] = raw.includes(",") ? [raw.split(",")[0], raw.slice(raw.indexOf(",") + 1)] : [String(i + 1), raw];
+        const value = (valuePart || raw).trim();
+        const dataUrl = await renderQR(value);
+        const base64 = dataUrl.split(",")[1];
+        const safe = labelPart.trim().replace(/[^a-z0-9_-]+/gi, "-").slice(0, 40) || String(i + 1);
+        zip.file(`${String(i + 1).padStart(3, "0")}-${safe}.png`, base64, { base64: true });
+      }
+      const blob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `qr-batch-${lines.length}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: "Batch ready", description: `${lines.length} QR codes downloaded as ZIP.` });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Batch failed", description: "Could not generate the ZIP file.", variant: "destructive" });
+    } finally {
+      setBatchBusy(false);
     }
   };
 
