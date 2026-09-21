@@ -403,7 +403,6 @@ const QRCodeGenerator = () => {
 
   const renderQR = async (data: string): Promise<string> => {
     {
-    {
       const qr = QRCode.create(data, { errorCorrectionLevel: errorLevel });
       const modules = qr.modules.size;
       const moduleData = qr.modules.data;
