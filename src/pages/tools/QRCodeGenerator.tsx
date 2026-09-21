@@ -665,14 +665,19 @@ const QRCodeGenerator = () => {
           <div className="space-y-4">
             <div className="bg-card p-4 rounded-lg border">
               <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setText(""); }}>
-                <TabsList className="grid grid-cols-4 lg:grid-cols-7 mb-4 h-auto">
-                  <TabsTrigger value="url"><LinkIcon className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="text"><MessageSquare className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="email"><Mail className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="phone"><Phone className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="sms">SMS</TabsTrigger>
-                  <TabsTrigger value="wifi"><Wifi className="h-4 w-4" /></TabsTrigger>
-                  <TabsTrigger value="vcard"><User className="h-4 w-4" /></TabsTrigger>
+                <TabsList className="grid grid-cols-6 lg:grid-cols-12 mb-4 h-auto">
+                  <TabsTrigger value="url" title="Website URL"><LinkIcon className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="text" title="Plain text"><MessageSquare className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="email" title="Email"><Mail className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="phone" title="Phone call"><Phone className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="sms" title="SMS">SMS</TabsTrigger>
+                  <TabsTrigger value="wifi" title="WiFi"><Wifi className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="vcard" title="Contact card"><User className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="whatsapp" title="WhatsApp chat">WA</TabsTrigger>
+                  <TabsTrigger value="upi" title="UPI payment"><IndianRupee className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="geo" title="Map location"><MapPin className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="event" title="Calendar event"><CalendarDays className="h-4 w-4" /></TabsTrigger>
+                  <TabsTrigger value="crypto" title="Crypto payment"><Bitcoin className="h-4 w-4" /></TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="url">
