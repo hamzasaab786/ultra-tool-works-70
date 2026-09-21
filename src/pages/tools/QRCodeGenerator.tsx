@@ -733,6 +733,87 @@ const QRCodeGenerator = () => {
                   <Label>Website</Label>
                   <Input value={vUrl} onChange={(e) => setVUrl(e.target.value)} />
                 </TabsContent>
+                <TabsContent value="whatsapp" className="space-y-2">
+                  <Label>WhatsApp Number (with country code)</Label>
+                  <Input value={waPhone} onChange={(e) => setWaPhone(e.target.value)} placeholder="+92 300 1234567" />
+                  <Label>Pre-filled Message</Label>
+                  <Input value={waMsg} onChange={(e) => setWaMsg(e.target.value)} placeholder="Hi! I'd like to order…" />
+                </TabsContent>
+                <TabsContent value="upi" className="space-y-2">
+                  <Label>UPI ID</Label>
+                  <Input value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="name@bank" />
+                  <Label>Payee Name</Label>
+                  <Input value={upiName} onChange={(e) => setUpiName(e.target.value)} placeholder="My Store" />
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label>Amount (optional)</Label>
+                      <Input value={upiAmount} onChange={(e) => setUpiAmount(e.target.value)} placeholder="499" />
+                    </div>
+                    <div>
+                      <Label>Note</Label>
+                      <Input value={upiNote} onChange={(e) => setUpiNote(e.target.value)} placeholder="Order #123" />
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="geo" className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label>Latitude</Label>
+                      <Input value={geoLat} onChange={(e) => setGeoLat(e.target.value)} placeholder="31.5204" />
+                    </div>
+                    <div>
+                      <Label>Longitude</Label>
+                      <Input value={geoLng} onChange={(e) => setGeoLng(e.target.value)} placeholder="74.3587" />
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      navigator.geolocation?.getCurrentPosition(
+                        (p) => {
+                          setGeoLat(p.coords.latitude.toFixed(6));
+                          setGeoLng(p.coords.longitude.toFixed(6));
+                        },
+                        () => toast({ title: "Location unavailable", description: "Enter the coordinates manually.", variant: "destructive" })
+                      )
+                    }
+                  >
+                    <MapPin className="h-4 w-4 mr-2" /> Use my current location
+                  </Button>
+                </TabsContent>
+                <TabsContent value="event" className="space-y-2">
+                  <Label>Event Title</Label>
+                  <Input value={evTitle} onChange={(e) => setEvTitle(e.target.value)} placeholder="Product launch" />
+                  <Label>Location</Label>
+                  <Input value={evLocation} onChange={(e) => setEvLocation(e.target.value)} placeholder="Hall 2, Expo Center" />
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label>Starts</Label>
+                      <Input type="datetime-local" value={evStart} onChange={(e) => setEvStart(e.target.value)} />
+                    </div>
+                    <div>
+                      <Label>Ends</Label>
+                      <Input type="datetime-local" value={evEnd} onChange={(e) => setEvEnd(e.target.value)} />
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="crypto" className="space-y-2">
+                  <Label>Network</Label>
+                  <Select value={coin} onValueChange={setCoin}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="bitcoin">Bitcoin</SelectItem>
+                      <SelectItem value="ethereum">Ethereum</SelectItem>
+                      <SelectItem value="litecoin">Litecoin</SelectItem>
+                      <SelectItem value="dogecoin">Dogecoin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Label>Wallet Address</Label>
+                  <Input value={coinAddress} onChange={(e) => setCoinAddress(e.target.value)} placeholder="Paste your wallet address" />
+                  <Label>Amount (optional)</Label>
+                  <Input value={coinAmount} onChange={(e) => setCoinAmount(e.target.value)} placeholder="0.005" />
+                </TabsContent>
               </Tabs>
             </div>
 
@@ -856,6 +937,67 @@ const QRCodeGenerator = () => {
                   </Select>
                 </div>
               </div>
+
+              {/* Style presets */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2 text-xs"><Sparkles className="h-3.5 w-3.5" /> Style presets</Label>
+                <div className="flex flex-wrap gap-2">
+                  {STYLE_PRESETS.map((p) => (
+                    <button
+                      key={p.name}
+                      type="button"
+                      onClick={() => applyPreset(p)}
+                      className="flex items-center gap-2 rounded-full border px-3 py-1 text-xs transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <span
+                        className="h-3 w-3 rounded-full border"
+                        style={{ background: p.gradient ? `linear-gradient(135deg, ${p.gradient[0]}, ${p.gradient[1]})` : p.fg }}
+                      />
+                      {p.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Frame / call-to-action */}
+              <div className="space-y-3">
+                <Label className="text-xs">Frame &amp; call-to-action</Label>
+                <Select value={frameStyle} onValueChange={(v: FrameStyle) => setFrameStyle(v)}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">No frame</SelectItem>
+                    <SelectItem value="box">Solid box</SelectItem>
+                    <SelectItem value="rounded">Rounded card</SelectItem>
+                    <SelectItem value="banner">Bottom banner</SelectItem>
+                  </SelectContent>
+                </Select>
+                {frameStyle !== "none" && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="col-span-2">
+                      <Label className="text-xs">Frame text</Label>
+                      <Input value={frameText} onChange={(e) => setFrameText(e.target.value)} placeholder="SCAN ME" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Frame color</Label>
+                      <Input type="color" value={frameColor} onChange={(e) => setFrameColor(e.target.value)} className="h-9 p-1" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Text color</Label>
+                      <Input type="color" value={frameTextColor} onChange={(e) => setFrameTextColor(e.target.value)} className="h-9 p-1" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {lowContrast && (
+                <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    Low contrast ({activeContrast.toFixed(1)}:1). Many phone cameras may fail to scan this — darken the dots or lighten the
+                    background.
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Logo */}
@@ -904,6 +1046,24 @@ const QRCodeGenerator = () => {
                   </div>
                 </>
               )}
+            </div>
+
+            {/* Bulk generation */}
+            <div className="bg-card p-4 rounded-lg border space-y-3">
+              <h3 className="font-semibold flex items-center gap-2"><Layers className="h-4 w-4" /> Bulk generator</h3>
+              <p className="text-xs text-muted-foreground">
+                One value per line (URL, text, anything). Optionally start a line with <code>name,value</code> to control the file name. All
+                codes use the style you picked above and download as a ZIP.
+              </p>
+              <Textarea
+                rows={5}
+                value={batchInput}
+                onChange={(e) => setBatchInput(e.target.value)}
+                placeholder={"table-1,https://example.com/menu\ntable-2,https://example.com/menu?t=2"}
+              />
+              <Button onClick={downloadBatch} disabled={batchBusy} className="w-full" variant="outline">
+                <Download className="h-4 w-4 mr-2" /> {batchBusy ? "Generating…" : "Generate ZIP of QR codes"}
+              </Button>
             </div>
           </div>
 
@@ -955,7 +1115,10 @@ const QRCodeGenerator = () => {
               <li>4 dot styles (square, rounded, dots, classy) and 3 eye styles (square, rounded, circle)</li>
               <li>Independent eye color, transparent background support</li>
               <li>Adjustable size, margin (quiet zone) and error correction level</li>
-              <li>Multiple content types: URL, Text, Email, Phone, SMS, WiFi, vCard</li>
+              <li>12 content types: URL, Text, Email, Phone, SMS, WiFi, vCard, WhatsApp, UPI payment, Map location, Calendar event, Crypto wallet</li>
+              <li>One-click style presets and "SCAN ME" frames (box, rounded card, bottom banner) with custom text and colours</li>
+              <li>Automatic contrast check that warns you before you print an unscannable code</li>
+              <li>Bulk generator — paste a list and download every QR code as a ZIP</li>
               <li>Export as high-quality PNG, JPG, or SVG</li>
             </ul>
           </div>
