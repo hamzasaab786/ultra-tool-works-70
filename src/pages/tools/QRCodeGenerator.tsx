@@ -582,6 +582,10 @@ const QRCodeGenerator = () => {
     logo, logoSize, logoBg, logoRound, logoPadding,
     wifiSsid, wifiPassword, wifiEncryption, wifiHidden,
     vName, vPhone, vEmail, vOrg, vUrl, smsBody,
+    waPhone, waMsg, upiId, upiName, upiAmount, upiNote,
+    geoLat, geoLng, evTitle, evStart, evEnd, evLocation,
+    coin, coinAddress, coinAmount,
+    frameStyle, frameText, frameColor, frameTextColor,
   ]);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
