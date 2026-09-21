@@ -1115,7 +1115,10 @@ const QRCodeGenerator = () => {
               <li>4 dot styles (square, rounded, dots, classy) and 3 eye styles (square, rounded, circle)</li>
               <li>Independent eye color, transparent background support</li>
               <li>Adjustable size, margin (quiet zone) and error correction level</li>
-              <li>Multiple content types: URL, Text, Email, Phone, SMS, WiFi, vCard</li>
+              <li>12 content types: URL, Text, Email, Phone, SMS, WiFi, vCard, WhatsApp, UPI payment, Map location, Calendar event, Crypto wallet</li>
+              <li>One-click style presets and "SCAN ME" frames (box, rounded card, bottom banner) with custom text and colours</li>
+              <li>Automatic contrast check that warns you before you print an unscannable code</li>
+              <li>Bulk generator — paste a list and download every QR code as a ZIP</li>
               <li>Export as high-quality PNG, JPG, or SVG</li>
             </ul>
           </div>
