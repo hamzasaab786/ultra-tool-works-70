@@ -124,4 +124,11 @@ export const pathChunk: Record<string, number> = {
   "/tools/word-to-jpg": 1,
   "/tools/word-to-pdf": 2,
   "/tools/word-to-text": 4,
+  "/tools/excel-to-word": 6,
+  "/tools/signature-generator": 6,
+  "/tools/meme-generator": 6,
+  "/tools/favicon-generator": 6,
+  "/tools/image-watermark": 6,
+  "/tools/random-number-generator": 6,
+  "/tools/ovulation-calculator": 6,
 };
