@@ -610,11 +610,28 @@ const QRCodeGenerator = () => {
       return;
     }
     if (format === "svg") {
-      // Convert PNG dataURL to SVG-wrapped image
-      const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${qrSize[0]}" height="${qrSize[0]}">
-<image href="${qrCodeUrl}" width="${qrSize[0]}" height="${qrSize[0]}"/>
+      // Wrap PNG in SVG, preserving the real (possibly framed) aspect ratio
+      const img = new Image();
+      img.onload = () => {
+        const w = img.naturalWidth || qrSize[0];
+        const h = img.naturalHeight || qrSize[0];
+        const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+<image href="${qrCodeUrl}" width="${w}" height="${h}"/>
 </svg>`;
+        const blob = new Blob([svg], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `qrcode-${Date.now()}.svg`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+      img.src = qrCodeUrl;
+      return;
+    }
+    if (false as boolean) {
+      const svg = "";
       const blob = new Blob([svg], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

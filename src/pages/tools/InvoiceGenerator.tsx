@@ -146,7 +146,29 @@ const InvoiceGenerator = () => {
   /* ---------- persistence ---------- */
   useEffect(() => {
     try {
-      setSavedInvoices(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+      let list: Invoice[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      // One-time migration from the legacy "invoices" key (pre-v2 builder).
+      const legacyRaw = localStorage.getItem("invoices");
+      if (legacyRaw) {
+        const legacy = JSON.parse(legacyRaw);
+        if (Array.isArray(legacy) && legacy.length) {
+          const ids = new Set(list.map((i) => i.id));
+          const migrated = legacy
+            .filter((o) => o && typeof o === "object")
+            .map((o, idx) => {
+              const base = blankInvoice();
+              const items = Array.isArray(o.items) && o.items.length
+                ? o.items.map((it: Record<string, unknown>, j: number) => ({ ...base.items[0], ...it, id: String(it.id ?? `legacy-item-${idx}-${j}`) }))
+                : base.items;
+              return { ...base, ...o, items, id: String(o.id ?? `legacy-${idx}-${Date.now()}`) } as Invoice;
+            })
+            .filter((i) => !ids.has(i.id));
+          list = [...list, ...migrated];
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        }
+        localStorage.removeItem("invoices");
+      }
+      setSavedInvoices(list);
       setClients(JSON.parse(localStorage.getItem(CLIENTS_KEY) || "[]"));
     } catch { /* ignore */ }
   }, []);
