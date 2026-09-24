@@ -630,17 +630,6 @@ const QRCodeGenerator = () => {
       img.src = qrCodeUrl;
       return;
     }
-    if (false as boolean) {
-      const svg = "";
-      const blob = new Blob([svg], { type: "image/svg+xml" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `qrcode-${Date.now()}.svg`;
-      a.click();
-      URL.revokeObjectURL(url);
-      return;
-    }
     if (format === "jpg") {
       const img = new Image();
       img.onload = () => {
