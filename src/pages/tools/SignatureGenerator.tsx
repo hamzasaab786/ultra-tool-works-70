@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -94,12 +93,6 @@ const SignatureGenerator = () => {
 
   return (
     <>
-      <SEO
-        title="Signature Generator - Draw or Type a Free Digital Signature | Klipza"
-        description="Create a transparent PNG signature online. Draw with your mouse or finger, or type your name in signature fonts and download instantly."
-        keywords="signature generator, digital signature maker, draw signature online, transparent signature png"
-        canonicalUrl="https://klipza.live/tools/signature-generator"
-      />
       <ToolPageTemplate title="Signature Generator" description="Draw or type your signature and download it as a transparent PNG">
         <Tabs defaultValue="draw" className="space-y-6">
           <TabsList>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,12 +40,6 @@ const OvulationCalculator = () => {
 
   return (
     <>
-      <SEO
-        title="Ovulation Calculator - Find Your Fertile Window & Ovulation Date | Klipza"
-        description="Estimate your ovulation day, 6-day fertile window, next period and estimated due date from your last menstrual period and cycle length."
-        keywords="ovulation calculator, fertile window calculator, period predictor, conception calculator"
-        canonicalUrl="https://klipza.live/tools/ovulation-calculator"
-      />
       <ToolPageTemplate title="Ovulation Calculator" description="Estimate your fertile window, ovulation day and next period">
         <div className="space-y-6">
           <Card>

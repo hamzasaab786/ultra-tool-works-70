@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,12 +61,6 @@ const RandomNumberGenerator = () => {
 
   return (
     <>
-      <SEO
-        title="Random Number Generator - Pick Random Numbers Online Free | Klipza"
-        description="Generate one or many random numbers in any range using cryptographically strong randomness. Options for unique values and sorted output."
-        keywords="random number generator, pick a random number, lottery number generator, rng online"
-        canonicalUrl="https://klipza.live/tools/random-number-generator"
-      />
       <ToolPageTemplate title="Random Number Generator" description="Generate truly random numbers in any range, instantly">
         <div className="space-y-6">
           <Card>

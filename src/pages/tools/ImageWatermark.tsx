@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -81,12 +80,6 @@ const ImageWatermark = () => {
 
   return (
     <>
-      <SEO
-        title="Add Watermark to Photo - Free Online Image Watermark Tool | Klipza"
-        description="Add a text watermark to any photo with custom opacity, colour, rotation, position or full tiling. Runs entirely in your browser, images never leave your device."
-        keywords="image watermark, add watermark to photo, photo watermark online, watermark tool"
-        canonicalUrl="https://klipza.live/tools/image-watermark"
-      />
       <ToolPageTemplate title="Image Watermark" description="Protect your photos with a custom text watermark in seconds">
         <div className="space-y-6">
           <Card>
