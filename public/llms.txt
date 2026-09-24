@@ -128,6 +128,13 @@
 - [Word To Excel](https://klipza.live/tools/word-to-excel/)
 - [Word To JPG](https://klipza.live/tools/word-to-jpg/)
 - [JPG To Word](https://klipza.live/tools/jpg-to-word/)
+- [Excel To Word](https://klipza.live/tools/excel-to-word/)
+- [Signature Generator](https://klipza.live/tools/signature-generator/)
+- [Meme Generator](https://klipza.live/tools/meme-generator/)
+- [Favicon Generator](https://klipza.live/tools/favicon-generator/)
+- [Image Watermark](https://klipza.live/tools/image-watermark/)
+- [Random Number Generator](https://klipza.live/tools/random-number-generator/)
+- [Ovulation Calculator](https://klipza.live/tools/ovulation-calculator/)
 
 ## Pages
 - [About](https://klipza.live/about/)
