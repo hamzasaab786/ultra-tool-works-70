@@ -133,6 +133,13 @@ const toolPaths = [
   "/tools/word-to-excel",
   "/tools/word-to-jpg",
   "/tools/jpg-to-word",
+  "/tools/excel-to-word",
+  "/tools/signature-generator",
+  "/tools/meme-generator",
+  "/tools/favicon-generator",
+  "/tools/image-watermark",
+  "/tools/random-number-generator",
+  "/tools/ovulation-calculator",
 ]
 
 const entries: SitemapEntry[] = [
