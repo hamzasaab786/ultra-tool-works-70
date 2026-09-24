@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -72,12 +71,6 @@ const MemeGenerator = () => {
 
   return (
     <>
-      <SEO
-        title="Meme Generator - Make Memes Online Free with Your Own Image | Klipza"
-        description="Upload any picture, add top and bottom text in classic meme style, and download your meme as a high-quality PNG. Free, fast and fully private."
-        keywords="meme generator, make a meme, meme maker online, add text to image"
-        canonicalUrl="https://klipza.live/tools/meme-generator"
-      />
       <ToolPageTemplate title="Meme Generator" description="Upload an image, add classic meme captions and download instantly">
         <div className="space-y-6">
           <Card>

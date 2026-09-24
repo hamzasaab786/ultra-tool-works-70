@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,12 +51,6 @@ const FaviconGenerator = () => {
 
   return (
     <>
-      <SEO
-        title="Favicon Generator - Create Favicons from Any Image Free | Klipza"
-        description="Turn any PNG or JPG into crisp favicons in 10 sizes (16x16 to 512x512) including Apple touch icon. 100% browser-based, nothing is uploaded."
-        keywords="favicon generator, create favicon, favicon from image, apple touch icon generator"
-        canonicalUrl="https://klipza.live/tools/favicon-generator"
-      />
       <ToolPageTemplate title="Favicon Generator" description="Generate every favicon size your website needs from a single image">
         <div className="space-y-6">
           <Card>
