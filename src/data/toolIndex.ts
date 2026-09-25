@@ -14,15 +14,11 @@ export const imageTools: ToolLink[] = [
     { name: "SVG to JPG", path: "/tools/svg-to-jpg" },
     { name: "Image to URL", path: "/tools/image-to-url" },
     
-    { name: "Passport Photo Maker", path: "/tools/passport-photo-maker" },
     { name: "Image Format Converter", path: "/tools/image-format-converter" },
     { name: "Image to Text (OCR)", path: "/tools/image-to-text" },
     { name: "JPG to Word", path: "/tools/jpg-to-word" },
     { name: "Image Metadata Extractor", path: "/tools/image-metadata-extractor" },
-    { name: "Remove Watermark", path: "/tools/remove-watermark" },
     { name: "Image Watermark", path: "/tools/image-watermark" },
-    { name: "Meme Generator", path: "/tools/meme-generator" },
-    { name: "Favicon Generator", path: "/tools/favicon-generator" },
 ];
 
 export const pdfTools: ToolLink[] = [
