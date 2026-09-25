@@ -60,11 +60,6 @@ const Index = () => {
       icon: <ImageIcon />,
       path: "/tools/svg-to-jpg"
     }, {
-      title: "Passport Photo Maker",
-      description: "Create professional passport photos with correct dimensions and quality standards",
-      icon: <Camera />,
-      path: "/tools/passport-photo-maker"
-    }, {
       title: "Image to URL",
       description: "Upload images and get shareable URLs for web hosting and sharing",
       icon: <Link2 />,
@@ -89,11 +84,6 @@ const Index = () => {
       description: "View EXIF data, camera details, GPS location and dimensions of any photo",
       icon: <Search />,
       path: "/tools/image-metadata-extractor"
-    }, {
-      title: "Remove Watermark",
-      description: "Erase watermarks and unwanted objects from images with AI-assisted cleanup",
-      icon: <FileImage />,
-      path: "/tools/remove-watermark"
     }]
   }, {
     title: "📄 PDF Tools",

@@ -33,38 +33,6 @@ export const chunk2: ToolContentMap = {
       { heading: "Troubleshooting odd output sizes", body: "If the downloaded image looks a different size than expected, check whether Pixels or Percent mode is active — the two use different reference numbers and it is easy to leave the wrong one selected." },
     ],
   },
-  "/tools/passport-photo-maker": {
-    intro: [
-      "The Passport Photo Maker crops and formats a photo to official passport and visa dimensions such as 35x45mm or 2x2 inch (51x51mm), directly in your browser. Select your destination country's preset and the tool overlays head-position guides so the crop lines up correctly before you download a print-ready image.",
-      "Because visa and passport photo rules are strict about background colour, framing and head size, getting it right at home avoids a rejected application or an unnecessary trip to a photo studio. The tool also produces a 4x6 inch print sheet with multiple copies laid out, so a single visit to any photo printer yields all the copies a passport or visa office asks for.",
-    ],
-    steps: [
-      "Upload a well-lit, front-facing photo taken against a plain background.",
-      "Select your country or document type from the preset list to load the correct size.",
-      "Drag and zoom the crop guide so your head and eyes align with the position markers.",
-      "Choose or confirm a white or plain background.",
-      "Download the single photo, or export the 4x6 inch sheet with multiple copies for printing.",
-    ],
-    benefits: [
-      { title: "Country-specific presets", body: "35x45mm, 2x2 inch and other official sizes are ready to select, removing the need to look up exact measurements yourself." },
-      { title: "Guided head positioning", body: "On-screen alignment guides show where the eyes and chin should sit relative to the frame, matching the proportions most passport offices require." },
-      { title: "Print sheet export", body: "A 4x6 inch layout with several copies of the photo means one trip to a photo lab or your own printer produces everything you need." },
-      { title: "No studio visit required", body: "A photo taken at home with a plain wall behind you can be turned into a compliant document photo without booking an appointment." },
-    ],
-    useCases: [
-      "Producing a passport photo for a renewal application without visiting a studio.",
-      "Creating a US visa photo at the required 2x2 inch size before an online application.",
-      "Making an ID badge photo for a workplace or student card in a specific size.",
-      "Printing several passport photo copies at once for multiple family members.",
-      "Re-cropping an existing photo that was rejected for incorrect head size.",
-    ],
-    sections: [
-      { heading: "Choosing a compliant photo", body: "Use a recent photo with neutral expression, eyes open, taken directly facing the camera in even lighting with no shadows across the face. Glasses, hats and heavy shadows are common rejection reasons that no amount of cropping can fix." },
-      { heading: "Background requirements", body: "Most passport and visa authorities require a plain white or off-white background with no texture or pattern. If your original photo has a busy background, retake it against a blank wall before uploading for the best result." },
-      { heading: "Printing your photo correctly", body: "Print the 4x6 sheet at actual size (100%, no scale-to-fit) on photo paper for accurate real-world dimensions — scaling in the print dialog can shrink the photo below the required size." },
-      { heading: "Passport photo maker vs photo booths", body: "In-store passport photo booths charge per set and require travel; this tool produces the same standard sizes for free and lets you retake the crop as many times as needed until it looks right." },
-    ],
-  },
   "/tools/merge-pdf": {
     intro: [
       "Merge PDF combines multiple PDF files into a single document entirely inside your browser. Add contracts, scanned pages, reports or chapters in any order, drag to rearrange them, and download one combined file — all without an upload step, since the PDFs never leave your device.",
