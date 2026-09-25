@@ -153,26 +153,6 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     ],
   },
   {
-    path: "/tools/passport-photo-maker",
-    name: "Passport Photo Maker",
-    category: IMAGE,
-    title: "Passport Photo Maker — Official Size ID Photos Online",
-    description:
-      "Create passport and visa photos online in official sizes (35x45mm, 2x2in and more) with correct head positioning, white background and print-ready sheets.",
-    keywords:
-      "passport photo maker, passport size photo online, visa photo tool, id photo generator, 2x2 passport photo, 35x45mm photo, passport size photo maker online free, 2x2 passport photo online, visa photo size converter online",
-    faqs: [
-      {
-        q: "What size should a passport photo be?",
-        a: "Most countries use 35x45 mm; the United States, India visa and several others use 2x2 inches (51x51 mm). Pick your country preset and the crop guides adjust automatically.",
-      },
-      {
-        q: "Can I print several copies on one sheet?",
-        a: "Yes. Export the 4x6 inch print sheet layout to get multiple correctly spaced copies you can print at home or at any photo lab and cut apart.",
-      },
-    ],
-  },
-  {
     path: "/tools/image-to-url",
     name: "Image to URL Converter",
     category: IMAGE,
@@ -229,26 +209,6 @@ export const toolSeoEntries: ToolSeoEntry[] = [
       {
         q: "How do I remove EXIF data before sharing a photo?",
         a: "Re-save the picture through the Image Compressor or Format Converter. Re-encoding drops the original metadata block, including any GPS coordinates.",
-      },
-    ],
-  },
-  {
-    path: "/tools/remove-watermark",
-    name: "Watermark Remover",
-    category: IMAGE,
-    title: "Remove Watermark from Image — Free Online Cleaner",
-    description:
-      "Clean unwanted watermarks, logos and text from your own images with brush and clone retouching. Works locally in your browser, free and unlimited.",
-    keywords:
-      "remove watermark from image, watermark remover online, erase logo from photo, clean image text, photo retouch tool, remove watermark from photo online free, delete watermark from image ai free",
-    faqs: [
-      {
-        q: "Is it legal to remove a watermark?",
-        a: "Only on images you own or have written permission to edit. Removing a watermark from someone else's copyrighted work to reuse it is copyright infringement.",
-      },
-      {
-        q: "Which watermarks are easiest to remove?",
-        a: "Semi-transparent marks over flat or evenly textured backgrounds clean up almost invisibly. Opaque marks across faces or fine detail leave traces because the hidden pixels no longer exist.",
       },
     ],
   },
@@ -2368,36 +2328,6 @@ export const toolSeoEntries: ToolSeoEntry[] = [
       { q: "Can I get a signature with a transparent background?", a: "Yes. The PNG export keeps the background transparent, so your signature sits cleanly on a contract, letterhead or PDF page without a white box around it." },
       { q: "Is a drawn signature legally valid?", a: "In many countries an electronic signature is accepted for everyday agreements, but requirements differ by jurisdiction and document type. Check your local rules for contracts that need a witnessed or notarised signature." },
       { q: "Can I type instead of drawing?", a: "Yes. Type your name and pick a handwriting style if you prefer a consistent look, or draw with a mouse, trackpad or finger on a touchscreen for a genuine handwritten feel." },
-    ],
-  },
-  {
-    path: "/tools/meme-generator",
-    name: "Meme Generator",
-    category: IMAGE,
-    title: "Meme Generator — Add Top & Bottom Text to Any Image",
-    description:
-      "Make memes online free: upload any picture, add classic top and bottom captions, adjust size and colour, then download in HD with no watermark.",
-    keywords:
-      "meme generator, meme maker online free, add text to image meme, impact font meme creator, caption photo online, make meme without watermark",
-    faqs: [
-      { q: "Will my meme have a watermark?", a: "No. The downloaded image is clean — no logo, no branding and no reduced resolution, so it is ready to post anywhere." },
-      { q: "Can I use my own photo as a template?", a: "Yes. Upload any JPG or PNG from your device and caption it. The image stays in your browser and is never uploaded to a server." },
-      { q: "What size are the exported memes?", a: "The meme is exported at your source image's own resolution, which keeps text crisp on both phone screens and large displays." },
-    ],
-  },
-  {
-    path: "/tools/favicon-generator",
-    name: "Favicon Generator",
-    category: IMAGE,
-    title: "Favicon Generator — Create ICO & PNG Favicons Online",
-    description:
-      "Turn any logo or image into a complete favicon set with all the sizes browsers, iOS and Android need. Free, instant and processed in your browser.",
-    keywords:
-      "favicon generator, create favicon from image, ico converter online free, apple touch icon generator, png to favicon, website icon maker 16x16 32x32",
-    faqs: [
-      { q: "Which favicon sizes do I actually need?", a: "16x16 and 32x32 cover browser tabs and bookmarks, 180x180 is used for the iOS home-screen icon, and 192x192 plus 512x512 serve Android and progressive web apps. The generator produces all of them at once." },
-      { q: "What image should I start from?", a: "A square image of at least 512x512 pixels with a bold, simple mark works best. Fine detail and small text disappear entirely at 16 pixels wide." },
-      { q: "How do I add the favicon to my site?", a: "Place the exported files in your site's root or public folder and reference them with link tags in the head of your HTML, including apple-touch-icon for iOS." },
     ],
   },
   {

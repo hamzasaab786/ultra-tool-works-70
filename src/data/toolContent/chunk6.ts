@@ -63,67 +63,7 @@ export const chunk6: ToolContentMap = {
     ],
   },
 
-  "/tools/meme-generator": {
-    intro: [
-      "The Meme Generator puts classic top-and-bottom captions on any picture you upload and exports it in full resolution with no watermark. It keeps the format people actually recognise — bold white lettering with a heavy outline that stays readable over busy images — while giving you control over text size, colour and placement so the joke lands instead of getting lost in the background.",
-      "Your image never leaves the browser, which matters when the template is a private screenshot or a photo of friends. Type the caption, watch the live preview update as you go, and download a post-ready image for WhatsApp, Instagram, X, Reddit or a group chat. No account, no export limit and no logo stamped in the corner of your meme.",
-    ],
-    steps: [
-      "Upload a JPG or PNG from your device to use as the meme template.",
-      "Type your top caption and bottom caption — the preview updates as you type.",
-      "Adjust font size, text colour and outline so the words stay readable over the image.",
-      "Nudge the text placement if part of the picture needs to stay visible.",
-      "Download the finished meme in full resolution and post it anywhere.",
-    ],
-    benefits: [
-      { title: "No watermark, ever", body: "Most free meme sites brand your image. The download here is clean at your source resolution, so it looks the same whether it's viewed on a phone or a monitor." },
-      { title: "Live preview", body: "You see exactly what you'll get while typing, so there's no download-check-redo cycle when a caption turns out to be too long for the frame." },
-      { title: "Your images stay private", body: "Templates are read and rendered in the browser. A screenshot of a chat or a personal photo never reaches a server." },
-    ],
-    useCases: [
-      "Turning a group-chat screenshot into a shareable joke.",
-      "Making a quick reaction image for a Reddit thread or X reply.",
-      "Adding captions to a product photo for a lighthearted social post.",
-      "Creating a classroom or team in-joke from a photo everyone recognises.",
-      "Building simple captioned graphics for a newsletter or presentation.",
-    ],
-    sections: [
-      { heading: "Making captions readable", body: "White text with a thick black outline is the meme standard because it survives any background. If a caption still disappears, shorten it, raise the font size, or move it onto a flatter part of the image rather than over detailed texture." },
-      { heading: "Sizing for each platform", body: "Square images suit Instagram feeds, portrait suits stories and TikTok, and landscape suits X and Reddit. Crop the template first with the Image Crop Tool if you want an exact aspect ratio before captioning." },
-      { heading: "Keeping file sizes small", body: "High-resolution photos make large memes that upload slowly on mobile data. Running the finished meme through the Image Compressor usually cuts the size dramatically with no visible loss at social-media viewing sizes." },
-    ],
-  },
 
-  "/tools/favicon-generator": {
-    intro: [
-      "The Favicon Generator turns a logo or any square image into the complete set of icon files a modern site needs: the small sizes browsers show in tabs and bookmarks, the larger apple-touch icon iOS uses on the home screen, and the 192 and 512 pixel PNGs Android and progressive web apps expect. One upload produces the whole set instead of exporting each size by hand in an image editor.",
-      "Everything is resized in your browser using high-quality scaling, so edges stay as crisp as the source allows and your unreleased branding never gets uploaded anywhere. Drop in an image, review how it looks at each size, and download the icons ready to drop into your site's public folder — free, instant and with no account or watermark.",
-    ],
-    steps: [
-      "Upload a square PNG, JPG or SVG logo — 512x512 pixels or larger gives the best results.",
-      "Preview how the mark looks at each generated size, especially the tiny 16x16 tab icon.",
-      "Adjust or re-upload a simpler version if fine detail turns to mush at small sizes.",
-      "Generate the icon set covering browser, iOS and Android sizes.",
-      "Download the files and place them in your site's root or public folder, then reference them in your HTML head.",
-    ],
-    benefits: [
-      { title: "Every size in one pass", body: "16x16, 32x32, 180x180, 192x192 and 512x512 are produced together, covering browser tabs, bookmarks, iOS home screens, Android launchers and PWA manifests." },
-      { title: "High-quality downscaling", body: "Icons are resampled rather than crudely squashed, which keeps edges and contrast readable even at 16 pixels where most detail normally disappears." },
-      { title: "No upload of your branding", body: "Logos for unlaunched products are sensitive. Resizing happens locally, so nothing is stored on a server or cached by a third party." },
-    ],
-    useCases: [
-      "Launching a new website that still shows the browser's blank default icon.",
-      "Refreshing favicons after a rebrand so tabs match the new logo.",
-      "Producing the icon set a progressive web app manifest requires.",
-      "Giving a client's site a proper home-screen icon on iPhone and Android.",
-      "Making an icon for an internal dashboard so staff can spot its tab instantly.",
-    ],
-    sections: [
-      { heading: "Designing a mark that survives 16 pixels", body: "At tab size you have roughly the space of a letter. Use a single bold shape, an initial or a simplified symbol with strong contrast — full wordmarks, thin strokes and gradients all blur into a smudge. Test the smallest preview before committing." },
-      { heading: "Adding the icons to your site", body: "Put the files in your public or root directory, then reference them in the head of your HTML: a standard icon link for the PNG sizes and an apple-touch-icon link for the 180x180 file. Add the 192 and 512 icons to your web app manifest if you have one." },
-      { heading: "Why the icon sometimes doesn't update", body: "Browsers cache favicons aggressively. After deploying new icons, do a hard refresh or open the icon URL directly to confirm the new file is being served — the old one can otherwise linger for days." },
-    ],
-  },
 
   "/tools/image-watermark": {
     intro: [

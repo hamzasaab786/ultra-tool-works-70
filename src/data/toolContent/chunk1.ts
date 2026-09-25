@@ -99,55 +99,6 @@ export const chunk1: ToolContentMap = {
     ],
   },
 
-  "/tools/remove-watermark": {
-    intro: [
-      "The Watermark Remover lets you clean unwanted logos, stamps and text overlays from your own photos using brush and clone retouching tools, all running locally in the browser. Paint over the watermark area and the tool samples nearby pixels to rebuild what should be underneath, which works especially well on semi-transparent marks placed over flat or gently textured backgrounds.",
-      "It is built for situations where you legitimately own an image but a watermark from a previous export, a stock preview or an old edit needs to go. Because nothing is uploaded to a server, you can retouch personal or client photos without concerns about where the file ends up, and the brush size and clone source can be adjusted until the area blends naturally.",
-    ],
-    steps: [
-      "Upload the image you want to clean using the file picker or drag-and-drop area.",
-      "Zoom in on the watermark area to see exactly which pixels need to be covered.",
-      "Select the brush or clone tool and adjust the brush size to match the watermark's shape.",
-      "Paint over the watermark, letting the tool sample nearby texture to fill in the area.",
-      "Compare the retouched region against the surrounding image and repeat with a smaller brush for fine detail.",
-      "Download the cleaned image once the watermark is no longer visible.",
-    ],
-    benefits: [
-      {
-        title: "Brush and clone controls",
-        body: "Adjustable brush size and a clone-based fill let you match the retouching to the exact shape and texture of the watermark, rather than applying a blanket blur that would damage surrounding detail.",
-      },
-      {
-        title: "Works on your own device",
-        body: "Because retouching happens with in-browser canvas processing, sensitive personal photos never need to be uploaded to a third-party service to be cleaned up.",
-      },
-      {
-        title: "Unlimited attempts",
-        body: "You can undo and retry the brush strokes as many times as needed until the area blends in, without any usage limit or watermark added back onto the export.",
-      },
-    ],
-    useCases: [
-      "Removing a leftover preview watermark from a stock photo you have since purchased a licence for.",
-      "Cleaning a logo stamp off a personal photo before reusing it in a different context.",
-      "Erasing a timestamp or camera overlay from an old scanned photograph.",
-      "Removing your own outdated watermark from a photo before applying a new one.",
-      "Tidying up a screenshot that has an app's default watermark before sharing it internally.",
-    ],
-    sections: [
-      {
-        heading: "What removes cleanly",
-        body: "Semi-transparent marks over flat skies, plain walls or soft gradients disappear almost invisibly because the underlying texture is simple to reconstruct. Marks placed over faces, fine text or busy detail leave subtle traces, since the exact original pixels no longer exist and the tool can only approximate them from nearby areas.",
-      },
-      {
-        heading: "Legal use only",
-        body: "This tool is meant for images you own or have explicit permission to edit. Removing a watermark from someone else's copyrighted photo or artwork to redistribute it without permission is copyright infringement in most jurisdictions, regardless of the tool used to do it.",
-      },
-      {
-        heading: "Getting the best result",
-        body: "Work in short strokes with a brush slightly larger than the watermark, checking the result after each pass rather than covering the whole area at once. Zooming in to 200–400% makes it much easier to judge whether the blend matches the surrounding pixels before committing to the final export.",
-      },
-    ],
-  },
 
   "/tools/PdfToExcel": {
     intro: [

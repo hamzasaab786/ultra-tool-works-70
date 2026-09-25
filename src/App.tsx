@@ -34,10 +34,8 @@ const ImageEnhancer = lazy(() => import("@/pages/tools/ImageEnhancer"));
 const JpgToPdf = lazy(() => import("@/pages/tools/JpgToPdf"));
 const SvgToJpg = lazy(() => import("@/pages/tools/SvgToJpg"));
 const ImageToUrl = lazy(() => import("@/pages/tools/ImageToUrl"));
-const PassportPhotoMaker = lazy(() => import("@/pages/tools/PassportPhotoMaker"));
 const ImageFormatConverter = lazy(() => import("@/pages/tools/ImageFormatConverter"));
 const ImageMetadataExtractor = lazy(() => import("@/pages/tools/ImageMetadataExtractor"));
-const RemoveWatermark = lazy(() => import("@/pages/tools/RemoveWatermark"));
 const ImageCropTool = lazy(() => import("@/pages/tools/ImageCropTool"));
 const MergePDF = lazy(() => import("@/pages/tools/MergePDF"));
 const SplitPdf = lazy(() => import("@/pages/tools/SplitPdf"));
@@ -141,8 +139,6 @@ const SalaryCalculator = lazy(() => import("@/pages/tools/SalaryCalculator"));
 const TimeZoneConverter = lazy(() => import("@/pages/tools/TimeZoneConverter"));
 const RandomPicker = lazy(() => import("@/pages/tools/RandomPicker"));
 const SignatureGenerator = lazy(() => import("@/pages/tools/SignatureGenerator"));
-const MemeGenerator = lazy(() => import("@/pages/tools/MemeGenerator"));
-const FaviconGenerator = lazy(() => import("@/pages/tools/FaviconGenerator"));
 const ImageWatermark = lazy(() => import("@/pages/tools/ImageWatermark"));
 const RandomNumberGenerator = lazy(() => import("@/pages/tools/RandomNumberGenerator"));
 const OvulationCalculator = lazy(() => import("@/pages/tools/OvulationCalculator"));
@@ -190,10 +186,8 @@ const App = () => {
             <Route path="/tools/svg-to-jpg" element={<SvgToJpg />} />
             <Route path="/tools/image-to-url" element={<ImageToUrl />} />
             
-            <Route path="/tools/passport-photo-maker" element={<PassportPhotoMaker />} />
             <Route path="/tools/image-format-converter" element={<ImageFormatConverter />} />
             <Route path="/tools/image-metadata-extractor" element={<ImageMetadataExtractor />} />
-            <Route path="/tools/remove-watermark" element={<RemoveWatermark />} />
             <Route path="/tools/image-crop-tool" element={<ImageCropTool />} />
 
             {/* PDF Tools */}
@@ -307,8 +301,6 @@ const App = () => {
             <Route path="/tools/time-zone-converter" element={<TimeZoneConverter />} />
             <Route path="/tools/random-picker" element={<RandomPicker />} />
             <Route path="/tools/signature-generator" element={<SignatureGenerator />} />
-            <Route path="/tools/meme-generator" element={<MemeGenerator />} />
-            <Route path="/tools/favicon-generator" element={<FaviconGenerator />} />
             <Route path="/tools/image-watermark" element={<ImageWatermark />} />
             <Route path="/tools/random-number-generator" element={<RandomNumberGenerator />} />
             <Route path="/tools/ovulation-calculator" element={<OvulationCalculator />} />
