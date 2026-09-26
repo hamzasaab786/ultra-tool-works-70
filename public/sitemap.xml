@@ -56,22 +56,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://klipza.live/tools/passport-photo-maker/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://klipza.live/tools/image-format-converter/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://klipza.live/tools/image-metadata-extractor/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://klipza.live/tools/remove-watermark/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -632,16 +622,6 @@
   </url>
   <url>
     <loc>https://klipza.live/tools/signature-generator/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://klipza.live/tools/meme-generator/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://klipza.live/tools/favicon-generator/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
