@@ -102,7 +102,7 @@ const ImageToUrl = () => {
                 <div className="relative">
                   <img 
                     src={URL.createObjectURL(selectedImage)} 
-                    alt="Selected" 
+                    alt="Selected image to convert to URL" 
                     className="w-full h-48 object-cover rounded border" 
                   />
                   <Button 

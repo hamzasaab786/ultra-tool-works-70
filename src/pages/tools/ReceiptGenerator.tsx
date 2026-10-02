@@ -249,7 +249,7 @@ const ReceiptGenerator = () => {
                     if (f) { const fr = new FileReader(); fr.onloadend = () => { set("logo", fr.result as string); toast.success("Logo added"); }; fr.readAsDataURL(f); }
                     e.target.value = "";
                   }} />
-                  {r.logo && (<><img src={r.logo} alt="Logo" className="h-8 rounded border bg-white p-1" /><Button variant="ghost" size="sm" onClick={() => set("logo", undefined)}>Remove</Button></>)}
+                  {r.logo && (<><img src={r.logo} alt="Store logo preview" className="h-8 rounded border bg-white p-1" /><Button variant="ghost" size="sm" onClick={() => set("logo", undefined)}>Remove</Button></>)}
                 </div>
               </Card>
 

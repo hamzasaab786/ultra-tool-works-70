@@ -1029,7 +1029,7 @@ const QRCodeGenerator = () => {
               {logo && (
                 <>
                   <div className="flex justify-center">
-                    <img src={logo} alt="logo" className="h-16 w-16 object-contain border rounded" />
+                    <img src={logo} alt="Logo to place in the center of the QR code" className="h-16 w-16 object-contain border rounded" />
                   </div>
                   <div>
                     <Label>Logo Size: {logoSize[0]}%</Label>
@@ -1088,7 +1088,7 @@ const QRCodeGenerator = () => {
               }}
             >
               {qrCodeUrl ? (
-                <img src={qrCodeUrl} alt="QR Code" className="max-w-full h-auto" style={{ maxHeight: 400 }} />
+                <img src={qrCodeUrl} alt="Generated custom QR code preview" className="max-w-full h-auto" style={{ maxHeight: 400 }} />
               ) : (
                 <div className="text-gray-400 flex flex-col items-center">
                   <QrCode size={80} />

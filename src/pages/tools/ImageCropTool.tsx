@@ -207,7 +207,7 @@ const ImageCropTool = () => {
                   <img
                     ref={imageRef}
                     src={image}
-                    alt="Original"
+                    alt="Original image to crop"
                     className="max-w-full max-h-96 block"
                     onLoad={onImageLoad}
                     draggable={false}
@@ -251,7 +251,7 @@ const ImageCropTool = () => {
                       <p className="font-medium text-green-800">Cropped Image Preview</p>
                       <img 
                         src={croppedImage} 
-                        alt="Cropped" 
+                        alt="Cropped image result" 
                         className="max-w-full max-h-64 mx-auto border rounded"
                       />
                       <Button onClick={downloadCroppedImage} className="flex items-center gap-2 mx-auto">

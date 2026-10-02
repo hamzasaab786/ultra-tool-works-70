@@ -311,7 +311,7 @@ const EditPdf = () => {
                       </span>
                     )}
                     {i.kind === "image" && (
-                      <img src={i.dataUrl} alt="overlay" style={{ width: `${i.width * 100}vw`, maxWidth: 400 }} />
+                      <img src={i.dataUrl} alt="Image placed on PDF page" style={{ width: `${i.width * 100}vw`, maxWidth: 400 }} />
                     )}
                     {i.kind === "box" && (
                       <div style={{ width: `${i.width * 600}px`, height: `${i.height * 800}px`, background: i.color }} />

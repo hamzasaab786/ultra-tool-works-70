@@ -209,7 +209,7 @@ const ImageEnhancer = () => {
                 <img 
                   ref={imageRef}
                   src={originalImage} 
-                  alt="Original" 
+                  alt="Original image before enhancement" 
                   className="w-full h-auto max-h-64 object-contain"
                   crossOrigin="anonymous"
                 />
