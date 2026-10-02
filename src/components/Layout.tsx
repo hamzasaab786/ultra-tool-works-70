@@ -6,6 +6,7 @@ import ScrollAnimation from "./ScrollAnimation";
 import ToolSeoHead from "./ToolSeoHead";
 import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
+import RelatedTools from "./RelatedTools";
 import AdsterraNative from "./ads/AdsterraNative";
 import AdsterraResponsiveAd from "./ads/AdsterraResponsiveAd";
 
@@ -63,6 +64,8 @@ const Layout = ({ children }: LayoutProps) => {
             { maxWidth: 9999, adKey: "38fcb1c657b604f630f79cb846ce6e8d", width: 160, height: 300, label: "Desktop" },
           ]}
         />
+
+        <RelatedTools />
 
         <ToolFaqSection />
 
