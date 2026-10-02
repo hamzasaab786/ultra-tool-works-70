@@ -128,7 +128,7 @@ const SignPdfTool = () => {
           {signatureData && (
             <div>
               <Label>Preview</Label>
-              <img src={signatureData} alt="sig" className="border rounded bg-white p-2 max-h-20" />
+              <img src={signatureData} alt="Your drawn signature preview" className="border rounded bg-white p-2 max-h-20" />
               <p className="text-xs text-muted-foreground mt-2">Now click on the PDF page where you want to place it.</p>
               {placement && <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1"><Move className="h-3.5 w-3.5" />Click again anywhere to reposition instantly.</p>}
             </div>
@@ -144,7 +144,7 @@ const SignPdfTool = () => {
               <div className="relative cursor-crosshair shadow-lg" onClick={e => onPageClick(e, idx)}>
                 <img src={p.url} alt={`p${idx + 1}`} className="block h-auto max-w-full" style={{ width: p.w, maxWidth: "100%" }} />
                 {placement?.page === idx && signatureData && (
-                  <img src={signatureData} alt="placed" className="absolute pointer-events-none border border-blue-500"
+                  <img src={signatureData} alt="Signature placed on PDF page" className="absolute pointer-events-none border border-blue-500"
                     style={{ left: `${placement.x * 100}%`, top: `${placement.y * 100}%`, width: `${placement.w * 100}%`, height: `${placement.h * 100}%` }} />
                 )}
                 <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">Page {idx + 1}</div>

@@ -157,12 +157,12 @@ const PhotoEditor = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h4 className="font-medium mb-2">Original</h4>
-                  <img src={imageUrl} alt="Original" className="w-full rounded-lg border" />
+                  <img src={imageUrl} alt="Original uploaded photo" className="w-full rounded-lg border" />
                 </div>
                 {editedImageUrl && (
                   <div>
                     <h4 className="font-medium mb-2">Edited</h4>
-                    <img src={editedImageUrl} alt="Edited" className="w-full rounded-lg border" />
+                    <img src={editedImageUrl} alt="Edited photo result" className="w-full rounded-lg border" />
                   </div>
                 )}
               </div>

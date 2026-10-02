@@ -156,10 +156,10 @@ Bob Johnson,35,Chicago,true`;
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
               CSV to JSON Converter
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Convert CSV data to JSON format with support for custom delimiters and formatting options
             </p>
           </div>
