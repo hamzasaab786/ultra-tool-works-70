@@ -46,15 +46,13 @@ const UnlockPdf = () => {
 
       let bytes: Uint8Array | null = null;
 
-      // Preferred path: strip encryption while keeping real text, fonts and
-      // vectors intact. Works for permission-only / owner-password PDFs.
+      // Preferred path: truly decrypt every object with the password so real
+      // text, fonts and vectors survive (no rasterising).
       try {
-        const lossless = await PDFDocument.load(data.slice(), { ignoreEncryption: true });
-        if (lossless.getPageCount() === src.numPages) {
-          const clean = await PDFDocument.create();
-          const pages = await clean.copyPages(lossless, lossless.getPageIndices());
-          pages.forEach((p) => clean.addPage(p));
-          bytes = await clean.save();
+        const { PDFDocument: SecureDoc } = await import("@cantoo/pdf-lib");
+        const decrypted = await SecureDoc.load(data.slice(), { password, ignoreEncryption: false });
+        if (decrypted.getPageCount() === src.numPages) {
+          bytes = await decrypted.save({ useObjectStreams: false });
         }
       } catch {
         bytes = null;

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Lock, Download, Loader2, Eye, EyeOff } from "lucide-react";
 import ToolPageTemplate from "./ToolPageTemplate";
-import { PDFDocument } from "@cantoo/pdf-lib";
+import { PDFDocument, PDFHeader } from "@cantoo/pdf-lib";
 
 const ProtectPdf = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -46,7 +46,9 @@ const ProtectPdf = () => {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
-      // Real PDF encryption (AES) — the file cannot be opened without the password.
+      // PDF 1.7 header selects the AES-128 (V4/AESV2) security handler instead of
+      // legacy 40-bit RC4, while staying readable in every modern PDF viewer.
+      pdfDoc.context.header = PDFHeader.forVersion(1, 7);
       pdfDoc.encrypt({
         userPassword: password,
         ownerPassword: password,
