@@ -7,8 +7,6 @@ import ToolSeoHead from "./ToolSeoHead";
 import ToolFaqSection from "./ToolFaqSection";
 import ToolSeoArticle from "./ToolSeoArticle";
 import RelatedTools from "./RelatedTools";
-import AdsterraNative from "./ads/AdsterraNative";
-import AdsterraResponsiveAd from "./ads/AdsterraResponsiveAd";
 
 
 
@@ -46,36 +44,11 @@ const Layout = ({ children }: LayoutProps) => {
       <main className="flex-1 relative z-10 w-full overflow-hidden">
         {children}
 
-        {/* Responsive top banner: 320x50 on mobile, 468x60 on desktop */}
-        <AdsterraResponsiveAd
-          variants={[
-            { maxWidth: 640, adKey: "4d4c58fa4b319e0d3384c6b3841162c6", width: 320, height: 50, label: "Mobile" },
-            { maxWidth: 9999, adKey: "a12b748603de2316c41b40c80d031b8e", width: 468, height: 60, label: "Desktop" },
-          ]}
-        />
-
-        <AdsterraNative />
         <ToolSeoArticle />
-
-        {/* Responsive skyscraper: 320x50 on mobile, 160x300 on desktop */}
-        <AdsterraResponsiveAd
-          variants={[
-            { maxWidth: 640, adKey: "4d4c58fa4b319e0d3384c6b3841162c6", width: 320, height: 50, label: "Mobile" },
-            { maxWidth: 9999, adKey: "38fcb1c657b604f630f79cb846ce6e8d", width: 160, height: 300, label: "Desktop" },
-          ]}
-        />
 
         <RelatedTools />
 
         <ToolFaqSection />
-
-        {/* Responsive square: 320x50 on mobile, 300x250 on desktop */}
-        <AdsterraResponsiveAd
-          variants={[
-            { maxWidth: 640, adKey: "4d4c58fa4b319e0d3384c6b3841162c6", width: 320, height: 50, label: "Mobile" },
-            { maxWidth: 9999, adKey: "8733cc7cd38bc0b47d60fceda97b070b", width: 300, height: 250, label: "Desktop" },
-          ]}
-        />
       </main>
 
 
