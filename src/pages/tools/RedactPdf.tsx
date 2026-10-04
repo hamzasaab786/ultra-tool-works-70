@@ -34,6 +34,7 @@ const RedactPdf = () => {
       const src = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
       const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
       let hits = 0;
+      const mctx = document.createElement("canvas").getContext("2d")!;
 
       for (let p = 1; p <= src.numPages; p++) {
         const page = await src.getPage(p);
@@ -45,14 +46,17 @@ const RedactPdf = () => {
           if (!str.length) continue;
           const tx = item.transform;
           const h = item.height || Math.abs(tx[3]) || 10;
-          const perChar = item.width / str.length;
+          // Measure glyph widths proportionally so boxes land on the exact word.
+          const fam = (content.styles as any)?.[item.fontName]?.fontFamily || "sans-serif";
+          mctx.font = `100px ${fam}`;
+          const full = mctx.measureText(str).width || 1;
+          const xAt = (k: number) => tx[4] + (mctx.measureText(str.slice(0, k)).width / full) * item.width;
           // Black out only the matched characters, not the whole text run.
           for (const pat of patterns) {
             const needle = pat.toLowerCase();
             let i = lower.indexOf(needle);
             while (i !== -1) {
-              const x = tx[4] + perChar * i;
-              boxes.push([x - 1, tx[5] - h * 0.25, x + perChar * needle.length + 1, tx[5] + h * 1.05]);
+              boxes.push([xAt(i) - 1, tx[5] - h * 0.25, xAt(i + needle.length) + 1, tx[5] + h * 1.05]);
               i = lower.indexOf(needle, i + needle.length);
             }
           }
