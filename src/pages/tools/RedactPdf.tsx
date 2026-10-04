@@ -56,7 +56,7 @@ const RedactPdf = () => {
             const needle = pat.toLowerCase();
             let i = lower.indexOf(needle);
             while (i !== -1) {
-              boxes.push([xAt(i) - 1, tx[5] - h * 0.25, xAt(i + needle.length) + 1, tx[5] + h * 1.05]);
+              boxes.push([xAt(i) - h * 0.15, tx[5] - h * 0.25, xAt(i + needle.length) + h * 0.35, tx[5] + h * 1.05]);
               i = lower.indexOf(needle, i + needle.length);
             }
           }
