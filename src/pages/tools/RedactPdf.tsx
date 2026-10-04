@@ -27,39 +27,46 @@ const RedactPdf = () => {
     }
     setIsRedacting(true);
     try {
-      const { pdfjsLib } = await import("@/utils/pdfClient");
-      const { PDFDocument, rgb } = await import("pdf-lib");
+      const { pdfjsLib, renderPdfPageToCanvas } = await import("@/utils/pdfClient");
+      const { PDFDocument } = await import("pdf-lib");
       const bytes = new Uint8Array(await file.arrayBuffer());
-      const src = await pdfjsLib.getDocument({ data: bytes }).promise;
+      // pdf.js transfers (detaches) its input buffer, so give it a copy.
+      const src = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
       const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-      const outPages = doc.getPages();
       let hits = 0;
 
       for (let p = 1; p <= src.numPages; p++) {
         const page = await src.getPage(p);
-        const viewport = page.getViewport({ scale: 1 });
         const content = await page.getTextContent();
-        const outPage = outPages[p - 1];
-        const { height: ph } = outPage.getSize();
-
+        const boxes: number[][] = [];
         for (const item of content.items as any[]) {
-          const str: string = item.str || "";
-          const lower = str.toLowerCase();
-          const match = patterns.some(pat => lower.includes(pat.toLowerCase()));
-          if (!match) continue;
+          const lower = String(item.str || "").toLowerCase();
+          if (!patterns.some((pat) => lower.includes(pat.toLowerCase()))) continue;
           const tx = item.transform;
-          const x = tx[4];
-          const y = tx[5];
-          const w = item.width;
           const h = item.height || Math.abs(tx[3]) || 10;
-          // pdfjs viewport y is top-down; pdf-lib y is bottom-up. Item y is already PDF-space (bottom-up).
-          outPage.drawRectangle({
-            x, y: y - 1, width: w, height: h + 2,
-            color: rgb(0, 0, 0),
-          });
-          hits++;
+          boxes.push([tx[4] - 1, tx[5] - h * 0.25, tx[4] + item.width + 1, tx[5] + h * 1.05]);
         }
-        void viewport;
+        if (!boxes.length) continue;
+        hits += boxes.length;
+
+        // Burn the black boxes into a rendered image of the page and swap the
+        // page out, so the underlying text is truly gone (not just covered).
+        const scale = 2;
+        const { canvas } = await renderPdfPageToCanvas(page, scale);
+        const vp = page.getViewport({ scale });
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = "#000";
+        for (const bx of boxes) {
+          const [x1, y1, x2, y2] = vp.convertToViewportRectangle(bx);
+          ctx.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
+        }
+        const png = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/png"));
+        if (!png) throw new Error("Could not render page " + p);
+        const img = await doc.embedPng(new Uint8Array(await png.arrayBuffer()));
+        const base = page.getViewport({ scale: 1 });
+        doc.removePage(p - 1);
+        const np = doc.insertPage(p - 1, [base.width, base.height]);
+        np.drawImage(img, { x: 0, y: 0, width: base.width, height: base.height });
       }
 
       if (hits === 0) {
