@@ -156,9 +156,13 @@ const PrivacyPolicy = () => {
 
             <Section id="advertising" title="Advertising partners">
               <p>
-                Klipza is free and is funded by advertising. Our advertising partners (including Adsterra) may use
-                cookies, device identifiers and similar technologies to serve and measure ads. These partners operate
-                under their own privacy policies and we do not share your files or tool inputs with them.
+                Klipza is free and is funded by advertising through Google AdSense. Third-party vendors, including
+                Google, use cookies to serve ads based on your prior visits to this and other websites. Google's use of
+                advertising cookies enables it and its partners to serve ads based on your visits. You may opt out of
+                personalised advertising at{" "}
+                <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="underline">Google Ads Settings</a>{" "}
+                or <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" className="underline">aboutads.info</a>.
+                We do not share your files or tool inputs with advertising partners.
               </p>
             </Section>
 
