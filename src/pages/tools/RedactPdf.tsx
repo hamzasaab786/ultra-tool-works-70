@@ -40,11 +40,22 @@ const RedactPdf = () => {
         const content = await page.getTextContent();
         const boxes: number[][] = [];
         for (const item of content.items as any[]) {
-          const lower = String(item.str || "").toLowerCase();
-          if (!patterns.some((pat) => lower.includes(pat.toLowerCase()))) continue;
+          const str = String(item.str || "");
+          const lower = str.toLowerCase();
+          if (!str.length) continue;
           const tx = item.transform;
           const h = item.height || Math.abs(tx[3]) || 10;
-          boxes.push([tx[4] - 1, tx[5] - h * 0.25, tx[4] + item.width + 1, tx[5] + h * 1.05]);
+          const perChar = item.width / str.length;
+          // Black out only the matched characters, not the whole text run.
+          for (const pat of patterns) {
+            const needle = pat.toLowerCase();
+            let i = lower.indexOf(needle);
+            while (i !== -1) {
+              const x = tx[4] + perChar * i;
+              boxes.push([x - 1, tx[5] - h * 0.25, x + perChar * needle.length + 1, tx[5] + h * 1.05]);
+              i = lower.indexOf(needle, i + needle.length);
+            }
+          }
         }
         if (!boxes.length) continue;
         hits += boxes.length;
