@@ -2,6 +2,14 @@
 // SEO text bundles stay out of the main bundle and load on demand.
 
 export const pathChunk: Record<string, number> = {
+  "/tools/yaml-to-json": 7,
+  "/tools/slug-generator": 7,
+  "/tools/remove-duplicate-lines": 7,
+  "/tools/word-frequency-counter": 7,
+  "/tools/cron-expression-generator": 7,
+  "/tools/zakat-calculator": 7,
+  "/tools/box-shadow-generator": 7,
+  "/tools/meta-tag-generator": 7,
   "/tools/PdfToExcel": 1,
   "/tools/UnlockPdf": 2,
   "/tools/add-page-numbers": 4,

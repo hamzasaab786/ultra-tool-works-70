@@ -75,6 +75,7 @@ export const pdfTools: ToolLink[] = [
 ];
 
 export const calculatorTools: ToolLink[] = [
+    { name: "Zakat Calculator", path: "/tools/zakat-calculator" },
     { name: "Percentage Calculator", path: "/tools/percentage-calculator" },
     { name: "Unit Converter", path: "/tools/unit-converter" },
     { name: "Currency Converter", path: "/tools/currency-converter" },
@@ -104,6 +105,10 @@ export const calculatorTools: ToolLink[] = [
 ];
 
 export const textTools: ToolLink[] = [
+    { name: "Word Frequency Counter", path: "/tools/word-frequency-counter" },
+    { name: "Remove Duplicate Lines", path: "/tools/remove-duplicate-lines" },
+    { name: "URL Slug Generator", path: "/tools/slug-generator" },
+    { name: "YAML to JSON Converter", path: "/tools/yaml-to-json" },
     { name: "Word Counter", path: "/tools/word-counter" },
     { name: "Case Converter", path: "/tools/case-converter" },
     { name: "Base64 Tool", path: "/tools/base64-tool" },
@@ -120,6 +125,9 @@ export const textTools: ToolLink[] = [
 ];
 
 export const utilityTools: ToolLink[] = [
+    { name: "Meta Tag Generator", path: "/tools/meta-tag-generator" },
+    { name: "CSS Box Shadow Generator", path: "/tools/box-shadow-generator" },
+    { name: "Cron Expression Generator", path: "/tools/cron-expression-generator" },
     { name: "QR Code Generator", path: "/tools/qr-code-generator" },
     { name: "Signature Generator", path: "/tools/signature-generator" },
     { name: "Password Generator", path: "/tools/password-generator" },
