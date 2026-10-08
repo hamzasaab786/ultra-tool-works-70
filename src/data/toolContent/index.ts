@@ -12,6 +12,7 @@ const loaders: Record<number, () => Promise<ToolContentMap>> = {
   4: () => import("./chunk4").then((m) => m.chunk4),
   5: () => import("./chunk5").then((m) => m.chunk5),
   6: () => import("./chunk6").then((m) => m.chunk6),
+  7: () => import("./chunk7").then((m) => m.chunk7),
 };
 
 const cache = new Map<number, ToolContentMap>();

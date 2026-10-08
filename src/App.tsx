@@ -142,6 +142,14 @@ const SignatureGenerator = lazy(() => import("@/pages/tools/SignatureGenerator")
 const ImageWatermark = lazy(() => import("@/pages/tools/ImageWatermark"));
 const RandomNumberGenerator = lazy(() => import("@/pages/tools/RandomNumberGenerator"));
 const OvulationCalculator = lazy(() => import("@/pages/tools/OvulationCalculator"));
+const YamlJsonConverter = lazy(() => import("@/pages/tools/YamlJsonConverter"));
+const SlugGenerator = lazy(() => import("@/pages/tools/SlugGenerator"));
+const RemoveDuplicateLines = lazy(() => import("@/pages/tools/RemoveDuplicateLines"));
+const WordFrequencyCounter = lazy(() => import("@/pages/tools/WordFrequencyCounter"));
+const CronExpressionGenerator = lazy(() => import("@/pages/tools/CronExpressionGenerator"));
+const ZakatCalculator = lazy(() => import("@/pages/tools/ZakatCalculator"));
+const BoxShadowGenerator = lazy(() => import("@/pages/tools/BoxShadowGenerator"));
+const MetaTagGenerator = lazy(() => import("@/pages/tools/MetaTagGenerator"));
 const CalorieCalculator = lazy(() => import("@/pages/tools/CalorieCalculator"));
 const FuelCostCalculator = lazy(() => import("@/pages/tools/FuelCostCalculator"));
 const ElectricityBillCalculator = lazy(() => import("@/pages/tools/ElectricityBillCalculator"));
@@ -304,6 +312,14 @@ const App = () => {
             <Route path="/tools/image-watermark" element={<ImageWatermark />} />
             <Route path="/tools/random-number-generator" element={<RandomNumberGenerator />} />
             <Route path="/tools/ovulation-calculator" element={<OvulationCalculator />} />
+            <Route path="/tools/yaml-to-json" element={<YamlJsonConverter />} />
+            <Route path="/tools/slug-generator" element={<SlugGenerator />} />
+            <Route path="/tools/remove-duplicate-lines" element={<RemoveDuplicateLines />} />
+            <Route path="/tools/word-frequency-counter" element={<WordFrequencyCounter />} />
+            <Route path="/tools/cron-expression-generator" element={<CronExpressionGenerator />} />
+            <Route path="/tools/zakat-calculator" element={<ZakatCalculator />} />
+            <Route path="/tools/box-shadow-generator" element={<BoxShadowGenerator />} />
+            <Route path="/tools/meta-tag-generator" element={<MetaTagGenerator />} />
             <Route path="/tools/image-to-text" element={<ImageToText />} />
             <Route path="/tools/roman-numeral-converter" element={<RomanNumeralConverter />} />
             <Route path="/tools/calorie-calculator" element={<CalorieCalculator />} />

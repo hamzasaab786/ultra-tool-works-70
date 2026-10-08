@@ -136,6 +136,14 @@ const toolPaths = [
   "/tools/image-watermark",
   "/tools/random-number-generator",
   "/tools/ovulation-calculator",
+  "/tools/yaml-to-json",
+  "/tools/slug-generator",
+  "/tools/remove-duplicate-lines",
+  "/tools/word-frequency-counter",
+  "/tools/cron-expression-generator",
+  "/tools/zakat-calculator",
+  "/tools/box-shadow-generator",
+  "/tools/meta-tag-generator",
 ]
 
 const entries: SitemapEntry[] = [
