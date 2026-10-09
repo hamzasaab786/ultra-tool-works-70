@@ -44,7 +44,7 @@ const MetaTagGenerator = () => {
       `<meta name="twitter:description" content="${d}" />`,
       image && `<meta name="twitter:image" content="${esc(image)}" />`,
       twitter && `<meta name="twitter:site" content="@${esc(twitter.replace(/^@/, ""))}" />`,
-    ].filter((x) => x !== false && x !== "" ? true : x === "").join("\n");
+    ].filter((x): x is string => typeof x === "string").join("\n");
   }, [title, desc, url, image, site, twitter, index]);
 
   const host = (() => { try { return new URL(url).host; } catch { return "example.com"; } })();

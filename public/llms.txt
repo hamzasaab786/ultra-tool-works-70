@@ -131,6 +131,14 @@
 - [Image Watermark](https://klipza.live/tools/image-watermark/)
 - [Random Number Generator](https://klipza.live/tools/random-number-generator/)
 - [Ovulation Calculator](https://klipza.live/tools/ovulation-calculator/)
+- [Yaml To Json](https://klipza.live/tools/yaml-to-json/)
+- [Slug Generator](https://klipza.live/tools/slug-generator/)
+- [Remove Duplicate Lines](https://klipza.live/tools/remove-duplicate-lines/)
+- [Word Frequency Counter](https://klipza.live/tools/word-frequency-counter/)
+- [Cron Expression Generator](https://klipza.live/tools/cron-expression-generator/)
+- [Zakat Calculator](https://klipza.live/tools/zakat-calculator/)
+- [Box Shadow Generator](https://klipza.live/tools/box-shadow-generator/)
+- [Meta Tag Generator](https://klipza.live/tools/meta-tag-generator/)
 
 ## Pages
 - [About](https://klipza.live/about/)
