@@ -2,6 +2,7 @@
 
 import { writeFileSync } from "fs"
 import { resolve } from "path"
+import { blogPosts } from "../src/data/blog"
 
 const BASE_URL = "https://klipza.live"
 
@@ -152,6 +153,8 @@ const entries: SitemapEntry[] = [
   { path: "/privacy", changefreq: "yearly", priority: "0.3" },
   { path: "/terms", changefreq: "yearly", priority: "0.3" },
   { path: "/disclaimer", changefreq: "yearly", priority: "0.3" },
+  { path: "/blog", changefreq: "weekly", priority: "0.7" },
+  ...blogPosts.map((p): SitemapEntry => ({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.7", lastmod: p.date })),
   ...toolPaths.map((path): SitemapEntry => ({ path, changefreq: "monthly", priority: "0.8" })),
 ]
 
