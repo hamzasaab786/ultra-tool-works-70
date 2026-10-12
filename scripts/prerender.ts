@@ -26,6 +26,9 @@ import { chunk2 } from "../src/data/toolContent/chunk2";
 import { chunk3 } from "../src/data/toolContent/chunk3";
 import { chunk4 } from "../src/data/toolContent/chunk4";
 import { chunk5 } from "../src/data/toolContent/chunk5";
+import { chunk6 } from "../src/data/toolContent/chunk6";
+import { chunk7 } from "../src/data/toolContent/chunk7";
+import { blogPosts, getBlogPost } from "../src/data/blog";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
@@ -33,7 +36,7 @@ const DIST = resolve(ROOT, "dist");
 const SITE_URL = "https://klipza.live";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
-const chunks: Record<number, ToolContentMap> = { 1: chunk1, 2: chunk2, 3: chunk3, 4: chunk4, 5: chunk5 };
+const chunks: Record<number, ToolContentMap> = { 1: chunk1, 2: chunk2, 3: chunk3, 4: chunk4, 5: chunk5, 6: chunk6, 7: chunk7 };
 
 const getContent = (path: string): ToolContent | undefined => {
   const key = path.replace(/\/+$/, "") || "/";
@@ -221,6 +224,60 @@ const staticPageMeta = (path: string): PageMeta | null => {
   };
 };
 
+const mdInline = (s: string) =>
+  esc(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, t, h) => `<a href="${h}">${t}</a>`);
+
+const blogPageMeta = (path: string): PageMeta | null => {
+  if (path === "/blog") {
+    return {
+      path,
+      title: "Klipza Blog — Practical Guides for PDF, Image & Everyday Tools",
+      description: "Clear, step-by-step guides on PDFs, images, invoices, resumes, QR codes and more.",
+      schemas: [],
+      body: `<h1>Klipza Blog</h1><ul>${blogPosts.map((b) => `<li><a href="/blog/${b.slug}/">${esc(b.title)}</a></li>`).join("")}</ul>`,
+    };
+  }
+  const post = getBlogPost(path.replace(/^\/blog\//, ""));
+  if (!post) return null;
+  const url = `${SITE_URL}/blog/${post.slug}/`;
+  const html: string[] = [];
+  let list = "";
+  const close = () => { if (list) { html.push(`</${list}>`); list = ""; } };
+  for (const b of post.body) {
+    const tag = b.startsWith("- ") ? "ul" : /^\d+\. /.test(b) ? "ol" : "";
+    if (tag) {
+      if (list !== tag) { close(); html.push(`<${tag}>`); list = tag; }
+      html.push(`<li>${mdInline(b.replace(/^(- |\d+\. )/, ""))}</li>`);
+      continue;
+    }
+    close();
+    if (b.startsWith("## ")) html.push(`<h2>${esc(b.slice(3))}</h2>`);
+    else if (b.startsWith("### ")) html.push(`<h3>${esc(b.slice(4))}</h3>`);
+    else html.push(`<p>${mdInline(b)}</p>`);
+  }
+  close();
+  return {
+    path,
+    title: post.title,
+    description: post.description,
+    keywords: post.keywords.join(", "),
+    schemas: [
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: post.title,
+        description: post.description,
+        datePublished: post.date,
+        dateModified: post.date,
+        mainEntityOfPage: url,
+        author: { "@type": "Organization", name: "Klipza" },
+        publisher: { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Klipza" },
+      },
+    ],
+    body: `<article><h1>${esc(post.title)}</h1>${html.join("")}</article>`,
+  };
+};
+
 /* ------------------------------------------------------------ HTML rewrite */
 
 const buildHtml = (shell: string, meta: PageMeta) => {
@@ -287,6 +344,8 @@ for (const route of routes) {
         const entry = getToolSeo(route);
         return entry ? toolPageMeta(entry) : null;
       })()
+    : route.startsWith("/blog")
+    ? blogPageMeta(route)
     : staticPageMeta(route);
 
   if (!meta) {
