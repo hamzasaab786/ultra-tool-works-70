@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import ToolCard from "@/components/ToolCard";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
@@ -20,6 +20,18 @@ import {
 } from "lucide-react";
 
 const Index = () => {
+  const location = useLocation();
+
+  // Deep links such as /#category-2 jump to the matching section on the homepage.
+  useEffect(() => {
+    const id = location.hash.replace("#", "");
+    if (!id) return;
+    const timer = window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [location.hash]);
+
   const scrollToTools = () => {
     document.getElementById('popular-tools')?.scrollIntoView({
       behavior: 'smooth'

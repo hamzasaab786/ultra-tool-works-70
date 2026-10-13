@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import klipzaLogo from "@/assets/klipza-logo.png";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,11 +10,41 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Menu, X, Search } from "lucide-react";
-import { imageTools, pdfTools, calculatorTools, textTools, utilityTools } from "@/data/toolIndex";
+import { imageTools, pdfTools, calculatorTools, textTools, utilityTools, popularTools } from "@/data/toolIndex";
+import { cn } from "@/lib/utils";
 import ToolSearchDialog from "./ToolSearchDialog";
 import ThemeToggle from "./ThemeToggle";
 
 const Navigation = () => {
+  const location = useLocation();
+  const popularRef = useRef<HTMLElement>(null);
+  const [popularFade, setPopularFade] = useState({ left: false, right: false });
+
+  // A mouse wheel over the shortcut row scrolls it sideways instead of doing nothing.
+  const onPopularWheel = (event: React.WheelEvent<HTMLElement>) => {
+    const el = popularRef.current;
+    if (!el || el.scrollWidth <= el.clientWidth) return;
+    if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) el.scrollLeft += event.deltaY;
+  };
+
+  // Edge fades only appear where the row actually continues out of view.
+  useEffect(() => {
+    const el = popularRef.current;
+    if (!el) return;
+    const update = () =>
+      setPopularFade({
+        left: el.scrollLeft > 4,
+        right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
+      });
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -154,6 +184,59 @@ const Navigation = () => {
           >
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
+        </div>
+      </div>
+
+      {/* Direct shortcuts to the most-used tool pages */}
+      <div className="hidden sm:block border-t border-border/40">
+        <div className="container mx-auto px-4 py-2">
+          <div className="relative">
+            <nav
+              ref={popularRef}
+              onWheel={onPopularWheel}
+              aria-label="Popular tools"
+              className="flex items-center gap-1.5 overflow-x-auto pb-0.5 [&::-webkit-scrollbar]:hidden"
+            >
+              <span className="shrink-0 pr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                Popular
+              </span>
+              {popularTools.map((tool) => {
+                const isActive = location.pathname === tool.path;
+                return (
+                  <Link
+                    key={tool.path}
+                    to={tool.path}
+                    className={cn(
+                      "shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                      isActive
+                        ? "border-primary/40 bg-primary/10 text-foreground"
+                        : "border-border/60 bg-muted/40 text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                    )}
+                  >
+                    {tool.name}
+                  </Link>
+                );
+              })}
+              <Link
+                to="/#category-0"
+                className="shrink-0 whitespace-nowrap rounded-full border border-border/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                All Tools →
+              </Link>
+            </nav>
+            {popularFade.left && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent"
+              />
+            )}
+            {popularFade.right && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent"
+              />
+            )}
+          </div>
         </div>
       </div>
 
