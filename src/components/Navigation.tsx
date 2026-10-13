@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import klipzaLogo from "@/assets/klipza-logo.png";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,15 @@ import ThemeToggle from "./ThemeToggle";
 
 const Navigation = () => {
   const location = useLocation();
+  const popularRef = useRef<HTMLElement>(null);
+
+  // A mouse wheel over the shortcut row scrolls it sideways instead of doing nothing.
+  const onPopularWheel = (event: React.WheelEvent<HTMLElement>) => {
+    const el = popularRef.current;
+    if (!el || el.scrollWidth <= el.clientWidth) return;
+    if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) el.scrollLeft += event.deltaY;
+  };
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -160,9 +169,11 @@ const Navigation = () => {
       </div>
 
       {/* Direct shortcuts to the most-used tool pages */}
-      <div className="hidden sm:block border-t border-border/40">
+      <div className="relative hidden sm:block border-t border-border/40">
         <div className="container mx-auto px-4 py-2">
           <nav
+            ref={popularRef}
+            onWheel={onPopularWheel}
             aria-label="Popular tools"
             className="flex items-center gap-1.5 overflow-x-auto pb-0.5 [&::-webkit-scrollbar]:hidden"
           >
@@ -200,6 +211,10 @@ const Navigation = () => {
             </Link>
           </nav>
         </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-background via-background/70 to-transparent"
+        />
       </div>
 
       {/* Mobile Navigation */}
