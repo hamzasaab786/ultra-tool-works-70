@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import klipzaLogo from "@/assets/klipza-logo.png";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,11 +10,13 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Menu, X, Search } from "lucide-react";
-import { imageTools, pdfTools, calculatorTools, textTools, utilityTools } from "@/data/toolIndex";
+import { imageTools, pdfTools, calculatorTools, textTools, utilityTools, popularTools } from "@/data/toolIndex";
+import { cn } from "@/lib/utils";
 import ToolSearchDialog from "./ToolSearchDialog";
 import ThemeToggle from "./ThemeToggle";
 
 const Navigation = () => {
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 

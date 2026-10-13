@@ -171,6 +171,22 @@ export const allToolLinks: (ToolLink & { category: string })[] = toolCatalog.fla
   (c) => c.tools.map((t) => ({ ...t, category: c.label })),
 );
 
+// Most-used tools, surfaced as direct shortcuts in the site header.
+export const popularTools: ToolLink[] = [
+  { name: "PDF to JPG", path: "/tools/pdf-to-jpg" },
+  { name: "JPG to PDF", path: "/tools/jpg-to-pdf" },
+  { name: "Merge PDF", path: "/tools/merge-pdf" },
+  { name: "PDF Compressor", path: "/tools/pdf-compressor" },
+  { name: "Image Compressor", path: "/tools/image-compressor" },
+  { name: "Word Counter", path: "/tools/word-counter" },
+  { name: "QR Code Generator", path: "/tools/qr-code-generator" },
+  { name: "Password Generator", path: "/tools/password-generator" },
+  { name: "JSON Formatter", path: "/tools/json-formatter" },
+  { name: "Currency Converter", path: "/tools/currency-converter" },
+  { name: "Age Calculator", path: "/tools/age-calculator" },
+  { name: "Zakat Calculator", path: "/tools/zakat-calculator" },
+];
+
 // Extra search keywords per tool path, so common alternate names still find the tool.
 export const toolAliases: Record<string, string> = {
   "/tools/case-converter":
