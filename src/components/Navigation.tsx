@@ -66,7 +66,7 @@ const Navigation = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex flex-1 items-center justify-between">
+        <div className="hidden xl:flex flex-1 items-center justify-between">
           <NavigationMenu>
             <NavigationMenuList className="space-x-1">
               <NavigationMenuItem>
@@ -117,6 +117,9 @@ const Navigation = () => {
           </NavigationMenu>
 
           <div className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/blog/">Blog</Link>
+            </Button>
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
@@ -134,7 +137,10 @@ const Navigation = () => {
         </div>
 
         {/* Mobile controls */}
-        <div className="md:hidden flex items-center gap-2 ml-auto">
+        <div className="xl:hidden flex items-center gap-2 ml-auto">
+          <Button asChild variant="ghost" size="sm">
+            <Link to="/blog/" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
+          </Button>
           <Button variant="ghost" size="sm" aria-label="Search tools" onClick={() => setIsSearchOpen(true)}>
             <Search className="h-5 w-5" />
           </Button>
@@ -153,7 +159,7 @@ const Navigation = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
+        <div className="xl:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
           <div className="container mx-auto px-4">
             <div className="space-y-4">
               <div>
