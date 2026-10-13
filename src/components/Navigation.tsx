@@ -159,6 +159,49 @@ const Navigation = () => {
         </div>
       </div>
 
+      {/* Direct shortcuts to the most-used tool pages */}
+      <div className="hidden sm:block border-t border-border/40">
+        <div className="container mx-auto px-4 py-2">
+          <nav
+            aria-label="Popular tools"
+            className="flex items-center gap-1.5 overflow-x-auto pb-0.5 [&::-webkit-scrollbar]:hidden"
+          >
+            <span className="shrink-0 pr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              Popular
+            </span>
+            {popularTools.map((tool) => {
+              const isActive = location.pathname === tool.path;
+              return (
+                <Link
+                  key={tool.path}
+                  to={tool.path}
+                  className={cn(
+                    "shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                    isActive
+                      ? "border-primary/40 bg-primary/10 text-foreground"
+                      : "border-border/60 bg-muted/40 text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  )}
+                >
+                  {tool.name}
+                </Link>
+              );
+            })}
+            <Link
+              to="/#category-0"
+              className="shrink-0 whitespace-nowrap rounded-full border border-border/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              onClick={() => {
+                if (location.pathname !== "/") return;
+                setTimeout(() => {
+                  document.getElementById("category-0")?.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              }}
+            >
+              All Tools →
+            </Link>
+          </nav>
+        </div>
+      </div>
+
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
         <div className="xl:hidden py-4 border-t bg-background/95 backdrop-blur-xl transition-colors duration-300 max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain">
