@@ -178,21 +178,11 @@ const Navigation = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1.5 px-2 sm:px-3"
-            aria-label={isMobileMenuOpen ? "Close Klipza navigation menu" : "Open Klipza navigation menu"}
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={isMobileMenuOpen}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            <img
-              src={klipzaLogo}
-              alt=""
-              aria-hidden="true"
-              className="h-5 w-5 shrink-0"
-            />
-            <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Klipza
-            </span>
-            {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </div>
