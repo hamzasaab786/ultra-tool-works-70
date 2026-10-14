@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { blogPosts, readingMinutes } from "@/data/blog";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 const SITE = "https://klipza.live";
 
-const Blog = () => (
+const Blog = () => {
+  const [query, setQuery] = useState("");
+  const matching = blogPosts.filter((post) =>
+    `${post.title} ${post.toolName} ${post.keywords.join(" ")}`.toLowerCase().includes(query.trim().toLowerCase()),
+  );
+  return (
   <>
     <Helmet prioritizeSeoTags>
       <title>Klipza Blog — Practical Guides for PDF, Image & Everyday Tools</title>
@@ -21,8 +28,13 @@ const Blog = () => (
       <div className="mx-auto max-w-5xl">
         <h1 className="text-4xl font-bold text-foreground">Klipza Blog</h1>
         <p className="mt-3 text-lg text-muted-foreground">Practical, no-fluff guides for the tasks people search for every day.</p>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {blogPosts.map((p) => (
+        <div className="relative mt-8 max-w-md">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          <Input aria-label="Search guides" placeholder="Search guides…" className="pl-9" value={query} onChange={(event) => setQuery(event.target.value)} />
+        </div>
+        <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">{matching.length} guides</p>
+        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {matching.map((p) => (
             <Link key={p.slug} to={`/blog/${p.slug}`} className="group">
               <Card className="h-full transition-colors group-hover:border-primary/50">
                 <CardContent className="p-5">
@@ -35,9 +47,11 @@ const Blog = () => (
             </Link>
           ))}
         </div>
+        {matching.length === 0 && <p className="mt-8 text-muted-foreground">No matching guides.</p>}
       </div>
     </div>
   </>
-);
+  );
+};
 
 export default Blog;

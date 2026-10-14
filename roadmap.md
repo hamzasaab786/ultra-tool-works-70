@@ -4,3 +4,5 @@
 - [x] Inspect the blog's Google indexing status: URL unknown to Google; direct Request indexing requires Search Console UI access.
 - [x] Verify the header link opens the blog: 15 articles, no page errors or horizontal overflow.
 - [x] Show tool pages directly in the header: popular-tool shortcut row with active-state highlight, wheel scrolling, edge fades, and a working All Tools section link.
+- [ ] Add a practical blog guide for every remaining catalog tool, connect tool links, and include new articles in the sitemap.
+- [ ] Verify article coverage and the blog-to-tool reading flow.

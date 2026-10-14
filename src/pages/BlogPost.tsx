@@ -63,7 +63,7 @@ const BlogPostPage = () => {
 
           <div className="mt-10 rounded-xl border bg-muted/40 p-6 text-center">
             <p className="text-lg font-semibold text-foreground">Try the free {post.toolName}</p>
-            <p className="mt-1 text-sm text-muted-foreground">No signup, no watermark — runs in your browser.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Check the result before using it in your final document or project.</p>
             <Button asChild className="mt-4"><Link to={post.toolPath}>Open {post.toolName}</Link></Button>
           </div>
 
