@@ -2,10 +2,15 @@ import type { BlogPost } from "./types";
 import { posts1 } from "./posts1";
 import { posts2 } from "./posts2";
 import { posts3 } from "./posts3";
+import { imageGuides } from "./imageGuides";
+import { pdfGuides } from "./pdfGuides";
+import { calculatorGuides } from "./calculatorGuides";
+import { textGuides } from "./textGuides";
+import { utilityGuides } from "./utilityGuides";
 
 export type { BlogPost } from "./types";
 
-export const blogPosts: BlogPost[] = [...posts1, ...posts2, ...posts3];
+export const blogPosts: BlogPost[] = [...posts1, ...posts2, ...posts3, ...imageGuides, ...pdfGuides, ...calculatorGuides, ...textGuides, ...utilityGuides];
 
 export const getBlogPost = (slug: string) => blogPosts.find((p) => p.slug === slug);
 
