@@ -1,4 +1,6 @@
 # Tasks
+- [ ] Correct confirmed content/trust and navigation issues affecting AdSense readiness; approval remains Google's decision.
+- [ ] Reduce sitewide animation overhead, blog downloads, and PDF processing memory; verify real tool flows.
 - [x] Add Blog to the header without crowding navigation.
 - [x] Submit the live sitemap through Google Search Console: accepted, 152 URLs, zero errors or warnings.
 - [x] Inspect the blog's Google indexing status: URL unknown to Google; direct Request indexing requires Search Console UI access.
