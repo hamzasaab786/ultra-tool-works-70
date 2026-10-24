@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,11 +24,8 @@ const ToolCard = ({
   className,
   style
 }: ToolCardProps) => {
-  const navigate = useNavigate();
-
   const handleNavigate = () => {
     recordRecentTool(path, title);
-    navigate(path);
   };
 
   return (
@@ -36,13 +33,12 @@ const ToolCard = ({
       <Card
         className={cn(
           "group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer h-full",
-          "bg-card/95 backdrop-blur-sm border border-border/60 shadow-sm",
+          "bg-card border border-border/60 shadow-sm",
           "hover:border-indigo-200/80 dark:hover:border-indigo-400/30 hover:bg-card hover:shadow-lg",
           "card-modern",
           className
         )}
         style={style}
-        onClick={handleNavigate}
       >
         <CardHeader className="relative z-10 pb-3">
           <div className="flex items-center justify-between mb-4">
@@ -67,11 +63,10 @@ const ToolCard = ({
         </CardContent>
         
         <CardFooter className="relative z-10">
-          <Button 
-            onClick={handleNavigate} 
+          <Button asChild
             className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2.5 rounded-lg transition-all duration-300 btn-modern shadow-sm"
           >
-            Use Tool
+            <Link to={path} onClick={handleNavigate}>Use Tool</Link>
           </Button>
         </CardFooter>
       </Card>

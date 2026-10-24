@@ -32,7 +32,8 @@ export const loadToolContent = async (path: string): Promise<ToolContent | undef
   const key = normalize(path);
   const chunk = pathChunk[key];
   if (!chunk) return undefined;
-  if (cache.has(chunk)) return cache.get(chunk)![key];
+  const cached = cache.get(chunk);
+  if (cached) return cached[key];
 
   let promise = inflight.get(chunk);
   if (!promise) {

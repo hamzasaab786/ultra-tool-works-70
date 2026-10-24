@@ -26,7 +26,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/tools/image-compressor" className="text-gray-300 hover:text-white transition-colors">Image Compressor</Link></li>
               <li><Link to="/tools/merge-pdf" className="text-gray-300 hover:text-white transition-colors">Merge PDF</Link></li>
-              <li><Link to="/tools/compress-pdf" className="text-gray-300 hover:text-white transition-colors">Compress PDF</Link></li>
+              <li><Link to="/tools/pdf-compressor" className="text-gray-300 hover:text-white transition-colors">Compress PDF</Link></li>
               <li><Link to="/tools/percentage-calculator" className="text-gray-300 hover:text-white transition-colors">Percentage Calculator</Link></li>
               <li><Link to="/tools/word-counter" className="text-gray-300 hover:text-white transition-colors">Word Counter</Link></li>
               <li><Link to="/tools/qr-code-generator" className="text-gray-300 hover:text-white transition-colors">QR Code Generator</Link></li>
@@ -54,7 +54,7 @@ const Footer = () => {
               <li><Link to="/disclaimer" className="text-gray-300 hover:text-white transition-colors">Disclaimer</Link></li>
             </ul>
             <p className="text-gray-300 text-sm mt-4">
-              Klipza tools run entirely in your browser — your files are processed locally.
+              Most file tools process locally. AI and online lookup tools use connected services; see our Privacy Policy.
             </p>
           </div>
         </div>

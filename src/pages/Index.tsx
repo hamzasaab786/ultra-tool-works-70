@@ -73,7 +73,7 @@ const Index = () => {
       path: "/tools/svg-to-jpg"
     }, {
       title: "Image to URL",
-      description: "Upload images and get shareable URLs for web hosting and sharing",
+      description: "Generate a temporary local image URL for use in this browser session",
       icon: <Link2 />,
       path: "/tools/image-to-url"
     }, {
@@ -729,7 +729,7 @@ const Index = () => {
   };
 
   return <>
-      <SEO title="Klipza — 80+ Free Online Tools: PDF, Image, QR & Text" description="130+ free online tools: merge & compress PDFs, OCR scans, convert images, make QR codes and build ATS resumes. No signup, files stay private." keywords="free online tools, pdf tools online, image compressor, qr code generator with logo, ats resume builder, pdf ocr, word counter, unit converter, klipza" canonicalUrl="https://klipza.live/" />
+      <SEO title="Klipza — Free Online Tools: PDF, Image, QR & Text" description="Free tools for PDFs, images, QR codes, text and calculations. Most file tools work locally; online and AI features need a connection." keywords="free online tools, pdf tools online, image compressor, qr code generator with logo, ats resume builder, pdf ocr, word counter, unit converter, klipza" canonicalUrl="https://klipza.live/" />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(homeFaqSchema)}</script>
       </Helmet>
@@ -751,7 +751,7 @@ const Index = () => {
 
             <p className="text-lg mb-12 text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Convert, compress, resize, calculate, and more - all powered by cutting-edge technology.
-              No sign-up required, lightning-fast processing, and completely secure.
+              Most file tools process locally in your browser. AI and online lookup tools use connected services.
             </p>
 
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 animate-slide-up delay-400">
@@ -873,7 +873,7 @@ const Index = () => {
               🔥 Most Popular Tools
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              These are our most loved and frequently used tools by millions of users worldwide for image processing, document management, and productivity enhancement.
+              Quick access to PDF, image, text and calculation tools for everyday tasks.
             </p>
           </div>
           

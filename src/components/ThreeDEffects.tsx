@@ -15,7 +15,7 @@ const ThreeDEffects: React.FC<ThreeDEffectsProps> = ({
   type = 'card'
 }) => {
   const getEffectClasses = () => {
-    const baseClasses = 'transform-gpu transition-all duration-300 ease-out';
+    const baseClasses = 'motion-safe:transition-transform duration-200 ease-out';
     
     const intensityClasses = {
       low: 'hover:scale-[1.02] hover:-translate-y-1',
@@ -24,7 +24,7 @@ const ThreeDEffects: React.FC<ThreeDEffectsProps> = ({
     };
 
     const typeClasses = {
-      card: 'card-3d perspective-1000 transform-style-preserve-3d',
+      card: '',
       float: 'floating-element animate-float',
       tilt: 'hover:rotate-x-2 hover:rotate-y-2'
     };
