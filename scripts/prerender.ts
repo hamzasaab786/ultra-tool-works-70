@@ -67,7 +67,7 @@ const staticPages: Record<string, { title: string; description: string; keywords
   "/": {
     title: "Klipza — Free Online Tools: PDF, Image, QR & Calculators",
     description:
-      "Free browser-based tools for PDFs, images, QR codes, text and calculators. No signup — your files never leave your device.",
+      "Free PDF, image, text and calculation tools. Most file processing is local; online and AI features use connected services.",
     keywords:
       "free online tools, pdf tools, image converter, qr code generator, resume builder, pdf ocr, unit converter, word counter, klipza",
     h1: "Free Online Tools — PDF, Image, Text & Calculators",
@@ -82,7 +82,7 @@ const staticPages: Record<string, { title: string; description: string; keywords
   "/privacy": {
     title: "Privacy Policy — How Klipza Handles Your Data",
     description:
-      "Klipza processes files in your browser and never stores them. Read how we use cookies, analytics and advertising partners, and what rights you have.",
+      "How Klipza handles local files, connected AI features, accounts, analytics and advertising cookies.",
     keywords:
       "klipza privacy policy, online tools privacy, browser based file processing privacy, cookie policy, gdpr online tools",
     h1: "Privacy Policy",
@@ -220,7 +220,7 @@ const staticPageMeta = (path: string): PageMeta | null => {
         publisher: { "@type": "Organization", "@id": `${SITE_URL}/#organization` },
       },
     ],
-    body: `<h1>${esc(p.h1)}</h1><p>${esc(p.description)}</p>`,
+    body: `<h1>${esc(p.h1)}</h1><p>${esc(p.description)}</p><p>Most file tools process locally on your device. AI and online lookup features use connected services. Keep original files and check important results.</p><p>Contact Klipza: <a href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a></p><nav><a href="/about/">About and contact</a> · <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms</a> · <a href="/disclaimer/">Disclaimer</a> · <a href="/blog/">Guides</a></nav>`,
   };
 };
 
@@ -295,7 +295,7 @@ const buildHtml = (shell: string, meta: PageMeta) => {
   setMeta("name", "description", meta.description);
   if (meta.keywords) setMeta("name", "keywords", meta.keywords);
   setMeta("name", "robots", "index, follow, max-image-preview:large, max-snippet:-1");
-  setMeta("property", "og:type", "website");
+  setMeta("property", "og:type", meta.path.startsWith('/blog/') ? "article" : "website");
   setMeta("property", "og:site_name", "Klipza");
   setMeta("property", "og:url", url);
   setMeta("property", "og:title", meta.title);
