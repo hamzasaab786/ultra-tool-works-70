@@ -910,7 +910,7 @@ const Index = () => {
                   No tool matches “{query}”. Try a different keyword or reset the filters.
                 </p>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="catalog-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {filteredTools.map((tool) => (
                     <ToolCard
                       key={tool.path}
@@ -937,7 +937,7 @@ const Index = () => {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  <div className="catalog-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {category.tools.map((tool, toolIndex) => (
                       <div key={toolIndex} className="animate-fade-in" style={{
                         animationDelay: `${toolIndex * 50}ms`

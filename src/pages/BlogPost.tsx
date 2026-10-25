@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { blogPosts, getBlogPost, readingMinutes } from "@/data/blog";
+import { blogSummaries, useBlogPost } from "@/data/blog/client";
 import BlogBody from "@/components/BlogBody";
 import NotFound from "./NotFound";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,11 @@ const SITE = "https://klipza.live";
 
 const BlogPostPage = () => {
   const { slug = "" } = useParams();
-  const post = getBlogPost(slug);
+  const { post, loading } = useBlogPost(slug);
+  if (loading) return <div className="container py-12" role="status">Loading guide…</div>;
   if (!post) return <NotFound />;
   const url = `${SITE}/blog/${post.slug}/`;
-  const more = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 4);
+  const more = blogSummaries.filter((p) => p.slug !== post.slug && p.group === blogSummaries.find(p => p.slug === post.slug)?.group).slice(0, 4);
 
   const article = {
     "@context": "https://schema.org",
@@ -57,7 +58,7 @@ const BlogPostPage = () => {
           <nav className="text-sm text-muted-foreground"><Link to="/" className="hover:text-primary">Home</Link> / <Link to="/blog" className="hover:text-primary">Blog</Link></nav>
           <h1 className="mt-4 text-3xl font-bold leading-tight text-foreground sm:text-4xl">{post.title}</h1>
           <p className="mt-3 text-sm text-muted-foreground">
-            By the Klipza team · {new Date(post.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })} · {readingMinutes(post)} min read
+            By Klipza · {new Date(post.date).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })} · {blogSummaries.find(p => p.slug === post.slug)?.minutes} min read
           </p>
           <BlogBody blocks={post.body} />
 

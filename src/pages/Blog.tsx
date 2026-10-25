@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { blogPosts, readingMinutes } from "@/data/blog";
+import { blogSummaries } from "@/data/blog/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -10,7 +10,7 @@ const SITE = "https://klipza.live";
 
 const Blog = () => {
   const [query, setQuery] = useState("");
-  const matching = blogPosts.filter((post) =>
+  const matching = blogSummaries.filter((post) =>
     `${post.title} ${post.toolName} ${post.keywords.join(" ")}`.toLowerCase().includes(query.trim().toLowerCase()),
   );
   return (
@@ -33,7 +33,7 @@ const Blog = () => {
           <Input aria-label="Search guides" placeholder="Search guides…" className="pl-9" value={query} onChange={(event) => setQuery(event.target.value)} />
         </div>
         <p className="mt-3 text-sm text-muted-foreground" aria-live="polite">{matching.length} guides</p>
-        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="guide-grid mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {matching.map((p) => (
             <Link key={p.slug} to={`/blog/${p.slug}`} className="group">
               <Card className="h-full transition-colors group-hover:border-primary/50">
@@ -41,7 +41,7 @@ const Blog = () => {
                   <p className="text-xs font-medium uppercase tracking-wide text-primary">{p.toolName}</p>
                   <h2 className="mt-2 text-lg font-semibold text-foreground group-hover:text-primary">{p.title}</h2>
                   <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{p.description}</p>
-                  <p className="mt-3 text-xs text-muted-foreground">{readingMinutes(p)} min read</p>
+                  <p className="mt-3 text-xs text-muted-foreground">{p.minutes} min read</p>
                 </CardContent>
               </Card>
             </Link>

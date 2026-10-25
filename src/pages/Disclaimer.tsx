@@ -3,8 +3,7 @@ import React from "react";
 import SEO from "@/components/SEO";
 
 const Disclaimer = () => {
-  const currentDate = new Date();
-  const formattedDate = `${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getDate()}, ${currentDate.getFullYear()}`;
+  const formattedDate = 'October 24, 2026';
 
   return (
     <>
@@ -86,7 +85,7 @@ const Disclaimer = () => {
             <section>
               <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
               <p className="text-muted-foreground">
-                If you have any questions about this disclaimer, please contact us through the provided information on our website.
+                If you have any questions about this disclaimer, email <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a>.
               </p>
             </section>
           </div>
