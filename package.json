@@ -9,8 +9,8 @@
     "build:dev": "vite build --mode development && npx -y tsx scripts/prerender.ts",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predev": "npx -y tsx scripts/generate-sitemap.ts",
-    "prebuild": "npx -y tsx scripts/generate-sitemap.ts"
+    "predev": "bun scripts/generate-blog-metadata.ts && npx -y tsx scripts/generate-sitemap.ts",
+    "prebuild": "bun scripts/generate-blog-metadata.ts && npx -y tsx scripts/generate-sitemap.ts"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.8.1",

@@ -2,7 +2,7 @@ import React from "react";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
-const LAST_UPDATED = "August 1, 2026";
+const LAST_UPDATED = "October 24, 2026";
 
 const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => (
   <section id={id} className="scroll-mt-24">
@@ -22,14 +22,14 @@ const PrivacyPolicy = () => {
       "How Klipza handles your files and data: browser-based processing, cookies, analytics and advertising partners, and your privacy rights.",
     inLanguage: "en",
     isPartOf: { "@type": "WebSite", "@id": "https://klipza.live/#website" },
-    dateModified: "2026-08-01",
+    dateModified: "2026-10-24",
   };
 
   return (
     <>
       <SEO
         title="Privacy Policy — How Klipza Handles Your Data"
-        description="Klipza processes files in your browser and never stores them. Read how we use cookies, analytics and advertising partners, and what rights you have."
+        description="How Klipza handles local file processing, connected AI features, accounts, analytics and advertising cookies. Contact us with privacy questions."
         keywords="klipza privacy policy, online tools privacy, browser based file processing privacy, cookie policy, gdpr online tools"
         canonicalUrl="https://klipza.live/privacy"
       />
@@ -89,19 +89,18 @@ const PrivacyPolicy = () => {
                 it is read into memory, processed locally and written back out as a download.
               </p>
               <p>
-                A small number of AI-assisted features (for example AI passport photo editing, document translation
-                and PDF comparison) must send the content you submit to a processing server to work. These requests
-                are used only to produce your result and are not used to build a profile of you. Tools that behave
-                this way state it on the tool page itself.
+                AI-assisted document translation, PDF comparison and invoice suggestions send the content needed
+                for your request to our processing service and AI provider. Online lookups also contact external services.
+                Do not submit confidential information unless you are comfortable with this processing.
               </p>
             </Section>
 
             <Section id="not-collected" title="Information we don't collect">
-              <p>Klipza is a no-sign-up service. We do not:</p>
+              <p>Many tools work without an account. For local file tools, we do not:</p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Require you to create an account to use any tool</li>
+                <li>Require an account for ordinary local file processing</li>
                 <li>Ask for your name, postal address or phone number</li>
-                <li>Store the files you process, or keep copies of your results</li>
+                <li>Upload the locally processed file to an advertising partner</li>
                 <li>Request or process payment information</li>
                 <li>Sell your personal information to anyone</li>
               </ul>
@@ -168,18 +167,17 @@ const PrivacyPolicy = () => {
 
             <Section id="ai" title="AI-assisted features">
               <p>
-                A few tools use AI models to produce a result. The text or image you submit to such a tool is sent to
-                the model provider solely to generate your output, is not used to train models on your data by us, and
-                is not retained by Klipza after the response is returned.
+                Some tools send submitted text or document content to an AI provider to generate a result.
+                Connected services may process technical logs under their own policies. We cannot promise zero
+                retention by all service providers. Avoid personal, confidential or regulated information in AI inputs.
               </p>
             </Section>
 
             <Section id="legal-basis" title="Legal basis and retention">
               <p>
-                Where the GDPR applies, we rely on legitimate interests for basic analytics and site security, and on
-                your consent where required for advertising and non-essential cookies. Because we do not store your
-                files or account data, there is nothing for us to retain beyond aggregated, non-identifying usage
-                statistics.
+                We seek consent where required for non-essential cookies and personalized advertising.
+                Local files remain on your device, while connected services may retain technical records under
+                their policies. If you create an account, account information is handled by our authentication service.
               </p>
             </Section>
 
@@ -187,7 +185,7 @@ const PrivacyPolicy = () => {
               <p>
                 Depending on where you live, you may have the right to access, correct, delete or restrict the
                 processing of personal data about you, to object to processing, and to withdraw consent. Since Klipza
-                does not maintain user accounts, most requests can be satisfied by clearing cookies in your browser.
+                offers local processing tools, clearing browser storage removes local preferences and saved tool data.
                 For anything else, contact us and we will respond within a reasonable period.
               </p>
             </Section>
@@ -216,8 +214,7 @@ const PrivacyPolicy = () => {
 
             <Section id="contact" title="Contact us">
               <p>
-                Questions about this Privacy Policy or how your data is handled? Reach us through the contact details
-                published on our <a className="text-primary hover:underline" href="/about">About page</a>.
+                Questions about this Privacy Policy or how your data is handled? Email <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a>.
               </p>
             </Section>
           </div>

@@ -16,6 +16,14 @@ const AboutUs = () => {
           <h1 className="text-3xl md:text-4xl font-bold mb-8">About Klipza</h1>
           
           <div className="space-y-6">
+            <section id="contact" className="scroll-mt-24">
+              <h2 className="text-2xl font-bold mb-4">Contact Klipza</h2>
+              <p className="text-muted-foreground">For tool errors, feedback or privacy questions, email <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a>. Include the tool name, browser and what went wrong. Please do not send passwords or sensitive documents.</p>
+            </section>
+            <section>
+              <h2 className="text-2xl font-bold mb-4">Our guides and limitations</h2>
+              <p className="text-muted-foreground">Our guides explain tool settings, common mistakes and output checks. They are general guidance, not legal, financial or medical advice. Most document and image operations run on your device; AI and online lookup features send the inputs needed to connected services. Keep your originals and verify important results.</p>
+            </section>
             <section>
               <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
               <p className="text-muted-foreground">

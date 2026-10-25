@@ -195,11 +195,11 @@ const titleCase = (slug: string) =>
 const llms = [
   "# Klipza",
   "",
-  "> Klipza is a free suite of 125+ privacy-first online tools for PDF, image, document, text and calculation tasks. Every tool runs entirely in the visitor's browser: files are never uploaded, there is no signup, no watermark and no usage limit.",
+  "> Klipza provides free tools for PDF, image, document, text and calculation tasks. Most file tools process locally; AI and online lookups send required inputs to connected services.",
   "",
   "## Key facts",
   "- Cost: free, unlimited, no account required",
-  "- Privacy: client-side processing, files never leave the device",
+  "- Privacy: local processing for most file tools; connected features use external services. See the Privacy Policy.",
   "- Platforms: any modern browser on Windows, macOS, Android, iOS",
   "",
   "## Tools",

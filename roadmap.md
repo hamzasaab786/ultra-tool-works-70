@@ -1,4 +1,5 @@
 # Tasks
+- [ ] Add the owner's supplied public contact email and apply Google's published AdSense readiness guidance.
 - [ ] Correct confirmed content/trust and navigation issues affecting AdSense readiness; approval remains Google's decision.
 - [ ] Reduce sitewide animation overhead, blog downloads, and PDF processing memory; verify real tool flows.
 - [x] Add Blog to the header without crowding navigation.
