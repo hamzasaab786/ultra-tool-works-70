@@ -280,17 +280,17 @@ export const toolSeoEntries: ToolSeoEntry[] = [
     category: PDF,
     title: "Compress PDF Online — Reduce PDF Size Free",
     description:
-      "Shrink large PDF files for email and uploads. Choose a compression level, keep text sharp and download a smaller PDF without watermarks or signup.",
+      "Reduce PDF size by rendering pages as JPEG images. Adjust quality and download; compressed pages lose searchable text, links and editable forms.",
     keywords:
       "compress pdf, reduce pdf file size, pdf compressor online free, shrink pdf for email, make pdf smaller, compress pdf online free without losing quality, reduce pdf size to 100kb online, compress pdf to 200kb free",
     faqs: [
       {
         q: "How much smaller will my PDF get?",
-        a: "Image-heavy documents typically drop 50–80%. Text-only PDFs are already compact, so expect smaller gains — often 5–20%.",
+        a: "Savings depend on the file and quality setting. Image-heavy scans may shrink, while small text PDFs can grow when rasterized. If output is not smaller, the original file is kept.",
       },
       {
         q: "Will compression make the text unreadable?",
-        a: "No. Text and vector graphics stay sharp; compression works mainly by re-encoding embedded images, so only photo detail is affected at aggressive settings.",
+        a: "Pages are rendered as images, so small text can soften at aggressive settings. Searchable text, links and editable forms are lost in compressed output. Keep the original and inspect your download.",
       },
     ],
   },
@@ -2508,7 +2508,7 @@ export const buildCommonFaqs = (entry: ToolSeoEntry): ToolFaq[] => [
   },
   {
     q: `Are my files safe when using ${entry.name}?`,
-    a: `Processing happens locally in your browser wherever technically possible, so your files are not uploaded to a server, stored or shared with third parties.`,
+    a: `Most file tools process locally in your browser. AI features and online lookups send the inputs needed to connected services. Check the tool's limitations and Privacy Policy before submitting sensitive information.`,
   },
   {
     q: `Does ${entry.name} work on mobile phones?`,
