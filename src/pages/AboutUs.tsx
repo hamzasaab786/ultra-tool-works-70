@@ -30,7 +30,7 @@ const AboutUs = () => {
               <h2 className="text-2xl font-bold mb-4">Privacy-first by design</h2>
               <p className="text-muted-foreground">Unlike many online tools, Klipza doesn't need your files to leave your device. Compression, conversion, and PDF operations run locally using your browser's built-in capabilities — nothing is uploaded to a server for the core tools. AI and online lookup features clearly use connected services, and those are marked where they appear.</p>
             </section>
-            <section>
+            <section id="contact" className="scroll-mt-40">
               <h2 className="text-2xl font-bold mb-4">Contact</h2>
               <p className="text-muted-foreground">Questions, feedback, or a tool request? Reach out at <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a>.</p>
             </section>
