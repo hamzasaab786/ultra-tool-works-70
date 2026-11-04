@@ -1,7 +1,8 @@
 # Tasks
-- [ ] Add the owner's supplied public contact email and apply Google's published AdSense readiness guidance.
-- [ ] Correct confirmed content/trust and navigation issues affecting AdSense readiness; approval remains Google's decision.
-- [ ] Reduce sitewide animation overhead, blog downloads, and PDF processing memory; verify real tool flows.
+- [x] Add the owner's supplied public contact email and apply Google's published guidance on useful content and working navigation.
+- [x] Correct identified privacy claims, repeated article filler, broken footer tool link and PDF compression claims; approval remains Google's decision.
+- [x] Reduce sitewide animation overhead, blog downloads and PDF processing memory; verify blog search, contact, mobile layout and a real two-page PDF download.
+- [ ] Verify Google-certified consent message is published and request AdSense review again — requires the owner's AdSense dashboard access; the email does not provide the specific rejection reason.
 - [x] Add Blog to the header without crowding navigation.
 - [x] Submit the live sitemap through Google Search Console: accepted, 152 URLs, zero errors or warnings.
 - [x] Inspect the blog's Google indexing status: URL unknown to Google; direct Request indexing requires Search Console UI access.
