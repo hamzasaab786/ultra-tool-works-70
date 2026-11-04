@@ -8,15 +8,19 @@ import { useLocation } from "react-router-dom";
  * of the new page instead of seeing the tool's title and controls first.
  */
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    if (hash) {
+      const timer = window.setTimeout(() => document.getElementById(hash.slice(1))?.scrollIntoView({block: 'start'}), 200);
+      return () => window.clearTimeout(timer);
+    }
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     // Also reset the document element for cross-browser safety.
     if (document.documentElement) {
       document.documentElement.scrollTop = 0;
     }
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return null;
 };

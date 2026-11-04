@@ -17,11 +17,11 @@ const InfoSection = () => {
           <div>
             <h4 className="font-semibold mb-2">Compression Features</h4>
             <ul className="space-y-1 text-sm text-gray-600">
-              <li>• Intelligent compression algorithms</li>
-              <li>• Advanced image optimization</li>
-              <li>• Form flattening for size reduction</li>
-              <li>• Metadata removal and cleanup</li>
-              <li>• Unused object elimination</li>
+              <li>• Pages become JPEG images inside a PDF</li>
+              <li>• Text is no longer searchable or selectable</li>
+              <li>• Links and editable forms are not retained</li>
+              <li>• Original page dimensions are preserved</li>
+              <li>• Original file kept if output is larger</li>
               <li>• Batch processing support</li>
               <li>• Real-time compression analysis</li>
             </ul>

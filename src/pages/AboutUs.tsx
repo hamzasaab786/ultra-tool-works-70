@@ -16,7 +16,7 @@ const AboutUs = () => {
           <h1 className="text-3xl md:text-4xl font-bold mb-8">About Klipza</h1>
           
           <div className="space-y-6">
-            <section id="contact" className="scroll-mt-24">
+            <section id="contact" className="scroll-mt-40">
               <h2 className="text-2xl font-bold mb-4">Contact Klipza</h2>
               <p className="text-muted-foreground">For tool errors, feedback or privacy questions, email <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a>. Include the tool name, browser and what went wrong. Please do not send passwords or sensitive documents.</p>
             </section>

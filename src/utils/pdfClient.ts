@@ -6,24 +6,6 @@ import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.js?url";
 if (typeof window !== "undefined") {
   try {
     pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
-    // Warm the worker as soon as the module loads so the first PDF a user opens
-    // doesn't pay the worker boot cost (usually 300-800ms).
-    if (!(window as any).__pdfWorkerWarmed) {
-      (window as any).__pdfWorkerWarmed = true;
-      const warm = () => {
-        try {
-          const link = document.createElement("link");
-          link.rel = "preload";
-          link.as = "script";
-          link.href = pdfWorkerUrl;
-          document.head.appendChild(link);
-        } catch {
-          /* noop */
-        }
-      };
-      if ("requestIdleCallback" in window) (window as any).requestIdleCallback(warm);
-      else setTimeout(warm, 0);
-    }
   } catch {
     // Fallback to a CDN copy that matches the installed version exactly.
     pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -35,8 +17,8 @@ export { pdfjsLib };
 
 /** How many pages we render at the same time. Tuned to the device's cores. */
 export const RENDER_CONCURRENCY = Math.min(
-  6,
-  Math.max(2, (typeof navigator !== "undefined" && navigator.hardwareConcurrency) || 4)
+  3,
+  Math.max(1, Math.floor(((typeof navigator !== "undefined" && navigator.hardwareConcurrency) || 4) / 2))
 );
 
 export async function loadPdfDocument(file: File | ArrayBuffer | Uint8Array) {
@@ -60,7 +42,7 @@ export async function loadPdfDocument(file: File | ArrayBuffer | Uint8Array) {
 export async function renderPdfPageToCanvas(page: any, scale = 1.5) {
   const viewport = page.getViewport({ scale });
   const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
+  const context = canvas.getContext("2d", { alpha: false });
 
   if (!context) {
     throw new Error("Canvas context could not be created");
@@ -117,7 +99,8 @@ export async function renderPdfPreviewPages(file: File, scale = 1.35) {
   const numbers = Array.from({ length: pdf.numPages }, (_, i) => i + 1);
 
   // Pages render in parallel, but results stay in document order.
-  return mapConcurrent(numbers, async (pageNumber) => {
+  try {
+  return await mapConcurrent(numbers, async (pageNumber) => {
     const page = await pdf.getPage(pageNumber);
     const { canvas, viewport } = await renderPdfPageToCanvas(page, scale);
     const url = await canvasToUrl(canvas, "image/jpeg", 0.85);
@@ -126,4 +109,7 @@ export async function renderPdfPreviewPages(file: File, scale = 1.35) {
     canvas.height = 0;
     return { url, w: viewport.width, h: viewport.height };
   });
+  } finally {
+    await pdf.destroy();
+  }
 }

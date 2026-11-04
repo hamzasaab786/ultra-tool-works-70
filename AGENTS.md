@@ -5,3 +5,4 @@
 - Distinguish editorial keyword candidates from measured search data; never infer difficulty or volume from missing data.
 - Client blog lists must import lightweight metadata only; article bodies load by category on demand, with the same editorial transformation used by prerendering.
 - Use one-shot viewport reveals, not sitewide scroll-driven card layout reads, to keep tool interaction smooth.
+- Release PDF workers and page canvases after processing; prefer binary canvas encoding to base64 to reduce peak memory.
