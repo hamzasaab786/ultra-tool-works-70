@@ -2,7 +2,7 @@ import React from "react";
 import SEO from "@/components/SEO";
 import { Helmet } from "react-helmet-async";
 
-const LAST_UPDATED = "August 1, 2026";
+const LAST_UPDATED = "November 4, 2026";
 
 const Section = ({ id, title, children }: { id: string; title: string; children: React.ReactNode }) => (
   <section id={id} className="scroll-mt-24">
@@ -22,7 +22,7 @@ const Terms = () => {
       "The terms and conditions governing your use of Klipza's free online image, PDF, calculator and text tools.",
     inLanguage: "en",
     isPartOf: { "@type": "WebSite", "@id": "https://klipza.live/#website" },
-    dateModified: "2026-08-01",
+    dateModified: "2026-11-04",
   };
 
   return (
@@ -49,17 +49,12 @@ const Terms = () => {
                 ["acceptance", "1. Acceptance of terms"],
                 ["service", "2. The service"],
                 ["acceptable-use", "3. Acceptable use"],
-                ["your-content", "4. Your content and ownership"],
-                ["accuracy", "5. Accuracy of results"],
-                ["ip", "6. Intellectual property"],
-                ["third-party", "7. Advertising and third parties"],
-                ["availability", "8. Availability and changes"],
-                ["warranties", "9. Disclaimer of warranties"],
-                ["liability", "10. Limitation of liability"],
-                ["indemnity", "11. Indemnity"],
-                ["termination", "12. Termination"],
-                ["law", "13. Governing law"],
-                ["contact", "14. Contact"],
+                ["accuracy", "4. Accuracy of results"],
+                ["ip", "5. Intellectual property"],
+                ["third-party", "6. Third-party services and advertising"],
+                ["liability", "7. Limitation of liability"],
+                ["changes", "8. Changes"],
+                ["contact", "9. Contact"],
               ].map(([id, label]) => (
                 <li key={id}>
                   <a href={`#${id}`} className="text-primary hover:underline">
@@ -69,129 +64,77 @@ const Terms = () => {
               ))}
             </ul>
           </nav>
-
           <div className="space-y-10">
             <Section id="acceptance" title="1. Acceptance of terms">
               <p>
-                These Terms and Conditions ("Terms") govern your access to and use of the Klipza website and every tool
-                offered on it (together, the "Service"). By using the Service you agree to these Terms. If you do not
-                agree, please do not use Klipza.
+                By using klipza.live ("Klipza", "the site"), you agree to these Terms and Conditions. If you do not agree, please do not use the site.
               </p>
             </Section>
 
             <Section id="service" title="2. The service">
               <p>
-                Klipza provides free browser-based utilities for images, PDFs, documents, calculations, text and
-                everyday tasks. No account is required. Tools are provided for personal and commercial use at no
-                charge, subject to these Terms.
+                Klipza provides free browser-based tools for working with PDF files, images, text, and numbers — including converters, compressors, generators, and calculators. Tools are provided free of charge, with no account required.
               </p>
             </Section>
 
             <Section id="acceptable-use" title="3. Acceptable use">
-              <p>You agree to use the Service lawfully, and specifically not to:</p>
+              <p>
+                You agree to use Klipza only for lawful purposes. You must not:
+              </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Break any applicable local, national or international law or regulation</li>
-                <li>Process content you have no right to process, including copyrighted or confidential material</li>
                 <li>
-                  Use security-related tools (such as PDF unlocking or password tools) on documents you do not own or
-                  are not authorised to access
+                  Use the tools for any illegal activity or to process content you have no right to use.
                 </li>
-                <li>Create forged, fraudulent or misleading documents, identities or payment instruments</li>
-                <li>Attempt to disrupt, overload, scrape at scale, reverse engineer or gain unauthorised access to the Service</li>
-                <li>Impersonate Klipza or any other person or entity</li>
+                <li>
+                  Attempt to disrupt, overload, or reverse-engineer the site or its services.
+                </li>
+                <li>
+                  Upload or process malicious files, or use the tools to harm others.
+                </li>
               </ul>
+            </Section>
+
+            <Section id="accuracy" title="4. Accuracy of results">
               <p>
-                Developer-focused tools (for example the test card generator) are provided strictly for sandbox testing
-                and must never be used to attempt real transactions.
+                Tools are provided on an "as is" basis. While we work to keep them accurate, file conversions, compressions, calculations, and AI-generated results may contain errors. Always keep your original files and verify important results before relying on them. See our{" "}
+                <a className="text-primary hover:underline" href="/disclaimer">
+                  Disclaimer
+                </a>{" "}
+                for more detail.
               </p>
             </Section>
 
-            <Section id="your-content" title="4. Your content and ownership">
+            <Section id="ip" title="5. Intellectual property">
               <p>
-                You keep all rights to the files and text you process. We claim no ownership over your content, and
-                because processing generally happens locally in your browser, we usually never receive it at all. You
-                are solely responsible for the content you process and for keeping your own backups.
+                The Klipza name, design, and original content on this site belong to us. You may use the tools for personal and commercial tasks, but you may not copy, redistribute, or resell the site itself or its underlying code without permission.
               </p>
             </Section>
 
-            <Section id="accuracy" title="5. Accuracy of results">
+            <Section id="third-party" title="6. Third-party services and advertising">
               <p>
-                Calculators, converters, OCR, health estimates and document conversions produce estimates and
-                best-effort output. They are provided for general information only and are not financial, legal,
-                medical or professional advice. Always verify important results independently before relying on them.
+                Some features rely on connected third-party services, which operate under their own terms. The site is supported by advertising; ad content is the responsibility of the advertisers.
               </p>
             </Section>
 
-            <Section id="ip" title="6. Intellectual property">
+            <Section id="liability" title="7. Limitation of liability">
               <p>
-                The Service and its content, design, code, branding and arrangement are owned by Klipza or its
-                licensors and are protected by intellectual property laws. These Terms grant you a limited,
-                non-exclusive, revocable licence to use the Service — no rights in our trademarks, logo or software are
-                transferred to you.
+                To the maximum extent permitted by law, Klipza and its operator are not liable for any loss or damage arising from your use of the site — including data loss, inaccurate results, or service interruptions. Your use of the tools is at your own risk.
               </p>
             </Section>
 
-            <Section id="third-party" title="7. Advertising and third parties">
+            <Section id="changes" title="8. Changes">
               <p>
-                Klipza is funded by advertising and may display ads served by third parties. We are not responsible for
-                the content, products or practices of advertisers or of any external site you reach through the
-                Service. Your dealings with them are solely between you and them.
+                We may update these terms at any time. Continued use of the site after changes means you accept the updated terms.
               </p>
             </Section>
 
-            <Section id="availability" title="8. Availability and changes">
+            <Section id="contact" title="9. Contact">
               <p>
-                We may add, change, suspend or remove any tool or feature at any time without notice, and we do not
-                guarantee uninterrupted availability. Occasional maintenance, browser incompatibilities or outages may
-                affect access.
-              </p>
-            </Section>
-
-            <Section id="warranties" title="9. Disclaimer of warranties">
-              <p className="uppercase">
-                The service is provided "as is" and "as available" without warranty of any kind, express or implied,
-                including merchantability, fitness for a particular purpose and non-infringement. We do not warrant
-                that the service will meet your requirements or be error-free, secure or uninterrupted.
-              </p>
-            </Section>
-
-            <Section id="liability" title="10. Limitation of liability">
-              <p className="uppercase">
-                To the maximum extent permitted by law, Klipza shall not be liable for any indirect, incidental,
-                special, consequential or punitive damages, or for any loss of profits, data, files, goodwill or
-                business, arising from your access to, use of, or inability to use the service, any content obtained
-                through it, or any unauthorised access to your transmissions.
-              </p>
-            </Section>
-
-            <Section id="indemnity" title="11. Indemnity">
-              <p>
-                You agree to indemnify and hold Klipza harmless from any claim, demand, loss or expense arising out of
-                your misuse of the Service or your breach of these Terms or of any law or third-party right.
-              </p>
-            </Section>
-
-            <Section id="termination" title="12. Termination">
-              <p>
-                We may restrict or terminate your access to the Service at any time if we reasonably believe you have
-                breached these Terms or are harming the Service or other users.
-              </p>
-            </Section>
-
-            <Section id="law" title="13. Governing law">
-              <p>
-                These Terms and your use of the Service are governed by the laws of the jurisdiction in which we
-                operate, without regard to conflict-of-law rules. If any provision is found unenforceable, the
-                remaining provisions stay in full effect.
-              </p>
-            </Section>
-
-            <Section id="contact" title="14. Contact">
-              <p>
-                Questions about these Terms? Reach us through the contact details published on our{" "}
-                <a className="text-primary hover:underline" href="/about">About page</a>. See also our{" "}
-                <a className="text-primary hover:underline" href="/privacy">Privacy Policy</a> and{" "}
-                <a className="text-primary hover:underline" href="/disclaimer">Disclaimer</a>.
+                Questions about these terms:{" "}
+                <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">
+                  officalsaab96@gmail.com
+                </a>
+                .
               </p>
             </Section>
           </div>
