@@ -32,7 +32,7 @@ const PdfCompressor = () => {
   return (
     <ToolPageTemplate
       title="Professional PDF Compressor"
-      description="Advanced PDF compression with intelligent optimization. Reduce file sizes while maintaining quality with industry-leading algorithms."
+      description="Reduce PDF size by rendering pages as compressed images. Text search, links and editable forms are lost in compressed output; keep your original."
       keywords="PDF compressor, reduce PDF size, compress PDF online, PDF optimization, professional PDF tools"
     >
       <div className="space-y-6">

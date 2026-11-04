@@ -32,12 +32,8 @@ export class PDFCompressor {
   }
 
   async compressPDF(file: File): Promise<CompressionResult> {
-    console.log('Starting PDF compression with new rasterization engine. Settings:', this.settings);
-    
     const arrayBuffer = await file.arrayBuffer();
     const originalSize = file.size;
-    
-    console.warn('Rasterization-based compression is active. Text and vector data will be converted to images to achieve high compression ratios.');
     
     const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer) });
     const sourcePdf = await loadingTask.promise;
@@ -51,6 +47,7 @@ export class PDFCompressor {
     if (this.settings.optimizeImages) optimizations.push(`Images re-compressed (Quality: ${this.settings.imageQuality}%)`);
 
     let downscaled = false;
+    try {
     for (let i = 1; i <= sourcePdf.numPages; i++) {
         const page = await sourcePdf.getPage(i);
         
@@ -59,7 +56,7 @@ export class PDFCompressor {
 
         if (this.settings.downscaleImages) {
             const { maxImageDimension } = this.settings;
-            if (originalViewport.width > maxImageDimension || originalViewport.height > maxImageDimension) {
+            if (Math.max(originalViewport.width, originalViewport.height) * scale > maxImageDimension) {
                 const widthScale = maxImageDimension / originalViewport.width;
                 const heightScale = maxImageDimension / originalViewport.height;
                 scale = Math.min(widthScale, heightScale);
@@ -78,18 +75,26 @@ export class PDFCompressor {
         await page.render({ canvasContext: context, viewport: viewport }).promise;
         
         // Convert canvas to JPEG bytes
-        const jpgDataUrl = canvas.toDataURL('image/jpeg', this.settings.imageQuality / 100);
-        const jpgBytes = Uint8Array.from(atob(jpgDataUrl.split(',')[1]), c => c.charCodeAt(0));
+        const jpgBlob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Image encoding failed')), 'image/jpeg', this.settings.imageQuality / 100);
+        });
+        const jpgBytes = new Uint8Array(await jpgBlob.arrayBuffer());
+        canvas.width = 0;
+        canvas.height = 0;
+        page.cleanup();
         
         const jpgImage = await newPdfDoc.embedJpg(jpgBytes);
         
-        const newPage = newPdfDoc.addPage([viewport.width, viewport.height]);
+        const newPage = newPdfDoc.addPage([originalViewport.width, originalViewport.height]);
         newPage.drawImage(jpgImage, {
             x: 0,
             y: 0,
-            width: viewport.width,
-            height: viewport.height,
+            width: originalViewport.width,
+            height: originalViewport.height,
         });
+    }
+    } finally {
+      await sourcePdf.destroy();
     }
 
     if (downscaled) {
@@ -103,7 +108,7 @@ export class PDFCompressor {
     // Never hand back a file bigger than the original (can happen with
     // small text-only/vector PDFs where rasterising adds weight).
     if (blob.size >= originalSize) {
-      blob = new Blob([await file.arrayBuffer()], { type: 'application/pdf' });
+      blob = file;
       return {
         blob,
         originalSize,
