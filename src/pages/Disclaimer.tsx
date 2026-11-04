@@ -1,9 +1,8 @@
-
 import React from "react";
 import SEO from "@/components/SEO";
 
 const Disclaimer = () => {
-  const formattedDate = 'October 24, 2026';
+  const formattedDate = 'November 4, 2026';
 
   return (
     <>
@@ -17,75 +16,42 @@ const Disclaimer = () => {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Disclaimer</h1>
           <p className="text-muted-foreground mb-8">Last updated: {formattedDate}</p>
-          
+
           <div className="space-y-6">
             <section>
-              <h2 className="text-2xl font-bold mb-4">Website Disclaimer</h2>
+              <h2 className="text-2xl font-bold mb-4">General information only</h2>
               <p className="text-muted-foreground">
-                The information provided by Klipza ("we," "us," or "our") on our website is for general informational and tool usage purposes only. All information on the site is provided in good faith, however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information or tools on the site.
+                Everything on Klipza — tool results, calculators, converters, and guides — is provided for general informational purposes only. It is not professional advice of any kind: not legal, medical, financial, tax, or engineering advice. For decisions that matter, consult a qualified professional.
               </p>
             </section>
-            
             <section>
-              <h2 className="text-2xl font-bold mb-4">No Liability</h2>
+              <h2 className="text-2xl font-bold mb-4">Accuracy</h2>
               <p className="text-muted-foreground">
-                UNDER NO CIRCUMSTANCE SHALL WE HAVE ANY LIABILITY TO YOU FOR ANY LOSS OR DAMAGE OF ANY KIND INCURRED AS A RESULT OF THE USE OF THE SITE OR RELIANCE ON ANY INFORMATION PROVIDED ON THE SITE. YOUR USE OF THE SITE AND YOUR RELIANCE ON ANY INFORMATION OR TOOL ON THE SITE IS SOLELY AT YOUR OWN RISK.
+                File conversions, image processing, calculations, and especially AI-generated outputs can contain errors or unexpected results. Always keep your original files and double-check important results before using them.
               </p>
             </section>
-            
             <section>
-              <h2 className="text-2xl font-bold mb-4">Tools and Results</h2>
+              <h2 className="text-2xl font-bold mb-4">External links and services</h2>
               <p className="text-muted-foreground">
-                While we strive to provide useful and functional tools:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-                <li>We do not guarantee that our tools will always function without errors or interruptions</li>
-                <li>Results from our tools (such as conversions, calculations, etc.) are provided "as is" without any guarantees of accuracy</li>
-                <li>You should verify important results through other means before relying on them for significant decisions</li>
-                <li>The quality of output (such as compressed files) may vary based on many factors including browser capabilities, file characteristics, and connection speed</li>
-              </ul>
-            </section>
-            
-            <section>
-              <h2 className="text-2xl font-bold mb-4">External Links</h2>
-              <p className="text-muted-foreground">
-                The Site may contain links to external websites that are not provided or maintained by or in any way affiliated with us. Please note that we do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites.
+                Klipza may link to or integrate with third-party websites and services. We are not responsible for their content, accuracy, or practices.
               </p>
             </section>
-            
             <section>
-              <h2 className="text-2xl font-bold mb-4">Content Usage</h2>
+              <h2 className="text-2xl font-bold mb-4">Advertising</h2>
               <p className="text-muted-foreground">
-                You are responsible for ensuring that any content you process using our tools:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-                <li>Does not infringe on any third-party intellectual property rights</li>
-                <li>Does not violate any applicable laws or regulations</li>
-                <li>Does not contain malicious software or components</li>
-              </ul>
-              <p className="text-muted-foreground mt-4">
-                We are not responsible for any unauthorized use or distribution of content processed through our tools.
+                This site displays third-party advertisements. We do not endorse the products or services advertised, and any dealings with advertisers are solely between you and them.
               </p>
             </section>
-            
             <section>
-              <h2 className="text-2xl font-bold mb-4">Technical Limitations</h2>
+              <h2 className="text-2xl font-bold mb-4">Availability</h2>
               <p className="text-muted-foreground">
-                Our tools operate within the technical constraints of web browsers. Large files, complex operations, or certain file formats may not be supported or may function differently depending on your device, browser, or internet connection.
+                We aim to keep Klipza available and working, but we do not guarantee uninterrupted or error-free service.
               </p>
             </section>
-            
             <section>
-              <h2 className="text-2xl font-bold mb-4">Changes</h2>
+              <h2 className="text-2xl font-bold mb-4">Contact</h2>
               <p className="text-muted-foreground">
-                We reserve the right to modify this disclaimer at any time. Any changes will be effective immediately upon posting the updated disclaimer on this website.
-              </p>
-            </section>
-            
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-              <p className="text-muted-foreground">
-                If you have any questions about this disclaimer, email <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a>.
+                Questions about this disclaimer: <a className="text-primary underline" href="mailto:officalsaab96@gmail.com">officalsaab96@gmail.com</a>.
               </p>
             </section>
           </div>
