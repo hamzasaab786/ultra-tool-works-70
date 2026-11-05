@@ -63,10 +63,11 @@ const ToolCard = ({
             {description}
           </CardDescription>
         </CardHeader>
-        
-        <CardContent className="relative z-10 pb-4">
+
+        <CardContent className="pb-4">
           {/* Reserved for future features */}
         </CardContent>
+        </Link>
         
         <CardFooter className="relative z-10">
           <Button asChild
