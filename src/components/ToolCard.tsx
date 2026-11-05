@@ -40,7 +40,13 @@ const ToolCard = ({
         )}
         style={style}
       >
-        <CardHeader className="relative z-10 pb-3">
+        <Link
+          to={path}
+          onClick={handleNavigate}
+          className="block relative z-10 focus:outline-none"
+          aria-label={`Open ${title}`}
+        >
+          <CardHeader className="pb-3">
           <div className="flex items-center justify-between mb-4">
             <div className="relative">
               <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50/50 dark:from-indigo-950/50 dark:to-purple-950/50 text-indigo-600 dark:text-indigo-400 group-hover:from-indigo-100 group-hover:to-purple-100/70 dark:group-hover:from-indigo-900 dark:group-hover:to-purple-900/70 group-hover:scale-105 transition-all duration-300">
@@ -57,10 +63,11 @@ const ToolCard = ({
             {description}
           </CardDescription>
         </CardHeader>
-        
-        <CardContent className="relative z-10 pb-4">
+
+        <CardContent className="pb-4">
           {/* Reserved for future features */}
         </CardContent>
+        </Link>
         
         <CardFooter className="relative z-10">
           <Button asChild
